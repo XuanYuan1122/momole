@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_label_root"
+    android:layout_width="wrap_content"
+    android:layout_height="22dp"
+    android:background="@drawable/btn_follow_label">
+
+    <TextView
+        android:id="@+id/tv_item_label_content"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="4dp"
+        android:layout_gravity="center_vertical"
+        android:text="最喜欢大和了一一一一一一一一一"
+        android:singleLine="true"
+        android:textColor="#000000"
+        android:textSize="@dimen/indicator_right_padding"/>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="15dp"
+        android:background="#ffffff"
+        android:layout_gravity="center_vertical"
+        />
+
+    <TextView
+        android:id="@+id/tv_item_label_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="6dp"
+        android:layout_gravity="center_vertical"
+        android:textStyle="bold"
+        android:text="52"
+        android:textColor="#000000"
+        android:textSize="@dimen/indicator_right_padding"
+        />
+</LinearLayout>
