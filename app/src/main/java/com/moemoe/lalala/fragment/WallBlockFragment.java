@@ -136,14 +136,14 @@ public class WallBlockFragment extends BaseFragment {
     }
 
     private void requestWallData(final int index){
-        Otaku.getCommonV2().getWallBlocks(index,20).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+        Otaku.getCommonV2().getWallBlocks(index,Otaku.LENGTH).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
             @Override
             public void success(String token, String s) {
                 ArrayList<WallBlock> wallBlocks = WallBlock.readFromJsonArray(s);
                 if(index == 0){
                     mWallBlocks.clear();
                 }
-                if (wallBlocks.size() < 10){
+                if (wallBlocks.size() < Otaku.LENGTH){
                     mFuturePv.isLoadMoreEnabled(false);
                     mIsHasLoadedAll = true;
                 }

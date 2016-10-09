@@ -49,6 +49,7 @@ public class MoemoeApplication extends Application {
         mTimer = new Timer();
         Utils.Control.init(this);
         Utils.Control.setDebug(AppSetting.isDebug);
+        ThirdPartySDKManager.getInstance(this).init();
         File cacheDirectory = getApplicationContext().getCacheDir();
         if(AppSetting.isDebug){
             Otaku.setup(IConstants.debugBaseUrl,cacheDirectory);
@@ -56,29 +57,22 @@ public class MoemoeApplication extends Application {
             Otaku.setup(IConstants.baseUrl, cacheDirectory);
         }
         initMemoryParameter();
-//        ThirdPartySDKManager.getInstance(this).init();
-//        File cacheDirectory = getApplicationContext().getCacheDir();
-//        if(AppSetting.isDebug){
-//            Otaku.setup(IConstants.debugBaseUrl,cacheDirectory);
-//        }else {
-//            Otaku.setup(IConstants.baseUrl, cacheDirectory);
-//        }
-//        StorageUtils.initialStorageDir(this);
-//        EncoderUtils.init(this);
-//        IntentUtils.init(this);
+        StorageUtils.initialStorageDir(this);
+        EncoderUtils.init(this);
+        IntentUtils.init(this);
         UnCaughtException caughtException = UnCaughtException.getInstance();
         caughtException.init(getApplicationContext());
-//        AppSetting.initDeviceInfo(this);
-//        PushManager.getInstance().initialize(this.getApplicationContext());
-//        MoemoeApplication.sDaoConfig = new DbManager.DaoConfig()
-//                .setDbName("netaInfo")
-//                .setDbVersion(1)
-//                .setDbUpgradeListener(new DbManager.DbUpgradeListener() {
-//                    @Override
-//                    public void onUpgrade(DbManager db, int oldVersion, int newVersion) {
-//
-//                    }
-//                });
+        AppSetting.initDeviceInfo(this);
+        PushManager.getInstance().initialize(this.getApplicationContext());
+        MoemoeApplication.sDaoConfig = new DbManager.DaoConfig()
+                .setDbName("netaInfo")
+                .setDbVersion(1)
+                .setDbUpgradeListener(new DbManager.DbUpgradeListener() {
+                    @Override
+                    public void onUpgrade(DbManager db, int oldVersion, int newVersion) {
+
+                    }
+                });
     }
 
     private String initMemoryParameter() {

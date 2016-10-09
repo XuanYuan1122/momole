@@ -124,7 +124,7 @@ public class DepartmentActivity extends BaseActivity {
      */
     private void startBanner() {
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 3, 3, TimeUnit.SECONDS);
     }
 
     private class BannerRunnable implements Runnable {
@@ -466,7 +466,6 @@ public class DepartmentActivity extends BaseActivity {
             public void failure(String e) {
                 allFinishCallback.onSuccess();
                 NetworkUtils.checkNetworkAndShowError(DepartmentActivity.this);
-                //ToastUtil.showCenterToast(DepartmentActivity.this, R.string.msg_server_connection);
             }
         }));
     }

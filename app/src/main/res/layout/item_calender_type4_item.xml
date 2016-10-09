@@ -139,10 +139,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:singleLine="true"
+            android:maxLines="1"
             android:ellipsize="end"
             android:text="24分钟以前"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginEnd="12dp"
             android:textSize="@dimen/setting_txt_mian_size"
             android:layout_alignBottom="@+id/rl_doc_comment_pack"
             android:layout_toRightOf="@+id/rl_doc_comment_pack"/>

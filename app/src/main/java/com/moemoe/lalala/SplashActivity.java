@@ -101,27 +101,27 @@ public class SplashActivity extends BaseActivity {
         if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
             startPermissionsActivity();
         }
-        ThirdPartySDKManager.getInstance(this).init();
+ //       ThirdPartySDKManager.getInstance(this).init();
 //        File cacheDirectory = getApplicationContext().getCacheDir();
 //        if(AppSetting.isDebug){
 //            Otaku.setup(IConstants.debugBaseUrl,cacheDirectory);
 //        }else {
 //            Otaku.setup(IConstants.baseUrl, cacheDirectory);
 //        }
-        StorageUtils.initialStorageDir(this);
-        EncoderUtils.init(this);
-        IntentUtils.init(this);
-        AppSetting.initDeviceInfo(this);
-        PushManager.getInstance().initialize(this.getApplicationContext());
-        MoemoeApplication.sDaoConfig = new DbManager.DaoConfig()
-                .setDbName("netaInfo")
-                .setDbVersion(1)
-                .setDbUpgradeListener(new DbManager.DbUpgradeListener() {
-                    @Override
-                    public void onUpgrade(DbManager db, int oldVersion, int newVersion) {
-
-                    }
-                });
+//        StorageUtils.initialStorageDir(this);
+//        EncoderUtils.init(this);
+//        IntentUtils.init(this);
+//        AppSetting.initDeviceInfo(this);
+//        PushManager.getInstance().initialize(this.getApplicationContext());
+//        MoemoeApplication.sDaoConfig = new DbManager.DaoConfig()
+//                .setDbName("netaInfo")
+//                .setDbVersion(1)
+//                .setDbUpgradeListener(new DbManager.DbUpgradeListener() {
+//                    @Override
+//                    public void onUpgrade(DbManager db, int oldVersion, int newVersion) {
+//
+//                    }
+//                });
         initPreferenceInfo();
         if(mIntent != null){
             mSchema = mIntent.getStringExtra("schema");
@@ -137,7 +137,7 @@ public class SplashActivity extends BaseActivity {
             AppSetting.isFirstLauncherToday = true;
         }
         long lastTime1 = mPreferMng.getsLastEventTime();
-        last.setTimeInMillis(lastTime);
+        last.setTimeInMillis(lastTime1);
         if (today.get(Calendar.YEAR) == last.get(Calendar.YEAR) && today.get(Calendar.MONTH) == last.get(Calendar.MONTH)
                 && today.get(Calendar.DAY_OF_MONTH) == last.get(Calendar.DAY_OF_MONTH)) {
             AppSetting.isEnterEventToday = true;

@@ -22,7 +22,7 @@ public class Otaku {
     public static final String SERVER_Y = "Y";
     public static final String SERVER_N = "N";
     public static final int SERVER_OK = 1;
-    public static final int LENGTH = 10;
+    public static final int LENGTH = 20;
     public static final int DOUBLE_LENGTH = 20;
     public static String sLotteryUrl = null;
 

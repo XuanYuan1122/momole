@@ -62,10 +62,11 @@ public class PullAndLoadView extends FrameLayout{
                 lastY = (int) ev.getRawY();
                 if(yDown - lastY > 60){
                     mCurScrollingDirection = ScrollDirection.UP;
+                    int firstVisible = mRecyclerViewHelper.findFirstVisibleItemPosition();
                     int lastPosition = mRecyclerViewHelper.findLastCompletelyVisibleItemPosition();
                     int lastvisible = mRecyclerViewHelper.findLastVisibleItemPosition();
 
-                    if (mIsLoadMoreEnabled && (lastPosition == lastvisible) && (mCurScrollingDirection == ScrollDirection.UP)) {
+                    if (mIsLoadMoreEnabled && (lastPosition == lastvisible || firstVisible == lastvisible) && (mCurScrollingDirection == ScrollDirection.UP)) {
                         if (!mPullCallback.isLoading() && !mPullCallback.hasLoadedAllItems()) {
                             final int totalItemCount = mRecyclerViewHelper.getItemCount();
                             final int firstVisibleItem = mRecyclerViewHelper.findFirstVisibleItemPosition();

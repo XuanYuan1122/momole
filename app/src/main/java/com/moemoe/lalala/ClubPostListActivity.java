@@ -327,7 +327,6 @@ public class ClubPostListActivity extends BaseActivity implements AppBarLayout.O
             @Override
             public void failure(String e) {
                 NetworkUtils.checkNetworkAndShowError(ClubPostListActivity.this);
-                //ToastUtil.showToast(ClubPostListActivity.this, R.string.msg_refresh_fail);
             }
         }));
     }

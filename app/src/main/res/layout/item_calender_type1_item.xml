@@ -141,9 +141,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp"
             android:orientation="horizontal"
             android:layout_marginBottom="8dp"
             android:layout_marginRight="12dp"
+            android:layout_marginEnd="12dp"
             android:layout_toRightOf="@+id/fl_image_root"
             android:layout_alignBottom="@+id/fl_image_root">
 

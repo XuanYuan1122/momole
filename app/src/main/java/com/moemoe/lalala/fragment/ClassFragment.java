@@ -132,7 +132,7 @@ public class ClassFragment extends BaseFragment {
      */
     private void startBanner() {
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 0, 3, TimeUnit.SECONDS);
+        scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 3, 3, TimeUnit.SECONDS);
     }
 
     private class BannerRunnable implements Runnable {

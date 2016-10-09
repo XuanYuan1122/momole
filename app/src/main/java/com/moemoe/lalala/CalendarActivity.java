@@ -90,24 +90,6 @@ public class CalendarActivity extends BaseActivity implements IConstants {
      */
     private int INIT_PAGER_INDEX = 30;
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            // 透明状态栏
-//            getWindow().addFlags(
-//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            // 透明导航栏
-//            getWindow().addFlags(
-//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-//            tintManager.setStatusBarTintEnabled(true);
-//            // 设置状态栏的颜色
-//            tintManager.setStatusBarTintResource(R.color.main_title_cyan);
-//            getWindow().getDecorView().setFitsSystemWindows(true);
-//        }
-//    }
-
     @Override
     protected void initView() {
         db = com.app.Utils.getDb(MoemoeApplication.sDaoConfig);
@@ -249,56 +231,6 @@ public class CalendarActivity extends BaseActivity implements IConstants {
 
             }
         }));
-//        Otaku.getCalendar().requestFeatured(mPreferMng.getToken(), time, new Callback.InterceptCallback<String>() {
-//            @Override
-//            public void beforeRequest(UriRequest request) throws Throwable {
-//
-//            }
-//
-//            @Override
-//            public void afterRequest(UriRequest request) throws Throwable {
-//
-//            }
-//
-//            @Override
-//            public void onSuccess(String result) {
-//                try {
-//                    JSONObject json = new JSONObject(result);
-//                    if (json.optInt("ok") == Otaku.SERVER_OK) {
-//                        HashMap<String,CalendarEvent> event = new HashMap<String, CalendarEvent>();
-//                        event = CalendarEvent.readFromJsonArray(CalendarActivity.this,json.optString("data"));
-//                        calendarView.setEventDays(event);
-//
-//                    } else {
-//                        String err = json.optString("error_code");
-//                        if(TextUtils.isEmpty(err)){
-//                            err = json.optString("data");
-//                        }
-//                        if(!TextUtils.isEmpty(err) && err.contains("TOKEN")){
-//                            String uuid = mPreferMng.getUUid();
-//                            if(!TextUtils.isEmpty(uuid)){
-//                                tryLoginFirst(null);
-//                            }
-//                        }
-//                    }
-//                } catch (Exception e) {
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable ex, boolean isOnCallback) {
-//            }
-//
-//            @Override
-//            public void onCancelled(CancelledException cex) {
-//
-//            }
-//
-//            @Override
-//            public void onFinished() {
-//            }
-//        },this);
     }
 
     /**
@@ -379,7 +311,6 @@ public class CalendarActivity extends BaseActivity implements IConstants {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int day = calendar.get(Calendar.DAY_OF_MONTH);
-            // if(day != mCurSelectDay || month != mCurSelectMonth){
             String selectDay = getFormatDate(String.valueOf(year),String.valueOf(month + 1),String.valueOf(day));
             mCurDay = selectDay;
             loadDataFromDb(selectDay);
@@ -389,7 +320,6 @@ public class CalendarActivity extends BaseActivity implements IConstants {
             if(!NetworkUtils.isNetworkAvailable(CalendarActivity.this)){
                 ToastUtil.showCenterToast(CalendarActivity.this, R.string.a_server_msg_connection);
             }
-            //  }
         }
     }
 
@@ -422,69 +352,6 @@ public class CalendarActivity extends BaseActivity implements IConstants {
 
             }
         }));
-//        Otaku.getCalendar().requestCalendarOneDay(mPreferMng.getToken(),day, new Callback.InterceptCallback<String>() {
-//            @Override
-//            public void beforeRequest(UriRequest request) throws Throwable {
-//
-//            }
-//
-//            @Override
-//            public void afterRequest(UriRequest request) throws Throwable {
-//
-//            }
-//
-//            @Override
-//            public void onSuccess(String result) {
-//                try {
-//                    JSONObject json = new JSONObject(result);
-//                    int ok = json.optInt("ok");
-//                    if(ok == Otaku.SERVER_OK) {
-//                        mOneDayData = new CalendarOneDayBean();
-//                        mOneDayData.readFromJsonList(CalendarActivity.this, json.optString("data"));
-//                        mOneDayData.day.replaceAll("-", "");
-//                        if(!mCurDay.equals(mOneDayData.day)){
-//                            return;
-//                        }
-//                        mOneDayData.dbJson = json.optString("data");
-//                        db.saveOrUpdate(mOneDayData);
-//                        mOneDayList = new ArrayList<>();
-//                        mOneDayAdapter.setData(mOneDayList);
-//                        mOneDayList.addAll(mOneDayData.items);
-//                        mOneDayAdapter.setData(mOneDayList);
-//                        mOneDayAdapter.setSelectDay(day);
-//                    }else {
-//
-//                        } String err = json.optString("error_code");
-//                        if(TextUtils.isEmpty(err)){
-//                            err = json.optString("data");
-//                        }
-//                        if(!TextUtils.isEmpty(err) && err.contains("TOKEN")){
-//                            String uuid = mPreferMng.getUUid();
-//                            if(!TextUtils.isEmpty(uuid)){
-//                                tryLoginFirst(null);
-//                            }
-//                        mOneDayList.clear();
-//                        mOneDayAdapter.setData(mOneDayList);
-//                        //ToastUtil.showCenterToast(getActivity(), R.string.msg_server_connection);
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void onError(Throwable ex, boolean isOnCallback) {
-//                // ToastUtil.showCenterToast(getActivity(), R.string.msg_server_connection);
-//            }
-//
-//            @Override
-//            public void onCancelled(CancelledException cex) {
-//            }
-//
-//            @Override
-//            public void onFinished() {
-//            }
-//        },this);
     }
 
     @Override
