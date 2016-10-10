@@ -72,10 +72,8 @@ public class SelectImgAdapter extends RecyclerView.Adapter<SelectImgAdapter.MyVi
                 @Override
                 public void onClick(View v) {
                     paths.remove(position);
-                    notifyItemRemoved(position);
+                    notifyDataSetChanged();
                     if (paths.size() == 0){
-                        //mRvComment.setVisibility(View.GONE);
-                        //mTvSendComment.setEnabled(false);
                         if(mOnItemClickListener != null){
                             mOnItemClickListener.onAllDelete();
                         }

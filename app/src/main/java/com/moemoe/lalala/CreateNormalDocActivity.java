@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -44,7 +46,6 @@ import com.moemoe.lalala.utils.ToastUtil;
 import com.moemoe.lalala.view.DocLabelView;
 import com.moemoe.lalala.view.KeyboardListenerLayout;
 import com.moemoe.lalala.view.NoDoubleClickListener;
-;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -437,43 +438,12 @@ public class CreateNormalDocActivity extends BaseActivity{
 
     }
 
-    private void createPost() {
-        if(!NetworkUtils.isNetworkAvailable(this)){
-            ToastUtil.showCenterToast(this,R.string.a_server_msg_connection);
-            return;
-        }
-        if (mTitle != null && mTitle.length() > TITLE_LIMIT) {
-            ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_doc_title_limit);
-        } else if (TextUtils.isEmpty(mContent)) {
-            ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_doc_content_cannot_null);
-        } else if (mContent.length() > CONTENT_LIMIT) {
-            ToastUtil.showCenterToast(CreateNormalDocActivity.this,R.string.label_more_doc_content);
-        } else if(mTags.size() < 1){
-            ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_need_one_tag);
-        } else if(mType == TYPE_MUSIC_DOC && mMusicInfo == null){
-            ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_need_one_music);
-        }else {
-            mDocBean = new DocPut();
-            mDocBean.title = mTitle;
-            for (int i = 0;i < mTags.size();i++){
-                mDocBean.tags.add(mTags.get(i).tag_name);
-            }
-            DocPut.DocPutText docPutText = new DocPut.DocPutText();
-            docPutText.content = mContent;
-            mDocBean.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(), docPutText));
-            if(!TextUtils.isEmpty(mCoinContent)){
-                DocPut.DocPutText docPutText1 = new DocPut.DocPutText();
-                docPutText1.content = mCoinContent;
-                mDocBean.coin.data.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(),docPutText1));
-            }
-            if(!TextUtils.isEmpty(mCoinContent) || mCoinPaths.size() > 0){
-                mDocBean.coin.coin = 1;
-            }else {
-                mDocBean.coin.coin = 0;
-            }
-            final int visibleSize = mIconPaths.size();
-            mIconPaths.addAll(mCoinPaths);
-            final ArrayList<Image> images = BitmapUtils.handleUploadImage(mIconPaths);
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            final int visibleSize = msg.arg1;
+            final ArrayList<Image> images = (ArrayList<Image>) msg.obj;
             // 获取上传图片列表
             ArrayList<String> paths = new ArrayList<String>();
             if(images != null && images.size() > 0){
@@ -583,7 +553,7 @@ public class CreateNormalDocActivity extends BaseActivity{
                         }
                     });
                 }
-              }else if(mType == TYPE_MUSIC_DOC){
+            }else if(mType == TYPE_MUSIC_DOC){
                 createDialog();
                 Otaku.getAccountV2().uploadFilesToQiniu(mPreferMng.getToken(), paths, new OnNetWorkCallback<String, ArrayList<String>>() {
                     @Override
@@ -626,6 +596,203 @@ public class CreateNormalDocActivity extends BaseActivity{
                     }
                 });
             }
+        }
+    };
+
+    private void createPost() {
+        if(!NetworkUtils.isNetworkAvailable(this)){
+            ToastUtil.showCenterToast(this,R.string.a_server_msg_connection);
+            return;
+        }
+        if (mTitle != null && mTitle.length() > TITLE_LIMIT) {
+            ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_doc_title_limit);
+        } else if (TextUtils.isEmpty(mContent)) {
+            ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_doc_content_cannot_null);
+        } else if (mContent.length() > CONTENT_LIMIT) {
+            ToastUtil.showCenterToast(CreateNormalDocActivity.this,R.string.label_more_doc_content);
+        } else if(mTags.size() < 1){
+            ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_need_one_tag);
+        } else if(mType == TYPE_MUSIC_DOC && mMusicInfo == null){
+            ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_need_one_music);
+        }else {
+            mDocBean = new DocPut();
+            mDocBean.title = mTitle;
+            for (int i = 0;i < mTags.size();i++){
+                mDocBean.tags.add(mTags.get(i).tag_name);
+            }
+            DocPut.DocPutText docPutText = new DocPut.DocPutText();
+            docPutText.content = mContent;
+            mDocBean.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(), docPutText));
+            if(!TextUtils.isEmpty(mCoinContent)){
+                DocPut.DocPutText docPutText1 = new DocPut.DocPutText();
+                docPutText1.content = mCoinContent;
+                mDocBean.coin.data.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(),docPutText1));
+            }
+            if(!TextUtils.isEmpty(mCoinContent) || mCoinPaths.size() > 0){
+                mDocBean.coin.coin = 1;
+            }else {
+                mDocBean.coin.coin = 0;
+            }
+            final int visibleSize = mIconPaths.size();
+            mIconPaths.addAll(mCoinPaths);
+            final ArrayList<Image> images = BitmapUtils.handleUploadImage(mIconPaths);
+            Message msg = mHandler.obtainMessage();
+            msg.arg1 = visibleSize;
+            msg.obj = images;
+            mHandler.sendMessage(msg);
+
+//            // 获取上传图片列表
+//            ArrayList<String> paths = new ArrayList<String>();
+//            if(images != null && images.size() > 0){
+//                for(int i = 0; i < images.size(); i++){
+//                    paths.add(images.get(i).path);
+//                }
+//            }
+//            mTvSend.setEnabled(false);
+//            if(mMusicInfo != null && images.size() == 1 && mType == TYPE_MUSIC_DOC){
+//                paths.clear();
+//                paths.add(mMusicInfo.getUrl());
+//                if(images.size() < 1){
+//                    ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_need_one_cover);
+//                    return;
+//                }
+//                paths.add(images.get(0).path);
+//            }
+//            if (mType == TYPE_IMG_DOC){
+//                if(paths.size() == 0) {
+//                    createDialog();
+//                    Otaku.getDocV2().createNormalDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+//                        @Override
+//                        public void success(String token, String s) {
+//                            mTvSend.setEnabled(true);
+//                            finalizeDialog();
+//                            ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
+//                            Intent i = new Intent();
+//                            setResult(RESPONSE_CODE, i);
+//                            finish();
+//                        }
+//
+//                        @Override
+//                        public void failure(String e) {
+//                            mTvSend.setEnabled(true);
+//                            finalizeDialog();
+//                            if(!TextUtils.isEmpty(e)){
+//                                try {
+//                                    JSONObject json = new JSONObject(e);
+//                                    String data = json.optString("data");
+//                                    if(data.equals("COIN_LITTLE")){
+//                                        ToastUtil.showCenterToast(CreateNormalDocActivity.this,R.string.label_have_no_coin);
+//                                    }else {
+//                                        ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+//                                    }
+//                                } catch (JSONException e1) {
+//                                    e1.printStackTrace();
+//                                    ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+//                                }
+//                            }else {
+//                                ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+//                            }
+//                        }
+//                    }));
+//                }else {
+//                    createDialog();
+//                    Otaku.getAccountV2().uploadFilesToQiniu(mPreferMng.getToken(), paths, new OnNetWorkCallback<String, ArrayList<String>>() {
+//                        @Override
+//                        public void success(String token, ArrayList<String> result) {
+//                            for (int i = 0; i < images.size(); i++) {
+//                                DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
+//                                docPutImage.url = result.get(i);
+//                                if(i < visibleSize){
+//                                    mDocBean.details.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
+//                                }else {
+//                                    mDocBean.coin.data.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
+//                                }
+//                            }
+//                            Otaku.getDocV2().createNormalDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+//                                @Override
+//                                public void success(String token, String s) {
+//                                    mTvSend.setEnabled(true);
+//                                    finalizeDialog();
+//                                    ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
+//                                    Intent i = new Intent();
+//                                    setResult(RESPONSE_CODE, i);
+//                                    finish();
+//                                }
+//
+//                                @Override
+//                                public void failure(String e) {
+//                                    mTvSend.setEnabled(true);
+//                                    finalizeDialog();
+//                                    if(!TextUtils.isEmpty(e)){
+//                                        try {
+//                                            JSONObject json = new JSONObject(e);
+//                                            String data = json.optString("data");
+//                                            if(data.equals("COIN_LITTLE")){
+//                                                ToastUtil.showCenterToast(CreateNormalDocActivity.this,R.string.label_have_no_coin);
+//                                            }else {
+//                                                ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+//                                            }
+//                                        } catch (JSONException e1) {
+//                                            e1.printStackTrace();
+//                                            ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+//                                        }
+//                                    }else {
+//                                        ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+//                                    }
+//                                }
+//                            }));
+//                        }
+//
+//                        @Override
+//                        public void failure(String e) {
+//                            mTvSend.setEnabled(true);
+//                            finalizeDialog();
+//                        }
+//                    });
+//                }
+//              }else if(mType == TYPE_MUSIC_DOC){
+//                createDialog();
+//                Otaku.getAccountV2().uploadFilesToQiniu(mPreferMng.getToken(), paths, new OnNetWorkCallback<String, ArrayList<String>>() {
+//                    @Override
+//                    public void success(String token, ArrayList<String> result) {
+//                        DocPut.DocPutMusic docPutMusic = new DocPut.DocPutMusic();
+//                        docPutMusic.name = mMusicInfo.getTitle();
+//                        docPutMusic.timestamp = mMusicInfo.getDuration();
+//                        for(int i = 0;i < result.size();i++){
+//                            if(FileUtil.isImageFileBySuffix(result.get(i))){
+//                                docPutMusic.coverUrl = result.get(i);
+//                            }else {
+//                                docPutMusic.url = Otaku.URL_QINIU + result.get(i);
+//                            }
+//                        }
+//                        mDocBean.details.add(new DocPut.DocDetail(NewDocType.DOC_MUSIC.toString(),docPutMusic));
+//                        Otaku.getDocV2().createNormalDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+//                            @Override
+//                            public void success(String token, String s) {
+//                                mTvSend.setEnabled(true);
+//                                finalizeDialog();
+//                                ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
+//                                Intent i = new Intent();
+//                                setResult(RESPONSE_CODE, i);
+//                                finish();
+//                            }
+//
+//                            @Override
+//                            public void failure(String e) {
+//                                mTvSend.setEnabled(true);
+//                                finalizeDialog();
+//                                ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+//                            }
+//                        }));
+//                    }
+//
+//                    @Override
+//                    public void failure(String e) {
+//                        mTvSend.setEnabled(true);
+//                        finalizeDialog();
+//                    }
+//                });
+//            }
         }
     }
 
@@ -788,95 +955,7 @@ public class CreateNormalDocActivity extends BaseActivity{
 
     private void onGetPhotos() {
         mSelectAdapter.setData(mIconPaths);
-//        if (mIconPaths.size() == 0) {
-//            // 取消选择了所有图
-//            mScrollIcons.setVisibility(View.GONE);
-//            mIvAddPhotoEmpty.setVisibility(View.VISIBLE);
-//        } else if (mIconPaths.size() <= ICON_NUM_LIMIT) {
-//            mLlIconRoot.removeAllViews();
-//            mLlIconRoot.addView(mIvAddPhotoTail);
-//            mLlIconRoot.setVisibility(View.VISIBLE);
-//
-//            if (mIconPaths.size() == ICON_NUM_LIMIT) {
-//                mScrollIcons.setVisibility(View.VISIBLE);
-//                mIvAddPhotoTail.setVisibility(View.GONE);
-//                mIvAddPhotoEmpty.setVisibility(View.GONE);
-//            } else {
-//                mScrollIcons.setVisibility(View.VISIBLE);
-//                mIvAddPhotoEmpty.setVisibility(View.GONE);
-//            }
-//
-//            for (int i = 0; i < mIconPaths.size(); i++) {
-//                final ImageView iv = new ImageView(this);
-//               // Bitmap bm = BitmapUtils.loadThumb(mIconPaths.get(i), ICON_SIZE, ICON_SIZE, false);
-//                Utils.image().bind(iv,mIconPaths.get(i), new ImageOptions.Builder()
-//                        .setSize(ICON_SIZE, ICON_SIZE)
-//                        .setImageScaleType(ImageView.ScaleType.CENTER)
-//                        .build());
-////                Picasso.with(this)
-////                        .load(mIconPaths.get(i))
-////                        .resize(ICON_SIZE, ICON_SIZE)
-////                        .into(iv);
-//                //iv.setImageBitmap(bm);
-//                iv.setTag(mIconPaths.get(i));
-//                //iv.setTag(i);
-//
-//              //  iv.setScaleType(ImageView.ScaleType.CENTER);
-//                iv.setOnClickListener(new NoDoubleClickListener() {
-//                    @Override
-//                    public void onNoDoubleClick(View v) {
-//                        Intent intent = new Intent(CreateNormalDocActivity.this, ImageBigSelectActivity.class);
-//                        intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_PREVIEW_PHOTO, mIconPaths);
-//                        intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX, mIconPaths.indexOf((String)v.getTag()));
-//                        //预留   以后为true
-//                        intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_CAN_SELECT, false);
-//                        intent.putExtra(ImageBigSelectActivity.EXTRA_FROM_MUL,true);
-//                        //以后可选择 有返回数据
-//                        startActivityForResult(intent, REQ_CODE_IMAGE_PREVIEW);
-//                    }
-//                });
-//                iv.setOnLongClickListener(new View.OnLongClickListener() {
-//
-//                    @Override
-//                    public boolean onLongClick(View v) {
-//                        removePhoto(iv, (String)v.getTag());
-//                        return false;
-//                    }
-//                });
-//
-//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ICON_SIZE, ICON_SIZE);
-//                params.leftMargin = DensityUtil.dip2px(4);
-//                mLlIconRoot.addView(iv, mLlIconRoot.getChildCount() - 1, params);
-//            }
-//            mHasModified = true;
-//        }
    }
-
-//    private void removePhoto(final ImageView iv, final String path) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(CreateNormalDocActivity.this);
-//        builder.setTitle(R.string.a_dlg_title);
-//        builder.setMessage(R.string.a_dlg_delete_doc_icon);
-//        builder.setPositiveButton(R.string.a_dlg_delete, new DialogInterface.OnClickListener() {
-//
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                mLlIconRoot.removeView(iv);
-//                // int index = (Integer) iv.getTag();
-//                mIconPaths.remove(path);
-//                if (mIconPaths.size() == 0) {
-//                    mScrollIcons.setVisibility(View.GONE);
-//                    mIvAddPhotoEmpty.setVisibility(View.VISIBLE);
-//                }
-//                mIvAddPhotoTail.setVisibility(View.VISIBLE);
-//
-//            }
-//        });
-//        builder.setNegativeButton(R.string.a_dlg_cancel, null);
-//        try {
-//            builder.create().show();
-//        } catch (Exception e) {
-//        }
-//    }
 
     private void updateTextNumRemain(TextView tv, int charRemain) {
         tv.setText(charRemain + "");

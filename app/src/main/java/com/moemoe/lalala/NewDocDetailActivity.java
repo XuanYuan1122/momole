@@ -711,7 +711,7 @@ public class NewDocDetailActivity extends BaseActivity implements IConstants,Vie
             public void success(String token, String s) {
                 mDocBean = new NewDocBean();
                 mDocBean.readFromJsonContent(NewDocDetailActivity.this, s);
-                if (TextUtils.isEmpty(mDocBean.id)) {
+                if (TextUtils.isEmpty(mDocBean.id) || TextUtils.isEmpty(mDocBean.userId)) {
                     // 帖子不存在
                     ToastUtil.showToast(NewDocDetailActivity.this, R.string.msg_doc_has_deleted);
                     finish();

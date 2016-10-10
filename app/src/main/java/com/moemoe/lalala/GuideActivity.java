@@ -138,7 +138,11 @@ public class GuideActivity extends BaseActivity {
                     if(i < mViewPager.getAdapter().getCount() - 1){
                         mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
                     }else {
-
+                        if(mPreferMng.isLogin(GuideActivity.this)){
+                            goToMain();
+                        }else {
+                            go2Login();
+                        }
 //                        if (!mHaveChose){
 //                            finish();
 //                            overridePendingTransition(0, 0);

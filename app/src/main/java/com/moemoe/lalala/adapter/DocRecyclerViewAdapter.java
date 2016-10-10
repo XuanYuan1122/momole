@@ -36,11 +36,19 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.common.Callback;
 import com.app.common.util.DensityUtil;
+import com.app.common.util.IOUtil;
+import com.app.common.util.MD5;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.ImageBigSelectActivity;
+import com.moemoe.lalala.download.DownloadInfo;
+import com.moemoe.lalala.download.DownloadService;
+import com.moemoe.lalala.download.DownloadViewHolder;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.view.FullyLinearLayoutManager;
+import com.moemoe.lalala.view.longimage.LongImageView;
 import com.squareup.picasso.Picasso;
 import com.moemoe.lalala.BaseActivity;
 import com.moemoe.lalala.FriendsMainActivity;
@@ -77,6 +85,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -454,42 +463,94 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     public static class ImageHolder extends RecyclerView.ViewHolder{
         private ImageView mIvImage;
+        private LongImageView mIvLongImage;
 
         public ImageHolder(View itemView) {
             super(itemView);
             mIvImage = (ImageView) itemView.findViewById(R.id.iv_doc_image);
+            mIvLongImage = (LongImageView) itemView.findViewById(R.id.iv_doc_long_image);
         }
     }
 
-    private void createImage(final ImageHolder holder,int position,int size){
-        Image image  = ((NewDocBean.DocImage) getItem(position)).image;
+    private void createImage(final ImageHolder holder, final int position, int size){
+        final Image image  = ((NewDocBean.DocImage) getItem(position)).image;
         final int[] wh = BitmapUtils.getDocIconSize(image.w, image.h, DensityUtil.getScreenWidth() - DensityUtil.dip2px(size));
-        if(FileUtil.isGif(image.path)){
-            ViewGroup.LayoutParams layoutParams = holder.mIvImage.getLayoutParams();
-            layoutParams.width = wh[0];
-            layoutParams.height = wh[1];
-            holder.mIvImage.setLayoutParams(layoutParams);
-            holder.mIvImage.requestLayout();
-            Glide.with(mContext)
-                    .load(image.real_path)
-                    .asGif()
-                    .override(wh[0], wh[1])
-                    .placeholder(R.drawable.ic_default_doc_l)
-                    .error(R.drawable.ic_default_doc_l)
-                    .into(holder.mIvImage);
+        if(wh[1] > 4000){
+            holder.mIvImage.setVisibility(View.GONE);
+            holder.mIvLongImage.setVisibility(View.VISIBLE);
+            //holder.mIvLongImage.setDefaulImage(mContext.getResources().getDrawable(R.drawable.ic_default_doc_l));
+            String temp = MD5.md5(image.path) + ".jpg";
+            final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
+            if(longImage.exists()){
+                holder.mIvLongImage.setImage(longImage.getAbsolutePath());
+            }else {
+                final DownloadInfo info = new DownloadInfo();
+                info.setUrl(image.real_path);
+                info.setFileSavePath(longImage.getAbsolutePath());
+                info.setAutoRename(false);
+                info.setAutoResume(true);
+                com.moemoe.lalala.download.DownloadManager downloadManager = DownloadService.getDownloadManager();
+                downloadManager.startDownload(info, new DownloadViewHolder(null,info) {
+                    @Override
+                    public void onWaiting() {
+                    }
+
+                    @Override
+                    public void onStarted() {
+                    }
+
+                    @Override
+                    public void onLoading(long total, long current) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(File result) {
+                        BitmapUtils.galleryAddPic(mContext, result.getAbsolutePath());
+                        holder.mIvLongImage.setImage(result.getAbsolutePath());
+                        notifyItemChanged(position);
+                    }
+
+                    @Override
+                    public void onError(Throwable ex, boolean isOnCallback) {
+                    }
+
+                    @Override
+                    public void onCancelled(Callback.CancelledException cex) {
+                        IOUtil.deleteFileOrDir(new File(info.getFileSavePath()));
+                    }
+                });
+            }
         }else {
-            ViewGroup.LayoutParams layoutParams = holder.mIvImage.getLayoutParams();
-            layoutParams.width = wh[0];
-            layoutParams.height = wh[1];
-            holder.mIvImage.setLayoutParams(layoutParams);
-            holder.mIvImage.requestLayout();
-            Picasso.with(mContext)
-                    .load(StringUtils.getUrl(mContext, image.path, wh[0], wh[1], true, true))
-                    .resize(wh[0], wh[1])
-                    .placeholder(R.drawable.ic_default_doc_l)
-                    .error(R.drawable.ic_default_doc_l)
-                    .tag(NewDocDetailActivity.TAG)
-                    .into(holder.mIvImage);
+            holder.mIvImage.setVisibility(View.VISIBLE);
+            holder.mIvLongImage.setVisibility(View.GONE);
+            if(FileUtil.isGif(image.path)){
+                ViewGroup.LayoutParams layoutParams = holder.mIvImage.getLayoutParams();
+                layoutParams.width = wh[0];
+                layoutParams.height = wh[1];
+                holder.mIvImage.setLayoutParams(layoutParams);
+                holder.mIvImage.requestLayout();
+                Glide.with(mContext)
+                        .load(image.real_path)
+                        .asGif()
+                        .override(wh[0], wh[1])
+                        .placeholder(R.drawable.ic_default_doc_l)
+                        .error(R.drawable.ic_default_doc_l)
+                        .into(holder.mIvImage);
+            }else {
+                ViewGroup.LayoutParams layoutParams = holder.mIvImage.getLayoutParams();
+                layoutParams.width = wh[0];
+                layoutParams.height = wh[1];
+                holder.mIvImage.setLayoutParams(layoutParams);
+                holder.mIvImage.requestLayout();
+                Picasso.with(mContext)
+                        .load(StringUtils.getUrl(mContext, image.path, wh[0], wh[1], true, true))
+                        .resize(wh[0], wh[1])
+                        .placeholder(R.drawable.ic_default_doc_l)
+                        .error(R.drawable.ic_default_doc_l)
+                        .tag(NewDocDetailActivity.TAG)
+                        .into(holder.mIvImage);
+            }
         }
         holder.itemView.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -505,43 +566,93 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public static class HideImageHolder extends RecyclerView.ViewHolder{
         private LinearLayout mRoot;
         private ImageView mIvImage;
+        private LongImageView mIvLongImage;
 
         public HideImageHolder(View itemView) {
             super(itemView);
             mRoot = (LinearLayout) itemView.findViewById(R.id.ll_root);
             mIvImage = (ImageView) itemView.findViewById(R.id.iv_doc_image);
+            mIvLongImage = (LongImageView) itemView.findViewById(R.id.iv_doc_long_image);
         }
     }
 
-    private void createHideImage(final HideImageHolder holder,int position,int size){
+    private void createHideImage(final HideImageHolder holder, final int position, int size){
         Image image  = ((NewDocBean.DocImage) getItem(position)).image;
         final int[] wh = BitmapUtils.getDocIconSize(image.w, image.h, DensityUtil.getScreenWidth() - DensityUtil.dip2px(size));
-        if(FileUtil.isGif(image.path)){
-            ViewGroup.LayoutParams layoutParams = holder.mIvImage.getLayoutParams();
-            layoutParams.width = wh[0];
-            layoutParams.height = wh[1];
-            holder.mIvImage.setLayoutParams(layoutParams);
-            holder.mIvImage.requestLayout();
-            Glide.with(mContext)
-                    .load(image.real_path)
-                    .asGif()
-                    .override(wh[0], wh[1])
-                    .placeholder(R.drawable.ic_default_doc_l)
-                    .error(R.drawable.ic_default_doc_l)
-                    .into(holder.mIvImage);
+        if(wh[1] > 4000){
+            holder.mIvImage.setVisibility(View.GONE);
+            holder.mIvLongImage.setVisibility(View.VISIBLE);
+            //holder.mIvLongImage.setDefaulImage(mContext.getResources().getDrawable(R.drawable.ic_default_doc_l));
+            String temp = MD5.md5(image.path) + ".jpg";
+            final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
+            if(longImage.exists()){
+                holder.mIvLongImage.setImage(longImage.getAbsolutePath());
+            }else {
+                final DownloadInfo info = new DownloadInfo();
+                info.setUrl(image.real_path);
+                info.setFileSavePath(longImage.getAbsolutePath());
+                info.setAutoRename(false);
+                info.setAutoResume(true);
+                com.moemoe.lalala.download.DownloadManager downloadManager = DownloadService.getDownloadManager();
+                downloadManager.startDownload(info, new DownloadViewHolder(null,info) {
+                    @Override
+                    public void onWaiting() {
+                    }
+
+                    @Override
+                    public void onStarted() {
+                    }
+
+                    @Override
+                    public void onLoading(long total, long current) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(File result) {
+                        BitmapUtils.galleryAddPic(mContext, result.getAbsolutePath());
+                        holder.mIvLongImage.setImage(result.getAbsolutePath());
+                        notifyItemChanged(position);
+                    }
+
+                    @Override
+                    public void onError(Throwable ex, boolean isOnCallback) {
+                    }
+
+                    @Override
+                    public void onCancelled(Callback.CancelledException cex) {
+                        IOUtil.deleteFileOrDir(new File(info.getFileSavePath()));
+                    }
+                });
+            }
         }else {
-            ViewGroup.LayoutParams layoutParams = holder.mIvImage.getLayoutParams();
-            layoutParams.width = wh[0];
-            layoutParams.height = wh[1];
-            holder.mIvImage.setLayoutParams(layoutParams);
-            holder.mIvImage.requestLayout();
-            Picasso.with(mContext)
-                    .load(StringUtils.getUrl(mContext, image.path, wh[0], wh[1], true, true))
-                    .resize(wh[0], wh[1])
-                    .placeholder(R.drawable.ic_default_doc_l)
-                    .error(R.drawable.ic_default_doc_l)
-                    .tag(NewDocDetailActivity.TAG)
-                    .into(holder.mIvImage);
+            if(FileUtil.isGif(image.path)){
+                ViewGroup.LayoutParams layoutParams = holder.mIvImage.getLayoutParams();
+                layoutParams.width = wh[0];
+                layoutParams.height = wh[1];
+                holder.mIvImage.setLayoutParams(layoutParams);
+                holder.mIvImage.requestLayout();
+                Glide.with(mContext)
+                        .load(image.real_path)
+                        .asGif()
+                        .override(wh[0], wh[1])
+                        .placeholder(R.drawable.ic_default_doc_l)
+                        .error(R.drawable.ic_default_doc_l)
+                        .into(holder.mIvImage);
+            }else {
+                ViewGroup.LayoutParams layoutParams = holder.mIvImage.getLayoutParams();
+                layoutParams.width = wh[0];
+                layoutParams.height = wh[1];
+                holder.mIvImage.setLayoutParams(layoutParams);
+                holder.mIvImage.requestLayout();
+                Picasso.with(mContext)
+                        .load(StringUtils.getUrl(mContext, image.path, wh[0], wh[1], true, true))
+                        .resize(wh[0], wh[1])
+                        .placeholder(R.drawable.ic_default_doc_l)
+                        .error(R.drawable.ic_default_doc_l)
+                        .tag(NewDocDetailActivity.TAG)
+                        .into(holder.mIvImage);
+            }
         }
         holder.itemView.setOnClickListener(new NoDoubleClickListener() {
             @Override

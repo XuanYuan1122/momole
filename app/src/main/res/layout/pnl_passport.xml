@@ -183,11 +183,11 @@
         android:id="@+id/iv_level_name_details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="23dp"
+        android:layout_marginLeft="4dp"
         android:layout_alignTop="@+id/tv_label_level_name"
         android:layout_toRightOf="@+id/tv_content_level_name"
         android:layout_toEndOf="@+id/tv_content_level_name"
-        android:layout_marginStart="23dp"
+        android:layout_marginStart="4dp"
         android:src="@drawable/ic_lv_means"/>
 
 </RelativeLayout>

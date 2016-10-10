@@ -2,6 +2,7 @@ package com.moemoe.lalala;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +23,11 @@ import com.app.annotation.FindView;
 import com.app.common.Callback;
 import com.app.common.util.DensityUtil;
 import com.app.common.util.IOUtil;
+import com.app.common.util.MD5;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.moemoe.lalala.utils.StorageUtils;
+import com.moemoe.lalala.view.longimage.LongImageView;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.moemoe.lalala.data.Image;
@@ -89,24 +94,6 @@ public class ImageBigSelectActivity extends BaseActivity implements View.OnClick
     private int mTotalCount = 0;
     private boolean mFromMul = false;
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            // 透明状态栏
-//            getWindow().addFlags(
-//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            // 透明导航栏
-//            getWindow().addFlags(
-//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//            SystemBarTintManager tintManager = new SystemBarTintManager(this);
-//            tintManager.setStatusBarTintEnabled(true);
-//            // 设置状态栏的颜色
-//            tintManager.setStatusBarTintResource(R.color.black);
-//            getWindow().getDecorView().setFitsSystemWindows(true);
-//        }
-//    }
-
     @Override
     protected void initView() {
         initValues();
@@ -140,7 +127,6 @@ public class ImageBigSelectActivity extends BaseActivity implements View.OnClick
                         }
                     }).startAnimation(mTvCount);
         }
-        //mAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         mPagerAdapter = new ImagePagerAdapter();
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.addOnPageChangeListener(mPageListener);
@@ -245,7 +231,7 @@ public class ImageBigSelectActivity extends BaseActivity implements View.OnClick
         private HashMap<Integer, View> mViews = new HashMap<>();
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(ViewGroup container, final int position) {
             Image fb = mImages.get(position);
             View view = null;
             final String path = fb.path;
@@ -284,74 +270,98 @@ public class ImageBigSelectActivity extends BaseActivity implements View.OnClick
                 }
             };
 
-            if (FileUtil.isGif(fb.path)) {
- //               ImageView imageView = new ImageView(ImageBigSelectActivity.this);
-//                Utils.image().bind(imageView, fb.real_path, new ImageOptions.Builder()
-//                        .setImageScaleType(ImageView.ScaleType.FIT_CENTER)
-//                        .setLoadingDrawableId(R.drawable.ic_default_club_l)
-//                        .setFailureDrawableId(R.drawable.ic_default_club_l)
-//                        .setIgnoreGif(false)
-//                        .build());
-//                Picasso.with(ImageBigSelectActivity.this)
-//                        .load(fb.real_path)
-//                        .placeholder(R.drawable.ic_default_club_l)
-//                        .error(R.drawable.ic_default_club_l)
-//                        .memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
-//                        .into(imageView);
-                //GifImageView gifImageView = new GifImageView(ImageBigSelectActivity.this);
-                ImageView imageView = new ImageView(ImageBigSelectActivity.this);
-               // GifHelper.displayImage(fb.real_path,gifImageView,mPbDownloading,mTvProgress,0,R.drawable.ic_default_club_l);
-                Glide.with(ImageBigSelectActivity.this)
-                        .load(fb.real_path)
-                        .placeholder(R.drawable.ic_default_club_l)
-                        .error(R.drawable.ic_default_club_l)
-                        .skipMemoryCache(true)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(imageView);
-                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                ((ViewPager) container).addView(imageView, params);
-                view = imageView;
-                view.setOnClickListener(clickListener);
-                view.setOnLongClickListener(saveGalleryListener);
-            } else {
-                ImagePreView viewPack = new ImagePreView(ImageBigSelectActivity.this);
-                ((ViewPager) container).addView(viewPack);
-                ScaleView scaleView = viewPack.getImageView();
-                if(fb.path.startsWith("file")){
-//                    Utils.image().bind(scaleView, fb.path , new ImageOptions.Builder()
-//                            .setImageScaleType(ImageView.ScaleType.FIT_CENTER)
-//                            .setLoadingDrawableId(R.drawable.ic_default_club_l)
-//                            .setFailureDrawableId(R.drawable.ic_default_club_l)
-//                            .build());
-                    Picasso.with(ImageBigSelectActivity.this)
-                            .load(fb.path)
-                            .placeholder(R.drawable.ic_default_club_l)
-                            .error(R.drawable.ic_default_club_l)
-                            .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                            .into(scaleView);
+            if(fb.h > 4000){
+                View viewTemp = View.inflate(ImageBigSelectActivity.this,R.layout.item_longimage,null);
+                final LongImageView imageView = (LongImageView) viewTemp.findViewById(R.id.imageView);
+                String temp = MD5.md5(fb.path) + ".jpg";
+                final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
+                if(longImage.exists()){
+                    imageView.setImage(longImage.getAbsolutePath());
                 }else {
-//                    Utils.image().bind(scaleView, StringUtils.getUrl(ImageBigSelectActivity.this,fb.path, DensityUtil.getScreenWidth(),fb.h,true,true) , new ImageOptions.Builder()
-//                            .setImageScaleType(ImageView.ScaleType.FIT_CENTER)
-//                            .setLoadingDrawableId(R.drawable.ic_default_club_l)
-//                            .setFailureDrawableId(R.drawable.ic_default_club_l)
-//                            .build());
-                    Picasso.with(ImageBigSelectActivity.this)
-                            .load(StringUtils.getUrl(ImageBigSelectActivity.this, fb.path, DensityUtil.getScreenWidth(), fb.h, true, true))
+                    final DownloadInfo info = new DownloadInfo();
+                    info.setUrl(fb.real_path);
+                    info.setFileSavePath(longImage.getAbsolutePath());
+                    info.setAutoRename(false);
+                    info.setAutoResume(true);
+                    com.moemoe.lalala.download.DownloadManager downloadManager = DownloadService.getDownloadManager();
+                    downloadManager.startDownload(info, new DownloadViewHolder(null,info) {
+                        @Override
+                        public void onWaiting() {
+                        }
+
+                        @Override
+                        public void onStarted() {
+                        }
+
+                        @Override
+                        public void onLoading(long total, long current) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(File result) {
+                            BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, result.getAbsolutePath());
+                            imageView.setImage(result.getAbsolutePath());
+                        }
+
+                        @Override
+                        public void onError(Throwable ex, boolean isOnCallback) {
+                        }
+
+                        @Override
+                        public void onCancelled(Callback.CancelledException cex) {
+                            IOUtil.deleteFileOrDir(new File(info.getFileSavePath()));
+                        }
+                    });
+                }
+                ((ViewPager) container).addView(viewTemp);
+                view = viewTemp;
+                view.setOnClickListener(clickListener);
+            }else {
+                if (FileUtil.isGif(fb.path)) {
+                    ImageView imageView = new ImageView(ImageBigSelectActivity.this);
+                    Glide.with(ImageBigSelectActivity.this)
+                            .load(fb.real_path)
                             .placeholder(R.drawable.ic_default_club_l)
                             .error(R.drawable.ic_default_club_l)
-                            .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                            .into(scaleView);
-                }
-
-                scaleView.setOnViewTapListener(new ScaleViewAttacher.OnViewTapListener() {
-
-                    @Override
-                    public void onViewTap(View view, float x, float y) {
-                        finish();
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .into(imageView);
+                    ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    ((ViewPager) container).addView(imageView, params);
+                    view = imageView;
+                    view.setOnClickListener(clickListener);
+                    view.setOnLongClickListener(saveGalleryListener);
+                } else {
+                    ImagePreView viewPack = new ImagePreView(ImageBigSelectActivity.this);
+                    ((ViewPager) container).addView(viewPack);
+                    ScaleView scaleView = viewPack.getImageView();
+                    if(fb.path.startsWith("file")){
+                        Picasso.with(ImageBigSelectActivity.this)
+                                .load(fb.path)
+                                .placeholder(R.drawable.ic_default_club_l)
+                                .error(R.drawable.ic_default_club_l)
+                                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                                .into(scaleView);
+                    }else {
+                        Picasso.with(ImageBigSelectActivity.this)
+                                .load(StringUtils.getUrl(ImageBigSelectActivity.this, fb.path, DensityUtil.getScreenWidth(), fb.h, true, true))
+                                .placeholder(R.drawable.ic_default_club_l)
+                                .error(R.drawable.ic_default_club_l)
+                                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+                                .into(scaleView);
                     }
-                });
-                scaleView.setOnLongClickListener(saveGalleryListener);
-                view = viewPack;
+
+                    scaleView.setOnViewTapListener(new ScaleViewAttacher.OnViewTapListener() {
+
+                        @Override
+                        public void onViewTap(View view, float x, float y) {
+                            finish();
+                        }
+                    });
+                    scaleView.setOnLongClickListener(saveGalleryListener);
+                    view = viewPack;
+                }
             }
             mViews.put(position, view);
             return view;
@@ -410,11 +420,6 @@ public class ImageBigSelectActivity extends BaseActivity implements View.OnClick
         if (view instanceof ImagePreView) {
             ImagePreView ipv = (ImagePreView) view;
             mTvRaw.setVisibility(View.GONE);
-//            Utils.image().bind(ipv.getImageView(), mCurrFile.real_path, new ImageOptions.Builder()
-//                    .setImageScaleType(ImageView.ScaleType.FIT_CENTER)
-//                    .setLoadingDrawableId(R.drawable.ic_default_club_l)
-//                    .setFailureDrawableId(R.drawable.ic_default_club_l)
-//                    .build());
             Picasso.with(ImageBigSelectActivity.this)
                     .load(mCurrFile.real_path)
                     .placeholder(R.drawable.ic_default_club_l)
@@ -428,8 +433,7 @@ public class ImageBigSelectActivity extends BaseActivity implements View.OnClick
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timeStamp = format.format(new Date());
         String imageFileName = "neta_" + timeStamp + ".jpg";
-
-        File image = new File(BitmapUtils.getAlbumDir(), imageFileName);
+        File image = new File(StorageUtils.getGalleryDirPath(), imageFileName);
         return image.getAbsolutePath();
     }
 
@@ -437,10 +441,6 @@ public class ImageBigSelectActivity extends BaseActivity implements View.OnClick
         final Image image = mImages.get(mViewPager.getCurrentItem());
         final DownloadInfo info = new DownloadInfo();
         info.setUrl(image.real_path);
-       // String name = image.path.substring(image.path.lastIndexOf("/") + 1);
-        //info.setLabel(name);
-       // info.setId(mViewPager.getCurrentItem());
-
         info.setFileSavePath(createImageFile());
         info.setAutoRename(false);
         info.setAutoResume(true);

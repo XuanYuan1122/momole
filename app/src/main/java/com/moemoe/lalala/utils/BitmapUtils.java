@@ -10,13 +10,19 @@ import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import com.moemoe.lalala.callback.MoeMoeCallback;
 import com.moemoe.lalala.data.Image;
+import com.moemoe.lalala.network.OnNetWorkCallback;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 /**
  * Created by Haru on 2016/5/1 0001.

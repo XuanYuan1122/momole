@@ -1,6 +1,7 @@
 package com.moemoe.lalala.network;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -44,6 +45,9 @@ public class Otaku {
             Cache responseCache = new Cache(cacheDirectory,1024 * 1024 * 16);
             builder.cache(responseCache);
         }
+        builder.connectTimeout(130, TimeUnit.SECONDS);
+        builder.readTimeout(130,TimeUnit.SECONDS);
+        builder.writeTimeout(130,TimeUnit.SECONDS);
         OkHttpClient client = builder.build();
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
