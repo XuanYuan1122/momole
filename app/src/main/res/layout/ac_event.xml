@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/iv_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@color/alph_60"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_pwd_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="80dp"
+            android:src="@drawable/bg_killschoolmaster_password_1"/>
+
+        <ImageView
+            android:id="@+id/iv_bashou"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="125dp"
+            android:src="@drawable/bg_killschoolmaster_password_2"/>
+
+        <View
+            android:id="@+id/view_1"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignTop="@+id/view_2"
+            android:layout_toLeftOf="@+id/view_2"
+            />
+
+        <View
+            android:id="@+id/view_2"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="190dp"
+            android:layout_centerHorizontal="true"
+            />
+
+        <View
+            android:id="@+id/view_3"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignTop="@+id/view_2"
+            android:layout_toRightOf="@+id/view_2"
+            />
+
+        <View
+            android:id="@+id/view_4"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@+id/view_1"
+            android:layout_below="@+id/view_1"
+            />
+
+        <View
+            android:id="@+id/view_5"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@+id/view_2"
+            android:layout_below="@+id/view_2"
+            />
+
+        <View
+            android:id="@+id/view_6"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@+id/view_3"
+            android:layout_below="@+id/view_3"
+            />
+
+        <View
+            android:id="@+id/view_7"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@+id/view_4"
+            android:layout_below="@+id/view_4"
+            />
+
+        <View
+            android:id="@+id/view_8"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@+id/view_5"
+            android:layout_below="@+id/view_5"
+            />
+
+        <View
+            android:id="@+id/view_9"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@+id/view_6"
+            android:layout_below="@+id/view_6"
+            />
+
+        <View
+            android:id="@+id/view_0"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:layout_alignLeft="@+id/view_8"
+            android:layout_below="@+id/view_8"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_pwd_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="140dp"
+            android:layout_alignLeft="@+id/iv_password"
+            android:layout_marginLeft="54dp"
+            android:layout_marginStart="54dp">
+
+            <TextView
+                android:id="@+id/tv_pwd_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#e9573f"
+                android:textSize="@dimen/txt_size_secondary"
+                android:textStyle="bold"
+                android:text="@string/label_pwd_error_num"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv_sec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/txt_size_main"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:id="@+id/sv_talk"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_a_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="90dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:textSize="@dimen/txt_size_main"
+                android:textStyle="bold"
+                android:textColor="@color/pink_tag_normal"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="@drawable/icon_killschoolmaster_talk_len"/>
+
+            <TextView
+                android:id="@+id/tv_b_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_below="@+id/tv_a_1"
+                android:textSize="@dimen/txt_size_main"
+                android:textStyle="bold"
+                android:textColor="#AD753D"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="@drawable/icon_killschoolmaster_talk_sm"/>
+
+            <TextView
+                android:id="@+id/tv_a_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_below="@+id/tv_b_1"
+                android:textSize="@dimen/txt_size_main"
+                android:textStyle="bold"
+                android:textColor="@color/pink_tag_normal"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="@drawable/icon_killschoolmaster_talk_len"/>
+
+            <TextView
+                android:id="@+id/tv_b_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_below="@+id/tv_a_2"
+                android:textSize="@dimen/txt_size_main"
+                android:textStyle="bold"
+                android:textColor="#AD753D"
+                android:gravity="center"
+                android:visibility="gone"
+                android:background="@drawable/icon_killschoolmaster_talk_sm"/>
+        </RelativeLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/sv_talk_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_b_1_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="@dimen/txt_size_main"
+                android:textStyle="bold"
+                android:textColor="@color/main_title_cyan"
+                android:gravity="center"
+                android:background="@drawable/icon_killschoolmaster_talk_p"/>
+
+            <TextView
+                android:id="@+id/tv_a_2_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_below="@+id/tv_b_1_1"
+                android:textSize="@dimen/txt_size_main"
+                android:textStyle="bold"
+                android:textColor="@color/pink_tag_normal"
+                android:gravity="center"
+                android:background="@drawable/icon_killschoolmaster_talk_len"/>
+
+            <TextView
+                android:id="@+id/tv_b_2_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_below="@+id/tv_a_2_1"
+                android:textSize="@dimen/txt_size_main"
+                android:textStyle="bold"
+                android:textColor="@color/main_title_cyan"
+                android:gravity="center"
+                android:background="@drawable/icon_killschoolmaster_talk_p"/>
+        </RelativeLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/txt_size_main"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:visibility="gone"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:id="@+id/ll_end_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="156dp"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_killschoolmaster_badend_title"/>
+
+        <TextView
+            android:id="@+id/tv_kill_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="28dp"
+            android:textColor="#aa2636"
+            android:textStyle="bold"
+            android:textSize="@dimen/txt_size_main"
+            android:text="@string/label_kill_count"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="52dp"
+            android:src="@drawable/icon_killschoolmaster_badend"/>
+    </LinearLayout>
+</RelativeLayout>

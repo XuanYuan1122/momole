@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/main_title_cyan"
+        app:navigationIcon="@drawable/ic_go_back"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="@string/label_hide_area"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="18dp"
+            android:text="@string/label_done"
+            android:layout_gravity="right"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:paddingRight="5dp"
+            android:visibility="visible"
+            />
+    </android.support.v7.widget.Toolbar>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edt_content"
+                style="@style/EdtNormal"
+                android:layout_width="match_parent"
+                android:layout_height="144dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_normal_white_btn"
+                android:gravity="top"
+                android:hint="@string/a_hint_input_content"
+                android:maxHeight="300dp"
+                android:minLines="8"
+                android:textColor="@color/gray_main"
+                android:textColorHint="@color/gray_secondary"
+                android:textSize="@dimen/txt_size_main" />
+
+            <View
+                android:id="@+id/sep_content"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/bg_gray"
+                android:layout_below="@+id/edt_content"/>
+
+
+            <TextView
+                android:id="@+id/tv_label_can_pick_icon_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingLeft="14dp"
+                android:paddingStart="14dp"
+                android:paddingBottom="10dp"
+                android:text="@string/label_doc_only_9_photos"
+                android:textColor="@color/gray_txt_main"
+                android:background="@color/white"
+                android:textSize="@dimen/txt_size_secondary" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_img"
+                android:layout_width="match_parent"
+                android:layout_height="125dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:layout_below="@+id/tv_label_can_pick_icon_num"
+                android:background="@color/white"
+                android:visibility="visible">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

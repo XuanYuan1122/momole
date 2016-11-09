@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ShadowLayout">
+        <attr name="sl_cornerRadius" format="dimension"/>
+        <attr name="sl_shadowRadius" format="dimension"/>
+        <attr name="sl_shadowColor" format="color"/>
+        <attr name="sl_dx" format="dimension"/>
+        <attr name="sl_dy" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="MyRoundedImageView">
+        <attr name="riv_left_top_radius" format="dimension"/>
+        <attr name="riv_right_top_radius" format="dimension"/>
+        <attr name="riv_left_bottom_radius" format="dimension"/>
+        <attr name="riv_right_bottom_radius" format="dimension"/>
+        <attr name="rect_type" format="enum">
+            <enum name="circle" value="0"/>
+            <enum name="round" value="1"/>
+        </attr>
+        <attr name="riv_border_thickness" format="dimension" />
+        <attr name="riv_border_inside_color" format="color" />
+        <attr name="riv_border_outside_color" format="color" />
+    </declare-styleable>
+    <declare-styleable name="DocLabelView">
+        <attr name="line_spacing" format="dimension"/>
+        <attr name="label_spacing" format="dimension"/>
+        <attr name="child_view_height" format="dimension|enum">
+            <enum name="match_parent" value="-1"/>
+            <enum name="wrap_content" value="-2"/>
+        </attr>
+        <attr name="child_view_width" format="dimension|enum">
+            <enum name="match_parent" value="-1"/>
+            <enum name="wrap_content" value="-2"/>
+        </attr>
+        <attr name="child_view_min_width" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="CropImageView">
+        <attr name="guidelines">
+            <enum name="on" value="2"/>
+            <enum name="onTouch" value="1"/>
+            <enum name="off" value="0"/>
+        </attr>
+        <attr name="fixAspectRatio" format="boolean"/>
+        <attr name="aspectRatioX" format="integer"/>
+        <attr name="aspectRatioY" format= "integer"/>
+        <attr name="imageResource" format="reference"/>
+    </declare-styleable>
+    <declare-styleable name="FreshDownloadView">
+        <attr name="circular_radius" format="dimension" />
+        <attr name="circular_color" format="color" />
+        <attr name="circular_progress_color" format="color" />
+        <attr name="circular_width" format="dimension" />
+        <attr name="progress_text_size" format="dimension" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/main_title_cyan"
+        android:paddingTop="@dimen/status_bar_height">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_go_back"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:maxLength="16"
+                android:textSize="18dp"
+                android:text="@string/label_edit_personal_data"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tv_sava"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/label_save_modify"
+                android:textSize="16dp"
+                android:layout_gravity="right"
+                android:gravity="center"
+                android:paddingRight="12dp"
+                android:textColor="@color/white"/>
+        </android.support.v7.widget.Toolbar>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp">
+        
+    <com.moemoe.lalala.view.MyRoundedImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_default_avatar_l"
+        app:rect_type="circle"/>
+
+    <EditText
+        android:id="@+id/edt_person_nickname"
+        style="@style/EdtNormal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:background="@drawable/bg_edt_underline"
+        android:hint="@string/label_hint_input_nickname" />
+
+    <TextView
+        style="@style/TxtSecondGary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/edt_person_nickname"
+        android:layout_below="@+id/edt_person_nickname"
+        android:layout_marginTop="4dp"
+        android:text="@string/label_nickname_input_info" />
+
+    <TextView
+        android:id="@+id/tv_label_sex"
+        style="@style/TxtMainGray"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_alignLeft="@+id/iv_avatar"
+        android:layout_alignRight="@+id/iv_avatar"
+        android:layout_below="@+id/iv_avatar"
+        android:layout_marginTop="23dp"
+        android:gravity="center"
+        android:text="@string/label_sex" />
+
+    <RadioGroup
+        android:id="@+id/rb_group_sex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_label_sex"
+        android:layout_alignLeft="@+id/edt_person_nickname"
+        android:layout_alignTop="@+id/tv_label_sex"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rb_female"
+            style="@style/RbMain"
+            android:layout_weight="1"
+            android:text="@string/label_sex_female" />
+
+        <RadioButton
+            android:id="@+id/rb_male"
+            style="@style/RbMain"
+            android:layout_weight="1"
+            android:text="@string/label_sex_male" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tv_label_birthday"
+        style="@style/TxtMainGray"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_alignLeft="@+id/iv_avatar"
+        android:layout_alignRight="@+id/iv_avatar"
+        android:layout_below="@+id/tv_label_sex"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="@string/label_birthday" />
+
+    <TextView
+        android:id="@+id/tv_content_birthday"
+        style="@style/TxtMainGray"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_label_birthday"
+        android:layout_alignLeft="@+id/rb_group_sex"
+        android:background="@drawable/bg_edt_underline"
+        android:text="1990-07-30" />
+    </RelativeLayout>
+</LinearLayout>

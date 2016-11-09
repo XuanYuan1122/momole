@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#3f000000"/>
+
+    <LinearLayout
+        android:id="@+id/ll_dust_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="53dp"
+        android:layout_marginLeft="53dp"
+        android:layout_marginEnd="53dp"
+        android:layout_marginRight="53dp"
+        android:background="@drawable/bg_spitball_paper_clean"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/ll_img_root"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_add_img"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="27dp"
+                android:src="@drawable/bg_spitball_addpic"/>
+
+
+            <EditText
+                android:id="@+id/et_img_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:textColor="@color/gray_txt_main"
+                android:textColorHint="@color/setting_gray"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginEnd="14dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:background="@null"
+                android:hint="标题:"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_text_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:textColor="@color/gray_txt_main"
+                android:textColorHint="@color/setting_gray"
+                android:layout_marginTop="18dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginEnd="14dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:background="@null"
+                android:hint="标题:"/>
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:textColor="@color/gray_txt_main"
+                android:textColorHint="@color/setting_gray"
+                android:textSize="@dimen/txt_size_secondary"
+                android:maxLines="4"
+                android:ellipsize="end"
+                android:layout_marginTop="7dp"
+                android:gravity="top"
+                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginEnd="14dp"
+                android:lines="4"
+                android:hint="内容:"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <com.moemoe.lalala.view.speedrecycler.SpeedRecyclerView
+        android:id="@+id/rv_trash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.moemoe.lalala.view.speedrecycler.SpeedRecyclerView>
+
+    <TextView
+        android:id="@+id/tv_trash_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:layout_above="@+id/ll_dust_container"
+        android:layout_marginBottom="10dp"
+        android:text="@string/label_count_dust"/>
+
+    <LinearLayout
+        android:id="@+id/ll_btn_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/ll_dust_container"
+        android:layout_marginTop="28dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_send"
+            android:layout_width="95dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_rect_corner_dust_pressed"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="12dp"
+            android:text="@string/label_send_some_dust"/>
+
+        <TextView
+            android:id="@+id/tv_get"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_width="95dp"
+            android:layout_height="40dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:textSize="12dp"
+            android:background="@drawable/bg_rect_corner_dust_pressed"
+            android:text="@string/label_get_dust"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_my_trash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:src="@drawable/btn_my_trash"/>
+
+    <ImageView
+        android:id="@+id/iv_yesterday_best_trash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_toRightOf="@+id/iv_my_trash"
+        android:src="@drawable/btn_yesterday_trash"/>
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="14dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginEnd="18dp"
+        android:src="@drawable/btn_live2d_exit"/>
+
+</RelativeLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_ac_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_activity" >
+
+    <include layout="@layout/app_toolbar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.moemoe.lalala.view.recycler.PullAndLoadView
+            android:id="@+id/list_club_docs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </com.moemoe.lalala.view.recycler.PullAndLoadView>
+
+        <RelativeLayout
+            android:id="@+id/rl_doc_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_activity"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/tv_empty_info"
+                style="@style/TxtMainGray"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/empty_doc_loading" />
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

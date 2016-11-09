@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:orientation="vertical" >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/main_title_cyan"
+        app:navigationIcon="@drawable/ic_go_back"
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxLength="16"
+            android:textSize="18dp"
+            android:text="@string/label_edit_personal_data"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_sava"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/label_save_modify"
+            android:textSize="16dp"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:paddingRight="12dp"
+            android:textColor="@color/white"/>
+    </android.support.v7.widget.Toolbar>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <com.moemoe.lalala.view.MyViewPager
+        android:id="@+id/vp_image_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_save_to_gallery"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/bg_btn_pic"
+        android:gravity="center"
+        android:text="@string/label_save"
+        android:textColor="@color/white"
+        android:textSize="@dimen/txt_size_main" />
+
+    <TextView
+        android:id="@+id/tv_raw"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_alignBottom="@+id/tv_save_to_gallery"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/tv_save_to_gallery"
+        android:background="@drawable/bg_btn_pic"
+        android:gravity="center"
+        android:text="@string/label_raw"
+        android:textColor="@color/white"
+        android:textSize="@dimen/txt_size_main" />
+
+    <TextView
+        android:id="@+id/tv_preview_count"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_img_index"
+        android:gravity="center"
+        android:text="10/194"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/txt_size_main" />
+
+    <ProgressBar
+        android:id="@+id/pb_raw_downloading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateDrawable="@drawable/pb_pic_downloading"
+        android:indeterminateDuration="1500"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_size_secondary"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</LinearLayout>

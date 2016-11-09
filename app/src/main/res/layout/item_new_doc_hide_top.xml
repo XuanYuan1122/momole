@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/ll_hide_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        android:background="@drawable/shape_dash_top">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_size_main"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:textColor="@color/main_title_cyan"
+            android:text="@string/label_doc_hide_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_hide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:gravity="center_horizontal"
+        android:visibility="visible"
+        android:background="@drawable/shape_dash_mian_blue">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="@dimen/txt_size_secondary"
+            android:textColor="@color/main_title_cyan"
+            android:text="@string/label_doc_hide_content"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/txt_size_title"
+            android:textColor="@color/main_title_cyan"
+            android:text="点击查看"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/txt_size_secondary"
+                android:textColor="@color/main_title_cyan"
+                android:text="需要消费"/>
+
+            <TextView
+                android:id="@+id/tv_give_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
+                android:textSize="@dimen/txt_size_secondary"
+                android:textColor="@color/pink_tag_normal"
+                android:text="1枚节操"/>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

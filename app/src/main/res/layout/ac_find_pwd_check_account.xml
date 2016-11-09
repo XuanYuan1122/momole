@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+     >
+
+    <include layout="@layout/app_toolbar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+
+        <LinearLayout
+            android:id="@+id/ll_tab_root"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/main_title_cyan"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <TextView
+                android:id="@+id/tv_tab_phone"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_cyan_selected_dark"
+                android:gravity="center"
+                android:text="@string/label_dlg_find_pwd_by_phone"
+                android:textColor="#ffffff"
+                android:textSize="14dp" />
+
+            <View
+                style="@style/VerticalSep"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
+                android:background="#ffffff"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_tab_email"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_cyan_selected_dark"
+                android:gravity="center"
+                android:text="@string/label_dlg_find_pwd_by_email"
+                android:textColor="#ffffff"
+                android:textSize="14dp" />
+        </LinearLayout>
+
+        <AutoCompleteTextView
+            android:id="@+id/edt_account_name"
+            style="@style/EdtLoginInput"
+            android:layout_below="@+id/ll_tab_root"
+            android:layout_marginTop="32dp"
+            android:hint="@string/label_hint_input_email"
+            android:inputType="textEmailAddress"
+            android:visibility="gone">
+        </AutoCompleteTextView>
+
+        <TextView
+            android:id="@+id/tv_find_pwd_info"
+            style="@style/TxtMainGray"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_label_find_pwd_info"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_phone_number_root"
+            style="@style/VgOneLine.White"
+            android:layout_below="@+id/tv_find_pwd_info"
+            android:layout_marginTop="32dp"
+            android:visibility="visible" >
+
+            <TextView
+                android:id="@+id/tv_country_code"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="6dp"
+                android:text="@string/label_country_china"
+                android:textColor="@color/main_title_cyan"
+                android:textSize="14dp"
+                android:visibility="visible" />
+
+            <View
+                style="@style/VerticalSep"
+                android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
+                android:visibility="visible" />
+
+            <EditText
+                android:id="@+id/edt_phone_number"
+                style="@style/EdtLoginInput"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:paddingLeft="6dp"
+                android:background="@null"
+                android:hint="@string/label_hint_input_phone_number"
+                android:inputType="phone" />
+        </LinearLayout>
+
+        <View
+            style="@style/HorizontalSep"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_below="@+id/ll_phone_number_root"/>
+
+        <TextView
+            android:id="@+id/tv_to_next"
+            style="@style/BtnCyanOneLine"
+            android:layout_below="@+id/ll_phone_number_root"
+            android:layout_marginTop="12dp"
+            android:text="@string/label_next" />
+    </RelativeLayout>
+
+
+</LinearLayout>
