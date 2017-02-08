@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="260dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:layout_height="388dp"
+        android:layout_gravity="center">
+
+        <RelativeLayout
+            android:layout_width="270dp"
+            android:layout_height="370dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/bg_rect_corner_while">
+
+            <ImageView
+                android:id="@+id/iv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/icon_signmain_title2"/>
+
+            <ImageView
+                android:id="@+id/iv_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@+id/iv_title"
+                android:src="@drawable/ic_lv_means"/>
+
+            <TextView
+                android:id="@+id/tv_total_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_12"
+                android:textColor="@color/pink_fb7ba2"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/size_50" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_9"
+                android:textColor="@color/pink_fb7ba2"
+                android:layout_alignBottom="@+id/tv_total_score"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="26dp"
+                android:layout_marginEnd="26dp"
+                android:text="每日上限"/>
+
+            <ProgressBar
+                android:id="@+id/pb_score"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="@dimen/size_2"
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                android:progressDrawable="@drawable/daily_progress"
+                android:max="650"
+                android:progress="341"
+                android:layout_below="@+id/tv_total_score"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_task_list"
+                android:layout_width="match_parent"
+                android:layout_height="155dp"
+                android:layout_below="@+id/pb_score"
+                android:layout_marginTop="@dimen/size_1"
+                android:layout_marginLeft="22dp"
+                android:layout_marginStart="22dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/rv_task_list"
+                android:layout_marginTop="@dimen/size_5"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:paddingLeft="@dimen/size_10"
+                android:paddingStart="@dimen/size_10"
+                android:background="@drawable/shape_rect_green_no_background_2">
+
+                <LinearLayout
+                    android:id="@+id/ll_info_root"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/iv_title"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/size_12"
+                        android:textColor="@color/black"
+                        android:text="你的当前等级是"/>
+
+                    <TextView
+                        android:id="@+id/tv_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginStart="3dp"
+                        android:textColor="@color/blue_4999e8"
+                        android:textSize="@dimen/size_12"
+                        android:textStyle="bold"
+                        android:text="@string/label_level"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:textSize="@dimen/size_12"
+                        android:textColor="@color/black"
+                        android:text="每日获得"/>
+
+                    <TextView
+                        android:id="@+id/tv_coin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginStart="3dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/green_93d856"
+                        android:text="3"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginLeft="3dp"
+                        android:textSize="@dimen/size_12"
+                        android:textColor="@color/black"
+                        android:text="节操"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/size_3"
+                    android:textColor="@color/gray_929292"
+                    android:textSize="@dimen/size_9"
+                    android:text="保持良好的出勤率可以快速提升等级，同时获得更多节操。"/>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/size_3"
+                    android:layout_marginBottom="@dimen/size_6">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_sign_info"
+                        android:layout_width="231dp"
+                        android:layout_height="33dp"
+                        android:layout_marginBottom="@dimen/size_6">
+
+                    </android.support.v7.widget.RecyclerView>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_signmain_x2"
+                        android:layout_marginLeft="87dp"
+                        android:layout_marginStart="87dp"
+                        android:layout_gravity="bottom"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_signmain_x3"
+                        android:layout_gravity="bottom|right"/>
+                </FrameLayout>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_sign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginEnd="35dp"
+                android:src="@drawable/btn_sign"/>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/btn_trash_exit" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/icon_signmain_title"/>
+    </RelativeLayout>
+</LinearLayout>

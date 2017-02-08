@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="140dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_bag_music_mask2"/>
+
+    <ImageView
+        android:id="@+id/iv_music_control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bag_music_play"
+        android:layout_below="@+id/iv_bg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"/>
+
+    <TextView
+        android:id="@+id/tv_music_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/iv_music_control"
+        android:layout_marginTop="@dimen/size_12"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_15"
+        android:text=""/>
+</RelativeLayout>

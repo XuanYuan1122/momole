@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/main_cyan"
+        app:navigationIcon="@drawable/ic_go_back"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="@string/label_select_fuku"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="18dp"
+            android:text="@string/label_done"
+            android:layout_gravity="right"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:paddingRight="5dp"
+            android:visibility="visible"
+            />
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_all_badge"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/white"
+        android:textColor="@color/main_cyan"
+        android:textSize="@dimen/size_15"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="查看全部徽章"/>
+
+    <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+</LinearLayout>

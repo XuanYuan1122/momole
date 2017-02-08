@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
+    android:layout_marginStart="15dp"
+    android:layout_marginRight="@dimen/size_15"
+    android:layout_marginEnd="@dimen/size_15"
+    android:background="@color/white"
+    style="@style/Neta.Card">
+
+    <!--<android.support.v7.widget.CardView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/white"-->
+        <!--style="@style/Neta.Card">-->
+        <RelativeLayout
+            android:id="@+id/rl_layout"
+            android:layout_width="match_parent"
+            android:layout_height="370dp">
+
+            <ImageView
+                android:id="@+id/iv_img"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_margin="10dp"
+                android:scaleType="centerCrop"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginLeft="@dimen/size_10"
+                android:layout_marginStart="@dimen/size_10"
+                android:layout_marginEnd="@dimen/size_10"
+                android:layout_marginRight="@dimen/size_10"
+                android:layout_alignBottom="@+id/iv_img">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/icon_blackboard_mask"
+                    android:scaleType="fitXY"/>
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/size_5"
+                    android:layout_marginStart="@dimen/size_5"
+                    android:layout_marginEnd="@dimen/size_5"
+                    android:layout_marginRight="@dimen/size_5"
+                    android:ellipsize="end"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/size_18"
+                    android:text=""/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_favorite"
+                android:layout_width="50dp"
+                android:layout_height="22dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/txt_white_red"
+                android:gravity="center"
+                android:text="收藏"
+                android:textStyle="bold"
+                android:textSize="@dimen/size_10"
+                android:layout_marginBottom="7dp"
+                android:background="@drawable/btn_trash_favorite"
+                android:layout_marginRight="15dp"
+                android:layout_marginEnd="15dp"/>
+
+            <TextView
+                android:id="@+id/tv_add_label"
+                android:layout_width="50dp"
+                android:layout_height="22dp"
+                android:layout_toLeftOf="@+id/tv_favorite"
+                android:layout_toStartOf="@+id/tv_favorite"
+                android:layout_alignBottom="@+id/tv_favorite"
+                android:textColor="@color/txt_white_main"
+                android:gravity="center"
+                android:text="添加标签"
+                android:textStyle="bold"
+                android:textSize="@dimen/size_10"
+                android:background="@drawable/btn_trash_add_label"
+                android:layout_marginRight="@dimen/size_10"
+                android:layout_marginEnd="@dimen/size_10"/>
+
+            <com.moemoe.lalala.view.widget.view.DocLabelView
+                android:id="@+id/dv_doc_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="50dp"
+                app:child_view_height="22dp"
+                app:child_view_width="wrap_content"
+                app:line_spacing="7dp"
+                app:label_spacing="7dp"
+                app:line_limit="2">
+
+            </com.moemoe.lalala.view.widget.view.DocLabelView>
+        </RelativeLayout>
+    <!--</android.support.v7.widget.CardView>-->
+
+</android.support.v7.widget.CardView>

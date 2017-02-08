@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_coin_root"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/iv_left"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/icon_doc_givecoins_len_give"/>
+
+        <TextView
+            android:id="@+id/tv_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_left"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_16"
+            android:textColor="@color/pink_fb7ba2"
+            android:text="@string/label_accept_my_coin"/>
+
+        <TextView
+            android:id="@+id/tv_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_top"
+            android:layout_toRightOf="@+id/iv_left"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/pink_fb7ba2"
+            android:text="已收到"/>
+
+        <TextView
+            android:id="@+id/tv_got_coin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_top"
+            android:layout_toRightOf="@+id/tv_left"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="4dp"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/pink_fb7ba2"
+            android:text="@string/label_got_coin"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_top"
+            android:layout_toRightOf="@+id/tv_got_coin"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/pink_fb7ba2"
+            android:text="节操"/>
+
+        <ImageView
+            android:id="@+id/iv_give_coin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="22dp"
+            android:layout_marginEnd="22dp"
+            android:src="@drawable/btn_give_coin"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_floor_jump_root"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:id="@+id/tv_to_top"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/main_cyan"
+            android:text="@string/label_to_top"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:background="@color/gray_d7d7d8"/>
+
+        <TextView
+            android:id="@+id/tv_load_before"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/main_cyan"
+            android:text="@string/label_load_before_floor"/>
+    </LinearLayout>
+
+</LinearLayout>

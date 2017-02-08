@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/bg_f2f2f3">
+
+    <com.moemoe.lalala.view.widget.cropper.CropImageView
+        android:id="@+id/crop_iv_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_bottom_bar"
+        android:layout_margin="24dp" />
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_48"
+        android:layout_alignParentBottom="true" 
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:background="@color/main_cyan">
+
+        <ImageView
+            android:id="@+id/iv_crop_back"
+            android:layout_width="@dimen/size_48"
+            android:layout_height="@dimen/size_48"
+            android:background="@drawable/bg_normal_btn"
+            android:src="@drawable/ic_crop_back" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_crop_turn_left"
+            android:layout_width="@dimen/size_48"
+            android:layout_height="@dimen/size_48"
+            android:background="@drawable/bg_normal_btn"
+            android:src="@drawable/ic_crop_turn_left" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_crop_turn_right"
+            android:layout_width="@dimen/size_48"
+            android:layout_height="@dimen/size_48"
+            android:background="@drawable/bg_normal_btn"
+            android:src="@drawable/ic_crop_turn_right" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/iv_crop_done"
+            android:layout_width="@dimen/size_48"
+            android:layout_height="@dimen/size_48"
+            android:background="@drawable/bg_normal_btn"
+            android:src="@drawable/ic_crop_done" />
+    </LinearLayout>
+
+</RelativeLayout>

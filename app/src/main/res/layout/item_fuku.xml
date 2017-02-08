@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_root"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/bg_rect_corner_cyan_5">
+
+        <ImageView
+            android:id="@+id/iv_fuku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/icon_gal_len_uniform"/>
+
+        <TextView
+            android:id="@+id/tv_fuku_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_fuku"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text="校服"/>
+
+        <TextView
+            android:id="@+id/tv_fuku_req"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_fuku_name"
+            android:layout_alignBottom="@+id/tv_fuku_name"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/main_red"
+            android:textSize="@dimen/size_12"
+            android:textStyle="bold"
+            android:text="@string/label_fuku_req"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_fuku_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/white"
+            android:layout_below="@+id/tv_fuku_name"
+            android:layout_toRightOf="@+id/iv_fuku"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="60dp"
+            android:layout_marginEnd="60dp"
+            android:text="Neta学院德长袖校服"/>
+
+        <ImageView
+            android:id="@+id/iv_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_select_hover"/>
+
+    </RelativeLayout>
+</RelativeLayout>

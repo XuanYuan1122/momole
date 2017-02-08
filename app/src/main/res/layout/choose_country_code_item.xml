@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="35dp"
+    android:orientation="horizontal"
+    android:background="@drawable/list_selector_bg" >
+
+    <TextView
+        android:id="@+id/regis_country_name"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:layout_width="0dp"
+        android:gravity="left"
+        android:paddingLeft="5dp"
+        android:text="country"
+        android:textAppearance="?android:attr/textAppearance"
+        android:textSize="21dp" />
+
+    <TextView
+        android:id="@+id/country_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:paddingRight="5dp"
+        android:text="code"
+        android:textAppearance="?android:attr/textAppearance"
+        android:textSize="21dp" />
+
+</LinearLayout>

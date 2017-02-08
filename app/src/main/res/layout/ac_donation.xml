@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="64dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/icon_donation_box"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:background="#e5ffffff">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="21dp"
+                    android:layout_marginStart="21dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/pink_fb7ba2"
+                            android:textStyle="bold"
+                            android:textSize="18dp"
+                            android:text="募捐修理游戏室"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/pink_fb7ba2"
+                            android:textSize="@dimen/size_12"
+                            android:text="（我已捐献"/>
+
+                        <TextView
+                            android:id="@+id/tv_my_donation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/pink_fb7ba2"
+                            android:textSize="@dimen/size_12"
+                            android:textStyle="bold"
+                            android:text="0"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/pink_fb7ba2"
+                            android:textSize="@dimen/size_12"
+                            android:text="枚)"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="6dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/pink_fb7ba2"
+                            android:textSize="@dimen/size_15"
+                            android:text="已收到了" />
+
+                        <TextView
+                            android:id="@+id/tv_total_donation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/pink_fb7ba2"
+                            android:textSize="@dimen/size_15"
+                            android:textStyle="bold"
+                            android:text="0" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/pink_fb7ba2"
+                            android:textSize="@dimen/size_15"
+                            android:text="枚节操" />
+
+                        <TextView
+                            android:id="@+id/tv_guize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/size_15"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="10dp"
+                            android:textColor="@color/main_cyan"
+                            android:textStyle="bold"
+                            android:text="募捐奖励规则"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_donation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:src="@drawable/btn_donation"/>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#e5FB7BA2">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_donation_len"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="21dp"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginStart="14dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="10dp"
+                            android:text="No.1"/>
+
+                        <TextView
+                            android:id="@+id/tv_top_1_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginLeft="6dp"
+                            android:maxLines="1"
+                            android:textSize="10dp"
+                            android:text=""/>
+
+                        <TextView
+                            android:id="@+id/tv_no1_coin"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:paddingRight="6dp"
+                            android:paddingEnd="6dp"
+                            android:gravity="right"
+                            android:textSize="10dp"
+                            android:textStyle="bold"
+                            android:text="0" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:layout_marginRight="52dp"
+                            android:layout_marginEnd="52dp"
+                            android:textSize="10dp"
+                            android:text="枚节操" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="10dp"
+                            android:text="No.2"/>
+
+                        <TextView
+                            android:id="@+id/tv_top_2_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginLeft="6dp"
+                            android:textSize="10dp"
+                            android:maxLines="1"
+                            android:text=""/>
+
+                        <TextView
+                            android:id="@+id/tv_no2_coin"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:paddingRight="6dp"
+                            android:paddingEnd="6dp"
+                            android:gravity="right"
+                            android:textSize="10dp"
+                            android:textStyle="bold"
+                            android:text="0" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:layout_marginRight="52dp"
+                            android:layout_marginEnd="52dp"
+                            android:textSize="10dp"
+                            android:text="枚节操" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="10dp"
+                            android:text="No.3"/>
+
+                        <TextView
+                            android:id="@+id/tv_top_3_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginLeft="6dp"
+                            android:textSize="10dp"
+                            android:maxLines="1"
+                            android:text=""/>
+
+                        <TextView
+                            android:id="@+id/tv_no3_coin"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:paddingRight="6dp"
+                            android:paddingEnd="6dp"
+                            android:gravity="right"
+                            android:textSize="10dp"
+                            android:textStyle="bold"
+                            android:text="0" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:layout_marginRight="52dp"
+                            android:layout_marginEnd="52dp"
+                            android:textSize="10dp"
+                            android:text="枚节操" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_donation_coin"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_rect_corner_white_5"
+                        android:textColor="@color/pink_fb7ba2"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:textSize="18dp"
+                        android:text="功德簿"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:id="@+id/view_book"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/alph_60"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_exit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="right|bottom"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/btn_live2d_exit"
+        android:text=""/>
+
+    <RelativeLayout
+        android:id="@+id/fl_book"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="@drawable/icon_donation_book">
+
+        <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+            android:id="@+id/pl_list"
+            android:layout_marginTop="128dp"
+            android:layout_width="170dp"
+            android:layout_height="210dp"
+            android:layout_centerHorizontal="true">
+        </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+
+        <TextView
+            android:id="@+id/tv_book_my_donation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#f0afab"
+            android:layout_below="@+id/pl_list"
+            android:layout_marginTop="10dp"
+            android:textSize="@dimen/size_10"
+            android:layout_alignLeft="@+id/pl_list"
+            android:textStyle="bold"
+            android:text=""/>
+
+        <TextView
+            android:id="@+id/tv_book_my_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_10"
+            android:textColor="@color/main_red"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/tv_book_my_donation"
+            android:layout_alignTop="@+id/tv_book_my_donation"
+            />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingTop="@dimen/status_bar_height"
+        android:src="@drawable/ic_go_back"
+        android:visibility="visible"/>
+</FrameLayout>

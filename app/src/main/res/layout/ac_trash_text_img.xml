@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.moemoe.lalala.view.widget.trashcard.CardSlidePanel
+        android:id="@+id/swipe_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        swipe:bottomMarginTop="38dp"
+        swipe:itemMarginTop="10dp"
+        swipe:yOffsetStep="26dp">
+
+        <LinearLayout
+            android:id="@+id/card_bottom_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+        <com.moemoe.lalala.view.widget.trashcard.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:show_type="0"
+            android:visibility="invisible"/>
+
+        <com.moemoe.lalala.view.widget.trashcard.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:show_type="0"
+            android:visibility="invisible"/>
+
+        <com.moemoe.lalala.view.widget.trashcard.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:show_type="0"
+            android:visibility="invisible"/>
+
+        <com.moemoe.lalala.view.widget.trashcard.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:show_type="0"
+            android:visibility="invisible"/>
+
+    </com.moemoe.lalala.view.widget.trashcard.CardSlidePanel>
+
+    <com.moemoe.lalala.view.widget.trashcard.CardSlidePanel
+        android:id="@+id/swipe_card_top"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:visibility="gone"
+        swipe:bottomMarginTop="38dp"
+        swipe:itemMarginTop="10dp"
+        swipe:yOffsetStep="26dp">
+
+
+        <com.moemoe.lalala.view.widget.trashcard.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:show_type="0"
+            android:visibility="invisible"/>
+
+        <com.moemoe.lalala.view.widget.trashcard.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:show_type="0"
+            android:visibility="invisible"/>
+
+        <com.moemoe.lalala.view.widget.trashcard.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:show_type="0"
+            android:visibility="invisible"/>
+
+        <com.moemoe.lalala.view.widget.trashcard.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            swipe:show_type="0"
+            android:visibility="invisible"/>
+
+    </com.moemoe.lalala.view.widget.trashcard.CardSlidePanel>
+
+    <ImageView
+        android:id="@+id/iv_my_trash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:src="@drawable/btn_my_trash"/>
+
+    <ImageView
+        android:id="@+id/iv_yesterday_best_trash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_toRightOf="@+id/iv_my_trash"
+        android:src="@drawable/btn_yesterday_trash"/>
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="14dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginEnd="18dp"
+        android:src="@drawable/btn_live2d_exit"/>
+
+    <RelativeLayout
+        android:id="@+id/ll_fun_root"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/iv_create"
+        android:layout_toStartOf="@+id/iv_create"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="90dp">
+
+        <TextView
+            android:id="@+id/tv_fun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_below="@+id/iv_fun"
+            android:layout_marginTop="@dimen/size_3"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_15"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:id="@+id/iv_fun"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="@dimen/size_10"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/btn_fun"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_10"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignTop="@+id/ll_fun_root"
+        android:src="@drawable/btn_create_trash"/>
+
+    <RelativeLayout
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_create"
+        android:layout_toEndOf="@+id/iv_create"
+        android:layout_alignTop="@+id/ll_fun_root">
+
+        <TextView
+            android:id="@+id/tv_shit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_below="@+id/iv_shit"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_15"
+            android:layout_marginTop="@dimen/size_3"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:id="@+id/iv_shit"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="@dimen/size_10"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/btn_shit"/>
+    </RelativeLayout>
+</RelativeLayout>

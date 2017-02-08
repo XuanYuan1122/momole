@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_f2f2f3" >
+
+    <include layout="@layout/app_toolbar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/ll_item_pack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingBottom="20dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="20dp" >
+
+                <TextView
+                    android:id="@+id/tv_item_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="用户名"
+                    android:textColor="@color/gray_929292"
+                    android:textSize="@dimen/size_15" />
+
+                <TextView
+                    android:id="@+id/tv_item_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="回复啊啊啊啊"
+                    android:textColor="@color/gray_929292"
+                    android:textSize="@dimen/size_15" />
+            </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/rg_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:paddingBottom="4dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="16dp"
+                android:background="@color/white"
+                android:layout_below="@+id/ll_item_pack">
+
+                <RadioButton
+                    android:id="@+id/cb_h"
+                    style="@style/RbMain"
+                    android:checked="true"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/label_h" />
+
+                <RadioButton
+                    android:id="@+id/cb_mingan"
+                    style="@style/RbMain"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/label_mingan" />
+
+                <RadioButton
+                    android:id="@+id/cb_manma"
+                    style="@style/RbMain"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/label_manma" />
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/rg_root_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="4dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="16dp"
+                android:background="@color/white"
+                android:layout_below="@+id/rg_root">
+                <RadioButton
+                    android:id="@+id/cb_ad"
+                    style="@style/RbMain"
+                    android:layout_weight="1"
+                    android:text="@string/label_ad" />
+
+                <RadioButton
+                    android:id="@+id/cb_shui"
+                    style="@style/RbMain"
+                    android:layout_weight="1"
+                    android:text="@string/label_shui" />
+
+                <RadioButton
+                    android:id="@+id/cb_test"
+                    style="@style/RbMain"
+                    android:layout_weight="1"
+                    android:text="@string/label_shui"
+                    android:enabled="false"
+                    android:visibility="invisible"/>
+            </RadioGroup>
+            <!--<RelativeLayout-->
+            <!--android:id="@+id/ll_choice_pack_2"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/ll_choice_pack_1"-->
+            <!--android:background="@color/white"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingBottom="16dp"-->
+            <!--android:paddingLeft="24dp"-->
+            <!--android:paddingRight="24dp"-->
+            <!--android:paddingTop="4dp" >-->
+
+            <!--<RadioButton-->
+            <!--android:id="@+id/cb_ad"-->
+            <!--style="@style/RbMain"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:text="@string/label_ad" />-->
+
+            <!--<RadioButton-->
+            <!--android:id="@+id/cb_shui"-->
+            <!--style="@style/RbMain"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:text="@string/label_shui" />-->
+            <!--</RelativeLayout>-->
+
+            <EditText
+                android:id="@+id/edt_content"
+                style="@style/EdtNormal"
+                android:layout_width="match_parent"
+                android:layout_height="177dp"
+                android:layout_below="@+id/rg_root_2"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_normal_white_btn"
+                android:gravity="top"
+                android:hint="@string/a_hint_input_comment_report"
+                android:maxHeight="300dp"
+                android:minLines="8"
+                android:textColor="@color/gray_595e64"
+                android:textColorHint="@color/gray_c1c1c1"
+                android:textSize="@dimen/size_15" />
+
+            <TextView
+                android:id="@+id/tv_jubao_go"
+                style="@style/BtnCyanOneLine"
+                android:layout_below="@+id/edt_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/label_jubao" />
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_f2f2f3"
+    android:fitsSystemWindows="true">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/main_cyan"
+        app:navigationIcon="@drawable/ic_go_back"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:text=""
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+
+        <ImageView
+            android:id="@+id/iv_menu_search"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_menu_search"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/iv_menu_list"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_menu_loli"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="18dp"
+            android:text="主页"
+            android:layout_gravity="right"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:paddingRight="5dp"
+            android:visibility="gone"
+            />
+    </android.support.v7.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/edt_title"
+        style="@style/EdtNormal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/bg_normal_white_btn"
+        android:ellipsize="end"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="10dp"
+        android:hint="@string/a_hint_input_title"
+        android:minLines="1"
+        android:textColor="@color/txt_gray_red"
+        android:textColorHint="@color/gray_c1c1c1"
+        android:textSize="@dimen/size_15" />
+
+    <View
+        android:id="@+id/sep"
+        style="@style/HorizontalSep"
+        android:layout_below="@+id/edt_title" />
+
+    <FrameLayout
+        android:id="@+id/fl_input"
+        android:layout_width="match_parent"
+        android:layout_height="144dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/sep"
+        android:background="@drawable/bg_normal_white_btn">
+
+        <EditText
+            android:id="@+id/edt_content"
+            style="@style/EdtNormal"
+            android:layout_width="match_parent"
+            android:layout_height="144dp"
+            android:gravity="top"
+            android:hint="@string/a_hint_input_content"
+            android:maxHeight="300dp"
+            android:minLines="8"
+            android:visibility="gone"
+            android:textColor="@color/gray_595e64"
+            android:textColorHint="@color/gray_c1c1c1"
+            android:background="@drawable/bg_normal_white_btn"
+            android:textSize="@dimen/size_15" />
+
+        <ImageView
+            android:id="@+id/iv_img"
+            android:layout_width="115dp"
+            android:layout_height="115dp"
+            android:src="@drawable/ic_add_photo"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_create_tag"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:layout_below="@+id/fl_input"
+        android:paddingTop="6dp"
+        android:paddingLeft="10dp"
+        android:textColor="@color/gray_d7d7d8"
+        android:text="@string/label_create_doc_tag"
+        android:textSize="12dp"
+        android:background="@color/white"
+        />
+
+    <com.moemoe.lalala.view.widget.view.DocLabelView
+        android:layout_below="@+id/tv_create_tag"
+        android:id="@+id/dv_doc_label_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingStart="10dp"
+        android:background="@color/white"
+        android:paddingBottom="5dp"
+        app:child_view_height="22dp"
+        app:child_view_width="wrap_content"
+        app:line_spacing="7dp"
+        app:label_spacing="7dp"
+        />
+
+    <com.moemoe.lalala.view.widget.view.KeyboardListenerLayout
+        android:id="@+id/ll_comment_pannel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_f2f2f3"
+        android:gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:paddingBottom="7dp"
+        android:paddingTop="7dp"
+        android:visibility="gone" >
+
+        <EditText
+            android:id="@+id/edt_comment_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="6dp"
+            android:layout_toLeftOf="@+id/iv_comment_send"
+            android:layout_weight="1"
+            android:background="@drawable/bg_white_border_gray"
+            android:gravity="center_vertical"
+            android:hint="@string/a_hint_input_comment"
+            android:maxLines="5"
+            android:minHeight="34dp"
+            android:paddingBottom="4dp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="4dp"
+            android:textSize="@dimen/size_15" />
+
+        <TextView
+            android:id="@+id/iv_comment_send"
+            android:layout_width="48dp"
+            android:layout_height="34dp"
+            android:layout_alignBottom="@+id/edt_comment_input"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:background="@drawable/bg_rect_white_click_cyan"
+            android:gravity="center"
+            android:text="@string/label_confirm"
+            android:textColor="@color/txt_white_gray"
+            android:textSize="@dimen/size_15" />
+    </com.moemoe.lalala.view.widget.view.KeyboardListenerLayout>
+</RelativeLayout>
