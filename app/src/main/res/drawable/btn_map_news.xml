@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:drawable="@drawable/btn_map_xingwen_pressed" android:state_pressed="true"></item>
-    <item android:drawable="@drawable/btn_map_xingwen_normal"></item>
-
-</selector>

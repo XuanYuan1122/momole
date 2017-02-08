@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
-    android:oneshot="true">
-
-    <item android:drawable="@drawable/bg_spitball_close" android:duration="300"></item>
-    <item android:drawable="@drawable/bg_spitball_close_dirty" android:duration="300"></item>
-    <item android:drawable="@drawable/bg_spitball_paper_dirty" android:duration="300"></item>
-</animation-list>
