@@ -10,7 +10,7 @@ import com.moemoe.lalala.R;
 /**
  * Created by Haru on 2016/5/1 0001.
  */
-public class CommonLoadingTask extends AsyncTask<Void, Void, Void> {
+public class CommonLoadingTask extends AsyncTask<Void, Void, Object> {
     /**
      * progress dialog
      */
@@ -50,18 +50,18 @@ public class CommonLoadingTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected Object doInBackground(Void... params) {
         if (mCallback != null) {
-            mCallback.processDataInBackground();
+           return mCallback.processDataInBackground();
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
+    protected void onPostExecute(Object result) {
         dismissProgressDlg();
         if (mCallback != null) {
-            mCallback.handleData();
+            mCallback.handleData(result);
         }
     }
 
@@ -105,7 +105,7 @@ public class CommonLoadingTask extends AsyncTask<Void, Void, Void> {
          *
          * @return parameters in Object
          */
-        public void processDataInBackground();
+        public Object processDataInBackground();
 
         /**
          * this method will be call in onPostExecute
@@ -113,6 +113,6 @@ public class CommonLoadingTask extends AsyncTask<Void, Void, Void> {
          * @param object
          *            parameters returned by processDataInBackground
          */
-        public void handleData();
+        public void handleData(Object o);
     }
 }

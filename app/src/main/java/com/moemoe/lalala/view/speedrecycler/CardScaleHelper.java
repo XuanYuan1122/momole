@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.app.common.util.DensityUtil;
+import org.xutils.common.util.DensityUtil;
 
 /**
  * Created by yi on 2016/9/21.

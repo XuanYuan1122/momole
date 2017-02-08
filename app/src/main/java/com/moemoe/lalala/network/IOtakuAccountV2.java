@@ -1,76 +1,70 @@
 package com.moemoe.lalala.network;
 
-import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.POST;
+import com.moemoe.lalala.data.ApiResult;
+import com.moemoe.lalala.data.AuthorInfo;
+import com.moemoe.lalala.data.LoginBean;
+import com.moemoe.lalala.data.LoginResultBean;
+import com.moemoe.lalala.data.RegisterBean;
+import com.moemoe.lalala.data.ReplyBean;
+import com.moemoe.lalala.data.SignBean;
+import com.moemoe.lalala.data.ThirdLoginBean;
+import com.moemoe.lalala.data.UploadBean;
 
-import retrofit2.http.FormUrlEncoded;
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
  * Created by Haru on 2016/9/12.
  */
-public interface IOtakuAccountV2 {
+interface IOtakuAccountV2 {
 
-    @POST("otakuhouse/id/login")//v1版本，后续要更新掉
-    @FormUrlEncoded
-    Call<String> loginThird(@Field("DATA")String data);
+    @POST("api/user/loginOpenId")
+    Call<ApiResult<LoginResultBean>> loginThird(@Body ThirdLoginBean data);
 
-    @POST("otakuhouse/id/login")//v1版本，后续要更新掉
-    @FormUrlEncoded
-    Call<String> login(@Field("DATA")String data);
+    @POST("api/user/loginMobile")
+    Call<ApiResult<LoginResultBean>> login(@Body LoginBean bean);
 
-    @POST("otakuhouse/id/logout")
-    Call<String> logout();
+    @PUT("api/user/logout")
+    Call<ApiResult> logout();
 
-    @POST("otakuhouse/id/register_validate_mobile")
-    @FormUrlEncoded
-    Call<String> register(@Field("DATA")String data);
+    @POST("api/code/sendRegister")
+    Call<ApiResult> requestRegisterCode(@Query("mobile")String data);
 
-    @POST("otakuhouse/id/register_mobile")
-    @FormUrlEncoded
-    Call<String> phoneRegister(@Field("DATA")String data);
+    @POST("api/user/register")
+    Call<ApiResult> phoneRegister(@Body RegisterBean bean);
 
-    @POST("otakuhouse/id/check_vcode")
-    @FormUrlEncoded
-    Call<String> checkVCode(@Header(Otaku.X_ACCESS_TOKEN)String header
-            ,@Field("DATA")String data);
+    @POST("api/code/check")
+    Call<ApiResult> checkVCode(@Body RegisterBean bean);
 
-    @POST("otakuhouse/id/password_forgot_send_mobile_code")
-    @FormUrlEncoded
-    Call<String> requestCode4ResetPwd(@Field("DATA")String data);
+    @POST("api/code/sendForget")
+    Call<ApiResult> requestCode4ResetPwd(@Query("mobile") String data);
 
-    @POST("otakuhouse/id/password_change")
-    @FormUrlEncoded
-    Call<String> changePassword(@Header(Otaku.X_ACCESS_TOKEN)String header
-            ,@Field("DATA")String data);
+    @POST("api/user/chagePwd")
+    Call<ApiResult> changePassword(@Body RegisterBean bean);
 
-    @POST("otakuhouse/id/password_forgot_change")
-    @FormUrlEncoded
-    Call<String> resetPwdByCode(@Header(Otaku.X_ACCESS_TOKEN)String header
-            ,@Field("DATA")String data);
+    @POST("api/user/chageForgetPwd")
+    Call<ApiResult> resetPwdByCode(@Body RegisterBean bean);
 
-    @POST("neta/api/qn/upload")
-    @FormUrlEncoded
-    Call<String> requestQnFileKey(@Header(Otaku.X_ACCESS_TOKEN)String header
-            ,@Field("fileSuffix")String suffix);
+    @POST("api/upload/{suffix}")
+    Call<ApiResult<UploadBean>> requestQnFileKey(@Path("suffix") String suffix);
 
-    @POST("otakuhouse/query")
-    @FormUrlEncoded
-    Call<String> requestSelfData(@Header(Otaku.X_ACCESS_TOKEN)String header
-            ,@Field("Q")String q);
+    @GET("api/user/{userId}/info")
+    Call<ApiResult<AuthorInfo>> requestUserInfo( @Path("userId") String userId);
 
-    @GET("neta/api/reply/list")
-    Call<String> requestCommentFromOther(@Header(Otaku.X_ACCESS_TOKEN)String token
-            ,@Query("index")int index
-            ,@Query("length")int len);
+    @GET("api/user/getReply")
+    Call<ApiResult<ArrayList<ReplyBean>>> requestCommentFromOther( @Query("index")int index
+            , @Query("size")int len);
 
-    @GET("neta/api/user/day/sign")
-    Call<String> checkSignToday(@Header(Otaku.X_ACCESS_TOKEN)String token);
+    @GET("api/user/sign")
+    Call<ApiResult<SignBean>> checkSignToday();
 
-    @PUT("neta/api/user/day/sign")
-    Call<String> signToday(@Header(Otaku.X_ACCESS_TOKEN)String token);
+    @PUT("api/user/sign")
+    Call<ApiResult<SignBean>> signToday();
 }

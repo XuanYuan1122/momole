@@ -42,12 +42,12 @@ public class FileDownloadConfiguration {
         public Builder(Context context) {
             super();
             this.mContext = context.getApplicationContext();
-            // default: /sdcard/Android/data/{package_name}/files/file_downloader
+            // default: /sdcard/Android/details/{package_name}/files/file_downloader
             try {
                 mFileDownloadDir = this.mContext.getExternalFilesDir(null).getAbsolutePath() + File.separator +
                         "file_downloader";
             } catch (Exception e) {
-                // if there is not sdcard,use /data/data/{package_name}/files/file_downloader for the default
+                // if there is not sdcard,use /details/details/{package_name}/files/file_downloader for the default
                 e.printStackTrace();
                 mFileDownloadDir = this.mContext.getFilesDir().getAbsolutePath() + File.separator + "file_downloader";
             }

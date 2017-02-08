@@ -1,5 +1,6 @@
 package com.moemoe.lalala;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,11 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.app.annotation.ContentView;
-import com.app.annotation.FindView;
 import com.moemoe.lalala.fragment.MyCommentFragment;
 import com.moemoe.lalala.fragment.NewsFragment;
 import com.moemoe.lalala.view.NoDoubleClickListener;
+
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
 
 import java.lang.reflect.Field;
 
@@ -24,15 +26,23 @@ import java.lang.reflect.Field;
 @ContentView(R.layout.ac_msg)
 public class MessageActivity extends BaseActivity {
 
-    @FindView(R.id.iv_back)
+    @ViewInject(R.id.iv_back)
     private ImageView IvBack;
-    @FindView(R.id.pager_person_data)
+    @ViewInject(R.id.pager_person_data)
     private ViewPager mDataPager;
-    @FindView(R.id.indicator_person_data)
+    @ViewInject(R.id.indicator_person_data)
     private TabLayout mPageIndicator;
-    private TabFragmentPagerAdapter mAdapter;
     private EdgeEffectCompat mLeftEdge;
     private EdgeEffectCompat mRightEdge;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            String FRAGMENTS_TAG = "android:support:fragments";
+            savedInstanceState.remove(FRAGMENTS_TAG);
+        }
+    }
 
     @Override
     protected void initView() {
@@ -42,7 +52,7 @@ public class MessageActivity extends BaseActivity {
                 finish();
             }
         });
-        mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
+        TabFragmentPagerAdapter mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
         mDataPager.setAdapter(mAdapter);
         mPageIndicator.setupWithViewPager(mDataPager);
         try {
@@ -90,7 +100,7 @@ public class MessageActivity extends BaseActivity {
 
         private Fragment mFragClub, mFragDoc;
 
-        public TabFragmentPagerAdapter(FragmentManager fm) {
+        TabFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             mSize = 2;
             mPagerTitle = new String[]{getString(R.string.label_reply),
@@ -132,8 +142,7 @@ public class MessageActivity extends BaseActivity {
 
         @Override
         public boolean isViewFromObject(View view, Object object) {
-            boolean res = view == ((Fragment) object).getView();
-            return res;
+            return view == ((Fragment) object).getView();
         }
 
         @Override
@@ -148,6 +157,11 @@ public class MessageActivity extends BaseActivity {
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
             super.destroyItem(container, position, object);
         }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
 
     }
 }

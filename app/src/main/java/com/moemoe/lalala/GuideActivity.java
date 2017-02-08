@@ -1,12 +1,10 @@
 package com.moemoe.lalala;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -17,21 +15,17 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.OvershootInterpolator;
-import android.view.animation.RotateAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.app.annotation.ContentView;
-import com.app.annotation.FindView;
-import com.app.common.util.DensityUtil;
-import com.moemoe.lalala.callback.MoeMoeCallback;
+import com.moemoe.lalala.utils.PreferenceManager;
 import com.moemoe.lalala.utils.ResourceUtils;
+
+import org.xutils.common.util.DensityUtil;
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
 
 import java.util.ArrayList;
 
@@ -43,25 +37,25 @@ public class GuideActivity extends BaseActivity {
     public static final String EXTRA_BY_USER = "by_user";
     public static final String EXTRA_HAVE_CHOSE = "have_chose";
     public static final String EXTRA_PLOT = "plot";
-    @FindView(R.id.pager_class_banner)
+    @ViewInject(R.id.pager_class_banner)
     private ViewPager mViewPager;
-    @FindView(R.id.ll_point_group)
+    @ViewInject(R.id.ll_point_group)
     private LinearLayout mLlPointGroup;
-    @FindView(R.id.view_pressed_point)
+    @ViewInject(R.id.view_pressed_point)
     private View mPressedPoint;
-    @FindView(R.id.ll_point_container)
+    @ViewInject(R.id.ll_point_container)
     private View mLlPoint;
-    @FindView(R.id.ll_select_container)
+    @ViewInject(R.id.ll_select_container)
     private View mLlSelect;
-    @FindView(R.id.iv_yes)
+    @ViewInject(R.id.iv_yes)
     private ImageView mIvYes;
-    @FindView(R.id.iv_no)
+    @ViewInject(R.id.iv_no)
     private ImageView mIvNo;
-    @FindView(R.id.iv_word)
+    @ViewInject(R.id.iv_word)
     private ImageView mIvWord;
     private int mWidth;
     private boolean mBCallByUser = false;
-    private boolean mHaveChose = true;
+    private boolean mHaveChose = false;
     private int[] mResId = {R.drawable.bg_welcome_1,R.drawable.bg_welcome_2,R.drawable.bg_welcome_3,R.drawable.bg_welcome_4,R.drawable.bg_welcome_5,R.drawable.bg_welcome_6,R.drawable.bg_welcome_7};
     private String[] mPlot;
     private int mCurPosition;
@@ -81,7 +75,7 @@ public class GuideActivity extends BaseActivity {
             if (mCurPosition == 6) {
                 if (Math.abs(e1.getX() - e2.getX()) > Math.abs(e1.getY() - e2.getY()) && (e1.getX() - e2.getX() <= (-13) || e1.getX() - e2.getX() >= 13)) {
                     if (e1.getX() - e2.getX() >= 13) {
-                        if(mPreferMng.isLogin(GuideActivity.this)){
+                        if(PreferenceManager.isLogin(GuideActivity.this)){
                             goToMain();
                         }else {
                             go2Login();
@@ -99,18 +93,9 @@ public class GuideActivity extends BaseActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         String bCallByUser = mIntent.getStringExtra(EXTRA_BY_USER);
-        if(bCallByUser != null && bCallByUser.equals("true")){
-            mBCallByUser = true;
-        }else {
-            mBCallByUser = false;
-        }
+        mBCallByUser = bCallByUser != null && bCallByUser.equals("true");
         String haveChose = mIntent.getStringExtra(EXTRA_HAVE_CHOSE);
-        if(haveChose != null && haveChose.equals("false")){
-            mHaveChose = false;
-        }else {
-            mHaveChose = true;
-        }
-        mHaveChose = false;
+        mHaveChose = !(haveChose != null && haveChose.equals("false"));
         String plot = mIntent.getStringExtra(EXTRA_PLOT);
         if(!TextUtils.isEmpty(plot)){
             mPlot = plot.split(",");
@@ -122,7 +107,7 @@ public class GuideActivity extends BaseActivity {
                 mResId[i] = ResourceUtils.getResource(this,mPlot[i]);
             }
         }
-        gestureDetector = new GestureDetector(new GuideViewTouch());
+        gestureDetector = new GestureDetector(this,new GuideViewTouch());
         ArrayList<ImageView> imageViews = new ArrayList<>();
         mLlPointGroup.removeAllViews();
         for(int i=0;i<mResId.length;i++) {
@@ -138,15 +123,11 @@ public class GuideActivity extends BaseActivity {
                     if(i < mViewPager.getAdapter().getCount() - 1){
                         mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
                     }else {
-                        if(mPreferMng.isLogin(GuideActivity.this)){
+                        if(PreferenceManager.isLogin(GuideActivity.this)){
                             goToMain();
                         }else {
                             go2Login();
                         }
-//                        if (!mHaveChose){
-//                            finish();
-//                            overridePendingTransition(0, 0);
-//                        }
                     }
                 }
             });
@@ -169,50 +150,11 @@ public class GuideActivity extends BaseActivity {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPressedPoint.getLayoutParams();
                 params.leftMargin = len;
                 mPressedPoint.setLayoutParams(params);
-                if(position == 6 && positionOffset > 10){
-
-                }
             }
 
             @Override
             public void onPageSelected(int position) {
                 mCurPosition = position;
-                if (position == 3 && mHaveChose) {
-                    mLlPoint.setVisibility(View.GONE);
-                    ObjectAnimator inS = ObjectAnimator.ofFloat(mIvWord,"alpha",.0f,1.0f).setDuration(500);
-                    inS.setInterpolator(new LinearInterpolator());
-                    ObjectAnimator inSS = ObjectAnimator.ofFloat(mLlSelect, "alpha", .0f, 1.0f).setDuration(500);
-                    inSS.setInterpolator(new LinearInterpolator());
-                    AnimatorSet set = new AnimatorSet();
-                    set.play(inS).with(inSS);
-                    set.addListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            mLlSelect.setVisibility(View.VISIBLE);
-                            mIvWord.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
-                    set.start();
-                } else {
-                    mLlPoint.setVisibility(View.VISIBLE);
-                    mLlSelect.setVisibility(View.GONE);
-                    mIvWord.setVisibility(View.GONE);
-                }
             }
 
             @Override
@@ -278,7 +220,7 @@ public class GuideActivity extends BaseActivity {
 
         private ArrayList<ImageView> images;
 
-        public BannerAdapter(ArrayList<ImageView> images){
+        BannerAdapter(ArrayList<ImageView> images){
             this.images = images;
         }
 
@@ -313,9 +255,9 @@ public class GuideActivity extends BaseActivity {
     }
 
     private void saveLaunch(){
-        mPreferMng.getPreferInfo().setAppFirstLaunch(false);
-        mPreferMng.getPreferInfo().setVersion2FirstLaunch(false);
-        mPreferMng.getPreferInfo().setVersionCode(getString(R.string.app_version_code));
+        mPreferInfo.setAppFirstLaunch(false);
+        mPreferInfo.setVersion2FirstLaunch(false);
+        mPreferInfo.setVersionCode(getString(R.string.app_version_code));
         mPreferMng.saveFirstLaunch();
         mPreferMng.saveNewVersionFirstLaunch();
     }

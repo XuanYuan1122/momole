@@ -6,13 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,20 +23,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.app.Utils;
-import com.app.annotation.ContentView;
-import com.app.annotation.FindView;
-import com.app.common.util.DensityUtil;
-import com.app.ex.DbException;
-import com.app.view.DbManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.moemoe.lalala.BaseActivity;
 import com.moemoe.lalala.CreateNormalDocActivity;
 import com.moemoe.lalala.FriendsMainActivity;
@@ -46,18 +40,15 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.adapter.ClassRecyclerViewAdapter;
 import com.moemoe.lalala.adapter.NewDocLabelAdapter;
 import com.moemoe.lalala.callback.MoeMoeCallback;
-import com.moemoe.lalala.data.BannerBen;
-import com.moemoe.lalala.data.DocItemBean;
-import com.moemoe.lalala.data.DocTag;
+import com.moemoe.lalala.data.BannerBean;
+import com.moemoe.lalala.data.DocListBean;
 import com.moemoe.lalala.data.FeaturedBean;
-import com.moemoe.lalala.network.CallbackFactory;
-import com.moemoe.lalala.network.OnNetWorkCallback;
+import com.moemoe.lalala.network.OneParameterCallback;
 import com.moemoe.lalala.network.Otaku;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
-import com.moemoe.lalala.utils.PreferenceManager;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtil;
 import com.moemoe.lalala.view.DocLabelView;
@@ -66,6 +57,13 @@ import com.moemoe.lalala.view.NoDoubleClickListener;
 import com.moemoe.lalala.view.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.recycler.PullCallback;
 import com.squareup.picasso.Picasso;
+
+import org.xutils.DbManager;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.ex.DbException;
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -80,32 +78,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ClassFragment extends BaseFragment {
     public static final String TAG = "ClassFragment";
     public static final int REQUEST_CODE_CREATE_DOC = 2333;
-    public static final String EXTRA_ROOM_ID = "room_id";
-    public static final String EXTRA_TAGNAME = "tagName";
-    @FindView(R.id.list)
+    @ViewInject(R.id.list)
     private PullAndLoadView mListDocs;
     private ClassDocListAdapter mClassAdapter;
     private RecyclerView mRecyclerView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ArrayList<DocItemBean> mClassData = new ArrayList<>();
-    private ArrayList<BannerBen> mBannerBeans = new ArrayList<>();
+    private ArrayList<DocListBean> mClassData = new ArrayList<>();
+    private ArrayList<BannerBean> mBannerBeans = new ArrayList<>();
     private ArrayList<FeaturedBean> mFeaturedBeans = new ArrayList<>();
     private ClassDocListAdapter.BannerViewHolder mBannerViewHolder;
     private int mCurrentItem = 0;
-    private String mLastUuid;
-    private String mLastPullUuid;
-    private int mSpilitPosition = 0;
-    private boolean mShouldChange = true;
-    private boolean mIsFling = false;
-    private int mFirstVisibleItem;
-    private int mLastVisibleItem;
-//    @FindView(R.id.view_shadow)
-//    private View mViewShadow;
-//    @FindView(R.id.iv_class_bg)
-//    private ImageView mIvBg;
-    @FindView(R.id.iv_send_post)
+    @ViewInject(R.id.iv_send_post)
     private View mSendPost;
-    @FindView(R.id.iv_send_music_post)
+    @ViewInject(R.id.iv_send_music_post)
     private View mSendMusicPost;
 
     private ScheduledExecutorService scheduledExecutorService;
@@ -116,23 +100,20 @@ public class ClassFragment extends BaseFragment {
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (mBannerViewHolder.viewPager != null && mShouldChange) {
+            if (mBannerViewHolder.viewPager != null) {
                 mBannerViewHolder.viewPager.setCurrentItem(mCurrentItem, true);
             }
         }
     };
     private boolean mIsHasLoadedAll = false;
     private boolean mIsLoading = false;
-    private int mScrollHeight;
-    private Drawable mActionBarBackground;
     private boolean mIsPullDown;
 
     /**
      * 开始循环banner
-     *
-     * @author Haru
      */
     private void startBanner() {
+        if(scheduledExecutorService != null) scheduledExecutorService.shutdown();
         scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleWithFixedDelay(new BannerRunnable(), 3, 3, TimeUnit.SECONDS);
     }
@@ -141,9 +122,11 @@ public class ClassFragment extends BaseFragment {
 
         @Override
         public void run() {
-            synchronized (mBannerViewHolder.viewPager) {
-                mCurrentItem = (mBannerViewHolder.viewPager.getCurrentItem() + 1) % mBannerBeans.size();
-                handler.obtainMessage().sendToTarget();
+            if(mBannerViewHolder.viewPager != null){
+                synchronized (ClassFragment.class) {
+                    mCurrentItem = (mBannerViewHolder.viewPager.getCurrentItem() + 1) % mBannerBeans.size();
+                    handler.obtainMessage().sendToTarget();
+                }
             }
         }
     }
@@ -158,11 +141,9 @@ public class ClassFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        db = Utils.getDb(MoemoeApplication.sDaoConfig);
-        mLastUuid = PreferenceManager.getInstance(getActivity()).getCurrentRead();
+        db = x.getDb(MoemoeApplication.sDaoConfig);
         mRoomId = "CLASSROOM";
-       // mIvBg.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_activity));
-        mSwipeRefreshLayout = mListDocs.getSwipeRefreshLayout();
+        SwipeRefreshLayout mSwipeRefreshLayout = mListDocs.getSwipeRefreshLayout();
         mSwipeRefreshLayout.setColorSchemeResources(R.color.main_light_cyan, R.color.main_title_cyan);
         mRecyclerView = mListDocs.getRecyclerView();
         mClassAdapter = new ClassDocListAdapter();
@@ -173,10 +154,10 @@ public class ClassFragment extends BaseFragment {
                 Object object = mClassAdapter.getItem(position);
                 if (object != null) {
 
-                    if (object instanceof DocItemBean) {
-                        DocItemBean bean = (DocItemBean) object;
-                        if (!TextUtils.isEmpty(bean.doc.schema)) {
-                            Uri uri = Uri.parse(bean.doc.schema);
+                    if (object instanceof DocListBean) {
+                        DocListBean bean = (DocListBean) object;
+                        if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
+                            Uri uri = Uri.parse(bean.getDesc().getSchema());
                             IntentUtils.toActivityFromUri(getActivity(), uri,view);
                         }
                     }
@@ -190,7 +171,6 @@ public class ClassFragment extends BaseFragment {
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         mListDocs.setLayoutManager(linearLayoutManager);
-        mListDocs.isLoadMoreEnabled(true);
         mListDocs.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
@@ -200,7 +180,6 @@ public class ClassFragment extends BaseFragment {
             @Override
             public void onRefresh() {
                 new UpdateTask(true).execute();
-                mListDocs.isLoadMoreEnabled(true);
                 mIsHasLoadedAll = false;
             }
 
@@ -220,11 +199,6 @@ public class ClassFragment extends BaseFragment {
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    mIsFling = true;
-                } else {
-                    mIsFling = false;
-                }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Picasso.with(getActivity()).resumeTag(TAG);
                 } else {
@@ -350,49 +324,41 @@ public class ClassFragment extends BaseFragment {
         }
     }
 
-    public void setRefreshing(){
-        if(mListDocs != null){
-            mSwipeRefreshLayout.setRefreshing(true);
-        }
-    }
-
     private void loadDataFromDb(){
         try {
-            BannerBen topAdBean = db.selector(BannerBen.class)
+            BannerBean topAdBean = db.selector(BannerBean.class)
                     .where("uuid","=","cache" + mRoomId)
                     .findFirst();
             FeaturedBean featuredBean = db.selector(FeaturedBean.class)
                     .where("uuid","=","cache" + mRoomId)
                     .findFirst();
-            DocItemBean classDataBean = db.selector(DocItemBean.class)
+            DocListBean classDataBean = db.selector(DocListBean.class)
                     .where("id", "=", "cache" + mRoomId)
                     .findFirst();
             if(topAdBean != null && classDataBean != null && topAdBean.json != null && classDataBean.json != null && featuredBean != null && featuredBean.json != null){
-                mBannerBeans = BannerBen.readFromJsonList(getActivity(), topAdBean.json);
-                mFeaturedBeans = FeaturedBean.readFromJsonList(getActivity(), featuredBean.json);
-                ArrayList<DocItemBean> beans = DocItemBean.readFromJsonList(getActivity(), classDataBean.json);
-                if (mClassData != null && mClassData.size() > 0) {
-                    mSpilitPosition = 0;
-                    mLastPullUuid = mClassData.get(0).doc.id;
-                }
+                Gson gson = new Gson();
+                mBannerBeans = gson.fromJson(topAdBean.json,new TypeToken<ArrayList<BannerBean>>(){}.getType());
+                mFeaturedBeans = gson.fromJson(featuredBean.json,new TypeToken<ArrayList<FeaturedBean>>(){}.getType());
+                ArrayList<DocListBean> beans = gson.fromJson(classDataBean.json,new TypeToken<ArrayList<DocListBean>>(){}.getType());
                 mClassData.clear();
                 mClassData.addAll(beans);
                 mClassAdapter.notifyDataSetChanged();
             }
         } catch (DbException e) {
-
+            e.printStackTrace();
         }
     }
 
     private void requestFeatured(){
-        Otaku.getDocV2().requestFeatured(PreferenceManager.getInstance(getActivity()).getToken(), mRoomId).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+        Otaku.getDocV2().requestFeatured(mRoomId, new OneParameterCallback<ArrayList<FeaturedBean>>() {
             @Override
-            public void success(String token, String s) {
+            public void action(ArrayList<FeaturedBean> featuredBeen) {
                 mFeaturedBeans.clear();
-                mFeaturedBeans = FeaturedBean.readFromJsonList(getActivity(), s);
+                mFeaturedBeans = featuredBeen;
                 FeaturedBean adBean = new FeaturedBean();
                 adBean.uuid = "cache" + mRoomId;
-                adBean.json = s;
+                Gson gson = new Gson();
+                adBean.json = gson.toJson(featuredBeen,new TypeToken<ArrayList<FeaturedBean>>(){}.getType());
                 try {
                     db.saveOrUpdate(adBean);
                 } catch (DbException e) {
@@ -401,32 +367,31 @@ public class ClassFragment extends BaseFragment {
                 mClassAdapter.notifyItemChanged(1);
                 allFinishCallback.onSuccess();
             }
-
+        }, new OneParameterCallback<Integer>() {
             @Override
-            public void failure(String e) {
-
+            public void action(Integer integer) {
                 allFinishCallback.onSuccess();
             }
-        }));
+        });
     }
 
     /**
      * 请求banner数据
      *
-     * @author Haru
      */
     private void requestBannerData() {
         if(!NetworkUtils.checkNetworkAndShowError(getActivity())){
             return;
         }
-        Otaku.getDocV2().requestNewBanner(PreferenceManager.getInstance(getActivity()).getToken(),mRoomId).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+        Otaku.getDocV2().requestNewBanner(mRoomId, new OneParameterCallback<ArrayList<BannerBean>>() {
             @Override
-            public void success(String token, String s) {
+            public void action(ArrayList<BannerBean> bannerBeen) {
                 mBannerBeans.clear();
-                mBannerBeans = BannerBen.readFromJsonList(getActivity(), s);
-                BannerBen adBean = new BannerBen();
+                mBannerBeans = bannerBeen;
+                BannerBean adBean = new BannerBean();
                 adBean.uuid = "cache" + mRoomId;
-                adBean.json = s;
+                Gson gson = new Gson();
+                adBean.json = gson.toJson(bannerBeen,new TypeToken<ArrayList<BannerBean>>(){}.getType());
                 try {
                     db.saveOrUpdate(adBean);
                 } catch (DbException e) {
@@ -435,27 +400,23 @@ public class ClassFragment extends BaseFragment {
                 mClassAdapter.notifyItemChanged(0);
                 allFinishCallback.onSuccess();
             }
-
+        }, new OneParameterCallback<Integer>() {
             @Override
-            public void failure(String e) {
-
+            public void action(Integer integer) {
                 allFinishCallback.onSuccess();
             }
-        }));
+        });
     }
 
     /**
      * 去重
-     * @param oriData
-     * @param newData
-     * @author Haru
      */
-    public void addNewDataToList(ArrayList<DocItemBean> oriData, ArrayList<DocItemBean> newData) {
+    public void addNewDataToList(ArrayList<DocListBean> oriData, ArrayList<DocListBean> newData) {
         if (newData != null && oriData != null && newData.size() > 0) {
-            for (DocItemBean news : newData) {
+            for (DocListBean news : newData) {
                 boolean has = false;
                 for (int i = 0; i < oriData.size(); i++) {
-                    if (oriData.get(i).doc.id.equals(news.doc.id)) {
+                    if (oriData.get(i).getDesc().getId().equals(news.getDesc().getId())) {
                         has = true;
                         break;
                     }
@@ -469,32 +430,24 @@ public class ClassFragment extends BaseFragment {
 
     /**
      * 请求class主页除banner外数据
-     * @param index
-     * @param isPullDown
-     * @author Haru
      */
     private void requestDocAndClubList(final int index, final boolean isPullDown) {
-        Otaku.getDocV2().requestClassList(PreferenceManager.getInstance(getActivity()).getToken(),index, Otaku.LENGTH,mRoomId).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+        Otaku.getDocV2().requestTagDocList(index, Otaku.LENGTH, "", new OneParameterCallback<ArrayList<DocListBean>>() {
             @Override
-            public void success(String token, String s) {
-                ArrayList<DocItemBean> beans = DocItemBean.readFromJsonList(getActivity(), s);
+            public void action(ArrayList<DocListBean> docListBeen) {
                 if (isPullDown) {
-                    DocItemBean classDataBean = new DocItemBean();
+                    DocListBean classDataBean = new DocListBean();
                     classDataBean.id = "cache" + mRoomId;
-                    classDataBean.json = s;
+                    Gson gson = new Gson();
+                    classDataBean.json = gson.toJson(docListBeen,new TypeToken<ArrayList<DocListBean>>(){}.getType());
                     try {
                         db.saveOrUpdate(classDataBean);
                     } catch (DbException e) {
                         e.printStackTrace();
                     }
-                    if (mClassData != null && mClassData.size() > 0) {
-                        mSpilitPosition = 0;
-                        mLastPullUuid = mClassData.get(0).doc.id;
-                    }
                     int bfSize = mClassData.size();
                     mClassData.clear();
-                    mClassData.addAll(beans);
-                    //mClassAdapter.notifyDataSetChanged();
+                    mClassData.addAll(docListBeen);
                     int afSize = mClassData.size();
                     if(bfSize == 0){
                         mClassAdapter.notifyItemRangeInserted(2,mClassData.size());
@@ -507,114 +460,28 @@ public class ClassFragment extends BaseFragment {
 
                 } else {
                     int bfSize = mClassData.size();
-                    addNewDataToList(mClassData, beans);
+                    addNewDataToList(mClassData, docListBeen);
                     int afSize = mClassData.size();
-                    //mClassAdapter.notifyDataSetChanged();
                     mClassAdapter.notifyItemRangeInserted(bfSize + 2,afSize - bfSize);
                 }
 
                 if(index != 0){
-                    if (beans.size() != 0) {
+                    if (docListBeen.size() != 0) {
                         mListDocs.isLoadMoreEnabled(true);
                     } else {
-//                    mListDocs.isLoadMoreEnabled(false);
-//                    mIsHasLoadedAll = true;
                         ToastUtil.showCenterToast(getActivity(),R.string.msg_all_load_down);
                     }
+                }else {
+                    mListDocs.isLoadMoreEnabled(true);
                 }
                 allFinishCallback.onSuccess();
             }
-
+        }, new OneParameterCallback<Integer>() {
             @Override
-            public void failure(String e) {
+            public void action(Integer integer) {
                 allFinishCallback.onSuccess();
             }
-        }));
-    }
-
-    public void blurBackGroundByAnim(){
-        // mViewShadow.setVisibility(View.VISIBLE);
-        listAnim(true,true);
-//        mIvBg.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//            @Override
-//            public boolean onPreDraw() {
-//                mIvBg.getViewTreeObserver().removeOnPreDrawListener(this);
-//                mIvBg.buildDrawingCache();
-//
-//                Bitmap bmp = mIvBg.getDrawingCache();
-//                BitmapBlur.blur(getActivity(), bmp, mIvBg);
-//                return true;
-//            }
-//        });
-    }
-
-    public void blurBackGroundNoAnim(){
-        //mViewShadow.setVisibility(View.VISIBLE);
-        listAnim(true,false);
-//        mIvBg.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-//            @Override
-//            public boolean onPreDraw() {
-//                mIvBg.getViewTreeObserver().removeOnPreDrawListener(this);
-//                mIvBg.buildDrawingCache();
-//
-//                Bitmap bmp = mIvBg.getDrawingCache();
-//                BitmapBlur.blur(getActivity(),bmp,mIvBg);
-//                return true;
-//            }
-//        });
-    }
-
-    public boolean normalBackGroundNoAnim(){
-        if(!mIsFling){
-            // mViewShadow.setVisibility(View.GONE);
-            listAnim(false, false);
-            // mIvBg.setImageResource(R.drawable.bg_main_clas);
-        }
-        return mIsFling;
-    }
-
-    public boolean normalBackGroundByAnim(){
-        if(!mIsFling){
-            //mViewShadow.setVisibility(View.GONE);
-            listAnim(false, true);
-            //mIvBg.setImageDrawable(mBGDrawable);
-            // mIvBg.setImageResource(R.drawable.bg_main_clas);
-        }
-        return mIsFling;
-    }
-
-    public void listAnim(final boolean isIn,boolean shouldAnim){
-        LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-        mFirstVisibleItem = manager.findFirstVisibleItemPosition();
-        mLastVisibleItem = manager.findLastVisibleItemPosition();
-        if(isIn){
-            mShouldChange = true;
-        }else{
-            mShouldChange = false;
-        }
-        if(shouldAnim){
-            for(int i = 0;i <= mLastVisibleItem - mFirstVisibleItem;i++){
-                final View item = mRecyclerView.getChildAt(i);
-                Animation animation;
-                if(isIn){
-                    animation = AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim_in);
-                }else{
-                    animation = AnimationUtils.loadAnimation(getActivity(), R.anim.list_anim_out);
-                }
-                animation.setFillAfter(true);
-                animation.setStartOffset(100 * i);
-                if(item != null){
-                    item.startAnimation(animation);
-                }
-            }
-            mRecyclerView.setVisibility(View.VISIBLE);
-        }else{
-            if(isIn){
-                mRecyclerView.setVisibility(View.VISIBLE);
-            }else{
-                mRecyclerView.setVisibility(View.INVISIBLE);
-            }
-        }
+        });
     }
 
     public interface OnItemClickListener {
@@ -629,10 +496,8 @@ public class ClassFragment extends BaseFragment {
         private static final int VIEW_TYPE_FEATURED= 2;
         private LayoutInflater mInflater;
         private OnItemClickListener mOnItemClickListener;
-        private int[] mTagId = {R.drawable.btn_class_from_orange,R.drawable.btn_class_from_blue,
-                R.drawable.btn_class_from_green,R.drawable.btn_class_from_pink,R.drawable.btn_class_from_yellow};
 
-        public ClassDocListAdapter(){
+        ClassDocListAdapter(){
             mInflater = LayoutInflater.from(getActivity());
         }
 
@@ -657,10 +522,14 @@ public class ClassFragment extends BaseFragment {
             if(viewHolder instanceof ClassDocListAdapter.LinearHViewHolder){
                 ClassDocListAdapter.LinearHViewHolder linearHViewHolder = (ClassDocListAdapter.LinearHViewHolder) viewHolder;
                 if(mFeaturedBeans.size() == 0){
-                    linearHViewHolder.itemView.setVisibility(View.GONE);
+                    ViewGroup.LayoutParams params =  linearHViewHolder.itemView.getLayoutParams();
+                    params.height = 0;
+                    linearHViewHolder.itemView.setLayoutParams(params);
                     return;
                 }else {
-                    linearHViewHolder.itemView.setVisibility(View.VISIBLE);
+                    ViewGroup.LayoutParams params =  linearHViewHolder.itemView.getLayoutParams();
+                    params.height = DensityUtil.dip2px(110);
+                    linearHViewHolder.itemView.setLayoutParams(params);
                 }
                 linearHViewHolder.mRvList.setBackgroundColor(Color.WHITE);
                 linearHViewHolder.recyclerViewAdapter.setData(mFeaturedBeans);
@@ -668,8 +537,8 @@ public class ClassFragment extends BaseFragment {
                     @Override
                     public void onItemClick(View view, int position) {
                         FeaturedBean docBean = mFeaturedBeans.get(position);
-                        if(!TextUtils.isEmpty(docBean.schema)){
-                            Uri uri = Uri.parse(docBean.schema);
+                        if(!TextUtils.isEmpty(docBean.getSchema())){
+                            Uri uri = Uri.parse(docBean.getSchema());
                             IntentUtils.toActivityFromUri(getActivity(),uri,view);
                         }
                     }
@@ -679,20 +548,25 @@ public class ClassFragment extends BaseFragment {
                     }
                 });
             }else if(viewHolder instanceof ClassDocListAdapter.BannerViewHolder){
+                mBannerViewHolder = (ClassDocListAdapter.BannerViewHolder) viewHolder;
                 if(mBannerBeans.size() == 0){
-                    viewHolder.itemView.setVisibility(View.GONE);
+                    ViewGroup.LayoutParams params =  mBannerViewHolder.itemView.getLayoutParams();
+                    params.height = 0;
+                    mBannerViewHolder.itemView.setLayoutParams(params);
                     return;
                 }else {
-                    viewHolder.itemView.setVisibility(View.VISIBLE);
+                    ViewGroup.LayoutParams params =  mBannerViewHolder.itemView.getLayoutParams();
+                    params.height = DensityUtil.dip2px(144);
+                    mBannerViewHolder.itemView.setLayoutParams(params);
+                    startBanner();
                 }
-                mBannerViewHolder = (ClassDocListAdapter.BannerViewHolder) viewHolder;
                 ArrayList<ImageView> imageViews = new ArrayList<>();
                 mBannerViewHolder.llPointGroup.removeAllViews();
                 for(int i=0;i<mBannerBeans.size();i++) {
-                    final BannerBen bean = mBannerBeans.get(i);
+                    final BannerBean bean = mBannerBeans.get(i);
                     ImageView image = new ImageView(getActivity());
                     Picasso.with(getActivity())
-                            .load(StringUtils.getUrl(getActivity(), bean.bg.path, DensityUtil.getScreenWidth(), DensityUtil.dip2px(150), false, false))
+                            .load(StringUtils.getUrl(getActivity(),Otaku.URL_QINIU + bean.getBg().getPath(), DensityUtil.getScreenWidth(), DensityUtil.dip2px(150), false, false))
                             .fit()
                             .placeholder(R.drawable.ic_default_banner)
                             .error(R.drawable.ic_default_banner)
@@ -713,8 +587,8 @@ public class ClassFragment extends BaseFragment {
                     image.setOnClickListener(new NoDoubleClickListener() {
                         @Override
                         public void onNoDoubleClick(View v) {
-                            if(!TextUtils.isEmpty(bean.schema)){
-                                Uri uri = Uri.parse(bean.schema);
+                            if(!TextUtils.isEmpty(bean.getSchema())){
+                                Uri uri = Uri.parse(bean.getSchema());
                                 IntentUtils.toActivityFromUri(getActivity(), uri,v);
                             }
                         }
@@ -755,27 +629,18 @@ public class ClassFragment extends BaseFragment {
                 }
             }else if(viewHolder instanceof ClassDocListAdapter.DocViewHolder){
                 Object o = getItem(position);
-                if(o instanceof DocItemBean){
-                    final DocItemBean post = (DocItemBean) o;
+                if(o instanceof DocListBean){
+                    final DocListBean post = (DocListBean) o;
                     final ClassDocListAdapter.DocViewHolder holder = (ClassDocListAdapter.DocViewHolder) viewHolder;
 
                     if(holder.ivClubCreatorFlag != null){
                         holder.ivClubCreatorFlag.setVisibility(View.GONE);
                         holder.tvCreatorName.setSelected(false);
                     }
-                    if(holder.docLabel != null && post.tags != null){
+                    if(holder.docLabel != null && post.getTags() != null){
                         holder.docLabel.setDocLabelAdapter(holder.docLabelAdapter);
-                        holder.docLabelAdapter.setData(post.tags,false);
-//                        holder.docLabel.setItemClickListener(new DocLabelView.LabelItemClickListener() {
-//
-//                            @Override
-//                            public void itemClick(int position) {
-//                                if (position < post.tags.size()) {
-//                                    holder.plusLabel(post, position);
-//                                }
-//                            }
-//                        });
-                        if(post.tags.size()>0) {
+                        holder.docLabelAdapter.setData(post.getTags(),false);
+                        if(post.getTags().size()>0) {
                             holder.docLabel.setVisibility(View.VISIBLE);
                             holder.vDocSep.setVisibility(View.VISIBLE);
                         }else{
@@ -783,17 +648,17 @@ public class ClassFragment extends BaseFragment {
                             holder.vDocSep.setVisibility(View.GONE);
                         }
                     }else {
-                        holder.docLabel.setVisibility(View.GONE);
+                        if(holder.docLabel != null) holder.docLabel.setVisibility(View.GONE);
                         holder.vDocSep.setVisibility(View.GONE);
                     }
 
-                    holder.ivLevelColor.setBackgroundColor(post.user.level_color);
-                    holder.tvLevel.setText(post.user.level + "");
-                    holder.tvLevel.setTextColor(post.user.level_color);
-                    holder.tvCreatorName.setText(post.user.nickname);
+                    holder.ivLevelColor.setBackgroundColor(StringUtils.readColorStr(post.getUserLevelColor(), ContextCompat.getColor(getContext(),R.color.main_title_cyan)));
+                    holder.tvLevel.setText(String.valueOf(post.getUserLevel()));
+                    holder.tvLevel.setTextColor(StringUtils.readColorStr(post.getUserLevelColor(),ContextCompat.getColor(getContext(),R.color.main_title_cyan)));
+                    holder.tvCreatorName.setText(post.getUserName());
                     if(holder.ivCreatorAvatar != null){
                         Picasso.with(getActivity())
-                                .load(StringUtils.getUrl(getActivity(), post.user.icon.path, DensityUtil.dip2px(44), DensityUtil.dip2px(44), false, false))
+                                .load(StringUtils.getUrl(getActivity(),Otaku.URL_QINIU + post.getUserIcon().getPath(), DensityUtil.dip2px(44), DensityUtil.dip2px(44), false, false))
                                 .resize(DensityUtil.dip2px(44), DensityUtil.dip2px(44))
                                 .placeholder(R.drawable.ic_default_avatar_m)
                                 .error(R.drawable.ic_default_avatar_m)
@@ -801,24 +666,24 @@ public class ClassFragment extends BaseFragment {
                                 .tag(TAG)
                                 .config(Bitmap.Config.RGB_565)
                                 .into(holder.ivCreatorAvatar);
-                        holder.ivCreatorAvatar.setTag(R.id.id_creator_uuid, post.user.id);
+                        holder.ivCreatorAvatar.setTag(R.id.id_creator_uuid, post.getUserId());
                     }
                     holder.ivClubCreatorFlag.setVisibility(View.GONE);
                     holder.tvCreatorName.setSelected(false);
                     holder.ivClubCreatorFlag.setVisibility(View.GONE);
                     holder.tvCreatorName.setSelected(false);
-                    if(TextUtils.isEmpty(post.doc.title)){
+                    if(TextUtils.isEmpty(post.getDesc().getTitle())){
                         holder.tvPostTitle.setVisibility(View.GONE);
                     }else{
                         holder.tvPostTitle.setVisibility(View.VISIBLE);
-                        holder. tvPostTitle.setText(post.doc.title);
+                        holder. tvPostTitle.setText(post.getDesc().getTitle());
                     }
                     // 点赞/评论
-                    holder.tvCommentNum.setText(StringUtils.getNumberInLengthLimit(post.doc.comments, 3));
-                    holder.tvPantsNum.setText(StringUtils.getNumberInLengthLimit(post.doc.likes, 3));
+                    holder.tvCommentNum.setText(StringUtils.getNumberInLengthLimit(post.getDesc().getComments(), 3));
+                    holder.tvPantsNum.setText(StringUtils.getNumberInLengthLimit(post.getDesc().getLikes(), 3));
                     // 时间,内容
-                    holder.tvPostDate.setText(StringUtils.timeFormate(post.doc.updateTime));
-                    holder.tvPostBrief.setText(post.doc.content);
+                    holder.tvPostDate.setText(StringUtils.timeFormate(post.getUpdateTime()));
+                    holder.tvPostBrief.setText(post.getDesc().getContent());
                     // 加载特殊帖子样式：投票，视频
                     holder.rlSpecialTypePack.setVisibility(View.GONE);
                     // 加载图片
@@ -836,13 +701,11 @@ public class ClassFragment extends BaseFragment {
                         holder.rlIcon3.setVisibility(View.INVISIBLE);
                     }
                     holder.tvIconNum.setVisibility(View.GONE);
-                    holder.tvPostFromName.setTag(R.id.id_filebean, post);
-                    holder.ivDocHot.setVisibility(View.GONE);
-                    if (!TextUtils.isEmpty(post.doc.music.url)){
+                    if (post.getDesc().getMusic() != null){
+
                         holder.rlMusicRoot.setVisibility(View.VISIBLE);
-                        holder.llImagePack.setVisibility(View.VISIBLE);
                         Picasso.with(getActivity())
-                                .load(StringUtils.getUrl(getActivity(), post.doc.music.cover.path, DensityUtil.dip2px(90), DensityUtil.dip2px(90), false, true))
+                                .load(StringUtils.getUrl(getActivity(),Otaku.URL_QINIU + post.getDesc().getMusic().getCover().getPath(), DensityUtil.dip2px(90), DensityUtil.dip2px(90), false, true))
                                 .resize(DensityUtil.dip2px(90), DensityUtil.dip2px(90))
                                 .placeholder(R.drawable.ic_default_avatar_l)
                                 .error(R.drawable.ic_default_avatar_l)
@@ -850,20 +713,20 @@ public class ClassFragment extends BaseFragment {
                                 .tag(TAG)
                                 .config(Bitmap.Config.RGB_565)
                                 .into(holder.musicImg);
-                        holder.musicTitle.setText(post.doc.music.name);
+                        holder.musicTitle.setText(post.getDesc().getMusic().getName());
                     }else {
                         holder.rlMusicRoot.setVisibility(View.GONE);
-                        if (post.doc.images != null && post.doc.images.size() > 0) {
+                        if (post.getDesc().getImages() != null && post.getDesc().getImages().size() > 0) {
                             holder.llImagePack.setVisibility(View.VISIBLE);
                             holder.rlIcon1.setVisibility(View.VISIBLE);
                             holder.rlIcon1.setVisibility(View.VISIBLE);
-                            if (FileUtil.isGif(post.doc.images.get(0).path)) {
+                            if (FileUtil.isGif(post.getDesc().getImages().get(0).getPath())) {
                                 holder.ivGifIcon1.setVisibility(View.VISIBLE);
                             } else {
                                 holder.ivGifIcon1.setVisibility(View.GONE);
                             }
                             Picasso.with(getActivity())
-                                    .load(StringUtils.getUrl(getActivity(), post.doc.images.get(0).path, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, false, true))
+                                    .load(StringUtils.getUrl(getActivity(),Otaku.URL_QINIU + post.getDesc().getImages().get(0).getPath(), (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, false, true))
                                     .resize((DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3)
                                     .placeholder(R.drawable.ic_default_club_l)
                                     .error(R.drawable.ic_default_club_l)
@@ -871,15 +734,15 @@ public class ClassFragment extends BaseFragment {
                                     .tag(TAG)
                                     .config(Bitmap.Config.RGB_565)
                                     .into(holder.ivIcon1);
-                            if(post.doc.images.size() > 1){
+                            if(post.getDesc().getImages().size() > 1){
                                 holder.rlIcon2.setVisibility(View.VISIBLE);
-                                if (FileUtil.isGif(post.doc.images.get(1).path)) {
+                                if (FileUtil.isGif(post.getDesc().getImages().get(1).getPath())) {
                                     holder.ivGifIcon2.setVisibility(View.VISIBLE);
                                 } else {
                                     holder.ivGifIcon2.setVisibility(View.GONE);
                                 }
                                 Picasso.with(getActivity())
-                                        .load(StringUtils.getUrl(getActivity(), post.doc.images.get(1).path, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, false, true))
+                                        .load(StringUtils.getUrl(getActivity(),Otaku.URL_QINIU + post.getDesc().getImages().get(1).getPath(), (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, false, true))
                                         .resize((DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3)
                                         .placeholder(R.drawable.ic_default_club_l)
                                         .error(R.drawable.ic_default_club_l)
@@ -889,15 +752,15 @@ public class ClassFragment extends BaseFragment {
                                         .into(holder.ivIcon2);
                             }
                             // 是否显示第三张图
-                            if(holder.rlSpecialTypePack.getVisibility() != View.VISIBLE && post.doc.images.size() > 2){
+                            if(holder.rlSpecialTypePack.getVisibility() != View.VISIBLE && post.getDesc().getImages().size() > 2){
                                 holder.rlIcon3.setVisibility(View.VISIBLE);
-                                if (FileUtil.isGif(post.doc.images.get(2).path)) {
+                                if (FileUtil.isGif(post.getDesc().getImages().get(2).getPath())) {
                                     holder.ivGifIcon3.setVisibility(View.VISIBLE);
                                 } else {
                                     holder.ivGifIcon3.setVisibility(View.GONE);
                                 }
                                 Picasso.with(getActivity())
-                                        .load(StringUtils.getUrl(getActivity(), post.doc.images.get(2).path, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3,false,true))
+                                        .load(StringUtils.getUrl(getActivity(),Otaku.URL_QINIU + post.getDesc().getImages().get(2).getPath(), (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3,false,true))
                                         .resize((DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3, (DensityUtil.getScreenWidth() - DensityUtil.dip2px(56)) / 3)
                                         .placeholder(R.drawable.ic_default_club_l)
                                         .error(R.drawable.ic_default_club_l)
@@ -907,9 +770,9 @@ public class ClassFragment extends BaseFragment {
                                         .into(holder.ivIcon3);
                             }
                             // 是否显示  “共xx张图”
-                            if(post.doc.images.size() > 3 || (holder.rlSpecialTypePack.getVisibility() == View.VISIBLE && post.doc.images.size() > 2)){
+                            if(post.getDesc().getImages().size() > 3 || (holder.rlSpecialTypePack.getVisibility() == View.VISIBLE && post.getDesc().getImages().size() > 2)){
                                 holder.tvIconNum.setVisibility(View.VISIBLE);
-                                holder.tvIconNum.setText(getActivity().getString(R.string.label_post_icon_num, post.doc.images.size()));
+                                holder.tvIconNum.setText(getActivity().getString(R.string.label_post_icon_num, post.getDesc().getImages().size()));
                             }
                             //  }
                         }else if (holder.rlSpecialTypePack.getVisibility() == View.VISIBLE){
@@ -957,13 +820,6 @@ public class ClassFragment extends BaseFragment {
 
         @Override
         public int getItemCount() {
-//            if(mBannerBeans != null && mBannerBeans.size() > 0){
-//                if(mSpilitPosition != 0){
-//                    return mClassData.size() + 3;
-//                }else {
-//                    return mClassData.size() + 2;
-//                }
-//            }
             return mClassData.size() + 2;
         }
 
@@ -973,18 +829,19 @@ public class ClassFragment extends BaseFragment {
             LinearLayout llPointGroup;
             View llPointContainer;
             View pressedPoint;
+            View root;
             int width;
 
-            public BannerViewHolder(View itemView) {
+            BannerViewHolder(View itemView) {
                 super(itemView);
                 viewPager = (ViewPager) itemView.findViewById(R.id.pager_class_banner);
                 llPointGroup = (LinearLayout) itemView.findViewById(R.id.ll_point_group);
                 pressedPoint = itemView.findViewById(R.id.view_pressed_point);
                 llPointContainer = itemView.findViewById(R.id.ll_point_container);
+                root = itemView.findViewById(R.id.rl_root);
                 if(scheduledExecutorService != null){
                     scheduledExecutorService.shutdown();
                 }
-                startBanner();
             }
         }
 
@@ -992,7 +849,7 @@ public class ClassFragment extends BaseFragment {
 
             private ArrayList<ImageView> images;
 
-            public BannerAdapter(ArrayList<ImageView> images){
+            BannerAdapter(ArrayList<ImageView> images){
                 this.images = images;
             }
 
@@ -1032,26 +889,16 @@ public class ClassFragment extends BaseFragment {
             }
         };
 
-        private View.OnClickListener mFromNameListener = new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-//                Context context = v.getContext();
-//                final DocItemBean docBean = (DocItemBean) v.getTag(R.id.id_filebean);
-//                Intent intent = new Intent(context, ClubPostListActivity.class);
-//                intent.putExtra(BaseActivity.EXTRA_KEY_UUID, docBean.doc.id);
-//                context.startActivity(intent);
-            }
-        };
-
         class LinearHViewHolder extends RecyclerView.ViewHolder{
 
+            View root;
             RecyclerView mRvList;
             ClassRecyclerViewAdapter recyclerViewAdapter;
 
-            public LinearHViewHolder(View itemView) {
+            LinearHViewHolder(View itemView) {
                 super(itemView);
                 mRvList = (RecyclerView) itemView.findViewById(R.id.rv_class_featured);
+                root = itemView.findViewById(R.id.ll_root);
                 recyclerViewAdapter = new ClassRecyclerViewAdapter(itemView.getContext());
                 LinearLayoutManager layoutManager = new LinearLayoutManager(itemView.getContext());
                 layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -1061,79 +908,67 @@ public class ClassFragment extends BaseFragment {
         }
 
         class DocViewHolder extends RecyclerView.ViewHolder{
-            public ImageView ivDocHot;
-            public ImageView ivCreatorAvatar;
-            @FindView(R.id.tv_post_creator_name)
-            public TextView tvCreatorName;
-            public View ivClubCreatorFlag;
-            @FindView(R.id.tv_post_update_time)
-            public TextView tvPostDate;
-            @FindView(R.id.tv_post_title)
-            public TextView tvPostTitle;
-            @FindView(R.id.tv_post_brief)
-            public TextView tvPostBrief;
-            @FindView(R.id.ll_image_3)
-            public View llImagePack;
-            @FindView(R.id.rl_post_special_flag)
-            public View rlSpecialTypePack;
-            @FindView(R.id.iv_post_flag_icon)
-            public ImageView ivSpecialTypeIcon;
-            @FindView(R.id.tv_post_vote_brief)
-            public TextView tvVoteBrief;
-            @FindView(R.id.rl_post_image_1)
-            public View rlIcon1;
-            @FindView(R.id.rl_post_image_2)
-            public View rlIcon2;
-            @FindView(R.id.rl_post_image_3)
-            public View rlIcon3;
-            @FindView(R.id.iv_post_image_1_gif_flag)
-            public View ivGifIcon1;
-            @FindView(R.id.iv_post_image_2_gif_flag)
-            public View ivGifIcon2;
-            @FindView(R.id.iv_post_image_3_gif_flag)
-            public View ivGifIcon3;
-            @FindView(R.id.iv_post_image_1)
-            public ImageView ivIcon1;
-            @FindView(R.id.iv_post_image_2)
-            public ImageView ivIcon2;
-            @FindView(R.id.iv_post_image_3)
-            public ImageView ivIcon3;
-            @FindView(R.id.tv_post_img_num)
-            public TextView tvIconNum;
-            @FindView(R.id.iv_pants)
-            public ImageView ivPants;
-            @FindView(R.id.tv_post_comment_num)
-            public TextView tvCommentNum;
-            @FindView(R.id.tv_post_pants_num)
-            public TextView tvPantsNum;
-            @FindView(R.id.view_flag_recommend)
-            public View ivFlagRecommand;
-            @FindView(R.id.rl_music_root)
-            public View rlMusicRoot;
-            @FindView(R.id.iv_item_image)
-            public MyRoundedImageView musicImg;
-            @FindView(R.id.tv_music_title)
-            public TextView musicTitle;
-            public View ivLevelColor;
-            public TextView tvLevel;
-            public TextView tvPostFromName;
-            public ImageView ivIconClassOffical;
+            ImageView ivCreatorAvatar;
+            @ViewInject(R.id.tv_post_creator_name)
+            TextView tvCreatorName;
+            View ivClubCreatorFlag;
+            @ViewInject(R.id.tv_post_update_time)
+            TextView tvPostDate;
+            @ViewInject(R.id.tv_post_title)
+            TextView tvPostTitle;
+            @ViewInject(R.id.tv_post_brief)
+            TextView tvPostBrief;
+            @ViewInject(R.id.ll_image_3)
+            View llImagePack;
+            @ViewInject(R.id.rl_post_special_flag)
+            View rlSpecialTypePack;
+            @ViewInject(R.id.rl_post_image_1)
+            View rlIcon1;
+            @ViewInject(R.id.rl_post_image_2)
+            View rlIcon2;
+            @ViewInject(R.id.rl_post_image_3)
+            View rlIcon3;
+            @ViewInject(R.id.iv_post_image_1_gif_flag)
+            View ivGifIcon1;
+            @ViewInject(R.id.iv_post_image_2_gif_flag)
+            View ivGifIcon2;
+            @ViewInject(R.id.iv_post_image_3_gif_flag)
+            View ivGifIcon3;
+            @ViewInject(R.id.iv_post_image_1)
+            ImageView ivIcon1;
+            @ViewInject(R.id.iv_post_image_2)
+            ImageView ivIcon2;
+            @ViewInject(R.id.iv_post_image_3)
+            ImageView ivIcon3;
+            @ViewInject(R.id.tv_post_img_num)
+            TextView tvIconNum;
+            @ViewInject(R.id.tv_post_comment_num)
+            TextView tvCommentNum;
+            @ViewInject(R.id.tv_post_pants_num)
+            TextView tvPantsNum;
+            @ViewInject(R.id.rl_music_root)
+            View rlMusicRoot;
+            @ViewInject(R.id.iv_item_image)
+            MyRoundedImageView musicImg;
+            @ViewInject(R.id.tv_music_title)
+            TextView musicTitle;
+            View ivLevelColor;
+            TextView tvLevel;
+            ImageView ivIconClassOffical;
             //标签
-            public View vDocSep;
-            public DocLabelView docLabel;
-            public NewDocLabelAdapter docLabelAdapter;
+            View vDocSep;
+            DocLabelView docLabel;
+            NewDocLabelAdapter docLabelAdapter;
 
-            public DocViewHolder(View itemView) {
+            DocViewHolder(View itemView) {
                 super(itemView);
                 ivClubCreatorFlag = itemView.findViewById(R.id.iv_post_owner_flag);
                 ivLevelColor = itemView.findViewById(R.id.iv_level_bg);
                 tvLevel = (TextView)itemView.findViewById(R.id.tv_level);
                 vDocSep = itemView.findViewById(R.id.view_doc_sep);
                 docLabel = (DocLabelView) itemView.findViewById(R.id.dv_doc_label_root);
-                tvPostFromName = (TextView) itemView.findViewById(R.id.tv_post_bottom_from_name);
-                ivDocHot = (ImageView) itemView.findViewById(R.id.iv_class_doc_hot);
                 ivIconClassOffical = (ImageView) itemView.findViewById(R.id.iv_class_post_img);
-                Utils.view().inject(this, itemView);
+                x.view().inject(this, itemView);
                 ivCreatorAvatar = (ImageView) itemView.findViewById(R.id.iv_post_creator);
                 if (ivCreatorAvatar != null) {
                     ivCreatorAvatar.setOnClickListener(mAvatarListener);
@@ -1142,8 +977,6 @@ public class ClassFragment extends BaseFragment {
                 ivIcon1.setOnClickListener(mIconListener);
                 ivIcon2.setOnClickListener(mIconListener);
                 ivIcon3.setOnClickListener(mIconListener);
-                tvPostFromName.setOnClickListener(mFromNameListener);
-                tvPostFromName.setVisibility(View.GONE);
             }
 
             private View.OnClickListener mIconListener = new View.OnClickListener() {
@@ -1163,9 +996,9 @@ public class ClassFragment extends BaseFragment {
                     }
 
                     Context context = v.getContext();
-                    final DocItemBean docBean = (DocItemBean) v.getTag(R.id.id_filebean);
+                    final DocListBean docBean = (DocListBean) v.getTag(R.id.id_filebean);
                     Intent intent = new Intent(context, ImageBigSelectActivity.class);
-                    intent.putExtra(ImageBigSelectActivity.EXTRA_KEY_FILEBEAN, docBean.doc.images);
+                    intent.putExtra(ImageBigSelectActivity.EXTRA_KEY_FILEBEAN, docBean.getDesc().getImages());
                     intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX, index);
                     // 以后可选择 有返回数据
                     context.startActivity(intent);
@@ -1173,69 +1006,7 @@ public class ClassFragment extends BaseFragment {
                 }
             };
 
-            private void plusLabel(final DocItemBean post, final int position){
-                if (!NetworkUtils.checkNetworkAndShowError(getActivity())) {
-                    return;
-                }
-                if (post != null) {
-                    if (DialogUtils.checkLoginAndShowDlg(getActivity())) {
-                        final DocTag tagBean = post.tags.get(position);
-                        if(tagBean.liked){
-                            ((BaseActivity)getActivity()).createDialog();
-                            Otaku.getDocV2().dislikeNewTag(PreferenceManager.getInstance(getActivity()).getToken(), tagBean.id, post.doc.id).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
-                                @Override
-                                public void success(String token, String s) {
-                                    ((BaseActivity)getActivity()).finalizeDialog();
-                                    post.tags.remove(position);
-                                    tagBean.liked = false;
-                                    tagBean.likes--;
-                                    if (tagBean.likes > 0) {
-                                        post.tags.add(position, tagBean);
-                                    }
-                                    if (post.tags.size() > 0) {
-                                        vDocSep.setVisibility(View.VISIBLE);
-                                    } else {
-                                        vDocSep.setVisibility(View.GONE);
-                                    }
-                                    docLabelAdapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void failure(String e) {
-                                    ((BaseActivity)getActivity()).finalizeDialog();
-                                }
-                            }));
-                        }else {
-                            ((BaseActivity)getActivity()).createDialog();
-                            Otaku.getDocV2().likeNewTag(PreferenceManager.getInstance(getActivity()).getToken(), tagBean.id, post.doc.id).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
-                                @Override
-                                public void success(String token, String s) {
-                                    ((BaseActivity)getActivity()).finalizeDialog();
-                                    post.tags.remove(position);
-                                    tagBean.liked = true;
-                                    tagBean.likes++;
-                                    post.tags.add(position, tagBean);
-                                    docLabelAdapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void failure(String e) {
-                                    ((BaseActivity)getActivity()).finalizeDialog();
-                                }
-                            }));
-                        }
-                    }
-                }
-            }
         }
 
-        class SplitViewHolder extends RecyclerView.ViewHolder{
-
-            private TextView tv;
-            public SplitViewHolder(View itemView) {
-                super(itemView);
-                tv = (TextView) itemView.findViewById(R.id.tv_time_table);
-            }
-        }
     }
 }

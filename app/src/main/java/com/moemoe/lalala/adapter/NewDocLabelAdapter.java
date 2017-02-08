@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 /**
  * Created by Haru on 2015/12/24 0024.
  */
-public class NewDocLabelAdapter extends DocLabelBaseAdapter {
+public class NewDocLabelAdapter extends BaseAdapter{
     private static final int TYPE_LABEL = 1;
     private static final int TYPE_ADD = 2;
     private Context mContext;
@@ -89,22 +90,21 @@ public class NewDocLabelAdapter extends DocLabelBaseAdapter {
         int type = getItemViewType(position);
         if(convertView == null){
             if (type == TYPE_LABEL) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_doc_label, null);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_doc_label, viewGroup,false);
                 holder = new ViewHolder();
                 holder.labelRoot = (LinearLayout) convertView.findViewById(R.id.ll_label_root);
                 holder.labelContent = (TextView) convertView.findViewById(R.id.tv_item_label_content);
                 holder.labelFollowNum = (TextView) convertView.findViewById(R.id.tv_item_label_num);
                 convertView.setTag(holder);
             } else if (type == TYPE_ADD) {
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_doc_label_add, null);
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_doc_label_add, viewGroup,false);
             }
         }
         if (type == TYPE_LABEL) {
             holder = (ViewHolder) convertView.getTag();
             DocTag b = getItem(position);
-            String content = b.name;
-//            String num = String.valueOf(b.likes);
-            if(b.liked || mNeedShow){
+            String content = b.getName();
+            if(b.isLiked() || mNeedShow){
                 int index = StringUtils.getHashOfString(content, mBackGround.length);
                 holder.labelRoot.setBackgroundResource(mBackGround[index]);
                 holder.labelContent.setTextColor(Color.WHITE);
@@ -115,7 +115,7 @@ public class NewDocLabelAdapter extends DocLabelBaseAdapter {
                 holder.labelFollowNum.setTextColor(Color.BLACK);
             }
             holder.labelContent.setText(content);
-            holder.labelFollowNum.setText(StringUtils.getNumberInLengthLimit((int) b.likes,2));
+            holder.labelFollowNum.setText(StringUtils.getNumberInLengthLimit((int) b.getLikes(),2));
         }
 
         return convertView;

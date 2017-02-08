@@ -49,6 +49,6 @@
         android:layout_marginBottom="23dp"
         android:text="@string/label_copyright"
         android:textColor="@color/gray_txt_main"
-        android:textSize="@dimen/txt_size_secondary" />
+        android:textSize="@dimen/txt_size_12" />
     </RelativeLayout>
 </LinearLayout>

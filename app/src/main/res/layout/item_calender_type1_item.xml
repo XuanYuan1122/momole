@@ -93,7 +93,7 @@
                     android:paddingEnd="6dp"
                     android:paddingStart="6dp"
                     android:paddingRight="6dp"
-                    android:textSize="@dimen/txt_size_secondary"
+                    android:textSize="@dimen/txt_size_12"
                     android:singleLine="true"
                     android:ellipsize="end"
                     android:textColor="@color/white"
@@ -184,7 +184,7 @@
                     android:layout_marginRight="4dp"
                     android:text="0"
                     android:textColor="@color/main_title_cyan"
-                    android:textSize="@dimen/txt_size_secondary" />
+                    android:textSize="@dimen/txt_size_12" />
             </LinearLayout>
 
             <LinearLayout
@@ -211,7 +211,7 @@
                     android:layout_marginLeft="3dp"
                     android:text="0"
                     android:textColor="@color/green_tag_normal"
-                    android:textSize="@dimen/txt_size_secondary" />
+                    android:textSize="@dimen/txt_size_12" />
             </LinearLayout>
 
             <TextView

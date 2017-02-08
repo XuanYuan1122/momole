@@ -1,46 +1,161 @@
 package com.moemoe.lalala.data;
 
+import com.google.gson.annotations.SerializedName;
+
+import org.xutils.db.annotation.Column;
+import org.xutils.db.annotation.Table;
+
 /**
  * Created by Haru on 2016/4/27 0027.
  */
+@Table(name = "t_author_v1.0")
 public class AuthorInfo {
-    private String mUUid = null;
-    private String mUid = null;
-    private String mUserName = null;
-    private String mToken = null;
-    private String mPlatform = null;
-    private String mHeadPath = null;
-    private String mPhone = null;
-    private String mPassword = null;
-    private String mGender = null;
-    private String mDevId = null;
-    private String slogan = null;
-    private String level_name = null;
-    private int score = -1;
-    private int level = -1;
-    private int level_score_end = -1;
-    private int level_score_start = -1;
-    private int level_color = -1;
-    private long register_time = -1;
-    private long birthday = -1;
-    private int nice_num = -1;
-    private int mUserId = -1;
-    private int mCoin = -1;
+    public static final String SEX_MALE = "M";
+    public static final String SEX_FEMALE = "F";
+    @Column(name = "birthday")
+    @SerializedName("birthday")
+    private String birthday;
+    @Column(name = "coin")
+    @SerializedName("coin")
+    private int coin ;
+    @Column(name = "headPath")
+    @SerializedName("headPath")
+    private String headPath;
+    @Column(name = "level")
+    @SerializedName("level")
+    private int level;
+    @Column(name = "levelColor")
+    @SerializedName("levelColor")
+    private String levelColor;
+    @Column(name = "levelName")
+    @SerializedName("levelName")
+    private String levelName;
+    @Column(name = "levelScoreEnd")
+    @SerializedName("levelScoreEnd")
+    private int levelScoreEnd;
+    @Column(name = "levelScoreStart")
+    @SerializedName("levelScoreStart")
+    private int levelScoreStart;
+    @Column(name = "registerTime")
+    @SerializedName("registerTime")
+    private String registerTime;
+    @Column(name = "score")
+    @SerializedName("score")
+    private int score;
+    @Column(name = "sex")
+    @SerializedName("sex")
+    private String sex;
+    @Column(name = "userId",isId = true,autoGen = false)
+    @SerializedName("userId")
+    private String userId;
+    @Column(name = "userName")
+    @SerializedName("userName")
+    private String userName;
+    @Column(name = "openId")
+    private String openId;
+    @Column(name = "platform")
+    private String platform;
+    @Column(name = "token")
+    private String token;
+    @Column(name = "password")
+    private String password;
+    @Column(name = "phone")
+    private String phone;
+    @Column(name = "devId")
+    private String devId;
 
-    public String getLevel_name() {
-        return level_name;
+    public AuthorInfo(){
+        birthday="";
+        coin = 0;
+        headPath = "";
+        level = 0;
+        levelColor = "";
+        levelName = "";
+        levelScoreEnd = 0;
+        levelScoreStart = 0;
+        registerTime = "";
+        score = 0;
+        sex = "";
+        userId = "";
+        userName = "";
+        openId = "";
+        platform = "";
+        token = "";
+        password = "";
+        phone = "";
+        devId = "";
     }
 
-    public void setLevel_name(String level_name) {
-        this.level_name = level_name;
+    public String getOpenId() {
+        return openId;
     }
 
-    public int getScore() {
-        return score;
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getDevId() {
+        return devId;
+    }
+
+    public void setDevId(String devId) {
+        this.devId = devId;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
+
+    public String getHeadPath() {
+        return headPath;
+    }
+
+    public void setHeadPath(String headPath) {
+        this.headPath = headPath;
     }
 
     public int getLevel() {
@@ -51,151 +166,75 @@ public class AuthorInfo {
         this.level = level;
     }
 
-    public int getLevel_score_end() {
-        return level_score_end;
+    public String getLevelColor() {
+        return levelColor;
     }
 
-    public void setLevel_score_end(int level_score_end) {
-        this.level_score_end = level_score_end;
+    public void setLevelColor(String levelColor) {
+        this.levelColor = levelColor;
     }
 
-    public int getLevel_score_start() {
-        return level_score_start;
+    public String getLevelName() {
+        return levelName;
     }
 
-    public void setLevel_score_start(int level_score_start) {
-        this.level_score_start = level_score_start;
+    public void setLevelName(String levelName) {
+        this.levelName = levelName;
     }
 
-    public int getLevel_color() {
-        return level_color;
+    public int getLevelScoreEnd() {
+        return levelScoreEnd;
     }
 
-    public void setLevel_color(int level_color) {
-        this.level_color = level_color;
+    public void setLevelScoreEnd(int levelScoreEnd) {
+        this.levelScoreEnd = levelScoreEnd;
     }
 
-    public String getSlogan() {
-        return slogan;
+    public int getLevelScoreStart() {
+        return levelScoreStart;
     }
 
-    public void setSlogan(String slogan) {
-        this.slogan = slogan;
+    public void setLevelScoreStart(int levelScoreStart) {
+        this.levelScoreStart = levelScoreStart;
     }
 
-    public long getRegister_time() {
-        return register_time;
+    public String getRegisterTime() {
+        return registerTime;
     }
 
-    public void setRegister_time(long register_time) {
-        this.register_time = register_time;
+    public void setRegisterTime(String registerTime) {
+        this.registerTime = registerTime;
     }
 
-    public long getBirthday() {
-        return birthday;
+    public int getScore() {
+        return score;
     }
 
-    public void setBirthday(long birthday) {
-        this.birthday = birthday;
+    public void setScore(int score) {
+        this.score = score;
     }
 
-    public int getNice_num() {
-        return nice_num;
+    public String getSex() {
+        return sex;
     }
 
-    public void setNice_num(int nice_num) {
-        this.nice_num = nice_num;
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
-    public String getmDevId() {
-        return mDevId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setmDevId(String mDevId) {
-        this.mDevId = mDevId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getmUUid() {
-        return mUUid;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setmUUid(String mUUid) {
-        this.mUUid = mUUid;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
-
-    public String getmUid() {
-        return mUid;
-    }
-
-    public void setmUid(String mUid) {
-        this.mUid = mUid;
-    }
-
-    public String getmUserName() {
-        return mUserName;
-    }
-
-    public void setmUserName(String mUserName) {
-        this.mUserName = mUserName;
-    }
-
-    public String getmToken() {
-        return mToken;
-    }
-
-    public void setmToken(String mToken) {
-        this.mToken = mToken;
-    }
-
-    public String getmPlatform() {
-        return mPlatform;
-    }
-
-    public void setmPlatform(String mPlatform) {
-        this.mPlatform = mPlatform;
-    }
-
-    public String getmHeadPath() {
-        return mHeadPath;
-    }
-
-    public void setmHeadPath(String mHeadPath) {
-        this.mHeadPath = mHeadPath;
-    }
-
-    public String getmPhone() {
-        return mPhone;
-    }
-
-    public void setmPhone(String mPhone) {
-        this.mPhone = mPhone;
-    }
-
-    public String getmPassword() {
-        return mPassword;
-    }
-
-    public void setmPassword(String mPassword) {
-        this.mPassword = mPassword;
-    }
-
-    public int getmUserId() {
-        return mUserId;
-    }
-
-    public void setmUserId(int mUserId) {
-        this.mUserId = mUserId;
-    }
-
-    public String getmGender() {
-        return mGender;
-    }
-
-    public void setmGender(String mGender) {
-        this.mGender = mGender;
-    }
-
-    public void setmCoin(int coin){this.mCoin = coin;}
-
-    public int getmCoin(){return mCoin;}
 }

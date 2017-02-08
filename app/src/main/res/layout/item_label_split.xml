@@ -26,7 +26,7 @@
             android:gravity="center"
             android:text="2015-8-10"
             android:textColor="@color/gray_txt_main"
-            android:textSize="@dimen/txt_size_secondary" />
+            android:textSize="@dimen/txt_size_12" />
         
         <View
             style="@style/HorizontalSep"

@@ -296,7 +296,7 @@ class DownloadStatusObserver implements OnRetryableFileDownloadStatusListener {
             }
             // Configuration or ListenUrls is null or empty, notify all
             else {
-                // global register listener, notify all callers
+                // global requestRegisterCode listener, notify all callers
                 notifyStatusWaiting(downloadFileInfo, listenerInfo.mListener);
             }
         }
@@ -333,7 +333,7 @@ class DownloadStatusObserver implements OnRetryableFileDownloadStatusListener {
             }
             // Configuration or ListenUrls is null or empty, notify all
             else {
-                // global register listener, notify all callers
+                // global requestRegisterCode listener, notify all callers
                 notifyStatusRetrying(downloadFileInfo, retryTimes, listenerInfo.mListener);
             }
         }
@@ -370,7 +370,7 @@ class DownloadStatusObserver implements OnRetryableFileDownloadStatusListener {
             }
             // Configuration or ListenUrls is null or empty, notify all
             else {
-                // global register listener, notify all callers
+                // global requestRegisterCode listener, notify all callers
                 notifyStatusPreparing(downloadFileInfo, listenerInfo.mListener);
             }
         }
@@ -406,7 +406,7 @@ class DownloadStatusObserver implements OnRetryableFileDownloadStatusListener {
             }
             // Configuration or ListenUrls is null or empty, notify all
             else {
-                // global register listener, notify all callers
+                // global requestRegisterCode listener, notify all callers
                 notifyStatusPrepared(downloadFileInfo, listenerInfo.mListener);
             }
         }
@@ -444,7 +444,7 @@ class DownloadStatusObserver implements OnRetryableFileDownloadStatusListener {
             }
             // Configuration or ListenUrls is null or empty, notify all
             else {
-                // global register listener, notify all callers
+                // global requestRegisterCode listener, notify all callers
                 notifyStatusDownloading(downloadFileInfo, downloadSpeed, remainingTime, listenerInfo.mListener);
             }
         }
@@ -484,7 +484,7 @@ class DownloadStatusObserver implements OnRetryableFileDownloadStatusListener {
             }
             // Configuration or ListenUrls is null or empty, notify all
             else {
-                // global register listener, notify all callers
+                // global requestRegisterCode listener, notify all callers
                 notifyStatusPaused(downloadFileInfo, listenerInfo.mListener);
             }
         }
@@ -524,7 +524,7 @@ class DownloadStatusObserver implements OnRetryableFileDownloadStatusListener {
             }
             // Configuration or ListenUrls is null or empty, notify all
             else {
-                // global register listener, notify all callers
+                // global requestRegisterCode listener, notify all callers
                 notifyStatusCompleted(downloadFileInfo, listenerInfo.mListener);
             }
         }
@@ -563,7 +563,7 @@ class DownloadStatusObserver implements OnRetryableFileDownloadStatusListener {
             }
             // Configuration or ListenUrls is null or empty, notify all
             else {
-                // global register listener, notify all callers
+                // global requestRegisterCode listener, notify all callers
                 notifyStatusFailed(url, downloadFileInfo, failReason, listenerInfo.mListener);
             }
         }

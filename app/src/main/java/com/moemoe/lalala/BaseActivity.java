@@ -3,6 +3,7 @@ package com.moemoe.lalala;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,23 +15,23 @@ import android.webkit.WebChromeClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.app.Utils;
+import com.igexin.sdk.PushManager;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.callback.MoeMoeCallback;
 import com.moemoe.lalala.data.AppUpdateInfo;
 import com.moemoe.lalala.data.AuthorInfo;
-import com.moemoe.lalala.network.CallbackFactory;
-import com.moemoe.lalala.network.OnNetWorkCallback;
+import com.moemoe.lalala.data.LoginResultBean;
+import com.moemoe.lalala.network.OneParameterCallback;
 import com.moemoe.lalala.network.Otaku;
 import com.moemoe.lalala.thirdopen.ThirdPartySDKManager;
 import com.moemoe.lalala.utils.AlertDialogUtil;
-import com.moemoe.lalala.utils.PhoneUtil;
 import com.moemoe.lalala.utils.PreferenceManager;
 import com.moemoe.lalala.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.xutils.DbManager;
+import org.xutils.ex.DbException;
+import org.xutils.x;
 
 import java.io.File;
 import java.util.Date;
@@ -41,8 +42,8 @@ import java.util.Date;
 public abstract class BaseActivity extends AppCompatActivity{
     public static final String EXTRA_KEY_UUID = "uuid";
     protected Intent mIntent;
-    protected static PreferenceManager mPreferMng = null;
-    protected static PreferenceManager.PreferenceInfo mPreferInfo = null;
+    protected PreferenceManager mPreferMng = null;
+    protected PreferenceManager.PreferenceInfo mPreferInfo = null;
     protected ProgressDialog mDialog = null;
     public ProgressBar mProgressBar;
     protected String updateApkName = null ;
@@ -51,20 +52,28 @@ public abstract class BaseActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.view().inject(this);
+        x.view().inject(this);
         mIntent = getIntent();
+        mPreferMng = PreferenceManager.getInstance(getApplicationContext());
+        //mPreferInfo = PreferenceManager.initPreferenceInfo();
+        mPreferInfo = mPreferMng.getPreferInfo();
         initView();
         IntentFilter filter = new IntentFilter();
         filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         registerReceiver(mReceiver, filter);
-        MoemoeApplication.getInstance().addActivity(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
-        MoemoeApplication.getInstance().removeActivity(this);
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        if (level >= ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
+            // Clear the caches.  Note all pending requests will be removed too.
+        }
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -89,94 +98,86 @@ public abstract class BaseActivity extends AppCompatActivity{
     protected abstract void initView();
 
     public void tryLoginFirst(final MoeMoeCallback callback){
-        final AuthorInfo authorInfo = PreferenceManager.getInstance(this).getThirdPartyLoginMsg();
-        if(ThirdPartySDKManager.getInstance(this).isThirdParty(authorInfo.getmPlatform())){
-            Otaku.getAccountV2().loginThird(this,authorInfo.getmUid(), authorInfo.getmPlatform()).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+       // DbManager db = Utils.getDb(MoemoeApplication.sDaoConfig);
+        DbManager db = x.getDb(MoemoeApplication.sDaoConfig);
+        AuthorInfo authorInfo = null;
+        String userId = mPreferMng.getUserId();
+        try {
+            authorInfo = db.selector(AuthorInfo.class)
+                    .where("userId","=",userId)
+                    .findFirst();
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        if(authorInfo == null) authorInfo = new AuthorInfo();
+        if(ThirdPartySDKManager.getInstance().isThirdParty(authorInfo.getPlatform())){
+            final AuthorInfo finalAuthorInfo = authorInfo;
+            Otaku.getAccountV2().loginThird(this, authorInfo.getUserName(), authorInfo.getOpenId(), authorInfo.getPlatform(), new OneParameterCallback<LoginResultBean>() {
                 @Override
-                public void success(String token, String s) {
-                    authorInfo.setmToken(token);
-                    PreferenceManager.getInstance(BaseActivity.this).updateAccessTokenTimeToNow();
-                    try {
-                        JSONObject json = new JSONObject(s);
-                        int ok = json.optInt("ok");
-                        if(ok == Otaku.SERVER_OK){
-                            String id = json.optString("user_id");
-                            authorInfo.setmUUid(id);
-                            saveAuthInfo(authorInfo);
-                            if (callback != null){
-                                callback.onSuccess();
-                            }
-                            Otaku.getAccountV2().requestSelfData(token,BaseActivity.this);
-                        }else{
-
+                public void action(LoginResultBean loginResultBean) {
+                    if(loginResultBean != null){
+                        finalAuthorInfo.setToken(loginResultBean.getToken());
+                        PreferenceManager.setToken(loginResultBean.getToken());
+                        finalAuthorInfo.setUserId(loginResultBean.getUserId());
+                        saveAuthInfo(finalAuthorInfo);
+                        if (callback != null){
+                            callback.onSuccess();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        Otaku.getAccountV2().requestUserInfo(finalAuthorInfo.getUserId(),BaseActivity.this);
                     }
                 }
-
+            }, new OneParameterCallback<Integer>() {
                 @Override
-                public void failure(String e) {
+                public void action(Integer integer) {
+                    clearAuthInfo();
+                    if(callback != null){
+                        callback.onFailure();
+                    }
+                }
+            });
+        }else if(authorInfo.getPhone() != null && !authorInfo.getPhone().equals("")){
+            final AuthorInfo finalAuthorInfo1 = authorInfo;
+            Otaku.getAccountV2().login(this, authorInfo.getPhone(), authorInfo.getPassword(), new OneParameterCallback<LoginResultBean>() {
+                @Override
+                public void action(LoginResultBean loginResultBean) {
+                    finalAuthorInfo1.setToken(loginResultBean.getToken());
+                    PreferenceManager.setToken(loginResultBean.getToken());
+                    finalAuthorInfo1.setUserId(loginResultBean.getUserId());
+                    finalAuthorInfo1.setDevId(PushManager.getInstance().getClientid(BaseActivity.this) + "@and");
+                    saveAuthInfo(finalAuthorInfo1);
+                    if (callback != null){
+                        callback.onSuccess();
+                    }
+                    Otaku.getAccountV2().requestUserInfo(finalAuthorInfo1.getUserId(),BaseActivity.this);
+                }
+            }, new OneParameterCallback<Integer>() {
+                @Override
+                public void action(Integer integer) {
                     clearAuthInfo();
                     ToastUtil.showToast(BaseActivity.this, R.string.msg_auto_login_fail);
                     if(callback != null){
                         callback.onFailure();
                     }
                 }
-            }));
-        }else if(authorInfo.getmPhone() != null && !authorInfo.getmPhone().equals("")){
-            Otaku.getAccountV2().login(this, authorInfo.getmPhone(), authorInfo.getmPassword()).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
-                @Override
-                public void success(String token, String s) {
-                    System.out.println("token:" + token);
-                    authorInfo.setmToken(token);
-                    PreferenceManager.getInstance(BaseActivity.this).updateAccessTokenTimeToNow();
-                    try {
-                        JSONObject json = new JSONObject(s);
-                        int ok = json.optInt("ok");
-                        if(ok == Otaku.SERVER_OK) {
-                            String id = json.optString("user_id");
-                            authorInfo.setmUUid(id);
-                            authorInfo.setmDevId(PhoneUtil.getLocaldeviceId(getApplicationContext()));
-                            saveAuthInfo(authorInfo);
-                            if (callback != null){
-                                callback.onSuccess();
-                            }
-                            Otaku.getAccountV2().requestSelfData(token,BaseActivity.this);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void failure(String e) {
-                    clearAuthInfo();
-                    ToastUtil.showToast(BaseActivity.this, R.string.msg_auto_login_fail);
-                    if(callback != null){
-                        callback.onFailure();
-                    }
-                }
-            }));
+            });
         }else {
-            PreferenceManager.getInstance(this).clearThirdPartyLoginMsg();
+            clearAuthInfo();
         }
     }
 
     /**
      * 以防以后返回数据
-     * @param authorInfo
      */
     private void saveAuthInfo(AuthorInfo authorInfo){
-        PreferenceManager.getInstance(this).saveThirdPartyLoginMsg(authorInfo);
+        PreferenceManager.getInstance(this).setAuthorInfo(authorInfo);
     }
 
     private void clearAuthInfo(){
-        PreferenceManager.getInstance(this).clearThirdPartyLoginMsg();
+        PreferenceManager.getInstance(this).clearAuthorInfo();
     }
 
     public void createDialog(String message) {
-        if (this == null || this.isFinishing())
+        if (this.isFinishing())
             return;
         try {
             if (mDialog != null)
@@ -188,7 +189,7 @@ public abstract class BaseActivity extends AppCompatActivity{
     }
 
     public void createDialog() {
-        if (this == null || this.isFinishing())
+        if (this.isFinishing())
             return;
         try {
             if (mDialog != null && mDialog.isShowing()) return;
@@ -210,7 +211,6 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     /**
      * 网页加载完成执行
-     * @param url
      */
     public void onPageFinished(String url){
 
@@ -225,7 +225,6 @@ public abstract class BaseActivity extends AppCompatActivity{
 
     /**
      * 网页加载开始
-     * @param url
      */
     public void onPageStarted(String url){
 
@@ -257,7 +256,7 @@ public abstract class BaseActivity extends AppCompatActivity{
 
 
     protected void showUpdateDialog(final AppUpdateInfo info){
-        if (this == null || this.isFinishing()) return;
+        if (this.isFinishing()) return;
         final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
         alertDialogUtil.createPromptDialog(this, info.getTitle(), info.getContent());
         alertDialogUtil.setButtonText(getString(R.string.label_update), getString(R.string.label_later), info.getUpdateStatus());

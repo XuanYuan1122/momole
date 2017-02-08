@@ -27,8 +27,12 @@ import com.moemoe.lalala.view.NoDoubleClickListener;
 import com.moemoe.lalala.view.tooltip.Tooltip;
 import com.moemoe.lalala.view.tooltip.TooltipAnimation;
 
+import org.xutils.common.util.DensityUtil;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Haru on 2016/7/25 0025.
@@ -46,13 +50,12 @@ public class MapMark extends ImageView{
     private String startTime1;
     private String endTime1;
 
-    public MapMark(final Context context){
+    public MapMark(final Context context,float width,float height){
         super(context);
-        final int wrapContent = ViewGroup.LayoutParams.WRAP_CONTENT;
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(wrapContent,wrapContent);
+        //final int wrapContent = ViewGroup.LayoutParams.WRAP_CONTENT;
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(DensityUtil.dip2px(width),DensityUtil.dip2px(height));
         this.setLayoutParams(params);
         this.setClickable(true);
-
         setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
@@ -60,20 +63,32 @@ public class MapMark extends ImageView{
                         String temp = schame;
                         if (!TextUtils.isEmpty(content) && content.equals(getContext().getString(R.string.label_lotter))){
                             if (DialogUtils.checkLoginAndShowDlg(context)){
-                                AuthorInfo authorInfo =  PreferenceManager.getInstance(getContext()).getThirdPartyLoginMsg();
-                                try {
-                                    temp += "?user_id=" + authorInfo.getmUUid()
-                                            + "&nickname=" + URLEncoder.encode(authorInfo.getmUserName(),"UTF-8")
-                                            + "&token=" + authorInfo.getmToken();
-                                    Uri uri = Uri.parse(temp);
-                                    IntentUtils.haveShareWeb(getContext(), uri, v);
-                                } catch (UnsupportedEncodingException e) {
-                                    e.printStackTrace();
-                                }
+                                AuthorInfo authorInfo =  PreferenceManager.getInstance(getContext()).getAuthorInfo();
+                                    try {
+                                        temp += "?user_id=" + authorInfo.getUserId()
+                                                + "&nickname=" + (TextUtils.isEmpty(authorInfo.getUserName())? "" : URLEncoder.encode(authorInfo.getUserName(),"UTF-8"))
+                                                + "&token=" + PreferenceManager.getToken();
+                                        Uri uri = Uri.parse(temp);
+                                        IntentUtils.haveShareWeb(getContext(), uri, v);
+                                    } catch (UnsupportedEncodingException e) {
+                                        e.printStackTrace();
+                                    }
                             }else {
                                 return;
                             }
                         }else {
+                            if(temp.contains("http://prize.moemoe.la:8000/mt")){
+                                AuthorInfo authorInfo =  PreferenceManager.getInstance(getContext()).getAuthorInfo();
+                                temp +="?user_id=" + authorInfo.getUserId() + "&nickname="+authorInfo.getUserName();
+                            }
+                            if(temp.contains("http://prize.moemoe.la:8000/netaopera/chap")){
+                                AuthorInfo authorInfo =  PreferenceManager.getInstance(getContext()).getAuthorInfo();
+                                temp +="?pass=" + PreferenceManager.getInstance(getContext()).getPassEvent() + "&user_id=" + authorInfo.getUserId();
+                            }
+                            if(temp.contains("http://neta.facehub.me/")){
+                                AuthorInfo authorInfo =  PreferenceManager.getInstance(getContext()).getAuthorInfo();
+                                temp +="?open_id=" + authorInfo.getUserId() + "&nickname=" + authorInfo.getUserName() + "&full_screen";
+                            }
                             Uri uri = Uri.parse(temp);
                             IntentUtils.toActivityFromUri(getContext(), uri, v);
                         }
@@ -81,7 +96,6 @@ public class MapMark extends ImageView{
                         if(StringUtils.isKillEvent() && !AppSetting.isEnterEventToday){
                             return;
                         }
-                       // if(showTime == 2 || (showTime == 1 && StringUtils.isyoru()) || (showTime == 0 && !StringUtils.isyoru())){
                         if(matchTime()){
                             TextView textView = (TextView) LayoutInflater.from(context).inflate(R.layout.tooltip_textview, null);
                             int viewHeight = ((MapLayout)getParent()).getViewHeight();
@@ -93,11 +107,30 @@ public class MapMark extends ImageView{
                             }else {
                                 type = Tooltip.TOP;
                             }
-                            ToolTipUtils.showTooltip(context, ((MapActivity) context).getRoot(), textView, v, content,type, true,
-                                    TooltipAnimation.SCALE_AND_FADE,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ContextCompat.getColor(context, R.color.main_title_cyan));
+                            if(TextUtils.isEmpty(content)){
+                                ArrayList<String> temp = new ArrayList<>();
+                                temp.add("听说塔里有个体力值翻倍的道具，有了那个我体育考试就能及格了！！");
+                                temp.add("唔…某度说，红血瓶+250体力、蓝血瓶+500体力；红水晶+3攻击、蓝水晶+3防御。");
+                                temp.add("注意安全啊莲，尽量加“防御”吧，一定要平安回来！");
+                                temp.add("邱枳实学长和千世大小姐已经摸清楚里面的情况了，尽量找他们获取帮助吧，真不愧是Neta的精英！");
+                                temp.add("最终之战开启后，就无法回头了…");
+                                temp.add("有一种怪物会自爆的说，是很危险的存在，叫做“灰烬…法师”？");
+                                temp.add("如果没有实力战胜怪物，也找不到补给的话，就会被的永远困在里面了，好可怕。");
+                                temp.add("分享可以赚到100金币，但我连进去的勇气都没有…");
+                                Random random = new Random();
+                                int i = random.nextInt(8);
+                                ToolTipUtils.showTooltip(context, ((MapActivity) context).getRoot(), textView, v, temp.get(i),type, true,
+                                        TooltipAnimation.SCALE_AND_FADE,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                        ContextCompat.getColor(context, R.color.main_title_cyan));
+                            }else {
+                                ToolTipUtils.showTooltip(context, ((MapActivity) context).getRoot(), textView, v, content,type, true,
+                                        TooltipAnimation.SCALE_AND_FADE,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                                        ContextCompat.getColor(context, R.color.main_title_cyan));
+                            }
                         }
                     }
             }

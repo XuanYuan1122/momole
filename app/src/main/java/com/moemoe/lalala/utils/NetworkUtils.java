@@ -1,9 +1,9 @@
 package com.moemoe.lalala.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.Toast;
 
 import com.moemoe.lalala.R;
 
@@ -30,11 +30,16 @@ public class NetworkUtils {
 		return isAvailable;
 	}
 
-	public static boolean checkNetworkAndShowError(Context context){
+	public static boolean checkNetworkAndShowError(final Context context){
 		if(isNetworkAvailable(context)){
 			return true;
 		}else{
-			Toast.makeText(context, R.string.msg_server_connection, Toast.LENGTH_SHORT).show();
+			((Activity)context).runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					ToastUtil.showCenterToast(context,R.string.msg_server_connection);
+				}
+			});
 			return false;
 		}
 	}

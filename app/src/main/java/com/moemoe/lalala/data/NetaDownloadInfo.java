@@ -60,7 +60,7 @@ public class NetaDownloadInfo implements OnDownloadFileChangeListener {
      * init resources
      */
     public void init() {
-        // register DownloadFileChangeListener
+        // requestRegisterCode DownloadFileChangeListener
        // FileDownloader.registerDownloadFileChangeListener(this);
         // init NetaDownloadInfo if has been downloaded
         if (!TextUtils.isEmpty(mGameUrl)) {

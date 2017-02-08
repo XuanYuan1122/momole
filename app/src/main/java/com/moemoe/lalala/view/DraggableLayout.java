@@ -13,9 +13,10 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.app.common.util.DensityUtil;
 import com.moemoe.lalala.data.WallBlock;
 import com.moemoe.lalala.utils.CommonUtils;
+
+import org.xutils.common.util.DensityUtil;
 
 import java.util.ArrayList;
 
@@ -36,7 +37,7 @@ public class DraggableLayout extends ViewGroup {
     private int mUnitWidth;
     private int mUnitHeight;
     /**
-     * save the data of child views
+     * save the details of child views
      */
     private ArrayList<WallBlock> listViews;
     /**
@@ -313,7 +314,7 @@ public class DraggableLayout extends ViewGroup {
         int height = 0;
         if(listViews != null && listViews.size() > 0){
             WallBlock wallBlock = listViews.get(listViews.size() - 1);
-            height = (wallBlock.y + wallBlock.h) * mUnitHeight;
+            height = (wallBlock.getLtY() + wallBlock.getH()) * mUnitHeight;
         }
         setMeasuredDimension(width, height);
     }
@@ -404,13 +405,12 @@ public class DraggableLayout extends ViewGroup {
                 view = (DragDetailView) convertView;
             }
             WallBlock wallBlock = listViews.get(position);
-            view.setPoint(new Point(wallBlock.x, wallBlock.y));
-            view.setHeightNum(wallBlock.h);
-            view.setWidthNum(wallBlock.w);
-            view.setImgPath(wallBlock.image.path);
+            view.setPoint(new Point(wallBlock.getLtX(), wallBlock.getLtY()));
+            view.setHeightNum(wallBlock.getH());
+            view.setWidthNum(wallBlock.getW());
+            view.setImgPath(wallBlock.getBg().getPath());
             view.setPosition(position);
-            view.setName(wallBlock.name);
-            //view.fillImageView();
+            view.setName(wallBlock.getName());
             return convertView;
         }
     }

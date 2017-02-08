@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.app.common.util.DensityUtil;
+import org.xutils.common.util.DensityUtil;
 import com.moemoe.lalala.MapActivity;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.view.tooltip.Tooltip;

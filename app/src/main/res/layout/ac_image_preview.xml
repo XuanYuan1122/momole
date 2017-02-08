@@ -60,7 +60,7 @@
         android:gravity="center"
         android:text="@string/label_save"
         android:textColor="@color/white"
-        android:textSize="@dimen/txt_size_main" />
+        android:textSize="@dimen/txt_size_15" />
 
     <TextView
         android:id="@+id/tv_raw"
@@ -73,7 +73,7 @@
         android:gravity="center"
         android:text="@string/label_raw"
         android:textColor="@color/white"
-        android:textSize="@dimen/txt_size_main" />
+        android:textSize="@dimen/txt_size_15" />
 
     <TextView
         android:id="@+id/tv_preview_count"
@@ -88,7 +88,7 @@
         android:text="10/194"
         android:singleLine="true"
         android:textColor="@color/white"
-        android:textSize="@dimen/txt_size_main" />
+        android:textSize="@dimen/txt_size_15" />
 
     <ProgressBar
         android:id="@+id/pb_raw_downloading"
@@ -103,7 +103,7 @@
             android:id="@+id/tv_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/txt_size_secondary"
+            android:textSize="@dimen/txt_size_12"
             android:layout_centerInParent="true"
             android:textColor="@color/white"
             android:visibility="gone"/>

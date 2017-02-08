@@ -1,44 +1,28 @@
 package com.moemoe.lalala.fragment;
 
-import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
-import android.webkit.JsPromptResult;
-import android.webkit.JsResult;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.app.annotation.ContentView;
-import com.app.annotation.FindView;
 import com.moemoe.lalala.BaseActivity;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.utils.PreferenceManager;
-import com.moemoe.lalala.utils.ToastUtil;
 import com.moemoe.lalala.webview.CustomWebChromeClient;
 import com.moemoe.lalala.webview.CustomWebView;
 import com.moemoe.lalala.webview.CustomWebViewClient;
 
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 
 /**
  * Created by Haru on 2016/4/29 0029.
@@ -46,11 +30,11 @@ import java.util.Date;
 @ContentView(R.layout.frag_webview)
 public class WebViewFragment extends BaseFragment {
 
-    @FindView(R.id.webView)
+    @ViewInject(R.id.webView)
     public CustomWebView mWebView;
-    @FindView(R.id.nonVideoLayout)
+    @ViewInject(R.id.nonVideoLayout)
     private View nonVideoLayout;
-    @FindView(R.id.videoLayout)
+    @ViewInject(R.id.videoLayout)
     private ViewGroup videoLayout;
     public CustomWebChromeClient mChromeClient;
     private String mUrl;
@@ -63,6 +47,7 @@ public class WebViewFragment extends BaseFragment {
         return fragment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -78,11 +63,17 @@ public class WebViewFragment extends BaseFragment {
             }
         });
         mUrl = getArguments().getString("url");
+       // mWebView.setWebContentsDebuggingEnabled(true);
         setUrl(mUrl);
     }
 
     public void shareUrl(){
-        String temp = "javascript:android_share_call_back('" + PreferenceManager.getInstance(getActivity()).getThirdPartyLoginMsg().getmUUid() + "')";
+        String temp = "javascript:android_share_call_back('" + PreferenceManager.getInstance(getActivity()).getAuthorInfo().getUserId() + "')";
+        mWebView.loadUrl(temp);
+    }
+
+    public void resultMota(String data){
+        String temp = "javascript:Pay.result(" + data + ")";
         mWebView.loadUrl(temp);
     }
 
@@ -109,7 +100,6 @@ public class WebViewFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-       // mVideoFullView.removeAllViews();
         mWebView.loadUrl("about:blank");
         mWebView.stopLoading();
         mWebView.setWebChromeClient(null);

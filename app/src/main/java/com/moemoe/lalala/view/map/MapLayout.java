@@ -1,11 +1,15 @@
 package com.moemoe.lalala.view.map;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,11 +45,11 @@ public class MapLayout extends FrameLayout {
         touchImageView.setOnClickListener(lietener);
     }
     
-    public void addMapMarkView(int markView,float x,float y,String schame,String content,String start,String end,String start1,String end1,MapMark.RenderDelegate renderDelegate){
+    public void addMapMarkView(int markView,float x,float y,float wdp,float hdp,String schame,String content,String start,String end,String start1,String end1,MapMark.RenderDelegate renderDelegate){
         if(markView <= 0){
             throw new IllegalArgumentException("View for bubble cannot be null !");
         }
-        MapMark mark = new MapMark(getContext());
+        MapMark mark = new MapMark(getContext(),wdp,hdp);
         mark.setRenderDelegate(renderDelegate);
         mark.setMapX(x);
         mark.setMapY(y);
@@ -78,7 +82,7 @@ public class MapLayout extends FrameLayout {
         for(MapMark mapMark : marks){
             addView(mapMark);
         }
-        touchImageView.postInvalidate();
+       // touchImageView.postInvalidate();
     }
 
     public void setMapBitmap(Bitmap bitmap){
@@ -86,6 +90,20 @@ public class MapLayout extends FrameLayout {
     }
     public void setMapResource(int bitmap){
         touchImageView.setImageResource(bitmap);
+    }
+
+    public void setMapUrl(String name){
+        Bitmap image = null;
+        AssetManager am = getResources().getAssets();
+        try
+        {
+            InputStream is = am.open(name);
+            image = BitmapFactory.decodeStream(is);
+            touchImageView.setImageBitmap(image);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setIsDialogCause(boolean isDialogCause){

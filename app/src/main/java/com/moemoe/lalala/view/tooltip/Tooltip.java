@@ -86,7 +86,7 @@ public class Tooltip extends ViewGroup {
     private boolean hasDrawn = false;
 
     /**
-     * If the anchor is anchored to some view in CoordinatorLayout, we get incorrect data
+     * If the anchor is anchored to some view in CoordinatorLayout, we get incorrect details
      * about its position in the window. So we need to wait for a preDraw event and then
      * draw tooltip and layout its contents.
      */
@@ -733,7 +733,7 @@ public class Tooltip extends ViewGroup {
         private boolean animate;
 
         /**
-         * If the anchor is anchored to some view in CoordinatorLayout, we get incorrect data
+         * If the anchor is anchored to some view in CoordinatorLayout, we get incorrect details
          * about its position in the window. So we need to wait for a preDraw event and then
          * draw tooltip.
          */
@@ -887,7 +887,7 @@ public class Tooltip extends ViewGroup {
         }
 
         /**
-         * If the anchor is anchored to some view in CoordinatorLayout, we get incorrect data
+         * If the anchor is anchored to some view in CoordinatorLayout, we get incorrect details
          * about its position in the window. So we need to wait for a preDraw event and then
          * draw tooltip.
          */

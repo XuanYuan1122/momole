@@ -17,17 +17,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.app.annotation.ContentView;
-import com.app.annotation.FindView;
-import com.app.common.util.DensityUtil;
-import com.moemoe.lalala.data.DustListBean;
-import com.moemoe.lalala.data.DustResponse;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.moemoe.lalala.data.DustSendTextBean;
 import com.moemoe.lalala.data.DustTextBean;
-import com.moemoe.lalala.network.CallbackFactory;
-import com.moemoe.lalala.network.OnNetWorkCallback;
+import com.moemoe.lalala.network.OneParameterCallback;
 import com.moemoe.lalala.network.Otaku;
+import com.moemoe.lalala.network.SimpleCallback;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
-import com.moemoe.lalala.utils.IConstants;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.ToastUtil;
 import com.moemoe.lalala.utils.TrashListAnim;
@@ -35,6 +32,11 @@ import com.moemoe.lalala.utils.ViewSwitchUtils;
 import com.moemoe.lalala.view.recycler.RecyclerViewPositionHelper;
 import com.moemoe.lalala.view.speedrecycler.CardLinearSnapHelper;
 
+import org.xutils.common.util.DensityUtil;
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
@@ -48,34 +50,32 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
     private static final int STATE_YESTERDAY = 2;
     private static final int STATE_SEND_TRASH = 3;
 
-    @FindView(R.id.tv_trash_count)
+    @ViewInject(R.id.tv_trash_count)
     private TextView mTvCount;
-    @FindView(R.id.rv_trash)
+    @ViewInject(R.id.rv_trash)
     private RecyclerView mRvList;
-    @FindView(R.id.ll_btn_container)
+    @ViewInject(R.id.ll_btn_container)
     private View mBtnRoot;
-    @FindView(R.id.tv_send)
+    @ViewInject(R.id.tv_send)
     private TextView mTvSend;
-    @FindView(R.id.tv_get)
+    @ViewInject(R.id.tv_get)
     private TextView mTvGet;
-    @FindView(R.id.iv_my_trash)
+    @ViewInject(R.id.iv_my_trash)
     private ImageView mIvMyTrash;
-    @FindView(R.id.iv_yesterday_best_trash)
+    @ViewInject(R.id.iv_yesterday_best_trash)
     private ImageView mIvYesterday;
-    @FindView(R.id.iv_back)
+    @ViewInject(R.id.iv_back)
     private ImageView mIvBack;
-    @FindView(R.id.iv_background)
-    private ImageView mIvBackground;
-    @FindView(R.id.ll_dust_container)
+    @ViewInject(R.id.ll_dust_container)
     private LinearLayout mLlSendRoot;
-    @FindView(R.id.et_title)
+    @ViewInject(R.id.et_title)
     private EditText mEtTitle;
-    @FindView(R.id.et_content)
+    @ViewInject(R.id.et_content)
     private EditText mEtContent;
 
-    private ArrayList<DustListBean.DustInfo> infos;
-    private ArrayList<DustListBean.DustInfo> myInfos;
-    private ArrayList<DustListBean.DustInfo> yesterdayInfos;
+    private ArrayList<DustTextBean> infos;
+    private ArrayList<DustTextBean> myInfos;
+    private ArrayList<DustTextBean> yesterdayInfos;
     private TrashAdapter mTrashAdapter;
     private int[] backIds = {R.drawable.bg_spitball_paper_clean,R.drawable.bg_spitball_paper_dirty,R.drawable.bg_spitball_paper_golden};
     private RecyclerViewPositionHelper mRecyclerViewHelper;
@@ -110,11 +110,7 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
                 super.onScrollStateChanged(recyclerView, newState);
                 if(newState == RecyclerView.SCROLL_STATE_IDLE){
                     int pos = mRecyclerViewHelper.findFirstCompletelyVisibleItemPosition();
-                    if(pos == 0 || pos == mRvList.getAdapter().getItemCount() - 1){
-                        mLinearSnapHelper.mNoNeedToScroll = true;
-                    }else {
-                        mLinearSnapHelper.mNoNeedToScroll = false;
-                    }
+                    mLinearSnapHelper.mNoNeedToScroll = pos == 0 || pos == mRvList.getAdapter().getItemCount() - 1;
                     if(pos >= 0 && mState != STATE_YESTERDAY){
                         int total = 0;
                         if(mState == STATE_MY_TRASH){
@@ -158,9 +154,12 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
         mTvGet.setText(getString(R.string.label_get_dust));
         String trash = mPreferMng.getTrash();
         if(!TextUtils.isEmpty(trash)){
-            DustListBean bean = DustListBean.readFromJsonStr(trash);
-            if(bean != null && bean.items.size() > 0){
-                infos.addAll(bean.items);
+            //DustListBean bean = DustListBean.readFromJsonStr(trash);
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<DustTextBean>>(){}.getType();
+            ArrayList<DustTextBean> beans = gson.fromJson(trash,type);
+            if(beans != null && beans.size() > 0){
+                infos.addAll(beans);
                 mCurGetSize = infos.size();
                 mTvCount.setText(getString(R.string.label_count_dust,1,infos.size()));
                 mTrashAdapter.setData(infos);
@@ -217,30 +216,21 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
             ToastUtil.showCenterToast(this,R.string.msg_doc_content_cannot_null);
         }else {
             createDialog();
-            DustTextBean bean = new DustTextBean(title, content);
-            Otaku.getCommonV2().sendDust(mPreferMng.getToken(),bean).enqueue(CallbackFactory.getInstance().callback1(new OnNetWorkCallback<String, String>() {
+            DustSendTextBean bean = new DustSendTextBean(title, content);
+            Otaku.getCommonV2().sendDust(bean, new SimpleCallback() {
                 @Override
-                public void success(String token, String s) {
+                public void action() {
                     finalizeDialog();
                     ToastUtil.showCenterToast(TrashActivity.this,R.string.msg_dust_send_success);
                     showGetTrashUi();
-//                    DustResponse dustResponse = new DustResponse();
-//                    dustResponse.readFromJsonContent(s);
-//                    if(dustResponse.overTimes){
-//                        ToastUtil.showCenterToast(TrashActivity.this,R.string.msg_trash_send);
-//                    }else {
-//                        ToastUtil.showCenterToast(TrashActivity.this,R.string.msg_dust_send_success);
-//                        showGetTrashUi();
-//                    }
                 }
-
+            }, new OneParameterCallback<Integer>() {
                 @Override
-                public void failure(int code,String e) {
+                public void action(Integer integer) {
                     finalizeDialog();
-                    ErrorCodeUtils.showErrorMsgByCode(TrashActivity.this,code);
-                    //ToastUtil.showCenterToast(TrashActivity.this,R.string.msg_dust_send_fail);
+                    ErrorCodeUtils.showErrorMsgByCode(TrashActivity.this,integer);
                 }
-            }));
+            });
         }
     }
 
@@ -268,11 +258,11 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
         mTrashAdapter.setData(yesterdayInfos);
         if (NetworkUtils.checkNetworkAndShowError(this)){
             createDialog();
-            Otaku.getCommonV2().top3DustList(mPreferMng.getToken()).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+            Otaku.getCommonV2().top3DustList(new OneParameterCallback<ArrayList<DustTextBean>>() {
                 @Override
-                public void success(String token, String s) {
+                public void action(ArrayList<DustTextBean> dustTextBeen) {
                     finalizeDialog();
-                    yesterdayInfos.addAll(DustListBean.readListFromJson(s));
+                    yesterdayInfos.addAll(dustTextBeen);
                     if(yesterdayInfos.size() > 0){
                         mRvList.scrollToPosition(0);
                         mTvCount.setText(getString(R.string.label_yesterday_best_trash));
@@ -280,12 +270,12 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
                     mTrashAdapter.setData(yesterdayInfos);
                     mRvList.scrollToPosition(0);
                 }
-
+            }, new OneParameterCallback<Integer>() {
                 @Override
-                public void failure(String e) {
+                public void action(Integer integer) {
                     finalizeDialog();
                 }
-            }));
+            });
         }
     }
 
@@ -310,7 +300,9 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void saveTrashList(){
-        String str = DustListBean.saveToJson(infos);
+        //String str = DustListBean.saveToJson(infos);
+        Gson gson = new Gson();
+        String str = gson.toJson(infos);
         mPreferMng.saveGetTrash(str);
     }
 
@@ -322,34 +314,29 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
                 return;
             }
             createDialog();
-            Otaku.getCommonV2().getDustList(mPreferMng.getToken(),Otaku.DOUBLE_LENGTH - mCurGetSize).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+            Otaku.getCommonV2().getDustList(Otaku.DOUBLE_LENGTH - mCurGetSize, new OneParameterCallback<ArrayList<DustTextBean>>() {
                 @Override
-                public void success(String token, String s) {
+                public void action(ArrayList<DustTextBean> dustTextBeen) {
                     finalizeDialog();
-                    DustListBean listBean = DustListBean.readFromJsonStr(s);
-                    if (listBean.serverStatus.equals(IConstants.CLOSE)) {
-                        ToastUtil.showCenterToast(TrashActivity.this, R.string.msg_trash_close);
+                    infos.addAll(dustTextBeen);
+                    if(infos.size() == 0){
+                        mTvCount.setText(getString(R.string.label_empty_trash));
                     }else {
-                        infos.addAll(listBean.items);
-                        if(infos.size() == 0){
-                            mTvCount.setText(getString(R.string.label_empty_trash));
-                        }else {
-                            mTvCount.setText(getString(R.string.label_count_dust,mRecyclerViewHelper.findFirstCompletelyVisibleItemPosition() + 1,infos.size()));
-                        }
-                        if(mCurGetSize == 0 && infos.size() != 0){
-                            mTvCount.setText(getString(R.string.label_count_dust,1,infos.size()));
-                        }
-                        mCurGetSize = infos.size();
-                        mTrashAdapter.setData(infos);
+                        mTvCount.setText(getString(R.string.label_count_dust,mRecyclerViewHelper.findFirstCompletelyVisibleItemPosition() + 1,infos.size()));
                     }
+                    if(mCurGetSize == 0 && infos.size() != 0){
+                        mTvCount.setText(getString(R.string.label_count_dust,1,infos.size()));
+                    }
+                    mCurGetSize = infos.size();
+                    mTrashAdapter.setData(infos);
                 }
-
+            }, new OneParameterCallback<Integer>() {
                 @Override
-                public void failure(String e) {
+                public void action(Integer integer) {
                     finalizeDialog();
-                    ToastUtil.showCenterToast(TrashActivity.this, R.string.msg_trash_used_up);
+                    ErrorCodeUtils.showErrorMsgByCode(TrashActivity.this,integer);
                 }
-            }));
+            });
         }
     }
 
@@ -364,12 +351,11 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
         mTrashAdapter.setData(myInfos);
         if(NetworkUtils.checkNetworkAndShowError(this)){
             createDialog();
-            Otaku.getCommonV2().sotDustList(mPreferMng.getToken(),index,Otaku.DOUBLE_LENGTH - mCurSendSize).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+            Otaku.getCommonV2().sotDustList(index, Otaku.DOUBLE_LENGTH - mCurSendSize, new OneParameterCallback<ArrayList<DustTextBean>>() {
                 @Override
-                public void success(String token, String s) {
+                public void action(ArrayList<DustTextBean> dustTextBeen) {
                     finalizeDialog();
-                    myInfos.addAll(DustListBean.readListFromJson(s));
-
+                    myInfos.addAll(dustTextBeen);
                     if(myInfos.size() == 0){
                         mTvCount.setText(getString(R.string.label_send_empty_trash));
                     }else {
@@ -381,12 +367,12 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
                     mCurSendSize = myInfos.size();
                     mTrashAdapter.setData(myInfos);
                 }
-
+            }, new OneParameterCallback<Integer>() {
                 @Override
-                public void failure(String e) {
+                public void action(Integer integer) {
                     finalizeDialog();
                 }
-            }));
+            });
         }
     }
 
@@ -403,12 +389,12 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
     }
 
     class TrashAdapter extends RecyclerView.Adapter<TrashAdapter.TrashHolder>{
-        private ArrayList<DustListBean.DustInfo> dustList = null;
+        private ArrayList<DustTextBean> dustList = null;
 
-        public TrashAdapter(){
+        TrashAdapter(){
         }
 
-        public void setData(ArrayList<DustListBean.DustInfo> infos){
+        public void setData(ArrayList<DustTextBean> infos){
             dustList = infos;
             notifyDataSetChanged();
         }
@@ -430,13 +416,24 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
             }else {
                 ViewSwitchUtils.setViewMargin(holder.itemView,0,0,0,0);
             }
-            final DustListBean.DustInfo info = dustList.get(position);
+            final DustTextBean info = dustList.get(position);
+            if(info.getShit() <= 0){
+                info.setBackground(R.drawable.bg_spitball_paper_clean);
+            }else {
+                if(info.getFun() >= 20 && info.getFun() / info.getShit() > 2){
+                    info.setBackground(R.drawable.bg_spitball_paper_golden);
+                }else if(info.getShit() >= 20 && info.getShit() > info.getFun()){
+                    info.setBackground(R.drawable.bg_spitball_paper_dirty);
+                }else {
+                    info.setBackground(R.drawable.bg_spitball_paper_clean);
+                }
+            }
             holder.ivAnim.setImageResource(R.drawable.bg_spitball_close);
             holder.copyTrash.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ClipboardManager cmb = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData mClipData = ClipData.newPlainText("绅士内容", info.content);
+                    ClipData mClipData = ClipData.newPlainText("绅士内容", info.getContent());
                     cmb.setPrimaryClip(mClipData);
                     ToastUtil.showCenterToast(TrashActivity.this, R.string.msg_trash_get);
                 }
@@ -483,22 +480,22 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
             holder.ivAnim.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!info.isOpen){
-                        if(info.background == backIds[0]){
+                    if(!info.isOpen()){
+                        if(info.getBackground() == backIds[0]){
                             holder.ivAnim.setImageResource(R.drawable.dust_open_1_anim);
-                        }else if(info.background == backIds[1]){
+                        }else if(info.getBackground() == backIds[1]){
                             holder.ivAnim.setImageResource(R.drawable.dust_open_2_anim);
-                        }else if(info.background == backIds[2]){
+                        }else if(info.getBackground() == backIds[2]){
                             holder.ivAnim.setImageResource(R.drawable.dust_open_3_anim);
                         }
                         if(holder.mDustAniDraw == null){
                             holder.mDustAniDraw = (AnimationDrawable) holder.ivAnim.getDrawable();
                             holder.mDustAniDraw.start();
-                            info.isOpen = true;
+                            info.setOpen(true);
                             holder.ivAnim.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    holder.mDustAniDraw.stop();
+                                    if(holder.mDustAniDraw != null) holder.mDustAniDraw.stop();
                                     holder.ivAnim.setVisibility(View.GONE);
                                     holder.mainRoot.setVisibility(View.VISIBLE);
                                     holder.likeRoot.setVisibility(View.VISIBLE);
@@ -515,7 +512,7 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
                 holder.mDustAniDraw.stop();
                 holder.mDustAniDraw = null;
             }
-            if(info.isOpen || mState == STATE_YESTERDAY || mState == STATE_MY_TRASH){
+            if(info.isOpen() || mState == STATE_YESTERDAY || mState == STATE_MY_TRASH){
                 holder.ivAnim.setVisibility(View.GONE);
                 holder.mainRoot.setVisibility(View.VISIBLE);
                 holder.likeRoot.setVisibility(View.VISIBLE);
@@ -535,14 +532,14 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
                 holder.deleteTrash.setVisibility(View.GONE);
             }
 
-            holder.title.setText(info.title);
-            holder.content.setText(info.content);
-            holder.likeNum.setText(info.fun + "");
-            holder.dislikeNum.setText(info.shit + "");
+            holder.title.setText(info.getTitle());
+            holder.content.setText(info.getContent());
+            holder.likeNum.setText(String.valueOf(info.getFun() ));
+            holder.dislikeNum.setText(String.valueOf(info.getShit()));
             if(mState == STATE_YESTERDAY){
                 holder.mainRoot.setBackgroundResource(R.drawable.bg_spitball_paper_golden);
             }else {
-                holder.mainRoot.setBackgroundResource(info.background);
+                holder.mainRoot.setBackgroundResource(info.getBackground());
             }
         }
 
@@ -551,17 +548,13 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
             return dustList.size();
         }
 
-        public int getCurBackground(int pos){
-            return dustList.get(pos).background;
-        }
+        class TrashHolder extends RecyclerView.ViewHolder{
+            ImageView ivAnim,like,dislike,copyTrash,deleteTrash;
+            View mainRoot,likeRoot,dislikeRoot;
+            TextView title,content,likeNum,dislikeNum;
+            AnimationDrawable mDustAniDraw;
 
-        public class TrashHolder extends RecyclerView.ViewHolder{
-            public ImageView ivAnim,like,dislike,copyTrash,deleteTrash;
-            public View mainRoot,likeRoot,dislikeRoot;
-            public TextView title,content,likeNum,dislikeNum;
-            public AnimationDrawable mDustAniDraw;
-
-            public TrashHolder(View itemView){
+            TrashHolder(View itemView){
                 super(itemView);
                 ivAnim = (ImageView) itemView.findViewById(R.id.iv_anim);
                 like = (ImageView) itemView.findViewById(R.id.iv_like);
@@ -578,40 +571,39 @@ public class TrashActivity extends BaseActivity implements View.OnClickListener{
             }
         }
 
-        private void fun(final DustListBean.DustInfo info,final TrashHolder holder){
+        private void fun(final DustTextBean info, final TrashHolder holder){
             if(NetworkUtils.checkNetworkAndShowError(TrashActivity.this)){
-                Otaku.getCommonV2().funDust(mPreferMng.getToken(),info.id).enqueue(CallbackFactory.getInstance().callback1(new OnNetWorkCallback<String, String>() {
+                Otaku.getCommonV2().funDust(info.getId(), new SimpleCallback() {
                     @Override
-                    public void success(String token, String s) {
+                    public void action() {
                         ToastUtil.showCenterToast(TrashActivity.this,R.string.label_like_trash);
-                        info.fun++;
-                        holder.likeNum.setText((Integer.valueOf(holder.likeNum.getText().toString()) + 1 )+ "");
+                        info.setFun(info.getFun() + 1);
+                        holder.likeNum.setText(String.valueOf((Integer.valueOf(holder.likeNum.getText().toString()) + 1 )));
                     }
-
+                }, new OneParameterCallback<Integer>() {
                     @Override
-                    public void failure(int code,String e) {
-                        ErrorCodeUtils.showErrorMsgByCode(TrashActivity.this,code);
+                    public void action(Integer integer) {
+                        ErrorCodeUtils.showErrorMsgByCode(TrashActivity.this,integer);
                     }
-                }));
+                });
             }
         }
 
-        private void shit(final DustListBean.DustInfo info,final TrashHolder holder){
+        private void shit(final DustTextBean info, final TrashHolder holder){
             if(NetworkUtils.checkNetworkAndShowError(TrashActivity.this)){
-                Otaku.getCommonV2().shitDust(mPreferMng.getToken(),info.id).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+                Otaku.getCommonV2().shitDust(info.getId(), new SimpleCallback() {
                     @Override
-                    public void success(String token, String s) {
+                    public void action() {
                         ToastUtil.showCenterToast(TrashActivity.this,R.string.label_dislike_trash);
-                        info.shit++;
-                        holder.dislikeNum.setText((Integer.valueOf(holder.dislikeNum.getText().toString()) + 1 )+ "");
+                        info.setShit(info.getShit() + 1);
+                        holder.dislikeNum.setText(String.valueOf((Integer.valueOf(holder.dislikeNum.getText().toString()) + 1 )));
                     }
-
-
+                }, new OneParameterCallback<Integer>() {
                     @Override
-                    public void failure(String e) {
-
+                    public void action(Integer integer) {
+                        ErrorCodeUtils.showErrorMsgByCode(TrashActivity.this,integer);
                     }
-                }));
+                });
             }
         }
     }

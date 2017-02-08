@@ -33,7 +33,7 @@ public class HttpDownloader implements Download {
     private static final String DEFAULT_REQUEST_METHOD = "GET";// GET default
 
     private String mUrl;// download url
-    private Range mRange;// download data range
+    private Range mRange;// download details range
     private String mAcceptRangeType;// accept range type
     private String mETag;// http file eTag
     private String mLastModified;// file last modified time
@@ -60,7 +60,7 @@ public class HttpDownloader implements Download {
     //     * constructor of HttpDownloader,will check range and acceptRangeType
     //     *
     //     * @param url             url path
-    //     * @param range           data range
+    //     * @param range           details range
     //     * @param acceptRangeType accept range type
     //     */
     //    public HttpDownloader(String url, Range range, String acceptRangeType) {
@@ -71,7 +71,7 @@ public class HttpDownloader implements Download {
      * constructor of HttpDownloader,will check range,acceptRangeType and eTag
      *
      * @param url             url path
-     * @param range           data range
+     * @param range           details range
      * @param acceptRangeType accept range type
      * @param eTag            file eTag
      * @param lastModified    last modified datetime(in server)
@@ -139,7 +139,7 @@ public class HttpDownloader implements Download {
     }
 
     /**
-     * if it throw HttpDownloadException,that means download data failed(error occur)
+     * if it throw HttpDownloadException,that means download details failed(error occur)
      */
     @Override
     public void download() throws HttpDownloadException {
@@ -205,9 +205,9 @@ public class HttpDownloader implements Download {
                             HttpDownloadException.TYPE_RESOURCES_SIZE_ILLEGAL);
                 }
 
-                // not partial range, that means the whole data
+                // not partial range, that means the whole details
                 if (responseCode == HttpURLConnection.HTTP_OK) {
-                    // handle whole data
+                    // handle whole details
                     if (!Range.isLegal(mRange) || (mRange != null && (mRange.startPos != 0 || mRange.getLength() != 
                             contentLength))) {
                         Range newRange = new Range(0, contentLength);
@@ -224,7 +224,7 @@ public class HttpDownloader implements Download {
                         mRange = new Range(0, contentLength);
                     }
                 }
-                // partial range, that means range of the data
+                // partial range, that means range of the details
                 else if (responseCode == HttpURLConnection.HTTP_PARTIAL) {
                     // 3.check eTag(whether file is changed)
                     if (!TextUtils.isEmpty(mETag)) {
@@ -300,7 +300,7 @@ public class HttpDownloader implements Download {
             else {
                 // error ResponseCode error
                 throw new HttpDownloadException(url, "ResponseCode:" + responseCode + " error,can not read server " +
-                        "data!", HttpDownloadException.TYPE_RESPONSE_CODE_ERROR);
+                        "details!", HttpDownloadException.TYPE_RESPONSE_CODE_ERROR);
             }
             hasException = false;
         } catch (Exception e) {
@@ -368,7 +368,7 @@ public class HttpDownloader implements Download {
         public static final String TYPE_CONTENT_RANGE_VALIDATE_FAIL = HttpDownloadException.class.getName() + 
                 "_TYPE_CONTENT_RANGE_VALIDATE_FAIL";
         /**
-         * ResponseCode error,can not read server data
+         * ResponseCode error,can not read server details
          */
         public static final String TYPE_RESPONSE_CODE_ERROR = HttpDownloadException.class.getName() + 
                 "_TYPE_RESPONSE_CODE_ERROR";
@@ -419,7 +419,7 @@ public class HttpDownloader implements Download {
          * the download connected
          *
          * @param inputStream     download inputStream
-         * @param startPosInTotal the start position of inputStream start to save in total data
+         * @param startPosInTotal the start position of inputStream start to save in total details
          *                        <p/>
          *                        |(0,totalStart)----|(startPosInTotal,inputStream start)---
          *                        |(inputStream.length,inputStream end)----|(fileTotalSize,totalEnd)

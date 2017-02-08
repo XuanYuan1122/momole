@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -19,24 +20,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.Utils;
-import com.app.annotation.ContentView;
-import com.app.annotation.FindView;
-import com.app.common.util.DensityUtil;
-import com.app.image.ImageOptions;
 import com.moemoe.lalala.adapter.SelectImgAdapter;
 import com.moemoe.lalala.app.AlertDialog;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.data.DocPut;
-import com.moemoe.lalala.data.DocTagBean;
+import com.moemoe.lalala.data.DocTag;
 import com.moemoe.lalala.data.Image;
 import com.moemoe.lalala.data.NewDocType;
-import com.moemoe.lalala.network.CallbackFactory;
-import com.moemoe.lalala.network.OnNetWorkCallback;
+import com.moemoe.lalala.network.OneParameterCallback;
 import com.moemoe.lalala.network.Otaku;
+import com.moemoe.lalala.network.SimpleCallback;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DialogUtils;
+import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NetworkUtils;
@@ -47,8 +44,11 @@ import com.moemoe.lalala.view.DocLabelView;
 import com.moemoe.lalala.view.KeyboardListenerLayout;
 import com.moemoe.lalala.view.NoDoubleClickListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.image.ImageOptions;
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -74,21 +74,16 @@ public class CreateNormalDocActivity extends BaseActivity{
     /**
      * 标题限制长度
      */
-    private static final int TITLE_LIMIT = 40;
+    private final int TITLE_LIMIT = 40;
     /**
      * 内容限制长度
      */
-    private static final int CONTENT_LIMIT = 3000;
+    private final int CONTENT_LIMIT = 3000;
     /**
      * 9张图片上限
      */
-    private static final int ICON_NUM_LIMIT = 9;
-    /**
-     * 用户选择的图片缩略图大小
-     */
-    private static int ICON_SIZE;
+    private final int ICON_NUM_LIMIT = 9;
 
-    private static final int REQ_CODE_IMAGE_PREVIEW = 2000;
     /**
      * 编辑版本，图库选图
      */
@@ -96,50 +91,48 @@ public class CreateNormalDocActivity extends BaseActivity{
     private static final int REQ_GET_EDIT_VERSION_IMG_2 = 233;
     private static final int REQ_GET_EDIT_VERSION_MUSIC = 6666;
 
-    @FindView(R.id.toolbar)
+    @ViewInject(R.id.toolbar)
     private Toolbar mToolbar;
-    @FindView(R.id.tv_toolbar_title)
+    @ViewInject(R.id.tv_toolbar_title)
     private TextView mTvTitle;
-    @FindView(R.id.tv_menu)
+    @ViewInject(R.id.tv_menu)
     private TextView mTvSend;
-    @FindView(R.id.edt_title)
+    @ViewInject(R.id.edt_title)
     private EditText mEdtTitle;
-    @FindView(R.id.edt_content)
+    @ViewInject(R.id.edt_content)
     private EditText mEdtContent;
-    @FindView(R.id.tv_content_rm)
+    @ViewInject(R.id.tv_content_rm)
     private TextView mTvContentNumRemain;
-    @FindView(R.id.dv_doc_label_root)
+    @ViewInject(R.id.dv_doc_label_root)
     private DocLabelView mDocLabel;
-    @FindView(R.id.edt_comment_input)
+    @ViewInject(R.id.edt_comment_input)
     private EditText mEdtCommentInput;
-    @FindView(R.id.ll_comment_pannel)
+    @ViewInject(R.id.ll_comment_pannel)
     private KeyboardListenerLayout mKlCommentBoard;
-    @FindView(R.id.iv_comment_send)
+    @ViewInject(R.id.iv_comment_send)
     private View mTvSendComment;
-    @FindView(R.id.rl_add_img_root)
+    @ViewInject(R.id.rl_add_img_root)
     private View mRlAddRoot;
-    @FindView(R.id.ll_add_music_root)
+    @ViewInject(R.id.ll_add_music_root)
     private View mLlAddRoot;
-    @FindView(R.id.ll_select_music)
+    @ViewInject(R.id.ll_select_music)
     private View mLlSelectMusic;
-    @FindView(R.id.ll_select_img)
+    @ViewInject(R.id.ll_select_img)
     private View mLlSelectImg;
-    @FindView(R.id.tv_select_music)
+    @ViewInject(R.id.tv_select_music)
     private TextView mTvMusic;
-    @FindView(R.id.tv_select_img)
+    @ViewInject(R.id.tv_select_img)
     private TextView mTvImg;
-    @FindView(R.id.iv_select_music)
+    @ViewInject(R.id.iv_select_music)
     private ImageView mIvMusic;
-    @FindView(R.id.iv_select_img)
+    @ViewInject(R.id.iv_select_img)
     private ImageView mIvImg;
-    @FindView(R.id.rv_img)
+    @ViewInject(R.id.rv_img)
     private RecyclerView mRvSelectImg;
-    @FindView(R.id.ll_jiecao)
+    @ViewInject(R.id.ll_jiecao)
     private View mRlHideRoot;
-    @FindView(R.id.tv_add)
+    @ViewInject(R.id.tv_add)
     private TextView mTvAddHide;
-
-    private String mClubId;
     private DocPut mDocBean;
 
     private ArrayList<String> mIconPaths = new ArrayList<>();
@@ -147,7 +140,7 @@ public class CreateNormalDocActivity extends BaseActivity{
 
     private String mTitle;
     private String mContent;
-    private ArrayList<DocTagBean> mTags;
+    private ArrayList<DocTag> mTags;
     private int mContentRemain;
     private SelectImgAdapter mSelectAdapter;
 
@@ -165,11 +158,11 @@ public class CreateNormalDocActivity extends BaseActivity{
             mType = mIntent.getIntExtra(TYPE_CREATE, TYPE_IMG_DOC);
             mTagNameDef = mIntent.getStringExtra(TYPE_TAG_NAME_DEFAULT);
             if(!TextUtils.isEmpty(mTagNameDef)){
-                DocTagBean docTagBean = new DocTagBean();
-                docTagBean.plus_num = 1;
-                docTagBean.tag_name = mTagNameDef;
-                docTagBean.plus_flag = true;
-                mTags.add(docTagBean);
+                DocTag DocTag = new DocTag();
+                DocTag.setLikes(1);
+                DocTag.setName(mTagNameDef);
+                DocTag.setLiked(true);
+                mTags.add(DocTag);
             }
             if(mType == TYPE_IMG_DOC){
                 mLlAddRoot.setVisibility(View.GONE);
@@ -211,9 +204,7 @@ public class CreateNormalDocActivity extends BaseActivity{
         });
         mTvSend.setText(R.string.label_menu_publish_doc);
         mTvAddHide.setVisibility(View.INVISIBLE);
-        mClubId = mIntent.getStringExtra(EXTRA_KEY_UUID);
         mContentRemain = CONTENT_LIMIT;
-        ICON_SIZE = DensityUtil.dip2px(115);
         LinearLayoutManager selectRvL = new LinearLayoutManager(this);
         selectRvL.setOrientation(LinearLayoutManager.HORIZONTAL);
         mRvSelectImg.setLayoutManager(selectRvL);
@@ -286,7 +277,7 @@ public class CreateNormalDocActivity extends BaseActivity{
                 mHasModified = true;
             }
         });
-        mDocLabel.setContentAndNumList(mTags, true);
+        mDocLabel.setContentAndNumList(true,mTags);
         mEdtCommentInput.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -361,6 +352,7 @@ public class CreateNormalDocActivity extends BaseActivity{
                     try {
                         startActivityForResult(intent,REQ_GET_EDIT_VERSION_MUSIC);
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }else {
                     Intent intent = new Intent(CreateNormalDocActivity.this, SelectMusicActivity.class);
@@ -377,6 +369,7 @@ public class CreateNormalDocActivity extends BaseActivity{
                     try {
                         startActivityForResult(intent, REQ_GET_EDIT_VERSION_IMG_2);
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }else {
                     Intent intent = new Intent(CreateNormalDocActivity.this, MultiImageChooseActivity.class);
@@ -388,8 +381,8 @@ public class CreateNormalDocActivity extends BaseActivity{
     }
 
     private boolean checkLabel(String content){
-        for(DocTagBean tagBean : mTags){
-            if(tagBean.tag_name.equals(content)){
+        for(DocTag tagBean : mTags){
+            if(tagBean.getName().equals(content)){
                 return false;
             }
         }
@@ -401,11 +394,11 @@ public class CreateNormalDocActivity extends BaseActivity{
         if (!TextUtils.isEmpty(content)) {
             SoftKeyboardUtils.dismissSoftKeyboard(this);
             if(checkLabel(content)){
-                DocTagBean docTagBean = new DocTagBean();
-                docTagBean.plus_num = 1;
-                docTagBean.tag_name = content;
-                docTagBean.plus_flag = true;
-                mTags.add(docTagBean);
+                DocTag DocTag = new DocTag();
+                DocTag.setLikes(1);
+                DocTag.setName(content);
+                DocTag.setLiked(true);
+                mTags.add(DocTag);
                 mDocLabel.notifyAdapter();
             }else {
                 ToastUtil.showCenterToast(this, R.string.msg_tag_already_exit);
@@ -416,7 +409,7 @@ public class CreateNormalDocActivity extends BaseActivity{
     }
 
     private void deleteLabel(final int position){
-        if(!TextUtils.isEmpty(mTagNameDef) && mTagNameDef.equals(mTags.get(position).tag_name)){
+        if(!TextUtils.isEmpty(mTagNameDef) && mTagNameDef.equals(mTags.get(position).getName())){
             final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
             alertDialogUtil.createPromptDialog(this, getString(R.string.a_dlg_delete),getString( R.string.a_dlg_content_tag_del));
             alertDialogUtil.setButtonText(getString(R.string.label_confirm), getString(R.string.a_dlg_cancel),0);
@@ -451,7 +444,7 @@ public class CreateNormalDocActivity extends BaseActivity{
             ArrayList<String> paths = new ArrayList<String>();
             if(images != null && images.size() > 0){
                 for(int i = 0; i < images.size(); i++){
-                    paths.add(images.get(i).path);
+                    paths.add(images.get(i).getPath());
                 }
             }
             mTvSend.setEnabled(false);
@@ -462,15 +455,15 @@ public class CreateNormalDocActivity extends BaseActivity{
                     ToastUtil.showCenterToast(CreateNormalDocActivity.this, R.string.msg_need_one_cover);
                     return;
                 }
-                paths.add(images.get(0).path);
+                paths.add(images.get(0).getPath());
             }
             if (mType == TYPE_IMG_DOC){
                 if(paths.size() == 0) {
                     createDialog();
                     if(mIsQiu){
-                        Otaku.getDocV2().createQiuMingShanDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+                        Otaku.getDocV2().createQiuMingShanDoc(mDocBean, new SimpleCallback() {
                             @Override
-                            public void success(String token, String s) {
+                            public void action() {
                                 mTvSend.setEnabled(true);
                                 finalizeDialog();
                                 ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
@@ -478,33 +471,18 @@ public class CreateNormalDocActivity extends BaseActivity{
                                 setResult(RESPONSE_CODE, i);
                                 finish();
                             }
-
+                        }, new OneParameterCallback<Integer>() {
                             @Override
-                            public void failure(String e) {
+                            public void action(Integer integer) {
                                 mTvSend.setEnabled(true);
                                 finalizeDialog();
-                                if(!TextUtils.isEmpty(e)){
-                                    try {
-                                        JSONObject json = new JSONObject(e);
-                                        String data = json.optString("data");
-                                        if(data.equals("COIN_LITTLE")){
-                                            ToastUtil.showCenterToast(CreateNormalDocActivity.this,R.string.label_have_no_coin);
-                                        }else {
-                                            ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                        }
-                                    } catch (JSONException e1) {
-                                        e1.printStackTrace();
-                                        ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                    }
-                                }else {
-                                    ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                }
+                                ErrorCodeUtils.showErrorMsgByCode(CreateNormalDocActivity.this,integer);
                             }
-                        }));
+                        });
                     }else {
-                        Otaku.getDocV2().createNormalDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+                        Otaku.getDocV2().createNormalDoc(mDocBean, new SimpleCallback() {
                             @Override
-                            public void success(String token, String s) {
+                            public void action() {
                                 mTvSend.setEnabled(true);
                                 finalizeDialog();
                                 ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
@@ -512,195 +490,168 @@ public class CreateNormalDocActivity extends BaseActivity{
                                 setResult(RESPONSE_CODE, i);
                                 finish();
                             }
-
+                        }, new OneParameterCallback<Integer>() {
                             @Override
-                            public void failure(String e) {
+                            public void action(Integer integer) {
                                 mTvSend.setEnabled(true);
                                 finalizeDialog();
-                                if(!TextUtils.isEmpty(e)){
-                                    try {
-                                        JSONObject json = new JSONObject(e);
-                                        String data = json.optString("data");
-                                        if(data.equals("COIN_LITTLE")){
-                                            ToastUtil.showCenterToast(CreateNormalDocActivity.this,R.string.label_have_no_coin);
-                                        }else {
-                                            ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                        }
-                                    } catch (JSONException e1) {
-                                        e1.printStackTrace();
-                                        ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                    }
-                                }else {
-                                    ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                }
+                                ErrorCodeUtils.showErrorMsgByCode(CreateNormalDocActivity.this,integer);
                             }
-                        }));
+                        });
                     }
                 }else {
                     createDialog();
-                    Otaku.getAccountV2().uploadFilesToQiniu(mPreferMng.getToken(), paths, new OnNetWorkCallback<String, ArrayList<String>>() {
+                    Otaku.getAccountV2().uploadFilesToQiniu(paths, new OneParameterCallback<ArrayList<Image>>() {
                         @Override
-                        public void success(String token, ArrayList<String> result) {
+                        public void action(ArrayList<Image> result) {
                             for (int i = 0; i < images.size(); i++) {
                                 DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
-                                docPutImage.url = result.get(i);
+                                docPutImage.path = result.get(i).getPath();
+                                docPutImage.h = result.get(i).getH();
+                                docPutImage.w = result.get(i).getW();
                                 if(i < visibleSize){
                                     mDocBean.details.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
                                 }else {
-                                    mDocBean.coin.data.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
+                                    mDocBean.coin.details.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
                                 }
                             }
                             if(mIsQiu){
-                                Otaku.getDocV2().createQiuMingShanDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+                                Otaku.getDocV2().createQiuMingShanDoc(mDocBean, new SimpleCallback() {
                                     @Override
-                                    public void success(String token, String s) {
+                                    public void action() {
                                         mTvSend.setEnabled(true);
                                         finalizeDialog();
                                         for (Image image : images){
-                                            FileUtil.deleteFile(image.path);
+                                            FileUtil.deleteFile(image.getPath());
                                         }
                                         ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
                                         Intent i = new Intent();
                                         setResult(RESPONSE_CODE, i);
                                         finish();
                                     }
-
+                                }, new OneParameterCallback<Integer>() {
                                     @Override
-                                    public void failure(String e) {
+                                    public void action(Integer integer) {
                                         mTvSend.setEnabled(true);
                                         finalizeDialog();
-                                        if(!TextUtils.isEmpty(e)){
-                                            try {
-                                                JSONObject json = new JSONObject(e);
-                                                String data = json.optString("data");
-                                                if(data.equals("COIN_LITTLE")){
-                                                    ToastUtil.showCenterToast(CreateNormalDocActivity.this,R.string.label_have_no_coin);
-                                                }else {
-                                                    ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                                }
-                                            } catch (JSONException e1) {
-                                                e1.printStackTrace();
-                                                ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                            }
-                                        }else {
-                                            ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+                                        for (Image image : images){
+                                            FileUtil.deleteFile(image.getPath());
                                         }
+                                        ErrorCodeUtils.showErrorMsgByCode(CreateNormalDocActivity.this,integer);
                                     }
-                                }));
+                                });
                             }else {
-                                Otaku.getDocV2().createNormalDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+                                Otaku.getDocV2().createNormalDoc(mDocBean, new SimpleCallback() {
                                     @Override
-                                    public void success(String token, String s) {
+                                    public void action() {
                                         mTvSend.setEnabled(true);
                                         finalizeDialog();
                                         for (Image image : images){
-                                            FileUtil.deleteFile(image.path);
+                                            FileUtil.deleteFile(image.getPath());
                                         }
                                         ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
                                         Intent i = new Intent();
                                         setResult(RESPONSE_CODE, i);
                                         finish();
                                     }
-
+                                }, new OneParameterCallback<Integer>() {
                                     @Override
-                                    public void failure(String e) {
+                                    public void action(Integer integer) {
                                         mTvSend.setEnabled(true);
                                         finalizeDialog();
-                                        if(!TextUtils.isEmpty(e)){
-                                            try {
-                                                JSONObject json = new JSONObject(e);
-                                                String data = json.optString("data");
-                                                if(data.equals("COIN_LITTLE")){
-                                                    ToastUtil.showCenterToast(CreateNormalDocActivity.this,R.string.label_have_no_coin);
-                                                }else {
-                                                    ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                                }
-                                            } catch (JSONException e1) {
-                                                e1.printStackTrace();
-                                                ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
-                                            }
-                                        }else {
-                                            ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+                                        for (Image image : images){
+                                            FileUtil.deleteFile(image.getPath());
                                         }
+                                        ErrorCodeUtils.showErrorMsgByCode(CreateNormalDocActivity.this,integer);
                                     }
-                                }));
+                                });
                             }
                         }
-
+                    }, new OneParameterCallback<Integer>() {
                         @Override
-                        public void failure(String e) {
+                        public void action(Integer integer) {
                             mTvSend.setEnabled(true);
                             finalizeDialog();
+                            ErrorCodeUtils.showErrorMsgByCode(CreateNormalDocActivity.this,integer);
                         }
                     });
                 }
             }else if(mType == TYPE_MUSIC_DOC){
                 createDialog();
-                Otaku.getAccountV2().uploadFilesToQiniu(mPreferMng.getToken(), paths, new OnNetWorkCallback<String, ArrayList<String>>() {
+                Otaku.getAccountV2().uploadFilesToQiniu(paths, new OneParameterCallback<ArrayList<Image>>() {
                     @Override
-                    public void success(String token, ArrayList<String> result) {
+                    public void action(ArrayList<Image> result) {
                         DocPut.DocPutMusic docPutMusic = new DocPut.DocPutMusic();
                         docPutMusic.name = mMusicInfo.getTitle();
                         docPutMusic.timestamp = mMusicInfo.getDuration();
                         for(int i = 0;i < result.size();i++){
-                            if(FileUtil.isImageFileBySuffix(result.get(i))){
-                                docPutMusic.coverUrl = result.get(i);
+                            if(FileUtil.isImageFileBySuffix(result.get(i).getPath())){
+                                docPutMusic.cover.setPath(result.get(i).getPath());
+                                docPutMusic.cover.setH(result.get(i).getH());
+                                docPutMusic.cover.setW(result.get(i).getW());
                             }else {
-                                docPutMusic.url = Otaku.URL_QINIU + result.get(i);
+                                docPutMusic.url = Otaku.URL_QINIU + result.get(i).getPath();
                             }
                         }
                         mDocBean.details.add(new DocPut.DocDetail(NewDocType.DOC_MUSIC.toString(),docPutMusic));
                         if(mIsQiu){
-                            Otaku.getDocV2().createQiuMingShanDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+                            Otaku.getDocV2().createQiuMingShanDoc(mDocBean, new SimpleCallback() {
                                 @Override
-                                public void success(String token, String s) {
+                                public void action() {
                                     mTvSend.setEnabled(true);
                                     finalizeDialog();
                                     for (Image image : images){
-                                        FileUtil.deleteFile(image.path);
+                                        FileUtil.deleteFile(image.getPath());
                                     }
                                     ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
                                     Intent i = new Intent();
                                     setResult(RESPONSE_CODE, i);
                                     finish();
                                 }
-
+                            }, new OneParameterCallback<Integer>() {
                                 @Override
-                                public void failure(String e) {
+                                public void action(Integer integer) {
                                     mTvSend.setEnabled(true);
                                     finalizeDialog();
-                                    ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+                                    for (Image image : images){
+                                        FileUtil.deleteFile(image.getPath());
+                                    }
+                                    ErrorCodeUtils.showErrorMsgByCode(CreateNormalDocActivity.this,integer);
                                 }
-                            }));
+                            });
                         }else {
-                            Otaku.getDocV2().createNormalDoc(mPreferMng.getToken(), mDocBean).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+                            Otaku.getDocV2().createNormalDoc(mDocBean, new SimpleCallback() {
                                 @Override
-                                public void success(String token, String s) {
+                                public void action() {
                                     mTvSend.setEnabled(true);
                                     finalizeDialog();
                                     for (Image image : images){
-                                        FileUtil.deleteFile(image.path);
+                                        FileUtil.deleteFile(image.getPath());
                                     }
                                     ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_success);
                                     Intent i = new Intent();
                                     setResult(RESPONSE_CODE, i);
                                     finish();
                                 }
-
+                            }, new OneParameterCallback<Integer>() {
                                 @Override
-                                public void failure(String e) {
+                                public void action(Integer integer) {
                                     mTvSend.setEnabled(true);
                                     finalizeDialog();
-                                    ToastUtil.showToast(CreateNormalDocActivity.this, R.string.msg_create_doc_faile_unknown);
+                                    for (Image image : images){
+                                        FileUtil.deleteFile(image.getPath());
+                                    }
+                                    ErrorCodeUtils.showErrorMsgByCode(CreateNormalDocActivity.this,integer);
                                 }
-                            }));
+                            });
                         }
                     }
-
+                }, new OneParameterCallback<Integer>() {
                     @Override
-                    public void failure(String e) {
+                    public void action(Integer integer) {
                         mTvSend.setEnabled(true);
                         finalizeDialog();
+                        ErrorCodeUtils.showErrorMsgByCode(CreateNormalDocActivity.this,integer);
                     }
                 });
             }
@@ -726,15 +677,15 @@ public class CreateNormalDocActivity extends BaseActivity{
             mDocBean = new DocPut();
             mDocBean.title = mTitle;
             for (int i = 0;i < mTags.size();i++){
-                mDocBean.tags.add(mTags.get(i).tag_name);
+                mDocBean.tags.add(mTags.get(i).getName());
             }
             DocPut.DocPutText docPutText = new DocPut.DocPutText();
-            docPutText.content = mContent;
+            docPutText.text = mContent;
             mDocBean.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(), docPutText));
             if(!TextUtils.isEmpty(mCoinContent)){
                 DocPut.DocPutText docPutText1 = new DocPut.DocPutText();
-                docPutText1.content = mCoinContent;
-                mDocBean.coin.data.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(),docPutText1));
+                docPutText1.text = mCoinContent;
+                mDocBean.coin.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(),docPutText1));
             }
             if(!TextUtils.isEmpty(mCoinContent) || mCoinPaths.size() > 0){
                 mDocBean.coin.coin = 1;
@@ -759,11 +710,13 @@ public class CreateNormalDocActivity extends BaseActivity{
                 try {
                     startActivityForResult(intent, REQ_GET_EDIT_VERSION_IMG);
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             } else {
                 try {
                     DialogUtils.createImgChooseDlg(this, null, this, mIconPaths, ICON_NUM_LIMIT).show();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         } else {
@@ -782,7 +735,7 @@ public class CreateNormalDocActivity extends BaseActivity{
                     if (paths != null && paths.size() == 1) {
                         mIconPaths = paths;
                         mTvImg.setText(R.string.label_select_img_finish);
-                        Utils.image().bind(mIvImg, "file://" + mIconPaths.get(0), new ImageOptions.Builder()
+                        x.image().bind(mIvImg, "file://" + mIconPaths.get(0), new ImageOptions.Builder()
                                 .setSize(DensityUtil.dip2px(115), DensityUtil.dip2px(115))
                                 .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
                                 .setFailureDrawableId(R.drawable.ic_default_club_l)
@@ -807,8 +760,8 @@ public class CreateNormalDocActivity extends BaseActivity{
                         photoPath = u.getPath();
                     }else if ("content".equals(schema)) {
                         photoPath = StorageUtils.getTempFile(System.currentTimeMillis() + ".jpg").getAbsolutePath();
-                        InputStream is = null;
-                        FileOutputStream fos = null;
+                        InputStream is ;
+                        FileOutputStream fos ;
                         try {
                             is = getContentResolver().openInputStream(u);
                             fos = new FileOutputStream(new File(photoPath));
@@ -830,8 +783,7 @@ public class CreateNormalDocActivity extends BaseActivity{
                         onGetPhotos();
                     }else {
                         mTvImg.setText(R.string.label_select_img_finish);
-                        //Utils.image().bind(mIvImg, "file://" + mIconPaths.get(0));
-                        Utils.image().bind(mIvImg, "file://" + mIconPaths.get(0), new ImageOptions.Builder()
+                        x.image().bind(mIvImg, "file://" + mIconPaths.get(0), new ImageOptions.Builder()
                                 .setSize(DensityUtil.dip2px(115), DensityUtil.dip2px(115))
                                 .setImageScaleType(ImageView.ScaleType.CENTER_CROP)
                                 .setFailureDrawableId(R.drawable.ic_default_club_l)
@@ -885,15 +837,13 @@ public class CreateNormalDocActivity extends BaseActivity{
                 mCoinContent = data.getStringExtra("content");
                 mCoinPaths = data.getStringArrayListExtra("paths");
                 if(!TextUtils.isEmpty(mCoinContent) || mCoinPaths.size() > 0){
-                    //mTvAddHide.setText(getString(R.string.label_added));
                     mTvAddHide.setVisibility(View.VISIBLE);
                 }else {
-                   // mTvAddHide.setText(getString(R.string.label_no_added));
                     mTvAddHide.setVisibility(View.INVISIBLE);
                 }
             }
         }else {
-            boolean res = DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
+            DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
 
                 @Override
                 public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
@@ -913,11 +863,11 @@ public class CreateNormalDocActivity extends BaseActivity{
    }
 
     private void updateTextNumRemain(TextView tv, int charRemain) {
-        tv.setText(charRemain + "");
+        tv.setText(String.valueOf(charRemain));
         if (charRemain >= 0) {
             tv.setTextColor(Color.DKGRAY);
         } else {
-            tv.setTextColor(getResources().getColor(R.color.red_error));
+            tv.setTextColor(ContextCompat.getColor(this,R.color.red_error));
         }
     }
 

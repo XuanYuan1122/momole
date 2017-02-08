@@ -15,18 +15,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.app.Utils;
-import com.app.annotation.ContentView;
-import com.app.annotation.FindView;
-import com.app.common.util.DensityUtil;
-import com.app.ex.DbException;
-import com.app.view.DbManager;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.moemoe.lalala.MoemoeApplication;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.data.ReplyBean;
-import com.moemoe.lalala.network.CallbackFactory;
-import com.moemoe.lalala.network.OnNetWorkCallback;
+import com.moemoe.lalala.network.OneParameterCallback;
 import com.moemoe.lalala.network.Otaku;
+import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.PreferenceManager;
 import com.moemoe.lalala.utils.StringUtils;
@@ -34,6 +30,13 @@ import com.moemoe.lalala.view.NoDoubleClickListener;
 import com.moemoe.lalala.view.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.recycler.PullCallback;
 import com.squareup.picasso.Picasso;
+
+import org.xutils.DbManager;
+import org.xutils.common.util.DensityUtil;
+import org.xutils.ex.DbException;
+import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
+import org.xutils.x;
 
 import java.util.ArrayList;
 
@@ -48,7 +51,7 @@ import java.util.ArrayList;
 public class MyCommentFragment extends BaseFragment {
 	private static final String TAG = "MyCommentFragment";
 
-	@FindView(R.id.list)
+	@ViewInject(R.id.list)
 	private PullAndLoadView mListDocs;
 
 	private RecyclerView mRecyclerView;
@@ -73,20 +76,19 @@ public class MyCommentFragment extends BaseFragment {
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		db = Utils.getDb(MoemoeApplication.sDaoConfig);
+		db = x.getDb(MoemoeApplication.sDaoConfig);
 		mSwipeRefreshLayout = mListDocs.getSwipeRefreshLayout();
 		mSwipeRefreshLayout.setColorSchemeResources(R.color.main_light_cyan, R.color.main_title_cyan);
-//		mSwipeRefreshLayout.setProgressViewOffset(false, 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
-//				.getDisplayMetrics()));
 		mRecyclerView = mListDocs.getRecyclerView();
 		mDocAdapter = new CommentListAdapter();
 		mRecyclerView.setAdapter(mDocAdapter);
+		mRecyclerView.setHasFixedSize(true);
 		mDocAdapter.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(View view, int position) {
 				ReplyBean bean = mDocAdapter.getItem(position);
 				if (bean != null) {
-					Uri uri = Uri.parse(bean.schema);
+					Uri uri = Uri.parse(bean.getSchema());
 					IntentUtils.toActivityFromUri(getActivity(), uri,view);
 				}
 			}
@@ -99,7 +101,6 @@ public class MyCommentFragment extends BaseFragment {
 
 		LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
 		mListDocs.setLayoutManager(linearLayoutManager);
-		mListDocs.isLoadMoreEnabled(true);
 		mListDocs.setPullCallback(new PullCallback() {
 			@Override
 			public void onLoadMore() {
@@ -129,10 +130,11 @@ public class MyCommentFragment extends BaseFragment {
 	private void loadDataFromDb(){
 		try {
 			ReplyBean docBean = db.selector(ReplyBean.class)
-					.where("uuid","=","cache")
+					.where("uuid","=",PreferenceManager.getInstance(getContext()).getUUid())
 					.findFirst();
 			if(docBean != null && docBean.json != null){
-				ArrayList<ReplyBean> datas = ReplyBean.readFromJsonList(getActivity(),docBean.json);
+				Gson gson = new Gson();
+				ArrayList<ReplyBean> datas = gson.fromJson(docBean.json,new TypeToken<ArrayList<ReplyBean>>(){}.getType());
 				mReplyBean.addAll(datas);
 				mDocAdapter.notifyDataSetChanged();
 			}
@@ -142,16 +144,19 @@ public class MyCommentFragment extends BaseFragment {
 	}
 
 	private void requestCommentList(final int index){
-		Otaku.getAccountV2().requestCommentFromOther(PreferenceManager.getInstance(getActivity()).getToken(), index).enqueue(CallbackFactory.getInstance().callback(new OnNetWorkCallback<String, String>() {
+		Otaku.getAccountV2().requestCommentFromOther(index, new OneParameterCallback<ArrayList<ReplyBean>>() {
 			@Override
-			public void success(String token, String s) {
+			public void action(ArrayList<ReplyBean> replyBeen) {
 				// TODO 没有去重
-				ArrayList<ReplyBean> datas = ReplyBean.readFromJsonList(getActivity(),s);
+				ArrayList<ReplyBean> datas = replyBeen;
 				ReplyBean docBean = new ReplyBean();
-				docBean.uuid = "cache";
-				docBean.json = s;
+				docBean.uuid = PreferenceManager.getInstance(getContext()).getUUid();
+				Gson gson = new Gson();
+				docBean.json = gson.toJson(replyBeen, new TypeToken<ArrayList<ReplyBean>>() {
+				}.getType());
 				try {
 					db.saveOrUpdate(docBean);
+
 				} catch (DbException e) {
 					e.printStackTrace();
 				}
@@ -175,15 +180,18 @@ public class MyCommentFragment extends BaseFragment {
 					}
 				} else {
 					mListDocs.isLoadMoreEnabled(true);
-					mIsHasLoadedAll = false;
 				}
+				mListDocs.setComplete();
+				mIsLoading = false;
 			}
-
+		}, new OneParameterCallback<Integer>() {
 			@Override
-			public void failure(String e) {
-
+			public void action(Integer integer) {
+				mListDocs.setComplete();
+				mIsLoading = false;
+				ErrorCodeUtils.showErrorMsgByCode(getContext(),integer);
 			}
-		}));
+		});
 	}
 
 	private class UpdateTask extends AsyncTask<Void,Void,Void> {
@@ -198,28 +206,22 @@ public class MyCommentFragment extends BaseFragment {
 		@Override
 		protected Void doInBackground(Void... params) {
 			mIsLoading = true;
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if (mIsPullDown) {
+				requestCommentList(0);
+			}else {
+				requestCommentList(mDocAdapter.getItemCount());
 			}
 			return null;
 		}
 
 		@Override
 		protected void onPreExecute() {
-			if (mIsPullDown) {
-				requestCommentList(0);
-				mListDocs.isLoadMoreEnabled(true);
-			}else {
-				requestCommentList(mDocAdapter.getItemCount());
-			}
+
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
-			mListDocs.setComplete();
-			mIsLoading = false;
+
 		}
 	}
 
@@ -250,16 +252,16 @@ public class MyCommentFragment extends BaseFragment {
 		public void onBindViewHolder(final CommentListAdapter.CommentViewHolder viewHolder, int position) {
 			ReplyBean bean = getItem(position);
 			Picasso.with(getActivity())
-					.load(StringUtils.getUrl(getActivity(), bean.fromIcon.path,DensityUtil.dip2px(44), DensityUtil.dip2px(44),false,false))
+					.load(StringUtils.getUrl(getActivity(),Otaku.URL_QINIU + bean.getFromIcon().getPath(),DensityUtil.dip2px(44), DensityUtil.dip2px(44),false,false))
 					.resize(DensityUtil.dip2px(44), DensityUtil.dip2px(44))
 					.placeholder(R.drawable.ic_default_avatar_m)
 					.error(R.drawable.ic_default_avatar_m)
 					.config(Bitmap.Config.RGB_565)
 					.tag(TAG)
 					.into(viewHolder.ivAvatar);
-			viewHolder.tvName.setText(bean.fromName);
-			viewHolder.tvDate.setText(bean.date);
-			viewHolder.tvContent.setText(bean.content);
+			viewHolder.tvName.setText(bean.getFromName());
+			viewHolder.tvDate.setText(bean.getCreateTime());
+			viewHolder.tvContent.setText(bean.getContent());
 			viewHolder.itemView.setOnClickListener(new NoDoubleClickListener() {
 				@Override
 				public void onNoDoubleClick(View v) {
