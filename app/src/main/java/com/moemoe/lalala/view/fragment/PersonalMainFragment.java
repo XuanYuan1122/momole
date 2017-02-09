@@ -251,9 +251,9 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
             ivCreator.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!TextUtils.isEmpty(commentEntity.getId()) && !commentEntity.getId().equals(PreferenceUtils.getUUid())) {
+                    if (!TextUtils.isEmpty(commentEntity.getFromUserId()) && !commentEntity.getFromUserId().equals(PreferenceUtils.getUUid())) {
                         Intent i = new Intent(getContext(),NewPersonalActivity.class);
-                        i.putExtra(BaseAppCompatActivity.UUID,commentEntity.getId());
+                        i.putExtra(BaseAppCompatActivity.UUID,commentEntity.getFromUserId());
                         getActivity().startActivity(i);
                     }
                 }

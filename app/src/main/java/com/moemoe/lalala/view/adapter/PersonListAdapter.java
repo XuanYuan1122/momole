@@ -276,9 +276,9 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             commentHolder.ivCreator.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!TextUtils.isEmpty(commentEntity.getId()) && !commentEntity.getId().equals(PreferenceUtils.getUUid())) {
+                    if (!TextUtils.isEmpty(commentEntity.getFromUserId()) && !commentEntity.getFromUserId().equals(PreferenceUtils.getUUid())) {
                         Intent i = new Intent(context,NewPersonalActivity.class);
-                        i.putExtra(BaseAppCompatActivity.UUID,commentEntity.getId());
+                        i.putExtra(BaseAppCompatActivity.UUID,commentEntity.getFromUserId());
                         context.startActivity(i);
                     }
                 }

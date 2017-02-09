@@ -85,6 +85,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private final int MENU_REPORT = 104;
     private final int MENU_GOTO_FLOOR = 105;
     private final int MENU_DELETE = 106;
+    private final int TAG_DELETE = 107;
     private final int ICON_NUM_LIMIT = 9;
     private final int REQ_GET_EDIT_VERSION_IMG = 2333;
     private final int REQ_TO_FOLDER = 30003;
@@ -397,9 +398,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
         item = new MenuItem(MENU_SHARE, getString(R.string.label_share));
         items.addMenuItem(item);
-        // 举报
-        item = new MenuItem(MENU_REPORT, getString(R.string.label_jubao));
-        items.addMenuItem(item);
+//        // 举报
+//        item = new MenuItem(MENU_REPORT, getString(R.string.label_jubao));
+//        items.addMenuItem(item);
 
         mMenu = new PopupListMenu(this, items);
         mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
@@ -424,6 +425,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     }
                 }else if(itemId == MENU_DELETE){
                     deleteDoc();
+                }else if(itemId == TAG_DELETE){
+                    //TODO 去删除标签界面
                 }
             }
         });
@@ -860,6 +863,19 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             MenuItem menuItem = menuItems.findItem(MENU_DELETE);
             if(menuItem == null){
                 menuItem = new MenuItem(MENU_DELETE,getString(R.string.label_delete));
+                menuItems.addMenuItem(menuItem);
+            }
+            MenuItem tagDelItem = menuItems.findItem(TAG_DELETE);
+            if(tagDelItem == null){
+                menuItem = new MenuItem(TAG_DELETE,getString(R.string.label_tag_ctrl));
+                menuItems.addMenuItem(menuItem);
+            }
+        }else {
+            PopupMenuItems menuItems = mMenu.getCurrentMenuItems();
+            MenuItem menuItem = menuItems.findItem(MENU_REPORT);
+            // 举报
+            if(menuItem == null){
+                menuItem = new MenuItem(MENU_REPORT, getString(R.string.label_jubao));
                 menuItems.addMenuItem(menuItem);
             }
         }

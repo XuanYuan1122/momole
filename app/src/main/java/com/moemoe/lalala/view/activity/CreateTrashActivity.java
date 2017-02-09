@@ -124,6 +124,7 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
         mTvSend.setText(R.string.label_done);
         mDocLabel.setContentAndNumList(true,mTags);
         mContentRemain = CONTENT_LIMIT;
+        mTitle = "";
     }
 
     @Override
@@ -329,7 +330,7 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
             showToast(R.string.msg_connection);
             return;
         }
-        if (mTitle != null && mTitle.length() > TITLE_LIMIT) {
+        if (mTitle.length() > TITLE_LIMIT) {
             showToast(R.string.msg_doc_title_limit);
         } else if (mType == TYPE_TEXT_TRASH && TextUtils.isEmpty(mContent)) {
             showToast(R.string.msg_doc_content_cannot_null);

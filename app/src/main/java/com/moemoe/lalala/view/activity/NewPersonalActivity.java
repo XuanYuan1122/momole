@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -92,16 +93,16 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        if(getIntent() == null){
-            finish();
-            return;
-        }
         DaggerPersonalComponent.builder()
                 .personalModule(new PersonalModule(this))
                 .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mUserId = getIntent().getStringExtra(UUID);
+        if(TextUtils.isEmpty(mUserId)){
+            finish();
+            return;
+        }
         mIsSelf = mUserId.equals(PreferenceUtils.getUUid());
         mIvBag.setVisibility(View.GONE);
         mPresenter.requestUserInfo(mUserId);
