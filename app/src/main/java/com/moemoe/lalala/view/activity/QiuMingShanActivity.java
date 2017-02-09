@@ -18,18 +18,21 @@ import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplicationLike;
-import com.moemoe.lalala.di.components.DaggerCommentComponent;
-import com.moemoe.lalala.di.modules.CommentModule;
+import com.moemoe.lalala.di.components.DaggerDepartComponent;
+import com.moemoe.lalala.di.modules.DepartModule;
+import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.DocListEntity;
-import com.moemoe.lalala.presenter.CommentContract;
-import com.moemoe.lalala.presenter.CommentPresenter;
+import com.moemoe.lalala.model.entity.FeaturedEntity;
+import com.moemoe.lalala.presenter.DepartContract;
+import com.moemoe.lalala.presenter.DepartPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.view.adapter.DocListAdapter;
+import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.view.adapter.ClassAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
@@ -44,7 +47,7 @@ import butterknife.BindView;
  * Created by yi on 2016/12/2.
  */
 
-public class QiuMingShanActivity extends BaseAppCompatActivity implements CommentContract.View {
+public class QiuMingShanActivity extends BaseAppCompatActivity implements DepartContract.View {
 
     private final int REQUEST_CODE_CREATE_DOC = 2333;
     @BindView(R.id.rl_bar)
@@ -59,10 +62,11 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
     View mSendPost;
     @BindView(R.id.tv_simple_label)
     TextView mSimpleLabel;
-    private DocListAdapter mDocAdapter;
+    private ClassAdapter mDocAdapter;
     @Inject
-    CommentPresenter mPresenter;
+    DepartPresenter mPresenter;
     private boolean isLoading = false;
+    private String mRoomId;
 
     @Override
     protected int getLayoutId() {
@@ -71,18 +75,19 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        DaggerCommentComponent.builder()
-                .commentModule(new CommentModule(this))
+        DaggerDepartComponent.builder()
+                .departModule(new DepartModule(this))
                 .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        mRoomId = "AUTUMN";
         mRlRoot.setVisibility(View.VISIBLE);
         mRlRoot.getBackground().mutate().setAlpha(0);
         mSimpleLabel.setAlpha(0);
         mTitle.setText("秋名山");
         mTitle.setTextColor(Color.argb(0, 255, 255, 255));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mDocAdapter = new DocListAdapter(this,false);
+        mDocAdapter = new ClassAdapter(this);
         mListDocs.getRecyclerView().setAdapter(mDocAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
         mSendPost.setVisibility(View.VISIBLE);
@@ -106,11 +111,14 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
         mDocAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                DocListEntity bean = mDocAdapter.getItem(position);
-                if (bean != null) {
-                    if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                        Uri uri = Uri.parse(bean.getDesc().getSchema());
-                        IntentUtils.toActivityFromUri(QiuMingShanActivity.this, uri, view);
+                Object o = mDocAdapter.getItem(position);
+                if (o != null) {
+                    if(o instanceof DocListEntity){
+                        DocListEntity entity = (DocListEntity) o;
+                        if (!TextUtils.isEmpty(entity.getDesc().getSchema())) {
+                            Uri uri = Uri.parse(entity.getDesc().getSchema());
+                            IntentUtils.toActivityFromUri(QiuMingShanActivity.this, uri, view);
+                        }
                     }
                 }
             }
@@ -126,7 +134,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
                 AppSetting.SUB_TAG = !AppSetting.SUB_TAG;
                 mSimpleLabel.setSelected(AppSetting.SUB_TAG);
                 PreferenceUtils.setSimpleLabel(QiuMingShanActivity.this,AppSetting.SUB_TAG);
-                mPresenter.doRequest(0,2);
+                mPresenter.requestDocList(0,"change",3);
             }
         });
         mListDocs.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -172,13 +180,15 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
             @Override
             public void onLoadMore() {
                 isLoading = true;
-                mPresenter.doRequest(mDocAdapter.getItemCount(),3);
+                mPresenter.requestDocList(mDocAdapter.getItemCount() - 2,"",3);
             }
 
             @Override
             public void onRefresh() {
                 isLoading = true;
-                mPresenter.doRequest(0,3);
+                mPresenter.requestBannerData(mRoomId);
+                mPresenter.requestFeatured(mRoomId);
+                mPresenter.requestDocList(0,"",3);
             }
 
             @Override
@@ -191,7 +201,9 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
                 return false;
             }
         });
-        mPresenter.doRequest(0,3);
+        mPresenter.requestBannerData(mRoomId);
+        mPresenter.requestFeatured(mRoomId);
+        mPresenter.requestDocList(0,"",3);
     }
 
     @Override
@@ -200,17 +212,55 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
     }
 
     @Override
+    public void onBannerLoadSuccess(ArrayList<BannerEntity> bannerEntities) {
+        mListDocs.setComplete();
+        isLoading = false;
+        mDocAdapter.setBanner(bannerEntities);
+    }
+
+    @Override
+    public void onFeaturedLoadSuccess(ArrayList<FeaturedEntity> featuredEntities) {
+        mListDocs.setComplete();
+        isLoading = false;
+        mDocAdapter.setFeaturedBeans(featuredEntities);
+    }
+
+    @Override
+    public void onDocLoadSuccess(Object entity, boolean pull) {
+        if(((ArrayList<DocListEntity>) entity).size() == 0){
+            mListDocs.isLoadMoreEnabled(false);
+            ToastUtils.showCenter(this,getString(R.string.msg_all_load_down));
+        }else {
+            mListDocs.isLoadMoreEnabled(true);
+        }
+        mListDocs.setComplete();
+        isLoading = false;
+        if(pull){
+            mDocAdapter.setDocList((ArrayList<DocListEntity>) entity);
+        }else {
+            mDocAdapter.addDocList((ArrayList<DocListEntity>) entity);
+        }
+    }
+
+    @Override
     public void onChangeSuccess(Object entities) {
-        mDocAdapter = new DocListAdapter(this,false);
-        mDocAdapter.setData((ArrayList<DocListEntity>) entities);
+        ArrayList<BannerEntity> banner = mDocAdapter.getBannerList();
+        ArrayList<FeaturedEntity> featured = mDocAdapter.getFeaturedList();
+        mDocAdapter = new ClassAdapter(this);
+        mDocAdapter.setBanner(banner);
+        mDocAdapter.setFeaturedBeans(featured);
+        mDocAdapter.setDocList((ArrayList<DocListEntity>) entities);
         mDocAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                DocListEntity bean = mDocAdapter.getItem(position);
-                if (bean != null) {
-                    if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                        Uri uri = Uri.parse(bean.getDesc().getSchema());
-                        IntentUtils.toActivityFromUri(QiuMingShanActivity.this, uri, view);
+                Object object = mDocAdapter.getItem(position);
+                if (object != null) {
+                    if (object instanceof DocListEntity) {
+                        DocListEntity bean = (DocListEntity) object;
+                        if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
+                            Uri uri = Uri.parse(bean.getDesc().getSchema());
+                            IntentUtils.toActivityFromUri(QiuMingShanActivity.this, uri,view);
+                        }
                     }
                 }
             }
@@ -236,18 +286,6 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    @Override
-    public void onSuccess(Object entities, boolean pull) {
-        isLoading = false;
-        mListDocs.setComplete();
-        mListDocs.isLoadMoreEnabled(true);
-        if(pull){
-            mDocAdapter.setData((ArrayList<DocListEntity>) entities);
-        }else {
-            mDocAdapter.addData((ArrayList<DocListEntity>) entities);
-        }
     }
 
     @Override
@@ -311,7 +349,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Commen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == CreateNormalDocActivity.RESPONSE_CODE){
             mListDocs.getRecyclerView().scrollToPosition(0);
-            mPresenter.doRequest(0,1);
+            mPresenter.requestDocList(0,"",3);
         }
     }
 }

@@ -124,6 +124,26 @@ public class DepartPresenter implements DepartContract.Presenter {
                             view.onFailure(code,msg);
                         }
                     });
+        }else if(type == 3){
+            apiService.requestQiuMingShanDocList(index,ApiService.LENGHT, AppSetting.SUB_TAG)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetResultSubscriber<ArrayList<DocListEntity>>() {
+                        @Override
+                        public void onSuccess(ArrayList<DocListEntity> docListEntities) {
+                            if(room.equals("change")){
+                                view.onChangeSuccess(docListEntities);
+                            }else{
+                                view.onDocLoadSuccess(docListEntities,index == 0);
+                            }
+
+                        }
+
+                        @Override
+                        public void onFail(int code,String msg) {
+                            view.onFailure(code,msg);
+                        }
+                    });
         }
     }
 }

@@ -33,6 +33,9 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.adapter.BagAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
+import com.moemoe.lalala.view.widget.menu.MenuItem;
+import com.moemoe.lalala.view.widget.menu.PopupListMenu;
+import com.moemoe.lalala.view.widget.menu.PopupMenuItems;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
@@ -90,7 +93,7 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
 
     @Inject
     BagPresenter mPresenter;
-
+    private PopupListMenu mMenu;
     private BagAdapter mAdapter;
     private String mUserId;
     private BagDirEntity mDir;
@@ -130,6 +133,8 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
             mRlUserRoot.setVisibility(View.GONE);
             mRlBuyRoot.setVisibility(View.GONE);
             mTvSelect.setVisibility(View.VISIBLE);
+            mIvMenu.setVisibility(View.VISIBLE);
+            initPopupMenus();
         }else {
             mFlAddRoot.setVisibility(View.GONE);
             mTvSelect.setVisibility(View.GONE);
@@ -177,6 +182,33 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         mRv.setLayoutManager(layoutManager);
         mRv.isLoadMoreEnabled(false);
+    }
+
+    private void initPopupMenus() {
+        PopupMenuItems items = new PopupMenuItems(this);
+        MenuItem item;
+        if(mUserId.equals(PreferenceUtils.getUUid())){
+            item = new MenuItem(0, getString(R.string.label_modify));
+            items.addMenuItem(item);
+        }
+
+        mMenu = new PopupListMenu(this, items);
+        mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
+
+            @Override
+            public void OnMenuItemClick(int itemId) {
+                if(itemId == 0){
+                    Intent i = new Intent(FolderActivity.this,BagEditActivity.class);
+                    i.putExtra("bg",mDir.getCover());
+                    i.putExtra("name",mDir.getName());
+                    i.putExtra("coin",mDir.getCoin());
+                    i.putExtra("folderId",mDir.getFolderId());
+                    i.putExtra("size",mDir.getSize());
+                    i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_DIR_MODIFY);
+                    startActivityForResult(i,REQ_MODIFY_DIE);
+                }
+            }
+        });
     }
 
     @Override
