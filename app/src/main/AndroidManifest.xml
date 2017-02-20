@@ -293,7 +293,18 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"
-            android:windowSoftInputMode="adjustResize"  />
+            android:windowSoftInputMode="adjustResize"  >
+
+            <intent-filter>
+                <action android:name="user_info_user_comment_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_user_info_user_comment_path"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".view.activity.SecretSettingActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -321,6 +332,10 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"/>
+        <activity android:name=".view.activity.TagControlActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.CropAvatarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -328,7 +343,17 @@
         <activity android:name=".view.activity.NewPersonalActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme"/>
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="user_info_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_user_info_path"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".view.activity.BagActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -368,7 +393,22 @@
         <activity android:name=".view.activity.NewsDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme"/>
+            android:theme="@style/MainColorTranslucentTheme">
+
+            <intent-filter>
+                <action android:name="user_info_notify_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_user_info_notify_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.CommentDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.TrashDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"

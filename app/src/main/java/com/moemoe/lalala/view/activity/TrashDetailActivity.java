@@ -365,69 +365,71 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
     }
 
     private void createImage(Image image){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,20));
-        if(wh[1] > 2048){
-            mIvContent.setVisibility(View.GONE);
-            mLongImage.setVisibility(View.VISIBLE);
-            String temp = EncoderUtils.MD5(ApiService.URL_QINIU + image.getPath()) + ".jpg";
-            final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
-            ViewGroup.LayoutParams layoutParams = mLongImage.getLayoutParams();
-            layoutParams.width = wh[0];
-            layoutParams.height = wh[1];
-            mLongImage.setLayoutParams(layoutParams);
-            mLongImage.requestLayout();
-            if(longImage.exists()){
-                mLongImage.setImage(longImage.getAbsolutePath());
-            }else {
-                downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<DownloadStatus>() {
-                            @Override
-                            public void onCompleted() {
-                                BitmapUtils.galleryAddPic(TrashDetailActivity.this, longImage.getAbsolutePath());
-                                mLongImage.setImage(longImage.getAbsolutePath());
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(DownloadStatus downloadStatus) {
-
-                            }
-                        });
-            }
-        }else {
-            mIvContent.setVisibility(View.VISIBLE);
-            mLongImage.setVisibility(View.GONE);
-            if(FileUtil.isGif(image.getPath())){
-                ViewGroup.LayoutParams layoutParams = mIvContent.getLayoutParams();
+        if(image.getW() >0 && image.getH() > 0){
+            final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,20));
+            if(wh[1] > 2048){
+                mIvContent.setVisibility(View.GONE);
+                mLongImage.setVisibility(View.VISIBLE);
+                String temp = EncoderUtils.MD5(ApiService.URL_QINIU + image.getPath()) + ".jpg";
+                final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
+                ViewGroup.LayoutParams layoutParams = mLongImage.getLayoutParams();
                 layoutParams.width = wh[0];
                 layoutParams.height = wh[1];
-                mIvContent.setLayoutParams(layoutParams);
-                mIvContent.requestLayout();
-                Glide.with(this)
-                        .load(ApiService.URL_QINIU + image.getPath())
-                        .asGif()
-                        .override(wh[0], wh[1])
-                        .placeholder(R.drawable.bg_default_square)
-                        .error(R.drawable.bg_default_square)
-                        .into(mIvContent);
+                mLongImage.setLayoutParams(layoutParams);
+                mLongImage.requestLayout();
+                if(longImage.exists()){
+                    mLongImage.setImage(longImage.getAbsolutePath());
+                }else {
+                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Subscriber<DownloadStatus>() {
+                                @Override
+                                public void onCompleted() {
+                                    BitmapUtils.galleryAddPic(TrashDetailActivity.this, longImage.getAbsolutePath());
+                                    mLongImage.setImage(longImage.getAbsolutePath());
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onNext(DownloadStatus downloadStatus) {
+
+                                }
+                            });
+                }
             }else {
-                ViewGroup.LayoutParams layoutParams = mIvContent.getLayoutParams();
-                layoutParams.width = wh[0];
-                layoutParams.height = wh[1];
-                mIvContent.setLayoutParams(layoutParams);
-                mIvContent.requestLayout();
-                Glide.with(this)
-                        .load(StringUtils.getUrl(this,ApiService.URL_QINIU + image.getPath(), wh[0], wh[1], true, true))
-                        .override(wh[0], wh[1])
-                        .placeholder(R.drawable.bg_default_square)
-                        .error(R.drawable.bg_default_square)
-                        .into(mIvContent);
+                mIvContent.setVisibility(View.VISIBLE);
+                mLongImage.setVisibility(View.GONE);
+                if(FileUtil.isGif(image.getPath())){
+                    ViewGroup.LayoutParams layoutParams = mIvContent.getLayoutParams();
+                    layoutParams.width = wh[0];
+                    layoutParams.height = wh[1];
+                    mIvContent.setLayoutParams(layoutParams);
+                    mIvContent.requestLayout();
+                    Glide.with(this)
+                            .load(ApiService.URL_QINIU + image.getPath())
+                            .asGif()
+                            .override(wh[0], wh[1])
+                            .placeholder(R.drawable.bg_default_square)
+                            .error(R.drawable.bg_default_square)
+                            .into(mIvContent);
+                }else {
+                    ViewGroup.LayoutParams layoutParams = mIvContent.getLayoutParams();
+                    layoutParams.width = wh[0];
+                    layoutParams.height = wh[1];
+                    mIvContent.setLayoutParams(layoutParams);
+                    mIvContent.requestLayout();
+                    Glide.with(this)
+                            .load(StringUtils.getUrl(this,ApiService.URL_QINIU + image.getPath(), wh[0], wh[1], true, true))
+                            .override(wh[0], wh[1])
+                            .placeholder(R.drawable.bg_default_square)
+                            .error(R.drawable.bg_default_square)
+                            .into(mIvContent);
+                }
             }
         }
     }

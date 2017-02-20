@@ -21,6 +21,7 @@
     <color name="main_selected_cyan">#1BAACC</color>
     <color name="main_red">#e9573f</color>
     <color name="main_red_pressed">#DD3F2A</color>
+    <color name="red_ea6142">#ea6142</color>
     <color name="dark_gray">#353535</color>
     <color name="gray_929292">#929292</color>
     <color name="gray_cecece">#cecece</color>

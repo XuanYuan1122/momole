@@ -155,15 +155,15 @@ public class MultiImageChooseActivity extends BaseAppCompatActivity implements V
                 }
             }
         });
-        mGridImages.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                // TODO
-                showPriview(mImages, position);
-                return true;
-            }
-        });
+//        mGridImages.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+//                // TODO
+//                showPriview(mImages, position);
+//                return true;
+//            }
+//        });
     }
 
     private void initListAblum() {

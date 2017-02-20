@@ -548,7 +548,6 @@ public class CardSlidePanel extends ViewGroup {
     public void fillData(List<TrashEntity> dataList) {
         this.dataList = dataList;
 
-       // int num = viewList.size();
         int num = dataList.size();
         if(num > 4){
             num = 4;
@@ -559,6 +558,24 @@ public class CardSlidePanel extends ViewGroup {
             itemView.setVisibility(View.VISIBLE);
         }
 
+        if (null != cardSwitchListener) {
+            cardSwitchListener.onShow(0);
+        }
+    }
+
+    public void setPosition(int position){
+
+        int num = dataList.size() - position - 1;
+        if(num > 4){
+            num = 4;
+        }
+
+        for (int i = 0; i <num; i++) {
+            CardItemView itemView = viewList.get(i);
+            itemView.fillData(dataList.get(i + position));
+            itemView.setVisibility(View.VISIBLE);
+        }
+        isShowing = position;
         if (null != cardSwitchListener) {
             cardSwitchListener.onShow(0);
         }

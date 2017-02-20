@@ -73,6 +73,7 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
                 .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        uuid = getIntent().getStringExtra(UUID);
         mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setText(getString(R.string.label_liuyan,0));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
@@ -91,7 +92,6 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
 
     @Override
     protected void initListeners() {
-        uuid = getIntent().getStringExtra(UUID);
         mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {

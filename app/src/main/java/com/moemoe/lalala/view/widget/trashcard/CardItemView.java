@@ -124,7 +124,7 @@ public class CardItemView extends FrameLayout {
             public void onSpringUpdate(Spring spring) {
                 int xPos = (int) spring.getCurrentValue();
                 setScreenX(xPos);
-                parentView.onViewPosChanged(CardItemView.this);
+                if(parentView != null) parentView.onViewPosChanged(CardItemView.this);
             }
         });
 
@@ -133,7 +133,7 @@ public class CardItemView extends FrameLayout {
             public void onSpringUpdate(Spring spring) {
                 int yPos = (int) spring.getCurrentValue();
                 setScreenY(yPos);
-                parentView.onViewPosChanged(CardItemView.this);
+                if(parentView != null) parentView.onViewPosChanged(CardItemView.this);
             }
         });
     }
@@ -141,8 +141,8 @@ public class CardItemView extends FrameLayout {
     public void fillData(final TrashEntity itemData) {
         if(type == 0){
             Glide.with(getContext())
-                    .load(StringUtils.getUrl(getContext(), ApiService.URL_QINIU +  itemData.getImage().getPath(), DensityUtil.getScreenWidth(getContext()) - DensityUtil.dip2px(getContext(),22), DensityUtil.dip2px(getContext(),180), false, true))
-                    .override(DensityUtil.getScreenWidth(getContext()) - DensityUtil.dip2px(getContext(),22), DensityUtil.dip2px(getContext(),180))
+                    .load(StringUtils.getUrl(getContext(), ApiService.URL_QINIU +  itemData.getImage().getPath(), DensityUtil.dip2px(getContext(),310), DensityUtil.dip2px(getContext(),210), false, true))
+                    .override(DensityUtil.dip2px(getContext(),310), DensityUtil.dip2px(getContext(),210))
                     .error(R.drawable.bg_default_square)
                     .placeholder(R.drawable.bg_default_square)
                     .centerCrop()
@@ -151,47 +151,49 @@ public class CardItemView extends FrameLayout {
             content.setText(itemData.getContent());
         }
         favorite.setSelected(itemData.isMark());
-        favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(NetworkUtils.checkNetworkAndShowError(getContext()) && DialogUtils.checkLoginAndShowDlg(getContext())){
-                    favorite.setSelected(!itemData.isMark());
-                    if(type == 0){
-                        ((ImageTrashActivity)getContext()).favoriteTrash(itemData);
-                    }else {
-                        ((TrashActivity)getContext()).favoriteTrash(itemData);
-                    }
-                }
-            }
-        });
-        add.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                if(type == 0){
-                    ((ImageTrashActivity)getContext()).createLabel(itemData.getDustbinId(),callback);
-                }else {
-                    ((TrashActivity)getContext()).createLabel(itemData.getDustbinId(),callback);
-                }
-            }
-        });
         title.setText(itemData.getTitle());
         docLabelView.setDocLabelAdapter(docLabelAdapter);
         docLabelAdapter.setData(itemData.getTags(),false);
-        docLabelView.setItemClickListener(new DocLabelView.LabelItemClickListener() {
-            @Override
-            public void itemClick(int position) {
-                if (!NetworkUtils.checkNetworkAndShowError(getContext())) {
-                    return;
-                }
-                if (DialogUtils.checkLoginAndShowDlg(getContext())) {
-                    if(type == 0){
-                        ((ImageTrashActivity)getContext()).addLabel(docLabelAdapter.getItem(position).getId(),itemData.getDustbinId(),docLabelAdapter.getItem(position).isLiked(),position,tagCallback);
-                    }else {
-                        ((TrashActivity)getContext()).addLabel(docLabelAdapter.getItem(position).getId(),itemData.getDustbinId(),docLabelAdapter.getItem(position).isLiked(),position,tagCallback);
+        if(parentView != null){
+            favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(NetworkUtils.checkNetworkAndShowError(getContext()) && DialogUtils.checkLoginAndShowDlg(getContext())){
+                        favorite.setSelected(!itemData.isMark());
+                        if(type == 0){
+                            ((ImageTrashActivity)getContext()).favoriteTrash(itemData);
+                        }else {
+                            ((TrashActivity)getContext()).favoriteTrash(itemData);
+                        }
                     }
                 }
-            }
-        });
+            });
+            add.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    if(type == 0){
+                        ((ImageTrashActivity)getContext()).createLabel(itemData.getDustbinId(),callback);
+                    }else {
+                        ((TrashActivity)getContext()).createLabel(itemData.getDustbinId(),callback);
+                    }
+                }
+            });
+            docLabelView.setItemClickListener(new DocLabelView.LabelItemClickListener() {
+                @Override
+                public void itemClick(int position) {
+                    if (!NetworkUtils.checkNetworkAndShowError(getContext())) {
+                        return;
+                    }
+                    if (DialogUtils.checkLoginAndShowDlg(getContext())) {
+                        if(type == 0){
+                            ((ImageTrashActivity)getContext()).addLabel(docLabelAdapter.getItem(position).getId(),itemData.getDustbinId(),docLabelAdapter.getItem(position).isLiked(),position,tagCallback);
+                        }else {
+                            ((TrashActivity)getContext()).addLabel(docLabelAdapter.getItem(position).getId(),itemData.getDustbinId(),docLabelAdapter.getItem(position).isLiked(),position,tagCallback);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -233,7 +235,7 @@ public class CardItemView extends FrameLayout {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             // 兼容ViewPager，触点需要按在可滑动区域才行
             boolean shouldCapture = shouldCapture((int) ev.getX(), (int) ev.getY());
-            if (shouldCapture) {
+            if (shouldCapture && parentView != null) {
                 parentView.getParent().requestDisallowInterceptTouchEvent(true);
             }
         }

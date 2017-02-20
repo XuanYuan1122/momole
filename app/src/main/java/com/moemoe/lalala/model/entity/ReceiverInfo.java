@@ -13,6 +13,7 @@ public class ReceiverInfo {
     public String schema;
     public boolean showNotify;
     public String type;
+    public String messageType;
 
     public void readFromJsonContent(String str){
         try {
@@ -23,6 +24,7 @@ public class ReceiverInfo {
             schema = json.optString("schema");
             type = json.optString("type");
             showNotify = json.optBoolean("showNotify");
+            if(json.has("messageType")) messageType = json.optString("messageType");
         } catch (JSONException e) {
             e.printStackTrace();
         }

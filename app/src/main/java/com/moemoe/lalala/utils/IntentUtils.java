@@ -42,10 +42,14 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         sSupportSchame.add(context.getResources().getString(R.string.label_swim_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_donation_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_snow_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_user_info_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_user_info_user_comment_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_user_info_notify_action));
         sSupportSchame.add("event_1.0");
     }
 
     public static void haveShareWeb(Context context, Uri uri, View v){
+        if(sSupportSchame.size() <= 0) init(context);
         try{
             Intent i = new Intent();
             String path = uri.getPath();
@@ -66,8 +70,9 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
 
         }
     }
-//
+
     public static void toActivityFromUri(Context context, Uri uri, View v){
+        if(sSupportSchame.size() <= 0) init(context);
         try{
             Intent i = new Intent();
             String path = uri.getPath();
@@ -118,8 +123,9 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
             WebViewActivity.startActivity(context, BuildConfig.NOT_FOUND_PAGE);
         }
     }
-//
+
     public static Intent getIntentFromUri(Context context,Uri uri){
+        if(sSupportSchame.size() <= 0) init(context);
         Intent i = new Intent();
         try{
             String path = uri.getPath();

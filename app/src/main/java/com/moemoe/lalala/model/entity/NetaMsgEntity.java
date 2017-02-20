@@ -3,30 +3,16 @@ package com.moemoe.lalala.model.entity;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Haru on 2016/5/12 0012.
+ * Created by yi on 2017/2/14.
  */
-public class ReplyEntity {
 
-    @SerializedName("commentId")
-    private String commentId;
+public class NetaMsgEntity {
     @SerializedName("content")
     private String content;
     @SerializedName("createTime")
     private String createTime;
-    @SerializedName("fromIcon")
-    private Image fromIcon;
-    @SerializedName("fromName")
-    private String fromName;
     @SerializedName("schema")
     private String schema;
-
-    public String getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(String commentId) {
-        this.commentId = commentId;
-    }
 
     public String getContent() {
         return content;
@@ -42,22 +28,6 @@ public class ReplyEntity {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-
-    public Image getFromIcon() {
-        return fromIcon;
-    }
-
-    public void setFromIcon(Image fromIcon) {
-        this.fromIcon = fromIcon;
-    }
-
-    public String getFromName() {
-        return fromName;
-    }
-
-    public void setFromName(String fromName) {
-        this.fromName = fromName;
     }
 
     public String getSchema() {

@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">neta</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">4.0.0_20170122</string>
-    <string name="app_version_code">400</string>
+    <string name="app_version">4.1.0_20170217</string>
+    <string name="app_version_code">4100</string>
 
     <string name="label_scheme">neta</string>
     <string name="label_host">com.moemoe.lalala</string>
@@ -40,6 +40,12 @@
     <string name="label_snow_path">/snow_1.0</string>
     <string name="label_swim_path">/swim_1.0</string>
     <string name="label_swim_action">swim_1.0</string>
+    <string name="label_user_info_path">/user_info_1.0</string>
+    <string name="label_user_info_action">user_info_1.0</string>
+    <string name="label_user_info_user_comment_path">/user_info_user_comment_1.0</string>
+    <string name="label_user_info_user_comment_action">user_info_user_comment_1.0</string>
+    <string name="label_user_info_notify_path">/user_info_notify_1.0</string>
+    <string name="label_user_info_notify_action">user_info_notify_1.0</string>
 
     <string name="label_can_not_use">施工中,敬请期待......</string>
     <string name="label_signed">今天已经签过啦</string>

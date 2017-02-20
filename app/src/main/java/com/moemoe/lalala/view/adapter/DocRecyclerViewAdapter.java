@@ -397,6 +397,11 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
+    public void setTags(ArrayList<DocTagEntity> entities){
+        mDocBean.setTags(entities);
+        notifyItemChanged(mTagsPosition);
+    }
+
     public void setData(DocDetailEntity docBean){
         this.mComments.clear();
         this.mDocBean = docBean;

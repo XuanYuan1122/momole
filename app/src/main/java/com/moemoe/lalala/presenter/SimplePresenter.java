@@ -5,7 +5,11 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.AuthorInfo;
+import com.moemoe.lalala.model.entity.CodeEntity;
+import com.moemoe.lalala.model.entity.CommentDetailEntity;
+import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
 import com.moemoe.lalala.model.entity.DelCommentEntity;
+import com.moemoe.lalala.model.entity.DelTagEntity;
 import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
@@ -38,7 +42,9 @@ public class SimplePresenter implements SimpleContract.Presenter {
     @Override
     public void doRequest(final Object data, int type) {
         if (type == 0){//find pwd
-            apiService.requestCode4ResetPwd((String) data)
+            CodeEntity entity = new CodeEntity();
+            entity.mobile = (String) data;
+            apiService.requestCode4ResetPwd(entity)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetSimpleResultSubscriber() {
@@ -53,7 +59,9 @@ public class SimplePresenter implements SimpleContract.Presenter {
                         }
                     });
         }else if(type == 1){//register
-            apiService.requestRegisterCode((String) data)
+            CodeEntity entity = new CodeEntity();
+            entity.mobile = (String) data;
+            apiService.requestRegisterCode(entity)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetSimpleResultSubscriber() {
@@ -167,6 +175,36 @@ public class SimplePresenter implements SimpleContract.Presenter {
 
                         @Override
                         public void onFail(int code,String msg) {
+                            view.onFailure(code,msg);
+                        }
+                    });
+        }else if (type == 7){
+            apiService.delTags((DelTagEntity) data)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetSimpleResultSubscriber() {
+                        @Override
+                        public void onSuccess() {
+                            view.onSuccess(null);
+                        }
+
+                        @Override
+                        public void onFail(int code,String msg) {
+                            view.onFailure(code,msg);
+                        }
+                    });
+        }else if(type == 8){
+            apiService.getCommentDetail((CommentDetailRqEntity) data)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetResultSubscriber<CommentDetailEntity>() {
+                        @Override
+                        public void onSuccess(CommentDetailEntity commentDetailEntity) {
+                            view.onSuccess(commentDetailEntity);
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
                             view.onFailure(code,msg);
                         }
                     });

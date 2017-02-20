@@ -2,6 +2,7 @@ package com.moemoe.lalala.presenter;
 
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
+import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.PersonDocEntity;
 import com.moemoe.lalala.model.entity.PersonFollowEntity;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
@@ -121,6 +122,38 @@ public class PersonaListPresenter implements PersonalListContract.Presenter {
                             view.onFailure(code,msg);
                         }
                     });
+        }else if(type == 6){
+            if(id.equals("sys")){
+                apiService.getSystemMsg(index,ApiService.LENGHT)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new NetResultSubscriber<ArrayList<NetaMsgEntity>>() {
+                            @Override
+                            public void onSuccess(ArrayList<NetaMsgEntity> netaMsgEntities) {
+                                view.onSuccess(netaMsgEntities,index == 0);
+                            }
+
+                            @Override
+                            public void onFail(int code, String msg) {
+                                view.onFailure(code,msg);
+                            }
+                        });
+            }else if(id.equals("neta")){
+                apiService.getNetaMsg(index,ApiService.LENGHT)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new NetResultSubscriber<ArrayList<NetaMsgEntity>>() {
+                            @Override
+                            public void onSuccess(ArrayList<NetaMsgEntity> netaMsgEntities) {
+                                view.onSuccess(netaMsgEntities,index == 0);
+                            }
+
+                            @Override
+                            public void onFail(int code, String msg) {
+                                view.onFailure(code,msg);
+                            }
+                        });
+            }
         }
     }
 }

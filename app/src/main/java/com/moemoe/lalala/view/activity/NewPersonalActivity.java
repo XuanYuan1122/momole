@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -13,12 +12,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.flyco.tablayout.CommonTabLayout;
+import com.flyco.tablayout.listener.CustomTabEntity;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplicationLike;
 import com.moemoe.lalala.di.components.DaggerPersonalComponent;
 import com.moemoe.lalala.di.modules.PersonalModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.Image;
+import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.presenter.PersonalContract;
 import com.moemoe.lalala.presenter.PersonalPresenter;
@@ -70,7 +73,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     @BindView(R.id.tv_follow)
     TextView mFollow;
     @BindView(R.id.tab_layout)
-    TabLayout mTabLayout;
+    CommonTabLayout mTabLayout;
     @BindView(R.id.vp_main)
     ViewPager mViewPager;
     @BindView(R.id.iv_edit)
@@ -85,6 +88,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     private String mUserId;
     private UserInfo mInfo;
     private PopupListMenu mMenu;
+    private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
 
     @Override
     protected int getLayoutId() {
@@ -206,6 +210,13 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     protected void onResume() {
         super.onResume();
         mAppBarLayout.addOnOffsetChangedListener(this);
+        if(mTabLayout.getTabCount() == 7){
+            if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
+                mTabLayout.showDot(6);
+            }else {
+                mTabLayout.hideMsg(6);
+            }
+        }
     }
 
     @Override
@@ -274,8 +285,55 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         }
         mAdapter = new PersonalPagerAdapter(getSupportFragmentManager(),this,mIsSelf,mUserId,info.isShowFavorite(),info.isShowFollow(),info.isShowFans());
         mViewPager.setAdapter(mAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
+        String[] mTitles = {getString(R.string.label_home_page), getString(R.string.label_doc), getString(R.string.label_favorite), getString(R.string.label_fans),getString(R.string.label_follow),getString(R.string.label_prop),getString(R.string.label_msg)};
+        for (int i = 0; i < mTitles.length; i++) {
+            mTabEntities.add(new TabEntity(mTitles[i], R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
+        }
+        mTabLayout.setTabData(mTabEntities);
+        mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                mViewPager.setCurrentItem(position);
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+            }
+        });
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mTabLayout.setCurrentTab(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        String type = getIntent().getStringExtra("tab");
+        if(!TextUtils.isEmpty(type)){
+            if(type.equals("notify")){
+                mViewPager.setCurrentItem(6);
+                mTabLayout.setCurrentTab(6);
+            }else if(type.equals("fans")){
+                mViewPager.setCurrentItem(3);
+                mTabLayout.setCurrentTab(3);
+            }
+        }
+        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
+            mTabLayout.showDot(6);
+        }else {
+            mTabLayout.hideMsg(6);
+        }
     }
+
 
     @Override
     public void onLoadUserInfo(UserInfo info) {

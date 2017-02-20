@@ -8,6 +8,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -132,15 +133,29 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
             mFlAddRoot.setVisibility(View.VISIBLE);
             mRlUserRoot.setVisibility(View.GONE);
             mRlBuyRoot.setVisibility(View.GONE);
-            mTvSelect.setVisibility(View.VISIBLE);
+          //  mTvSelect.setVisibility(View.GONE);
             mIvMenu.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams layoutParams = mTitleView.getLayoutParams();
+            layoutParams.height = DensityUtil.dip2px(this,200);
+            mTitleView.setLayoutParams(layoutParams);
+            mTitleView.setExpandedTitleMarginBottom(DensityUtil.dip2px(this,25));
+            mIvMenu.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    mMenu.showMenu(mIvMenu);
+                }
+            });
             initPopupMenus();
         }else {
             mFlAddRoot.setVisibility(View.GONE);
-            mTvSelect.setVisibility(View.GONE);
+         //   mTvSelect.setVisibility(View.GONE);
             mRlBuyRoot.setVisibility(View.VISIBLE);
             mRlUserRoot.setVisibility(View.VISIBLE);
             mTvBagName.setText(mDir.getBagName());
+            ViewGroup.LayoutParams layoutParams = mTitleView.getLayoutParams();
+            layoutParams.height = DensityUtil.dip2px(this,250);
+            mTitleView.setLayoutParams(layoutParams);
+            mTitleView.setExpandedTitleMarginBottom(DensityUtil.dip2px(this,75));
             Glide.with(this)
                     .load(StringUtils.getUrl(this, ApiService.URL_QINIU +  mDir.getCover(), DensityUtil.dip2px(this,40), DensityUtil.dip2px(this,40), false, false))
                     .override(DensityUtil.dip2px(this,40),DensityUtil.dip2px(this,40))
@@ -191,6 +206,8 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
             item = new MenuItem(0, getString(R.string.label_modify));
             items.addMenuItem(item);
         }
+        item = new MenuItem(1,"选择");
+        items.addMenuItem(item);
 
         mMenu = new PopupListMenu(this, items);
         mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
@@ -206,6 +223,11 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
                     i.putExtra("size",mDir.getSize());
                     i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_DIR_MODIFY);
                     startActivityForResult(i,REQ_MODIFY_DIE);
+                }else if(itemId == 1){
+                    Intent i = new Intent(FolderActivity.this,FilesSelectActivity.class);
+                    i.putExtra("folderId",mDir.getFolderId());
+                    i.putParcelableArrayListExtra("list",mCurList);
+                    startActivityForResult(i,REQ_MODIFY_FILES);
                 }
             }
         });
@@ -223,15 +245,15 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
 
     @Override
     protected void initListeners() {
-        mTvSelect.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                Intent i = new Intent(FolderActivity.this,FilesSelectActivity.class);
-                i.putExtra("folderId",mDir.getFolderId());
-                i.putParcelableArrayListExtra("list",mCurList);
-                startActivityForResult(i,REQ_MODIFY_FILES);
-            }
-        });
+//        mTvSelect.setOnClickListener(new NoDoubleClickListener() {
+//            @Override
+//            public void onNoDoubleClick(View v) {
+//                Intent i = new Intent(FolderActivity.this,FilesSelectActivity.class);
+//                i.putExtra("folderId",mDir.getFolderId());
+//                i.putParcelableArrayListExtra("list",mCurList);
+//                startActivityForResult(i,REQ_MODIFY_FILES);
+//            }
+//        });
         mIvBg.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {

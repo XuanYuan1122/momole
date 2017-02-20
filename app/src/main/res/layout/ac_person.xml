@@ -267,17 +267,31 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.design.widget.TabLayout
+        <!--<android.support.design.widget.TabLayout-->
+            <!--android:id="@+id/tab_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="@dimen/size_50"-->
+            <!--android:background="@color/gray_383d40"-->
+            <!--app:tabSelectedTextColor="@color/orange_fd9f00"-->
+            <!--app:tabIndicatorColor="@color/orange_fd9f00"-->
+            <!--app:tabTextColor="@color/white_50"-->
+            <!--app:tabTextAppearance="@style/PersonalTabLayoutTextStyle"-->
+            <!--app:tabIndicatorHeight="@dimen/size_5"-->
+            <!--app:tabMode="fixed"/>-->
+
+        <com.flyco.tablayout.CommonTabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_50"
             android:background="@color/gray_383d40"
-            app:tabSelectedTextColor="@color/orange_fd9f00"
-            app:tabIndicatorColor="@color/orange_fd9f00"
-            app:tabTextColor="@color/white_50"
-            app:tabTextAppearance="@style/PersonalTabLayoutTextStyle"
-            app:tabIndicatorHeight="@dimen/size_5"
-            app:tabMode="fixed"/>
+            app:tl_iconVisible="false"
+            app:tl_textBold="BOTH"
+            app:tl_indicator_width="40dp"
+            app:tl_indicator_height="@dimen/size_5"
+            app:tl_indicator_color="@color/orange_fd9f00"
+            app:tl_textsize="15dp"
+            app:tl_textSelectColor="@color/orange_fd9f00"
+            app:tl_textUnselectColor="@color/white_50"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_main"

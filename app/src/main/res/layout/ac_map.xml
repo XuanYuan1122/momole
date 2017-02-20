@@ -16,22 +16,39 @@
         android:text="ip"
         android:visibility="gone"/>
 
-    <ImageView
-        android:id="@+id/iv_card"
+    <FrameLayout
+        android:id="@+id/fl_card_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:paddingTop="@dimen/status_bar_height"
         android:layout_marginTop="14dp"
         android:layout_marginRight="14dp"
-        android:layout_marginEnd="14dp"
-        android:src="@drawable/btn_map_card"/>
+        android:layout_marginEnd="14dp">
+
+        <ImageView
+            android:id="@+id/iv_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_map_card"/>
+
+        <ImageView
+            android:id="@+id/iv_card_dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|end"
+            android:layout_marginTop="@dimen/size_6"
+            android:layout_marginRight="@dimen/size_6"
+            android:layout_marginEnd="@dimen/size_6"
+            android:src="@drawable/btn_map_personal_reddot"
+            android:visibility="gone"/>
+    </FrameLayout>
 
     <ImageView
         android:id="@+id/iv_sign"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_card"
+        android:layout_below="@+id/fl_card_root"
         android:layout_alignParentRight="true"
         android:layout_marginTop="10dp"
         android:layout_marginRight="14dp"
@@ -42,8 +59,8 @@
         android:id="@+id/iv_bag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/iv_card"
-        android:layout_toStartOf="@+id/iv_card"
+        android:layout_toLeftOf="@+id/fl_card_root"
+        android:layout_toStartOf="@+id/fl_card_root"
         android:layout_marginTop="14dp"
         android:paddingTop="@dimen/status_bar_height"
         android:layout_marginRight="8dp"

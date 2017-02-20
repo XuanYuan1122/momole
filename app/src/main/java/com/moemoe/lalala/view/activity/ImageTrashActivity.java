@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,11 +22,14 @@ import com.moemoe.lalala.model.entity.TrashEntity;
 import com.moemoe.lalala.presenter.TrashContract;
 import com.moemoe.lalala.presenter.TrashPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.AnimationUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.MoeMoeCallback;
+import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.view.widget.trashcard.CardItemView;
 import com.moemoe.lalala.view.widget.trashcard.CardSlidePanel;
 
 import java.util.ArrayList;
@@ -59,11 +63,16 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
     TextView mTvFun;
     @BindView(R.id.tv_shit)
     TextView mTvShite;
+    @BindView(R.id.cv_history)
+    CardItemView mHistory;
+    @BindView(R.id.cv_history_2)
+    CardItemView mHistory2;
 
     @Inject
     TrashPresenter mPresenter;
     private boolean mIsTop3;
     private ArrayList<TrashEntity> entities;
+    private ArrayList<TrashEntity> historyEntities;
     private ArrayList<TrashEntity> topEntities;
     private boolean mIsFun;
     private boolean mIsFirst;
@@ -74,6 +83,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
     private boolean mCanLoad;
     private int mCurTime;
     private int mCurLastTime;
+    private int mCurHistory;
 
     @Override
     protected int getLayoutId() {
@@ -89,8 +99,12 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                 .inject(this);
         entities = new ArrayList<>();
         topEntities = new ArrayList<>();
+        historyEntities = new ArrayList<>();
         mIsFirst = true;
-        mCurTime = PreferenceUtils.getLastTrashTime(this,"text");
+        mHistory.setVisibility(View.GONE);
+        mHistory2.setVisibility(View.GONE);
+        mCurHistory = 0;
+        mCurTime = PreferenceUtils.getLastTrashTime(this,"image");
         loadData(mCurTime);
     }
 
@@ -126,6 +140,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
 
             @Override
             public void onCardVanish(int index, int type) {
+                historyEntities.add(0,entities.get(index));
                 if(type == 0){
                     mPresenter.operationTrash(entities.get(index).getDustbinId(),true);
                     scaleFunAndRotaToNormal();
@@ -137,6 +152,26 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                     mIsFirst = false;
                     loadData(mCurLastTime);
                 }
+                if(mCurHistory == 0){
+                    mCurHistory = 1;
+                    mHistory.bringToFront();
+                    mHistory.setVisibility(View.VISIBLE);
+                    mHistory.fillData(entities.get(index));
+                    new AnimationUtil().tanslateAnimation(0,0,DensityUtil.dip2px(ImageTrashActivity.this,-85),0)
+                            .setDuration(500)
+                            .setFillAfter(false)
+                            .startAnimation(mHistory);
+                }else{
+                    mCurHistory = 0;
+                    mHistory2.bringToFront();
+                    mHistory2.setVisibility(View.VISIBLE);
+                    mHistory2.fillData(entities.get(index));
+                    new AnimationUtil().tanslateAnimation(0,0,DensityUtil.dip2px(ImageTrashActivity.this,-85),0)
+                            .setDuration(500)
+                            .setFillAfter(false)
+                            .startAnimation(mHistory2);
+                }
+
             }
 
             @Override
@@ -237,6 +272,63 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                 }
             }
         });
+        mHistory.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                mCurHistory = 0;
+                if(historyEntities.size() > 1){
+                    mHistory2.fillData(historyEntities.get(1));
+                    mHistory2.setVisibility(View.VISIBLE);
+                }else {
+                    mHistory2.setVisibility(View.GONE);
+                }
+                new AnimationUtil().tanslateAnimation(0,0,0,DensityUtil.dip2px(ImageTrashActivity.this,365))
+                        .setDuration(500)
+                        .setFillAfter(false)
+                        .setOnAnimationEndLinstener(new AnimationUtil.OnAnimationEndListener() {
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                mHistory2.bringToFront();
+                                TrashEntity entity = historyEntities.remove(0);
+                                if(historyEntities.size() > 1) {
+                                    mHistory.fillData(historyEntities.get(1));
+                                }else {
+                                    mHistory.setVisibility(View.GONE);
+                                }
+                                mSwipeView.setPosition(entities.indexOf(entity));
+                            }
+                        }).startAnimation(mHistory);
+            }
+        });
+        mHistory2.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                mCurHistory = 1;
+                if(historyEntities.size() > 1){
+                    mHistory.fillData(historyEntities.get(1));
+                    mHistory.setVisibility(View.VISIBLE);
+
+                }else {
+                    mHistory.setVisibility(View.GONE);
+                }
+                new AnimationUtil().tanslateAnimation(0,0,0,DensityUtil.dip2px(ImageTrashActivity.this,365))
+                        .setDuration(500)
+                        .setFillAfter(false)
+                        .setOnAnimationEndLinstener(new AnimationUtil.OnAnimationEndListener() {
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                mHistory.bringToFront();
+                                TrashEntity entity = historyEntities.remove(0);
+                                if(historyEntities.size() > 1){
+                                    mHistory2.fillData(historyEntities.get(1));
+                                }else {
+                                    mHistory2.setVisibility(View.GONE);
+                                }
+                                mSwipeView.setPosition(entities.indexOf(entity));
+                            }
+                        }).startAnimation(mHistory2);
+            }
+        });
     }
 
     @OnClick({R.id.iv_back,R.id.iv_my_trash,R.id.iv_create,R.id.iv_yesterday_best_trash})
@@ -246,6 +338,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                 if (mIsTop3){
                     mIsTop3 = false;
                     mSwipeView.setVisibility(View.VISIBLE);
+                    mHistory.setVisibility(View.VISIBLE);
                     mSwipeViewTop.setVisibility(View.GONE);
                     mIvMyTrash.setVisibility(View.VISIBLE);
                     mIvYesterday.setVisibility(View.VISIBLE);
@@ -274,6 +367,8 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                 mIvCreate.setVisibility(View.INVISIBLE);
                 mIvCreate.setEnabled(false);
                 mSwipeView.setVisibility(View.GONE);
+                mHistory.setVisibility(View.GONE);
+                mHistory2.setVisibility(View.GONE);
                 mSwipeViewTop.setVisibility(View.VISIBLE);
                 if (topEntities.size() == 0){
                     mPresenter.getTop3List(1);
@@ -494,6 +589,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.sendOperationTrash();
+        historyEntities.clear();
         if(mCurTime != 0) PreferenceUtils.setLastTrashTime(this,mCurTime,"image");
     }
 }

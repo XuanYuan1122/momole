@@ -68,7 +68,7 @@
                 android:layout_toRightOf="@+id/tv_lv"
                 android:layout_toEndOf="@+id/tv_lv"
                 android:gravity="center"
-                android:text="12"
+                android:text="1"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="@dimen/size_7"/>
@@ -205,7 +205,7 @@
         android:layout_alignLeft="@+id/tv_comment_creator_name"
         android:layout_below="@+id/tv_comment_creator_name"
         android:layout_marginTop="3dp"
-        android:text="12:34"
+        android:text="00:00"
         android:textColor="@color/gray_c1c1c1"
         android:textSize="@dimen/size_9" />
 
@@ -218,7 +218,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
         android:layout_alignLeft="@+id/tv_comment_creator_name"
-        android:text="德玛西亚"
+        android:text=""
         android:textColor="@color/gray_595e64"
         android:textSize="@dimen/size_15" />
 

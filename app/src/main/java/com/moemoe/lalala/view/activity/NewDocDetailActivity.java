@@ -30,6 +30,7 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.CommentSendEntity;
 import com.moemoe.lalala.model.entity.DocDetailEntity;
+import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.GiveCoinEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
@@ -89,6 +90,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private final int ICON_NUM_LIMIT = 9;
     private final int REQ_GET_EDIT_VERSION_IMG = 2333;
     private final int REQ_TO_FOLDER = 30003;
+    private final int REQ_DELETE_TAG = 30004;
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
@@ -136,6 +138,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private boolean hasLoaded = false;
     private boolean mIsLoading = false;
     private int mCommentNum = 0;
+    private ArrayList<DocTagEntity> mDocTags;
     
     @Override
     protected int getLayoutId() {
@@ -426,7 +429,12 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 }else if(itemId == MENU_DELETE){
                     deleteDoc();
                 }else if(itemId == TAG_DELETE){
-                    //TODO 去删除标签界面
+                    if(mDocTags != null){
+                        Intent i = new Intent(NewDocDetailActivity.this,TagControlActivity.class);
+                        i.putParcelableArrayListExtra("tags",mDocTags);
+                        i.putExtra(UUID,mDocId);
+                        startActivityForResult(i,REQ_DELETE_TAG);
+                    }
                 }
             }
         });
@@ -665,6 +673,12 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     ((BagDirEntity)o).setBuy(entity.isBuy());
                 }
             }
+        }else if(requestCode == REQ_DELETE_TAG && resultCode == RESULT_OK){
+            ArrayList<DocTagEntity> entities = data.getParcelableArrayListExtra("tags");
+            if(entities != null){
+                mDocTags = entities;
+                mAdapter.setTags(entities);
+            }
         }else {
             DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
 
@@ -858,6 +872,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mShareDesc = entity.getShare().getDesc();
         mShareTitle = entity.getShare().getTitle();
         mShareIcon = entity.getShare().getIcon();
+        mDocTags = entity.getTags();
         if(entity.getUserId().equals(PreferenceUtils.getUUid())){
             PopupMenuItems menuItems = mMenu.getCurrentMenuItems();
             MenuItem menuItem = menuItems.findItem(MENU_DELETE);
@@ -868,7 +883,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             MenuItem tagDelItem = menuItems.findItem(TAG_DELETE);
             if(tagDelItem == null){
                 menuItem = new MenuItem(TAG_DELETE,getString(R.string.label_tag_ctrl));
-                menuItems.addMenuItem(menuItem);
+                menuItems.insertMenuItem(menuItem,0);
             }
         }else {
             PopupMenuItems menuItems = mMenu.getCurrentMenuItems();

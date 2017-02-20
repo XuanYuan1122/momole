@@ -8,9 +8,8 @@
         android:id="@+id/swipe_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         app:bottomMarginTop="38dp"
-        app:itemMarginTop="10dp"
+        app:itemMarginTop="60dp"
         app:yOffsetStep="26dp">
 
         <LinearLayout
@@ -52,10 +51,9 @@
         android:id="@+id/swipe_card_top"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         android:visibility="gone"
         app:bottomMarginTop="38dp"
-        app:itemMarginTop="10dp"
+        app:itemMarginTop="60dp"
         app:yOffsetStep="26dp">
 
 

@@ -21,6 +21,8 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.CoinDetailEntity;
+import com.moemoe.lalala.model.entity.DocTagEntity;
+import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.PersonDocEntity;
 import com.moemoe.lalala.model.entity.PersonFollowEntity;
@@ -34,6 +36,7 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.BadgeActivity;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
+import com.moemoe.lalala.view.activity.TagControlActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,6 +105,10 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
+    public void removeData(int position){
+        if(position < list.size()) this.list.remove(position);
+    }
+
     public void addData(Collection list){
         int bfSize = getItemCount();
         this.list.addAll(list);
@@ -114,13 +121,29 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (mType == 2){
+            if(position == 0 || position == 1){
+                return 1;
+            }else {
+                return 0;
+            }
+        }
+        return super.getItemViewType(position);
+    }
+
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
          if(mType == 0){//doc favorite
              return new DocViewHolder(LayoutInflater.from(context).inflate(R.layout.item_person_doc,parent,false));
          }else if(mType == 1){//follow
              return new FollowViewHolder(LayoutInflater.from(context).inflate(R.layout.item_person_follow,parent,false));
          }else if(mType == 2){//msg
-             return new MsgViewHolder(LayoutInflater.from(context).inflate(R.layout.item_message_new,parent,false));
+             if(viewType == 0){
+                 return new MsgViewHolder(LayoutInflater.from(context).inflate(R.layout.item_message_new,parent,false));
+             }else {
+                 return new RedMsgViewHolder(LayoutInflater.from(context).inflate(R.layout.item_msg_offical,parent,false));
+             }
          }else if(mType == 3){
              return new CoinViewHolder(LayoutInflater.from(context).inflate(R.layout.item_coin_detail,parent,false));
          }else if(mType == 4){
@@ -131,6 +154,10 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
              return new BadgeAllHolder(LayoutInflater.from(context).inflate(R.layout.item_all_badge,parent,false));
          }else if(mType == 7){
              return new BagFavoriteHolder(LayoutInflater.from(context).inflate(R.layout.item_bag_get,parent,false));
+         }else if(mType == 8){
+             return new TagHolder(LayoutInflater.from(context).inflate(R.layout.item_tag_del,parent,false));
+         }else if (mType == 9){
+             return new SysMsgHolder(LayoutInflater.from(context).inflate(R.layout.item_msg_offical_detail,parent,false));
          }
         return null;
     }
@@ -168,18 +195,51 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             followViewHolder.name.setText(entity.getUserName());
             followViewHolder.content.setText(entity.getSignature());
         }else if(mType == 2){
-            ReplyEntity bean = (ReplyEntity) getItem(position);
-            MsgViewHolder msgViewHolder = (MsgViewHolder) holder;
-            Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + bean.getFromIcon().getPath(), DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50),false,false))
-                    .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
-                    .placeholder(R.drawable.bg_default_circle)
-                    .error(R.drawable.bg_default_circle)
-                    .transform(new GlideCircleTransform(context))
-                    .into(msgViewHolder.ivAvatar);
-            msgViewHolder.tvName.setText(bean.getFromName());
-            msgViewHolder.tvDate.setText(bean.getCreateTime());
-            msgViewHolder.tvContent.setText(bean.getContent());
+            if(holder instanceof MsgViewHolder){
+                ReplyEntity bean = (ReplyEntity) getItem(position - 2);
+                MsgViewHolder msgViewHolder = (MsgViewHolder) holder;
+                Glide.with(context)
+                        .load(StringUtils.getUrl(context, ApiService.URL_QINIU + bean.getFromIcon().getPath(), DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50),false,false))
+                        .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
+                        .placeholder(R.drawable.bg_default_circle)
+                        .error(R.drawable.bg_default_circle)
+                        .transform(new GlideCircleTransform(context))
+                        .into(msgViewHolder.ivAvatar);
+                msgViewHolder.tvName.setText(bean.getFromName());
+                msgViewHolder.tvDate.setText(bean.getCreateTime());
+                msgViewHolder.tvContent.setText(bean.getContent());
+            }else {
+                RedMsgViewHolder viewHolder = (RedMsgViewHolder) holder;
+                if(position == 0){
+                    Glide.with(context)
+                            .load(R.drawable.ic_inform_notice)
+                            .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
+                            .placeholder(R.drawable.bg_default_circle)
+                            .error(R.drawable.bg_default_circle)
+                            .transform(new GlideCircleTransform(context))
+                            .into(viewHolder.ivImg);
+                    viewHolder.tvName.setText("系统通知");
+                    if(PreferenceUtils.getMessageDot(context,"system")){
+                        viewHolder.ivRed.setVisibility(View.VISIBLE);
+                    }else {
+                        viewHolder.ivRed.setVisibility(View.GONE);
+                    }
+                }else {
+                    Glide.with(context)
+                            .load(R.drawable.ic_inform_official)
+                            .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
+                            .placeholder(R.drawable.bg_default_circle)
+                            .error(R.drawable.bg_default_circle)
+                            .transform(new GlideCircleTransform(context))
+                            .into(viewHolder.ivImg);
+                    viewHolder.tvName.setText("Neta官方");
+                    if(PreferenceUtils.getMessageDot(context,"neta")){
+                        viewHolder.ivRed.setVisibility(View.VISIBLE);
+                    }else {
+                        viewHolder.ivRed.setVisibility(View.GONE);
+                    }
+                }
+            }
         }else if(mType == 3){
             CoinDetailEntity entity = (CoinDetailEntity) getItem(position);
             CoinViewHolder coinViewHolder = (CoinViewHolder) holder;
@@ -345,6 +405,26 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             bagFavoriteHolder.tvNum.setText(entity.getNumber() + "项");
             bagFavoriteHolder.tvName.setText(entity.getName());
             bagFavoriteHolder.tvTime.setText(entity.getUpdateTime() + " 更新");
+        }else if(mType == 8){
+            final DocTagEntity entity = (DocTagEntity) getItem(position);
+            TagHolder tagHolder = (TagHolder) holder;
+            tagHolder.content.setText(entity.getName());
+            tagHolder.del.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ((TagControlActivity)context).delTag(position);
+                }
+            });
+        }else if(mType == 9){
+            NetaMsgEntity entity = (NetaMsgEntity) getItem(position);
+            SysMsgHolder msgHolder = (SysMsgHolder) holder;
+            msgHolder.content.setText(entity.getContent());
+            if(!TextUtils.isEmpty(entity.getSchema())){
+                msgHolder.watch.setVisibility(View.VISIBLE);
+            }else {
+                msgHolder.watch.setVisibility(View.INVISIBLE);
+            }
+            msgHolder.time.setText(entity.getCreateTime());
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,7 +442,11 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return list.size();
+        if(mType == 2){
+            return list.size() + 2;
+        }else {
+            return list.size();
+        }
     }
 
     private class DocViewHolder extends RecyclerView.ViewHolder{
@@ -410,6 +494,19 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tvContent = (TextView) itemView.findViewById(R.id.tv_content);
             tvDocContent = (TextView) itemView.findViewById(R.id.tv_doc_content);
             tvClubName = (TextView) itemView.findViewById(R.id.tv_club_name);
+        }
+    }
+
+    private class RedMsgViewHolder extends RecyclerView.ViewHolder{
+        ImageView ivImg;
+        TextView tvName;
+        ImageView ivRed;
+
+        RedMsgViewHolder(View itemView) {
+            super(itemView);
+            ivImg = (ImageView) itemView.findViewById(R.id.iv_img);
+            tvName = (TextView) itemView.findViewById(R.id.tv_name);
+            ivRed = (ImageView) itemView.findViewById(R.id.iv_red_msg);
         }
     }
 
@@ -515,6 +612,30 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             layoutParams.height = DensityUtil.dip2px(context,120);
             layoutParams.width = DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,20);
             ivBg.setLayoutParams(layoutParams);
+        }
+    }
+
+    private class TagHolder extends RecyclerView.ViewHolder{
+
+        TextView content;
+        ImageView del;
+
+        public TagHolder(View itemView) {
+            super(itemView);
+            content = (TextView) itemView.findViewById(R.id.tv_content);
+            del = (ImageView) itemView.findViewById(R.id.iv_del);
+        }
+    }
+
+    private class SysMsgHolder extends RecyclerView.ViewHolder{
+
+        TextView content,watch,time;
+
+        public SysMsgHolder(View itemView) {
+            super(itemView);
+            content = (TextView) itemView.findViewById(R.id.tv_content);
+            watch = (TextView) itemView.findViewById(R.id.tv_watch);
+            time = (TextView) itemView.findViewById(R.id.tv_time);
         }
     }
 }

@@ -111,6 +111,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     ImageView mIvCal;
     @BindView(R.id.iv_card)
     ImageView mIvCard;
+    @BindView(R.id.fl_card_root)
+    View mCardRoot;
+    @BindView(R.id.iv_card_dot)
+    View mCardDot;
     @BindView(R.id.iv_live2d)
     ImageView mIvGal;
     @BindView(R.id.iv_square)
@@ -152,7 +156,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private MapMarkContainer mContainer;
     private ExplosionField mExplosionField;
     private boolean mIsSignPress = false;
-    private boolean debug = true;
+    private boolean debug = false;
 
     @Override
     protected int getLayoutId() {
@@ -294,8 +298,11 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             }
         }
         showSnowman();
-       // mIsSign = PreferenceUtils.getSignState(this);
-       // changeSignState();
+        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
+            mCardDot.setVisibility(View.VISIBLE);
+        }else {
+            mCardDot.setVisibility(View.GONE);
+        }
     }
 
     private void showSnowman(){
@@ -711,7 +718,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     }
 
     private void imgIn(){
-        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mIvCard,"translationY",-mIvCard.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
+        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mCardRoot,"translationY",-mCardRoot.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",-mIvBag.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
@@ -733,7 +740,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     }
 
     private void imgOut(){
-        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mIvCard,"translationY",0,-mIvCard.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
+        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mCardRoot,"translationY",0,-mCardRoot.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",0,-mIvBag.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
@@ -755,7 +762,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     }
 
     private void showBtn(){
-        mIvCard.setVisibility(View.VISIBLE);
+        mCardRoot.setVisibility(View.VISIBLE);
         mIvBag.setVisibility(View.VISIBLE);
         mIvCal.setVisibility(View.VISIBLE);
         mIvSquare.setVisibility(View.VISIBLE);
@@ -764,7 +771,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     }
 
     private void hideBtn(){
-        mIvCard.setVisibility(View.INVISIBLE);
+        mCardRoot.setVisibility(View.INVISIBLE);
         mIvBag.setVisibility(View.INVISIBLE);
         mIvCal.setVisibility(View.INVISIBLE);
         mIvSquare.setVisibility(View.INVISIBLE);

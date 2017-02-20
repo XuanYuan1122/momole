@@ -244,6 +244,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                     shapeDrawable3.setShape(roundRectShape3);
                     shapeDrawable3.getPaint().setStyle(Paint.Style.FILL);
                     shapeDrawable3.getPaint().setColor(StringUtils.readColorStr(badgeEntity.getColor(), ContextCompat.getColor(getContext(), R.color.main_cyan)));
+                    huiZhangRoots[i].setVisibility(View.VISIBLE);
                     huiZhangRoots[i].setBackgroundDrawable(shapeDrawable3);
                 }
             }

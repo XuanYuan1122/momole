@@ -22,6 +22,7 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.model.entity.ReceiverInfo;
 import com.moemoe.lalala.utils.IntentUtils;
+import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.activity.SplashActivity;
 
 /**
@@ -48,6 +49,7 @@ public class PushReceiver extends BroadcastReceiver {
     }
 
     private void showNotification(Context context,ReceiverInfo info) {
+        if(!TextUtils.isEmpty(info.messageType)) PreferenceUtils.setMessageDot(context,info.messageType,true);
         Bitmap btm = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.ic_launcher);
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(

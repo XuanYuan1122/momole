@@ -8,10 +8,9 @@
         android:id="@+id/swipe_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         swipe:bottomMarginTop="38dp"
-        swipe:itemMarginTop="10dp"
-        swipe:yOffsetStep="26dp">
+        swipe:itemMarginTop="120dp"
+        swipe:yOffsetStep="20dp">
 
         <LinearLayout
             android:id="@+id/card_bottom_layout"
@@ -48,15 +47,30 @@
 
     </com.moemoe.lalala.view.widget.trashcard.CardSlidePanel>
 
+    <com.moemoe.lalala.view.widget.trashcard.CardItemView
+        android:id="@+id/cv_history_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        swipe:show_type="0"
+        android:layout_marginTop="-245dp"
+        android:visibility="gone"/>
+
+    <com.moemoe.lalala.view.widget.trashcard.CardItemView
+        android:id="@+id/cv_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        swipe:show_type="0"
+        android:layout_marginTop="-245dp"
+        android:visibility="gone"/>
+
     <com.moemoe.lalala.view.widget.trashcard.CardSlidePanel
         android:id="@+id/swipe_card_top"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
         android:visibility="gone"
         swipe:bottomMarginTop="38dp"
-        swipe:itemMarginTop="10dp"
-        swipe:yOffsetStep="26dp">
+        swipe:itemMarginTop="120dp"
+        swipe:yOffsetStep="20dp">
 
 
         <com.moemoe.lalala.view.widget.trashcard.CardItemView
@@ -125,7 +139,7 @@
         android:layout_toLeftOf="@+id/iv_create"
         android:layout_toStartOf="@+id/iv_create"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="90dp">
+        android:layout_marginBottom="70dp">
 
         <TextView
             android:id="@+id/tv_fun"

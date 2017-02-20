@@ -11,11 +11,15 @@ import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.CalendarDayEntity;
 import com.moemoe.lalala.model.entity.CalendarDayItemEntity;
+import com.moemoe.lalala.model.entity.CodeEntity;
 import com.moemoe.lalala.model.entity.CoinDetailEntity;
+import com.moemoe.lalala.model.entity.CommentDetailEntity;
+import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
 import com.moemoe.lalala.model.entity.CommentListSendEntity;
 import com.moemoe.lalala.model.entity.CommentSendEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
 import com.moemoe.lalala.model.entity.DelCommentEntity;
+import com.moemoe.lalala.model.entity.DelTagEntity;
 import com.moemoe.lalala.model.entity.DepartmentEntity;
 import com.moemoe.lalala.model.entity.DocDetailEntity;
 import com.moemoe.lalala.model.entity.DocListEntity;
@@ -29,6 +33,7 @@ import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.model.entity.ModifyEntity;
 import com.moemoe.lalala.model.entity.MoveFileEntity;
+import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
 import com.moemoe.lalala.model.entity.OldSimpleResult;
@@ -159,11 +164,11 @@ public interface ApiService {
     @POST("api/user/updateInfoV2")
     Observable<ApiResult> modifyAll(@Body ModifyEntity bean);
 
-    @POST("api/code/sendRegister")
-    Observable<ApiResult> requestRegisterCode(@Query("mobile")String data);
+    @POST("api/code/sendRegisterV2")
+    Observable<ApiResult> requestRegisterCode(@Body CodeEntity data);
 
-    @POST("api/code/sendForget")
-    Observable<ApiResult> requestCode4ResetPwd(@Query("mobile") String data);
+    @POST("api/code/sendForgetV2")
+    Observable<ApiResult> requestCode4ResetPwd(@Body CodeEntity mobile);
 
     @GET("api/user/{userId}/infoV2")
     Observable<ApiResult<UserInfo>> requestUserInfoV2(@Path("userId") String userId);
@@ -431,4 +436,16 @@ public interface ApiService {
 
     @POST("api/bag/folder/{folderId}/file/{fileId}/copy")
     Observable<ApiResult> copyFile(@Path("folderId")String folderId,@Path("fileId")String fileId);
+
+    @POST("api/tag/delete")
+    Observable<ApiResult> delTags(@Body DelTagEntity entity);
+
+    @POST("api/doc/reply/info")
+    Observable<ApiResult<CommentDetailEntity>> getCommentDetail(@Body CommentDetailRqEntity entity);
+
+    @GET("api/user/getSystemMsg")
+    Observable<ApiResult<ArrayList<NetaMsgEntity>>> getSystemMsg(@Query("index")int index,@Query("size")int size);
+
+    @GET("api/user/getNetaMsg")
+    Observable<ApiResult<ArrayList<NetaMsgEntity>>> getNetaMsg(@Query("index")int index,@Query("size")int size);
 }

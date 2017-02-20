@@ -268,7 +268,7 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("秋名山",2866,1958,"neta://com.moemoe.lalala/qiu_1.0",R.drawable.btn_qiu_normal);
+        entity = new MapMarkEntity("后山",2866,1958,"neta://com.moemoe.lalala/qiu_1.0",R.drawable.btn_qiu_normal);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 

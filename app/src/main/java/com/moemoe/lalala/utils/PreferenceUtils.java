@@ -123,6 +123,19 @@ public class PreferenceUtils {
         return sp.getLong("last_launcher_time",0);
     }
 
+    public static void setMessageDot(Context context,String type,boolean isNew){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean(type, isNew);
+        ed.commit();
+    }
+
+    public static boolean getMessageDot(Context context,String type){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getBoolean(type,false);
+    }
+
     public static void setIp(Context context,String ip){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();

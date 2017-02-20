@@ -84,7 +84,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
         mRlRoot.setVisibility(View.VISIBLE);
         mRlRoot.getBackground().mutate().setAlpha(0);
         mSimpleLabel.setAlpha(0);
-        mTitle.setText("秋名山");
+        mTitle.setText("后山");
         mTitle.setTextColor(Color.argb(0, 255, 255, 255));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mDocAdapter = new ClassAdapter(this);
