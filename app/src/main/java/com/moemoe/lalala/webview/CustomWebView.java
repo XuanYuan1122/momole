@@ -10,6 +10,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.moemoe.lalala.app.RxBus;
+import com.moemoe.lalala.event.BackSchoolEvent;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.WebViewActivity;
@@ -81,7 +83,7 @@ public class CustomWebView extends WebView {
         }
     }
 
-    public class NetaPay{
+    public class NetaJs {
         @android.webkit.JavascriptInterface
         public void neta_pay(String data){
             if(data.contains("qpay")){
@@ -94,6 +96,16 @@ public class CustomWebView extends WebView {
         @android.webkit.JavascriptInterface
         public void neta_share(){
             ((WebViewActivity)mActivity).showShare(1);
+        }
+
+        @android.webkit.JavascriptInterface
+        public void neta_back_school(int pass){
+            int i = PreferenceUtils.getBackSchoolLevel(mActivity);
+            if(pass > i) {
+                PreferenceUtils.setBackSchoolLevel(mActivity,pass);
+                RxBus.getInstance().post(new BackSchoolEvent(pass));
+            }
+            mActivity.finish();
         }
     }
 
@@ -149,7 +161,7 @@ public class CustomWebView extends WebView {
             addJavascriptInterface(new JavascriptInterface(), "_VideoEnabledWebView"); // Must match Javascript interface name of VideoEnabledWebChromeClient
             addJavascriptInterface(new JavascriptFull(), "local_obj");
             addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj1");
-            addJavascriptInterface(new NetaPay(), "neta");
+            addJavascriptInterface(new NetaJs(), "neta");
             addedJavascriptInterface = true;
         }
     }

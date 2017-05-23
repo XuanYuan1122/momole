@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.igexin.sdk.PushManager;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerLoginComponent;
 import com.moemoe.lalala.di.modules.LoginModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -23,6 +23,7 @@ import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.presenter.LoginContract;
 import com.moemoe.lalala.presenter.LoginPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.CountryCode;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
@@ -95,9 +96,10 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ShareSDK.initSDK(this);
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerLoginComponent.builder()
                 .loginModule(new LoginModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         boolean mIsFirstRun = false;
@@ -276,7 +278,7 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
         authorInfo.setPassword(EncoderUtils.MD5(mPassword));
         authorInfo.setToken(entity.getToken());
         authorInfo.setUserId(entity.getUserId());
-        if(!entity.getHeadPath().contains("http")){
+        if(!entity.getHeadPath().startsWith("http")){
             authorInfo.setHeadPath(ApiService.URL_QINIU + entity.getHeadPath());
         }else {
             authorInfo.setHeadPath(entity.getHeadPath());
@@ -285,6 +287,7 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
         authorInfo.setUserName(entity.getUserName());
         authorInfo.setLevel(entity.getLevel());
         authorInfo.setOpenBag(entity.isOpenBag());
+        authorInfo.setPlatform("neta");
         finalizeDialog();
         PreferenceUtils.setAuthorInfo(authorInfo);
         showToast(R.string.msg_login_success);
@@ -313,5 +316,11 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
     public void onFailure(int code,String msg) {
         finalizeDialog();
         ErrorCodeUtils.showErrorMsgByCode(LoginActivity.this,code,msg);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

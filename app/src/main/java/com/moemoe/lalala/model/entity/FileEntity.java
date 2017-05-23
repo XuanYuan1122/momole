@@ -20,7 +20,7 @@ public class FileEntity implements Parcelable{
     @SerializedName("path")
     private String path;
     @SerializedName("type")
-    private String type;
+    private String type;//txt image music
     @SerializedName("userName")
     private String userName;
     @SerializedName("fileId")

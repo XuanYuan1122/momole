@@ -42,12 +42,12 @@ public class PhoneStatePresenter implements PhoneStateContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onRegisterSuccess(info);
+                            if(view != null) view.onRegisterSuccess(info);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(action == PhoneStateCheckActivity.ACTION_FIND_PASSWORD) {
@@ -59,12 +59,12 @@ public class PhoneStatePresenter implements PhoneStateContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onFindPwdSuccess();
+                            if(view != null) view.onFindPwdSuccess();
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }
@@ -78,14 +78,18 @@ public class PhoneStatePresenter implements PhoneStateContract.Presenter {
                 .subscribe(new NetResultSubscriber<LoginResultEntity>() {
                     @Override
                     public void onSuccess(LoginResultEntity loginResultEntity) {
-                        view.onLoginSuccess(info,loginResultEntity);
+                        if(view != null) view.onLoginSuccess(info,loginResultEntity);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
 
+    @Override
+    public void release() {
+        view = null;
+    }
 }

@@ -1,5 +1,6 @@
 package com.moemoe.lalala.view.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -16,21 +18,27 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerBagComponent;
 import com.moemoe.lalala.di.modules.BagModule;
+import com.moemoe.lalala.event.DirBuyEvent;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
+import com.moemoe.lalala.model.entity.BookEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
+import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.GlideCircleTransform;
+import com.moemoe.lalala.utils.GridItemDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.adapter.BagAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
@@ -40,13 +48,20 @@ import com.moemoe.lalala.view.widget.menu.PopupMenuItems;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import zlc.season.rxdownload.RxDownload;
+import zlc.season.rxdownload.entity.DownloadStatus;
 
 /**
+ *
  * Created by yi on 2017/1/19.
  */
 
@@ -61,12 +76,11 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
     Toolbar mToolbar;
     @BindView(R.id.fl_add_item_root)
     FrameLayout mFlAddRoot;
-    @BindView(R.id.rl_user_root)
-    RelativeLayout mRlUserRoot;
-    @BindView(R.id.rl_buy_root)
-    RelativeLayout mRlBuyRoot;
-    @BindView(R.id.rl_is_bag)
-    RelativeLayout mRlHaveRoot;
+    @BindView(R.id.stub_folder_user_root)
+    ViewStub mStubUserRoot;
+    @BindView(R.id.stub_buy_bottom_root)
+    ViewStub mStubBuyRoot;
+    FrameLayout mRlBuyRoot;
     @BindView(R.id.tv_use_space)
     TextView mTvSpaceNum;
     @BindView(R.id.collapsing_toolbar)
@@ -77,23 +91,17 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
     PullAndLoadView mRv;
     @BindView(R.id.iv_menu_list)
     ImageView mIvMenu;
-    @BindView(R.id.tv_select)
-    TextView mTvSelect;
     @BindView(R.id.tv_num)
     TextView mTvNum;
-    @BindView(R.id.tv_buy)
-    TextView mTvBuy;
-    @BindView(R.id.tv_buy_desc)
-    TextView mTvBuyDesc;
-    @BindView(R.id.iv_avatar)
-    ImageView mIvAvatar;
-    @BindView(R.id.tv_user_name)
-    TextView mTvBagName;
-    @BindView(R.id.tv_more)
-    TextView mTvMore;
+
+    private View mBuyRoot;
+    private TextView mTvMode;
+    private TextView mTvFavorite;
+    private TextView mTvBuyNum;
 
     @Inject
     BagPresenter mPresenter;
+
     private PopupListMenu mMenu;
     private BagAdapter mAdapter;
     private String mUserId;
@@ -102,6 +110,7 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
     private int position;
     private boolean mIsLoading = false;
     private ArrayList<FileEntity> mCurList = new ArrayList<>();
+    private RxDownload downloadSub;
 
     @Override
     protected int getLayoutId() {
@@ -112,33 +121,40 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
     protected void initViews(Bundle savedInstanceState) {
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        mRlHaveRoot.setVisibility(View.GONE);
         mUserId = getIntent().getStringExtra(UUID);
         mDir = getIntent().getParcelableExtra("info");
         position = getIntent().getIntExtra("position",-1);
+        if(mDir != null){
+            boolean mIsShowMore = getIntent().getBooleanExtra("show_more",false);
+            init(mIsShowMore);
+        }else {
+            String folderId = getIntent().getStringExtra("folder_id");
+            mPresenter.getFolder(mUserId,folderId);
+        }
+    }
+
+    private void init(boolean showMore){
         mTvNum.setText(mDir.getNumber() + "项");
         mTitleView.setTitle(mDir.getName());
         mTvSpaceNum.setText(mDir.getUpdateTime() + " 更新");
         Glide.with(this)
-                .load(StringUtils.getUrl(this, ApiService.URL_QINIU +  mDir.getCover(), DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,200), false, false))
+                .load(StringUtils.getUrl(this, ApiService.URL_QINIU +  mDir.getCover(), DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,200), false, true))
                 .override(DensityUtil.getScreenWidth(this),DensityUtil.dip2px(this,200))
                 .error(R.drawable.btn_cardbg_defbg)
                 .placeholder(R.drawable.btn_cardbg_defbg)
                 .into(mIvBg);
         mIvMenu.setVisibility(View.GONE);
+        mRlBuyRoot = (FrameLayout) mStubBuyRoot.inflate();
+        TextView mTvBuy = (TextView) mRlBuyRoot.findViewById(R.id.tv_buy);
+        mTvMode = (TextView) mRlBuyRoot.findViewById(R.id.tv_mode);
+        mBuyRoot =  mRlBuyRoot.findViewById(R.id.ll_buy_root);
+        mTvBuyNum = (TextView) mRlBuyRoot.findViewById(R.id.tv_buy_desc);
         if(mUserId.equals(PreferenceUtils.getUUid())){
             mFlAddRoot.setVisibility(View.VISIBLE);
-            mRlUserRoot.setVisibility(View.GONE);
-            mRlBuyRoot.setVisibility(View.GONE);
-          //  mTvSelect.setVisibility(View.GONE);
             mIvMenu.setVisibility(View.VISIBLE);
-            ViewGroup.LayoutParams layoutParams = mTitleView.getLayoutParams();
-            layoutParams.height = DensityUtil.dip2px(this,200);
-            mTitleView.setLayoutParams(layoutParams);
-            mTitleView.setExpandedTitleMarginBottom(DensityUtil.dip2px(this,25));
             mIvMenu.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
@@ -146,42 +162,72 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
                 }
             });
             initPopupMenus();
+            showMode();
         }else {
-            mFlAddRoot.setVisibility(View.GONE);
-         //   mTvSelect.setVisibility(View.GONE);
-            mRlBuyRoot.setVisibility(View.VISIBLE);
-            mRlUserRoot.setVisibility(View.VISIBLE);
-            mTvBagName.setText(mDir.getBagName());
+            RelativeLayout mRlUserRoot = (RelativeLayout) mStubUserRoot.inflate();
+            ImageView mIvAvatar = (ImageView) mRlUserRoot.findViewById(R.id.iv_avatar);
+            TextView mTvBagName = (TextView) mRlUserRoot.findViewById(R.id.tv_user_name);
+            mTvFavorite = (TextView) mRlUserRoot.findViewById(R.id.tv_favorite);
+            TextView mTvMore = (TextView) mRlUserRoot.findViewById(R.id.tv_more);
+            if(showMore){
+                mTvMore.setVisibility(View.VISIBLE);
+                mTvMore.setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+                        Intent i2 = new Intent(FolderActivity.this,BagActivity.class);
+                        i2.putExtra(UUID,mDir.getUserId());
+                        startActivity(i2);
+                    }
+                });
+            }else {
+                mTvMore.setVisibility(View.GONE);
+            }
             ViewGroup.LayoutParams layoutParams = mTitleView.getLayoutParams();
             layoutParams.height = DensityUtil.dip2px(this,250);
             mTitleView.setLayoutParams(layoutParams);
             mTitleView.setExpandedTitleMarginBottom(DensityUtil.dip2px(this,75));
+            mFlAddRoot.setVisibility(View.GONE);
+
+            mTvBagName.setText(mDir.getBagName());
             Glide.with(this)
-                    .load(StringUtils.getUrl(this, ApiService.URL_QINIU +  mDir.getCover(), DensityUtil.dip2px(this,40), DensityUtil.dip2px(this,40), false, false))
+                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + mDir.getIcon(), DensityUtil.dip2px(this,40), DensityUtil.dip2px(this,40), false, false))
                     .override(DensityUtil.dip2px(this,40),DensityUtil.dip2px(this,40))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .transform(new GlideCircleTransform(this))
                     .into(mIvAvatar);
-            mTvMore.setOnClickListener(new NoDoubleClickListener() {
+            mIvAvatar.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    Intent i2 = new Intent(FolderActivity.this,BagActivity.class);
-                    i2.putExtra(UUID,mDir.getUserId());
-                    startActivity(i2);
+                    Intent i = new Intent(FolderActivity.this,NewPersonalActivity.class);
+                    i.putExtra(BaseAppCompatActivity.UUID,mUserId);
+                    startActivity(i);
+                }
+            });
+            mTvFavorite.setSelected(mDir.isFollow());
+            mTvFavorite.setText(mDir.isFollow()?"已收藏":"收藏");
+            mTvFavorite.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    if(mDir.isFollow()){
+                        mPresenter.unFollowFolder(mDir.getFolderId());
+                    }else {
+                        mPresenter.followFolder(mDir.getFolderId());
+                    }
+
                 }
             });
             if (mDir.isBuy()){
-                mRlBuyRoot.setVisibility(View.GONE);
+                showMode();
             }else {
                 if(mDir.getCoin() > 0){
+                    mTvMode.setVisibility(View.GONE);
+                    mBuyRoot.setVisibility(View.VISIBLE);
                     mTvBuy.setText(mDir.getCoin() + "节操购买");
-                    mTvBuyDesc.setVisibility(View.VISIBLE);
+                    mTvBuyNum.setText(mDir.getBuyUserNum() + "人也购买了");
                     mRlBuyRoot.setBackgroundColor(ContextCompat.getColor(this,R.color.pink_fb7ba2));
                 }else {
-                    mTvBuy.setText("添加到收藏夹");
-                    mTvBuyDesc.setVisibility(View.GONE);
-                    mRlBuyRoot.setBackgroundColor(ContextCompat.getColor(this,R.color.green_7ebf40));
+                    showMode();
                 }
             }
         }
@@ -196,77 +242,30 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
         mRv.getRecyclerView().setAdapter(mAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         mRv.setLayoutManager(layoutManager);
-        mRv.isLoadMoreEnabled(false);
-    }
+        mRv.getRecyclerView().addItemDecoration(new GridItemDecoration(DensityUtil.dip2px(this,10)));
+        mRv.setLoadMoreEnabled(false);
+        downloadSub = RxDownload.getInstance()
+                .maxThread(3)
+                .maxRetryCount(3)
+                .defaultSavePath(StorageUtils.getNovRootPath())
+                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
 
-    private void initPopupMenus() {
-        PopupMenuItems items = new PopupMenuItems(this);
-        MenuItem item;
         if(mUserId.equals(PreferenceUtils.getUUid())){
-            item = new MenuItem(0, getString(R.string.label_modify));
-            items.addMenuItem(item);
-        }
-        item = new MenuItem(1,"选择");
-        items.addMenuItem(item);
-
-        mMenu = new PopupListMenu(this, items);
-        mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
-
-            @Override
-            public void OnMenuItemClick(int itemId) {
-                if(itemId == 0){
+            mIvBg.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
                     Intent i = new Intent(FolderActivity.this,BagEditActivity.class);
                     i.putExtra("bg",mDir.getCover());
                     i.putExtra("name",mDir.getName());
                     i.putExtra("coin",mDir.getCoin());
                     i.putExtra("folderId",mDir.getFolderId());
                     i.putExtra("size",mDir.getSize());
+                    i.putExtra("read_type",mDir.getReadType());
                     i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_DIR_MODIFY);
                     startActivityForResult(i,REQ_MODIFY_DIE);
-                }else if(itemId == 1){
-                    Intent i = new Intent(FolderActivity.this,FilesSelectActivity.class);
-                    i.putExtra("folderId",mDir.getFolderId());
-                    i.putParcelableArrayListExtra("list",mCurList);
-                    startActivityForResult(i,REQ_MODIFY_FILES);
                 }
-            }
-        });
-    }
-
-    @Override
-    protected void initToolbar(Bundle savedInstanceState) {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                onBackPressed();
-            }
-        });
-    }
-
-    @Override
-    protected void initListeners() {
-//        mTvSelect.setOnClickListener(new NoDoubleClickListener() {
-//            @Override
-//            public void onNoDoubleClick(View v) {
-//                Intent i = new Intent(FolderActivity.this,FilesSelectActivity.class);
-//                i.putExtra("folderId",mDir.getFolderId());
-//                i.putParcelableArrayListExtra("list",mCurList);
-//                startActivityForResult(i,REQ_MODIFY_FILES);
-//            }
-//        });
-        mIvBg.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                Intent i = new Intent(FolderActivity.this,BagEditActivity.class);
-                i.putExtra("bg",mDir.getCover());
-                i.putExtra("name",mDir.getName());
-                i.putExtra("coin",mDir.getCoin());
-                i.putExtra("folderId",mDir.getFolderId());
-                i.putExtra("size",mDir.getSize());
-                i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_DIR_MODIFY);
-                startActivityForResult(i,REQ_MODIFY_DIE);
-            }
-        });
+            });
+        }
         mFlAddRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
@@ -275,48 +274,126 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
                 i.putExtra("name",mDir.getName());
                 i.putExtra("isBuy",mDir.getCoin() > 0);
                 i.putExtra("folderId",mDir.getFolderId());
+                i.putExtra("read_type",mDir.getReadType());
                 i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_DIR_ITEM_ADD);
                 startActivityForResult(i,REQ_ADD_ITEM);
             }
         });
-        mRlBuyRoot.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-                String title;
-                if(mDir.getCoin() > 0){
-                    title = "确认购买？";
-                }else {
-                    title = "确认收藏？";
+        if(mRlBuyRoot != null){
+            mRlBuyRoot.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    if(!mDir.isBuy() && mDir.getCoin() > 0){
+                        final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+                        String title;
+                        if(mDir.getCoin() > 0){
+                            title = "确认购买？";
+                        }else {
+                            title = "确认收藏？";
+                        }
+                        alertDialogUtil.createPromptNormalDialog(FolderActivity.this,title);
+                        alertDialogUtil.setButtonText(getString(R.string.label_confirm), getString(R.string.label_cancel),0);
+                        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                            @Override
+                            public void CancelOnClick() {
+                                alertDialogUtil.dismissDialog();
+                            }
+
+                            @Override
+                            public void ConfirmOnClick() {
+                                mPresenter.buyFolder(mDir.getFolderId());
+                                alertDialogUtil.dismissDialog();
+                            }
+                        });
+                        alertDialogUtil.showDialog();
+                    }else {
+                        if(mDir.getReadType().equalsIgnoreCase("IMAGE")){
+                            boolean res = false;
+                            for (FileEntity entity : mCurList){
+                                if(entity.getType().equals("image")){
+                                    res = true;
+                                    break;
+                                }
+                            }
+                            if(res){
+                                Intent i = new Intent(FolderActivity.this,MangaActivity.class);
+                                i.putParcelableArrayListExtra("file",mCurList);
+                                i.putExtra("title",mDir.getName());
+                                i.putExtra("folderId",mDir.getFolderId());
+                                startActivity(i);
+                            }else {
+                                showToast("当前没有图片哦~");
+                            }
+                        }else if(mDir.getReadType().equalsIgnoreCase("TEXT")){
+                            int res = -1;
+                            for (int i = 0;i < mCurList.size();i++){
+                                if(mCurList.get(i).getType().equals("txt")){
+                                    res = i;
+                                    break;
+                                }
+                            }
+                            if(res >= 0){
+                                goToRead(mCurList.get(res));
+                            }
+
+                        }else {
+                            showToast("看看有没有新版本再来点吧~");
+                        }
+                    }
                 }
-                alertDialogUtil.createPromptNormalDialog(FolderActivity.this,title);
-                alertDialogUtil.setButtonText(getString(R.string.label_confirm), getString(R.string.label_cancel),0);
-                alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
-                    @Override
-                    public void CancelOnClick() {
-                        alertDialogUtil.dismissDialog();
-                    }
-
-                    @Override
-                    public void ConfirmOnClick() {
-                        mPresenter.buyFolder(mDir.getFolderId());
-                        alertDialogUtil.dismissDialog();
-                    }
-                });
-                alertDialogUtil.showDialog();
-
-            }
-        });
+            });
+        }
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(View view, final int position) {
                 if(mDir.isBuy() || mDir.getCoin() <= 0){
-                    Intent i = new Intent(FolderActivity.this,FileDetailActivity.class);
-                    i.putParcelableArrayListExtra("list",mCurList);
-                    i.putExtra("folderId",mDir.getFolderId());
-                    i.putExtra("userId",mDir.getUserId());
-                    i.putExtra(FileDetailActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX,position);
-                    startActivityForResult(i,REQ_DETAIL_FILES);
+                    if(mCurList.get(position).getType().equals("txt")){
+                        if(FileUtil.isExists(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId() + File.separator + "1.txt")){
+                            goToRead(mCurList.get(position));
+                        }else {
+                            String temp = "1.txt";
+                            File file = new File(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
+                            if(file.mkdir()){
+                                final ProgressDialog dialog = new ProgressDialog(FolderActivity.this);
+                                dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);// 设置水平进度条
+                                dialog.setCancelable(false);// 设置是否可以通过点击Back键取消
+                                dialog.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
+                                dialog.setIcon(R.drawable.ic_launcher);// 设置提示的title的图标，默认是没有的
+                                dialog.setTitle("下载中");
+                                downloadSub.download(ApiService.URL_QINIU +  mCurList.get(position).getPath(),temp,StorageUtils.getNovRootPath() + mCurList.get(position).getFileId())
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Subscriber<DownloadStatus>() {
+                                            @Override
+                                            public void onCompleted() {
+                                                dialog.dismiss();
+                                                goToRead(mCurList.get(position));
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                dialog.dismiss();
+                                                FileUtil.deleteFile(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
+                                                showToast("下载失败");
+                                            }
+
+                                            @Override
+                                            public void onNext(DownloadStatus downloadStatus) {
+                                                dialog.setMax((int) downloadStatus.getTotalSize());
+                                                dialog.setProgress((int) downloadStatus.getDownloadSize());
+                                            }
+                                        });
+                                dialog.show();
+                            }
+                        }
+                    }else {
+                        Intent i = new Intent(FolderActivity.this,FileDetailActivity.class);
+                        i.putParcelableArrayListExtra("list",mCurList);
+                        i.putExtra("folderId",mDir.getFolderId());
+                        i.putExtra("userId",mDir.getUserId());
+                        i.putExtra(FileDetailActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX,position);
+                        startActivityForResult(i,REQ_DETAIL_FILES);
+                    }
                 }
             }
 
@@ -361,9 +438,119 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
         mPresenter.getFolderItemList(mDir.getFolderId(),0);
     }
 
+    private void showMode(){
+        mBuyRoot.setVisibility(View.GONE);
+        mRlBuyRoot.setBackgroundColor(ContextCompat.getColor(this,R.color.gray_4b5052));
+        String mode = mDir.getReadType();
+        mTvMode.setVisibility(View.VISIBLE);
+        if(mode.equalsIgnoreCase("IMAGE")){
+            mRlBuyRoot.setVisibility(View.VISIBLE);
+            mTvMode.setText("进入看图模式");
+        }else if(mode.equalsIgnoreCase("TEXT")){
+            mRlBuyRoot.setVisibility(View.VISIBLE);
+            mTvMode.setText("进入阅读模式");
+        }else {
+            mRlBuyRoot.setVisibility(View.GONE);
+        }
+    }
+
+    private void initPopupMenus() {
+        PopupMenuItems items = new PopupMenuItems(this);
+        MenuItem item;
+        if(mUserId.equals(PreferenceUtils.getUUid())){
+            item = new MenuItem(0, getString(R.string.label_modify));
+            items.addMenuItem(item);
+        }
+        item = new MenuItem(1,"选择");
+        items.addMenuItem(item);
+
+        mMenu = new PopupListMenu(this, items);
+        mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
+
+            @Override
+            public void OnMenuItemClick(int itemId) {
+                if(itemId == 0){
+                    Intent i = new Intent(FolderActivity.this,BagEditActivity.class);
+                    i.putExtra("bg",mDir.getCover());
+                    i.putExtra("name",mDir.getName());
+                    i.putExtra("coin",mDir.getCoin());
+                    i.putExtra("folderId",mDir.getFolderId());
+                    i.putExtra("size",mDir.getSize());
+                    i.putExtra("read_type",mDir.getReadType());
+                    i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_DIR_MODIFY);
+                    startActivityForResult(i,REQ_MODIFY_DIE);
+                }else if(itemId == 1){
+                    Intent i = new Intent(FolderActivity.this,FilesSelectActivity.class);
+                    i.putExtra("folderId",mDir.getFolderId());
+                    i.putParcelableArrayListExtra("list",mCurList);
+                    startActivityForResult(i,REQ_MODIFY_FILES);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void initToolbar(Bundle savedInstanceState) {
+        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    @Override
+    protected void initListeners() {
+    }
+
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLoadFolderSuccess(BagDirEntity entity) {
+        mDir = entity;
+        init(true);
+    }
+
+    @Override
+    public void onLoadFolderFail() {
+        finish();
+    }
+
+    private void goToRead(FileEntity entity){
+        Intent i = new Intent(this,ReadActivity.class);
+        ArrayList<BookEntity> bookList = new ArrayList<>();
+        int position = mCurList.indexOf(entity);
+        for (FileEntity entity1 : mCurList){
+            if(mCurList.indexOf(entity1) <= position)
+                continue;
+            if(entity1.getType().equals("txt")){
+                BookEntity book = new BookEntity();
+                book.setTitle(entity1.getFileName());
+                book.setFromSD(true);
+                book.setId(entity1.getFileId());
+                book.setPath(entity1.getPath());
+                bookList.add(book);
+            }
+        }
+        BookEntity mBook = new BookEntity();
+        mBook.setTitle(entity.getFileName());
+        mBook.setFromSD(true);
+        mBook.setId(entity.getFileId());
+        mBook.setPath(entity.getPath());
+        i.putExtra("book",mBook);
+        i.putExtra("books",bookList);
+        i.putExtra("userId",mDir.getUserId());
+        i.putExtra("folderId",mDir.getFolderId());
+        startActivityForResult(i,REQ_DETAIL_FILES);
     }
 
     @Override
@@ -387,20 +574,25 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
             if(resultCode == RESULT_OK){
                 mDir.setName(data.getStringExtra("name"));
                 mDir.setCover(data.getStringExtra("bg"));
+                mDir.setReadType(data.getStringExtra("read_type"));
                 mChange = true;
                 mTitleView.setTitle(mDir.getName());
+                String url = mDir.getCover();
+                if(mDir.getCover().startsWith("image")){
+                    url = StringUtils.getUrl(this, ApiService.URL_QINIU +  mDir.getCover(), DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,200), false, true);
+                }
                 Glide.with(this)
-                        .load(data.getStringExtra("bg"))
+                        .load(url)
                         .override(DensityUtil.getScreenWidth(this),DensityUtil.dip2px(this,200))
                         .error(R.drawable.btn_cardbg_defbg)
                         .placeholder(R.drawable.btn_cardbg_defbg)
                         .into(mIvBg);
+                showMode();
             }else if(resultCode == BagEditActivity.RES_DELETE){
                 Intent i = new Intent();
                 mDir = null;
                 mChange = true;
-                i.putExtra("info",mDir);
-                i.putExtra("change",mChange);
+                i.putExtra("change",true);
                 i.putExtra("position",position);
                 setResult(RESULT_OK,i);
                 finish();
@@ -448,9 +640,9 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
         mIsLoading = false;
         mRv.setComplete();
         if(entities.size() == 0){
-            mRv.isLoadMoreEnabled(false);
+            mRv.setLoadMoreEnabled(false);
         }else {
-            mRv.isLoadMoreEnabled(true);
+            mRv.setLoadMoreEnabled(true);
         }
         if(isPull){
             mCurList.clear();
@@ -478,7 +670,10 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
         }else {
             showToast("收藏成功");
         }
-        mRlBuyRoot.setVisibility(View.GONE);
+        if(mRlBuyRoot != null){
+            showMode();
+        }
+        RxBus.getInstance().post(new DirBuyEvent(position,true));
     }
 
     @Override
@@ -489,6 +684,21 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
     @Override
     public void modifyFolderSuccess() {
 
+    }
+
+    @Override
+    public void onFollowOrUnFollowFolderSuccess(boolean follow) {
+        if(follow){
+            mDir.setFollow(true);
+            mChange = true;
+            showToast("收藏成功");
+        }else {
+            mDir.setFollow(false);
+            mChange = true;
+            showToast("取消收藏成功");
+        }
+        mTvFavorite.setSelected(mDir.isFollow());
+        mTvFavorite.setText(mDir.isFollow()?"已收藏":"收藏");
     }
 
     @Override

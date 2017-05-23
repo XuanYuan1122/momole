@@ -5,7 +5,7 @@ package com.moemoe.lalala.presenter;
  */
 
 public interface PersonalListContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void doRequest(String id,int index,int type);
     }
 

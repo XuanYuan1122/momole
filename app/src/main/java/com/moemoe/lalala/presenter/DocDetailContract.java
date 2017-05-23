@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 
 public interface DocDetailContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestDoc(String id);
         void deleteDoc(String docId);
         void requestCommentFloor(String id,long floor,int len,boolean target,boolean isJump,boolean clear,boolean addBefore);

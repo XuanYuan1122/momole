@@ -53,6 +53,11 @@ public class StorageUtils {
     private static String sDirMusic;
 
     /**
+     * 小说等文本文件位置
+     */
+    private static String sDirTxt;
+
+    /**
      *
      * @param context
      */
@@ -72,12 +77,15 @@ public class StorageUtils {
 
         sDirMusic = sDirRoot + "music/";
 
+        sDirTxt = sDirRoot + "nov/";
+
         boolean check = checkDir(sDirRoot);
         check &= checkDir(sDirIconImage);
         check &= checkDir(sDirGalleryImage);
         check &= checkDir(sDirData);
         check &= checkDir(sDirTemp);
         check &= checkDir(sDirMusic);
+        check &= checkDir(sDirTxt);
         //check &= checkDir(sDirLog);
 
         Logger.d("initialStorageDir = " + check + ", paths = " + sDirRoot + "; " + sDirTemp);
@@ -179,6 +187,10 @@ public class StorageUtils {
 
     public static String getTempRootPath() {
         return sDirTemp;
+    }
+
+    public static String getNovRootPath(){
+        return sDirTxt;
     }
 
     public static String getRootPath(){

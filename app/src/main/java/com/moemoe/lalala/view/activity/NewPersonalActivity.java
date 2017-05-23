@@ -16,11 +16,21 @@ import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPersonalComponent;
 import com.moemoe.lalala.di.modules.PersonalModule;
+import com.moemoe.lalala.event.PrivateMessageEvent;
+import com.moemoe.lalala.event.SystemMessageEvent;
+import com.moemoe.lalala.greendao.gen.ChatUserEntityDao;
+import com.moemoe.lalala.greendao.gen.GroupUserEntityDao;
+import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.entity.ChatUserEntity;
+import com.moemoe.lalala.model.entity.CreatePrivateMsgEntity;
+import com.moemoe.lalala.model.entity.GroupUserEntity;
 import com.moemoe.lalala.model.entity.Image;
+import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.presenter.PersonalContract;
@@ -28,6 +38,7 @@ import com.moemoe.lalala.presenter.PersonalPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.GlideCircleTransform;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
@@ -38,13 +49,20 @@ import com.moemoe.lalala.view.widget.menu.PopupListMenu;
 import com.moemoe.lalala.view.widget.menu.PopupMenuItems;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/12/15.
  */
 
@@ -72,6 +90,8 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     TextView mCoinNum;
     @BindView(R.id.tv_follow)
     TextView mFollow;
+    @BindView(R.id.ll_follow_root)
+    View mFollowRoot;
     @BindView(R.id.tab_layout)
     CommonTabLayout mTabLayout;
     @BindView(R.id.vp_main)
@@ -80,6 +100,8 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     ImageView mEdit;
     @BindView(R.id.iv_bag)
     ImageView mIvBag;
+    @BindView(R.id.iv_menu_list)
+    View mMenuList;
 
     @Inject
     PersonalPresenter mPresenter;
@@ -99,7 +121,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     protected void initViews(Bundle savedInstanceState) {
         DaggerPersonalComponent.builder()
                 .personalModule(new PersonalModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mUserId = getIntent().getStringExtra(UUID);
@@ -111,6 +133,68 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         mIvBag.setVisibility(View.GONE);
         mPresenter.requestUserInfo(mUserId);
         initPopupMenus();
+        if(mIsSelf) {
+            mMenuList.setVisibility(View.VISIBLE);
+            subscribeEvent();
+        }else {
+            mMenuList.setVisibility(View.GONE);
+        }
+    }
+
+    private void subscribeEvent() {
+        Subscription subscription = RxBus.getInstance()
+                .toObservable(PrivateMessageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Action1<PrivateMessageEvent>() {
+                    @Override
+                    public void call(PrivateMessageEvent event) {
+                        if(mTabLayout.getTabCount() == 7){
+                            if(event.isShow()){
+                                mTabLayout.showDot(5);
+                            }else {
+                                mTabLayout.hideMsg(5);
+                            }
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        Subscription sysSubscription = RxBus.getInstance()
+                .toObservable(SystemMessageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Action1<SystemMessageEvent>() {
+                    @Override
+                    public void call(SystemMessageEvent event) {
+                        if(mTabLayout.getTabCount() == 7){
+                            if(PreferenceUtils.getMessageDot(NewPersonalActivity.this,"neta") || PreferenceUtils.getMessageDot(NewPersonalActivity.this,"system")){
+                                mTabLayout.showDot(6);
+                            }else {
+                                mTabLayout.hideMsg(6);
+                            }
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        RxBus.getInstance().addSubscription(this, subscription);
+        RxBus.getInstance().addSubscription(this, sysSubscription);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        RxBus.getInstance().unSubscribe(this);
+        super.onDestroy();
     }
 
     @Override
@@ -139,6 +223,8 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         items.addMenuItem(item);
         item = new MenuItem(2, getString(R.string.label_coin_details));
         items.addMenuItem(item);
+        item = new MenuItem(3, getString(R.string.label_doc_history));
+        items.addMenuItem(item);
         mMenu = new PopupListMenu(this, items);
         mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
 
@@ -150,6 +236,11 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 }
                 if(itemId == 2){
                     Intent i = new Intent(NewPersonalActivity.this, CoinDetailActivity.class);
+                    startActivity(i);
+                }
+                if(itemId == 3){
+                    Intent i = new Intent(NewPersonalActivity.this,DocHistoryActivity.class);
+                    i.putExtra(UUID,mUserId);
                     startActivity(i);
                 }
             }
@@ -168,7 +259,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         }
     }
 
-    @OnClick({R.id.tv_follow,R.id.iv_edit,R.id.iv_menu_list,R.id.iv_avatar,R.id.iv_bag})
+    @OnClick({R.id.tv_follow,R.id.iv_edit,R.id.iv_menu_list,R.id.iv_avatar,R.id.iv_bag,R.id.tv_private_msg})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.tv_follow:
@@ -203,20 +294,93 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 i2.putExtra(UUID,mUserId);
                 startActivity(i2);
                 break;
+            case R.id.tv_private_msg:
+                goToChat();
+                break;
         }
+    }
+
+    private void goToChat() {
+        if(mInfo != null){
+            GroupUserEntityDao dao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
+            List<GroupUserEntity> list = dao.queryBuilder()
+                    .where(GroupUserEntityDao.Properties.UserId.eq(mUserId))
+                    .limit(1)
+                    .list();
+            if(list.size() == 1){
+                //存在  直接跳转
+                Intent i = new Intent(this, ChatActivity.class);
+                i.putExtra("talkId",list.get(0).getTalkId());
+                i.putExtra("title",mInfo.getUserName());
+                startActivity(i);
+            }else {
+                mPresenter.createPrivateMsg(mUserId);
+            }
+        }
+    }
+
+    @Override
+    public void onCreatePrivateMsgSuccess(CreatePrivateMsgEntity entity) {
+        //私信列表
+        PrivateMessageItemEntityDao messageItemEntityDao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
+
+        PrivateMessageItemEntity privateMessageItemEntity = new PrivateMessageItemEntity();
+        privateMessageItemEntity.setDot(0);
+        privateMessageItemEntity.setUpdateTime(new Date(System.currentTimeMillis()));
+        privateMessageItemEntity.setName(mInfo.getUserName());
+        privateMessageItemEntity.setIcon(mInfo.getHeadPath());
+        privateMessageItemEntity.setContent("");
+        privateMessageItemEntity.setTalkId(entity.getTalkId());
+        privateMessageItemEntity.setNew(true);
+        privateMessageItemEntity.setState(entity.isIgnore());
+        messageItemEntityDao.insertOrReplace(privateMessageItemEntity);
+        RxBus.getInstance().post(new PrivateMessageEvent(false,entity.getTalkId(),false));
+        //列表与用户中间表
+        GroupUserEntityDao dao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
+        //他人
+        GroupUserEntity groupUserEntity = new GroupUserEntity();
+        groupUserEntity.setId(null);
+        groupUserEntity.setTalkId(entity.getTalkId());
+        groupUserEntity.setUserId(mUserId);
+        dao.insertOrReplace(groupUserEntity);
+        //自己
+        GroupUserEntity groupUserEntity1 = new GroupUserEntity();
+        groupUserEntity1.setId(null);
+        groupUserEntity1.setTalkId(entity.getTalkId());
+        groupUserEntity1.setUserId(PreferenceUtils.getUUid());
+        dao.insertOrReplace(groupUserEntity1);
+        //用户表
+        ChatUserEntityDao chatUserEntityDao = GreenDaoManager.getInstance().getSession().getChatUserEntityDao();
+        //他人
+        ChatUserEntity userEntity = new ChatUserEntity();
+        userEntity.setUserIcon(mInfo.getHeadPath());
+        userEntity.setUserName(mInfo.getUserName());
+        userEntity.setUserId(mUserId);
+        chatUserEntityDao.insertOrReplace(userEntity);
+        //自己
+        ChatUserEntity userEntity1 = new ChatUserEntity();
+        userEntity1.setUserIcon(PreferenceUtils.getAuthorInfo().getHeadPath());
+        userEntity1.setUserName(PreferenceUtils.getAuthorInfo().getUserName());
+        userEntity1.setUserId(PreferenceUtils.getUUid());
+        chatUserEntityDao.insertOrReplace(userEntity1);
+        Intent i = new Intent(this, ChatActivity.class);
+        i.putExtra("talkId",entity.getTalkId());
+        i.putExtra("title",mInfo.getUserName());
+        i.putExtra("isNew",false);
+        startActivity(i);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mAppBarLayout.addOnOffsetChangedListener(this);
-        if(mTabLayout.getTabCount() == 7){
-            if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
-                mTabLayout.showDot(6);
-            }else {
-                mTabLayout.hideMsg(6);
-            }
-        }
+//        if(mTabLayout.getTabCount() == 7){
+//            if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
+//                mTabLayout.showDot(6);
+//            }else {
+//                mTabLayout.hideMsg(6);
+//            }
+//        }
     }
 
     @Override
@@ -232,8 +396,9 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
 
     @Override
     public void onLoadUserInfoFail() {
-        Intent i = new Intent(this, LoginActivity.class);
-        startActivity(i);
+       // Intent i = new Intent(this, LoginActivity.class);
+       // startActivity(i);
+        showToast("获取个人信息失败,请稍后再试!");
         finish();
     }
 
@@ -275,56 +440,64 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         mDocNum.setText(String.valueOf(info.getDocCount()));
         mCoinNum.setText(String.valueOf(info.getCoin()));
         if(mIsSelf){
-            mFollow.setVisibility(View.GONE);
+            mFollowRoot.setVisibility(View.GONE);
             mEdit.setVisibility(View.VISIBLE);
         }else {
             mEdit.setVisibility(View.GONE);
-            mFollow.setVisibility(View.VISIBLE);
+            mFollowRoot.setVisibility(View.VISIBLE);
             mFollow.setSelected(info.isFollowing());
             mFollow.setText(info.isFollowing() ? getString(R.string.label_followed) : getString(R.string.label_follow));
         }
-        mAdapter = new PersonalPagerAdapter(getSupportFragmentManager(),this,mIsSelf,mUserId,info.isShowFavorite(),info.isShowFollow(),info.isShowFans());
-        mViewPager.setAdapter(mAdapter);
-        String[] mTitles = {getString(R.string.label_home_page), getString(R.string.label_doc), getString(R.string.label_favorite), getString(R.string.label_fans),getString(R.string.label_follow),getString(R.string.label_prop),getString(R.string.label_msg)};
-        for (int i = 0; i < mTitles.length; i++) {
-            mTabEntities.add(new TabEntity(mTitles[i], R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
-        }
-        mTabLayout.setTabData(mTabEntities);
-        mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelect(int position) {
-                mViewPager.setCurrentItem(position);
+        if(mAdapter == null){
+            mAdapter = new PersonalPagerAdapter(getSupportFragmentManager(),this,mIsSelf,mUserId,info.isShowFavorite(),info.isShowFollow(),info.isShowFans());
+            mViewPager.setAdapter(mAdapter);
+            String[] mTitles = {getString(R.string.label_home_page), getString(R.string.label_doc), getString(R.string.label_favorite), getString(R.string.label_fans),getString(R.string.label_follow),getString(R.string.label_chat),getString(R.string.label_msg)};
+            int len;
+            if(mIsSelf){
+                len = mTitles.length;
+            }else {
+                len = mTitles.length - 2;
             }
-
-            @Override
-            public void onTabReselect(int position) {
+            for (int i = 0; i < len; i++) {
+                mTabEntities.add(new TabEntity(mTitles[i], R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
             }
-        });
+            mTabLayout.setTabData(mTabEntities);
+            mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
+                @Override
+                public void onTabSelect(int position) {
+                    mViewPager.setCurrentItem(position);
+                }
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                @Override
+                public void onTabReselect(int position) {
+                }
+            });
 
-            }
+            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            @Override
-            public void onPageSelected(int position) {
-                mTabLayout.setCurrentTab(position);
-            }
+                }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+                @Override
+                public void onPageSelected(int position) {
+                    mTabLayout.setCurrentTab(position);
+                }
 
-            }
-        });
-        String type = getIntent().getStringExtra("tab");
-        if(!TextUtils.isEmpty(type)){
-            if(type.equals("notify")){
-                mViewPager.setCurrentItem(6);
-                mTabLayout.setCurrentTab(6);
-            }else if(type.equals("fans")){
-                mViewPager.setCurrentItem(3);
-                mTabLayout.setCurrentTab(3);
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+            String type = getIntent().getStringExtra("tab");
+            if(!TextUtils.isEmpty(type)){
+                if(type.equals("notify")){
+                    mViewPager.setCurrentItem(6);
+                    mTabLayout.setCurrentTab(6);
+                }else if(type.equals("fans")){
+                    mViewPager.setCurrentItem(3);
+                    mTabLayout.setCurrentTab(3);
+                }
             }
         }
         if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){

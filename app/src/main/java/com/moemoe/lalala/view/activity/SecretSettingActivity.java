@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSettingComponent;
 import com.moemoe.lalala.di.modules.SettingModule;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
@@ -30,6 +30,8 @@ public class SecretSettingActivity extends BaseAppCompatActivity implements Sett
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.tv_toolbar_title)
+    TextView mTvTitle;
 
     private boolean mIsShowFans;
     private boolean mIsShowFavorite;
@@ -49,12 +51,13 @@ public class SecretSettingActivity extends BaseAppCompatActivity implements Sett
         }
         DaggerSettingComponent.builder()
                 .settingModule(new SettingModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mIsShowFans = getIntent().getBooleanExtra("show_fans",false);
         mIsShowFavorite = getIntent().getBooleanExtra("show_favorite",false);
         mIsShowFollow = getIntent().getBooleanExtra("show_follow",false);
+        mTvTitle.setText(getString(R.string.label_secret_setting));
         initStyleView(R.id.set_favorite);
         initStyleView(R.id.set_fans);
         initStyleView(R.id.set_follow);
@@ -91,7 +94,7 @@ public class SecretSettingActivity extends BaseAppCompatActivity implements Sett
         return (ImageView) v.findViewById(R.id.iv_indicate_img);
     }
 
-    @OnClick({R.id.set_favorite,R.id.set_follow})
+    @OnClick({R.id.set_favorite,R.id.set_follow,R.id.set_fans})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.set_favorite:
@@ -119,6 +122,7 @@ public class SecretSettingActivity extends BaseAppCompatActivity implements Sett
 
     @Override
     protected void onDestroy() {
+        mPresenter.release();
         super.onDestroy();
     }
 
@@ -181,6 +185,11 @@ public class SecretSettingActivity extends BaseAppCompatActivity implements Sett
 
     @Override
     public void noUpdate() {
+
+    }
+
+    @Override
+    public void shieldUserFail() {
 
     }
 

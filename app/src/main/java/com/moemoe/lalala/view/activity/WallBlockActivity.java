@@ -56,8 +56,8 @@ public class WallBlockActivity extends BaseAppCompatActivity {
         fragmentList.add(classFragment);
         fragmentList.add(wallBlockFragment);
         List<String> titles = new ArrayList<>();
-        titles.add(getString(R.string.label_class));
         titles.add(getString(R.string.label_square));
+        titles.add(getString(R.string.label_club));
         TabFragmentPagerAdapter mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
         mDataPager.setAdapter(mAdapter);
         mPageIndicator.setupWithViewPager(mDataPager);

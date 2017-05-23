@@ -22,7 +22,7 @@ public class ErrorCodeUtils {
                 res = msg;
             }
             if (!TextUtils.isEmpty(res)) {
-                ToastUtils.showCenter(context, res);
+                ToastUtils.showShortToast(context, res);
                 if(errorCode == 4003 || errorCode == 4024){
                     ((BaseAppCompatActivity)context).finish();
                 }

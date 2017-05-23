@@ -48,7 +48,7 @@
             <View
                 android:layout_width="88dp"
                 android:layout_height="1px"
-                android:background="@color/gray_d7d7d8" />
+                android:background="@color/gray_d7d7d7" />
         </LinearLayout>
 
         <TextView
@@ -65,7 +65,7 @@
         <View
             android:layout_width="88dp"
             android:layout_height="1px"
-            android:background="@color/gray_d7d7d8"
+            android:background="@color/gray_d7d7d7"
             android:layout_gravity="center"/>
 
         <TextView
@@ -81,7 +81,7 @@
         <View
             android:layout_width="88dp"
             android:layout_height="1px"
-            android:background="@color/gray_d7d7d8"
+            android:background="@color/gray_d7d7d7"
             android:layout_gravity="center"/>
 
         <TextView

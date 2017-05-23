@@ -23,6 +23,14 @@ public class PersonDocEntity {
     private String schema;
     @SerializedName("title")
     private String title;
+    @SerializedName("createUserName")
+    private String createUserName;
+    @SerializedName("docType")
+    private String docType;
+    @SerializedName("docTypeSchema")
+    private String docTypeSchema;
+    @SerializedName("createUserId")
+    private String createUserId;
 
     public int getComments() {
         return comments;
@@ -86,5 +94,37 @@ public class PersonDocEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
+
+    public String getDocType() {
+        return docType;
+    }
+
+    public void setDocType(String docType) {
+        this.docType = docType;
+    }
+
+    public String getDocTypeSchema() {
+        return docTypeSchema;
+    }
+
+    public void setDocTypeSchema(String docTypeSchema) {
+        this.docTypeSchema = docTypeSchema;
+    }
+
+    public String getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(String createUserId) {
+        this.createUserId = createUserId;
     }
 }

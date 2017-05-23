@@ -22,7 +22,7 @@ public class ToolTipUtils {
         //TextView textView = (TextView) LayoutInflater.inflate(R.layout.tooltip_textview, null);
         textView.setText(resId);
         textView.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-      //  showTooltip(context,viewGroup,anchor, textView, position, autoAdjust, type, tooltipColor);
+      //  showTooltip(context,viewGroup,anchor, textView, position, autoAdjust, index, tooltipColor);
     }
 
     public static void showTooltip(Context context, ViewGroup viewGroup, TextView textView, @NonNull View anchor, String resId,
@@ -32,7 +32,7 @@ public class ToolTipUtils {
         //TextView textView = (TextView) LayoutInflater.inflate(R.layout.tooltip_textview, null);
         textView.setText(resId);
         textView.setLayoutParams(new ViewGroup.LayoutParams(width, height));
-      //  showTooltip(context,viewGroup,anchor, textView, position, autoAdjust, type, tooltipColor);
+      //  showTooltip(context,viewGroup,anchor, textView, position, autoAdjust, index, tooltipColor);
     }
 
     public static void showTooltip(Context context, ViewGroup viewGroup, TextView textView, @NonNull View anchor, String resId,

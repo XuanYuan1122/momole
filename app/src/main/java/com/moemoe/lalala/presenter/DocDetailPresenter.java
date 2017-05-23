@@ -59,12 +59,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                     @Override
                     public void onSuccess(DocDetailEntity docDetailEntity) {
                         favoriteFlag = docDetailEntity.isFavoriteFlag();
-                        view.onDocLoaded(docDetailEntity);
+                        if(view != null) view.onDocLoaded(docDetailEntity);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -95,12 +95,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onDeleteDoc();
+                        if(view != null) view.onDeleteDoc();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -113,12 +113,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<NewCommentEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<NewCommentEntity> newCommentEntities) {
-                        view.onCommentsLoaded(newCommentEntities,floor == 1,isJump,clear,addBefore);
+                        if(view != null)  view.onCommentsLoaded(newCommentEntities,floor == 1,isJump,clear,addBefore);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -133,12 +133,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                         @Override
                         public void onSuccess() {
                             favoriteFlag = false;
-                            view.onFavoriteDoc(favoriteFlag);
+                            if(view != null)  view.onFavoriteDoc(favoriteFlag);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else {
@@ -149,12 +149,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                         @Override
                         public void onSuccess() {
                             favoriteFlag = true;
-                            view.onFavoriteDoc(favoriteFlag);
+                            if(view != null) view.onFavoriteDoc(favoriteFlag);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }
@@ -169,12 +169,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSendComment();
+                            if(view != null) view.onSendComment();
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else {
@@ -248,19 +248,19 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                                     .subscribe(new NetSimpleResultSubscriber() {
                                         @Override
                                         public void onSuccess() {
-                                            view.onSendComment();
+                                            if(view != null) view.onSendComment();
                                         }
 
                                         @Override
                                         public void onFail(int code,String msg) {
-                                            view.onFailure(code,msg);
+                                            if(view != null) view.onFailure(code,msg);
                                         }
                                     });
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            view.onFailure(-1,"");
+                            if(view != null) view.onFailure(-1,"");
                         }
 
                         @Override
@@ -280,12 +280,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onPlusLabel(position,false);
+                            if(view != null) view.onPlusLabel(position,false);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else {
@@ -295,12 +295,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onPlusLabel(position,true);
+                            if(view != null) view.onPlusLabel(position,true);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }
@@ -314,12 +314,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onDeleteComment(entity,position);
+                        if(view != null) view.onDeleteComment(entity,position);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -332,12 +332,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                 .subscribe(new NetResultSubscriber<String>() {
                     @Override
                     public void onSuccess(String s) {
-                        view.onCreateLabel(s,entity.getTag());
+                        if(view != null) view.onCreateLabel(s,entity.getTag());
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -350,12 +350,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onGetCoinContent();
+                        if(view != null) view.onGetCoinContent();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -368,13 +368,18 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onGiveCoin();
+                        if(view != null) view.onGiveCoin();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

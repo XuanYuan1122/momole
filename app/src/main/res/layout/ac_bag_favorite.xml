@@ -2,52 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_f2f2f3">
 
-    <LinearLayout
-        android:id="@+id/rl_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/main_cyan"
-        android:fitsSystemWindows="true"
-        android:paddingTop="@dimen/status_bar_height"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_go_back"/>
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:layout_centerInParent="true"
-                android:textSize="@dimen/size_16"
-                android:text="书包收藏"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_select"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_16"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:paddingRight="@dimen/size_10"
-                android:paddingEnd="@dimen/size_10"
-                android:text="选择"/>
-        </RelativeLayout>
-    </LinearLayout>
+    <include layout="@layout/app_toolbar"/>
 
     <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
         android:id="@+id/rv_list"

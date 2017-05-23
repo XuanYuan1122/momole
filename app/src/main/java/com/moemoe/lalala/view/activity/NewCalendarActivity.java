@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCalendarComponent;
 import com.moemoe.lalala.di.modules.CalendarModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -72,7 +72,7 @@ public class NewCalendarActivity extends BaseAppCompatActivity implements Calend
     protected void initViews(Bundle savedInstanceState) {
         DaggerCalendarComponent.builder()
                 .calendarModule(new CalendarModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mSuspensionHeight = DensityUtil.dip2px(this,144);
@@ -124,11 +124,11 @@ public class NewCalendarActivity extends BaseAppCompatActivity implements Calend
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(!isFinishing())Glide.with(NewCalendarActivity.this).resumeRequests();
-                } else {
-                    if(!isFinishing())Glide.with(NewCalendarActivity.this).pauseRequests();
-                }
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    if(!isFinishing())Glide.with(NewCalendarActivity.this).resumeRequests();
+//                } else {
+//                    if(!isFinishing())Glide.with(NewCalendarActivity.this).pauseRequests();
+//                }
             }
 
             @Override
@@ -169,7 +169,7 @@ public class NewCalendarActivity extends BaseAppCompatActivity implements Calend
                 }
             }
         });
-        mPullAndLoadView.isLoadMoreEnabled(false);
+        mPullAndLoadView.setLoadMoreEnabled(false);
         mPullAndLoadView.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
@@ -205,6 +205,7 @@ public class NewCalendarActivity extends BaseAppCompatActivity implements Calend
 
     @Override
     protected void onDestroy() {
+        mPresenter.release();
         super.onDestroy();
     }
 
@@ -247,7 +248,7 @@ public class NewCalendarActivity extends BaseAppCompatActivity implements Calend
     @Override
     public void onSuccess(CalendarDayEntity entities, boolean pull) {
         isLoading = false;
-        mPullAndLoadView.isLoadMoreEnabled(true);
+        mPullAndLoadView.setLoadMoreEnabled(true);
         mPullAndLoadView.setComplete();
         mLastDay = entities.getDay().getYesterday();
         if(pull){

@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 
 public interface DepartContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestBannerData(String room);
         void requestFeatured(String room);
         void requestDocList(int index,String room,int type);

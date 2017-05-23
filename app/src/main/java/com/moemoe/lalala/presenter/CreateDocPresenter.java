@@ -53,12 +53,12 @@ public class CreateDocPresenter implements CreateDocContract.Presenter {
                         .subscribe(new NetSimpleResultSubscriber() {
                             @Override
                             public void onSuccess() {
-                                view.onSendSuccess();
+                                if(view != null) view.onSendSuccess();
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }else if(docType == 0){
@@ -68,12 +68,12 @@ public class CreateDocPresenter implements CreateDocContract.Presenter {
                         .subscribe(new NetSimpleResultSubscriber() {
                             @Override
                             public void onSuccess() {
-                                view.onSendSuccess();
+                                if(view != null) view.onSendSuccess();
                             }
 
                             @Override
                             public void onFail(int code,String msg ){
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }else if(docType == 2){
@@ -83,12 +83,12 @@ public class CreateDocPresenter implements CreateDocContract.Presenter {
                         .subscribe(new NetSimpleResultSubscriber() {
                             @Override
                             public void onSuccess() {
-                                view.onSendSuccess();
+                                if(view != null) view.onSendSuccess();
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }
@@ -165,12 +165,12 @@ public class CreateDocPresenter implements CreateDocContract.Presenter {
                                     .subscribe(new NetSimpleResultSubscriber() {
                                         @Override
                                         public void onSuccess() {
-                                            view.onSendSuccess();
+                                            if(view != null) view.onSendSuccess();
                                         }
 
                                         @Override
                                         public void onFail(int code,String msg) {
-                                            view.onFailure(code,msg);
+                                            if(view != null) view.onFailure(code,msg);
                                         }
                                     });
                         }else if(docType == 0){
@@ -180,12 +180,12 @@ public class CreateDocPresenter implements CreateDocContract.Presenter {
                                     .subscribe(new NetSimpleResultSubscriber() {
                                         @Override
                                         public void onSuccess() {
-                                            view.onSendSuccess();
+                                            if(view != null) view.onSendSuccess();
                                         }
 
                                         @Override
                                         public void onFail(int code,String msg) {
-                                            view.onFailure(code,msg);
+                                            if(view != null) view.onFailure(code,msg);
                                         }
                                     });
                         }else if(docType == 2){
@@ -195,12 +195,12 @@ public class CreateDocPresenter implements CreateDocContract.Presenter {
                                     .subscribe(new NetSimpleResultSubscriber() {
                                         @Override
                                         public void onSuccess() {
-                                            view.onSendSuccess();
+                                            if(view != null) view.onSendSuccess();
                                         }
 
                                         @Override
                                         public void onFail(int code,String msg) {
-                                            view.onFailure(code,msg);
+                                            if(view != null)  view.onFailure(code,msg);
                                         }
                                     });
                         }
@@ -208,7 +208,7 @@ public class CreateDocPresenter implements CreateDocContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        view.onFailure(-1,"");
+                        if(view != null) view.onFailure(-1,"");
                     }
 
                     @Override
@@ -235,5 +235,10 @@ public class CreateDocPresenter implements CreateDocContract.Presenter {
                     }
                 });
 
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

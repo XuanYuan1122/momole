@@ -3,6 +3,7 @@ package com.moemoe.lalala.presenter;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
+import com.moemoe.lalala.model.entity.CreatePrivateMsgEntity;
 import com.moemoe.lalala.model.entity.UserInfo;
 
 import javax.inject.Inject;
@@ -33,12 +34,12 @@ public class PersonalPresenter implements PersonalContract.Presenter {
                 .subscribe(new NetResultSubscriber<UserInfo>() {
                     @Override
                     public void onSuccess(UserInfo info) {
-                        view.onLoadUserInfo(info);
+                        if(view != null) view.onLoadUserInfo(info);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onLoadUserInfoFail();
+                        if(view != null) view.onLoadUserInfoFail();
                     }
                 });
     }
@@ -52,12 +53,12 @@ public class PersonalPresenter implements PersonalContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onFollowSuccess(true);
+                            if(view != null) view.onFollowSuccess(true);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else {
@@ -67,14 +68,38 @@ public class PersonalPresenter implements PersonalContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onFollowSuccess(false);
+                            if(view != null) view.onFollowSuccess(false);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }
+    }
+
+    @Override
+    public void createPrivateMsg(String userId) {
+        apiService.createPrivateMsg(userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<CreatePrivateMsgEntity>() {
+                    @Override
+                    public void onSuccess(CreatePrivateMsgEntity entity) {
+                        if(view != null) view.onCreatePrivateMsgSuccess(entity);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code,msg);
+                    }
+                });
+    }
+
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

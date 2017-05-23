@@ -7,12 +7,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.view.fragment.PersonalChatFragment;
 import com.moemoe.lalala.view.fragment.PersonalDocFragment;
 import com.moemoe.lalala.view.fragment.PersonalFavoriteDocFragment;
 import com.moemoe.lalala.view.fragment.PersonalFollowFragment;
 import com.moemoe.lalala.view.fragment.PersonalMainFragment;
 import com.moemoe.lalala.view.fragment.PersonalMsgFragment;
-import com.moemoe.lalala.view.fragment.PersonalPropFragment;
 
 /**
  * Created by yi on 2016/12/15.
@@ -29,7 +29,8 @@ public class PersonalPagerAdapter extends FragmentStatePagerAdapter {
     private PersonalMainFragment mainFragment;
     private PersonalDocFragment docFragment;
     private PersonalFavoriteDocFragment favoriteDocFragment;
-    private PersonalPropFragment propFragment;
+   // private PersonalPropFragment propFragment;
+    private PersonalChatFragment chatFragment;
     private PersonalFollowFragment fansFragment;
     private PersonalFollowFragment followFragment;
     private PersonalMsgFragment msgFragment;
@@ -63,7 +64,7 @@ public class PersonalPagerAdapter extends FragmentStatePagerAdapter {
             case 4:
                 return context.getResources().getString(R.string.label_follow);
             case 5:
-                return context.getResources().getString(R.string.label_prop);
+                return context.getResources().getString(R.string.label_chat);
             case 6:
                 return context.getResources().getString(R.string.label_msg);
             default:
@@ -91,8 +92,10 @@ public class PersonalPagerAdapter extends FragmentStatePagerAdapter {
                 if(followFragment == null) followFragment = PersonalFollowFragment.newInstance(mUserId,mIsShowFollow,"follow");
                 return followFragment;
             case 5:
-                if(propFragment == null) propFragment = PersonalPropFragment.newInstance(mUserId);
-                return propFragment;
+//                if(propFragment == null) propFragment = PersonalPropFragment.newInstance(mUserId);
+//                return propFragment;
+                if(chatFragment == null) chatFragment = PersonalChatFragment.newInstance(mUserId);
+                return chatFragment;
             case 6:
                 if(msgFragment == null) msgFragment = PersonalMsgFragment.newInstance(mUserId);
                 return msgFragment;
@@ -108,6 +111,6 @@ public class PersonalPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return mIsSelf ? 7 : 6;
+        return mIsSelf ? 7 : 5;
     }
 }

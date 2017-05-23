@@ -48,12 +48,12 @@ public class CreateTrashPresenter implements CreateTrashContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onCreateSuccess();
+                        if(view != null) view.onCreateSuccess();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -113,13 +113,18 @@ public class CreateTrashPresenter implements CreateTrashContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onCreateSuccess();
+                        if(view != null) view.onCreateSuccess();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

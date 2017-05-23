@@ -91,12 +91,12 @@ public class EditAccountPresenter implements EditAccountContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        view.uploadFail(type);
+                        if(view != null) view.uploadFail(type);
                     }
 
                     @Override
                     public void onNext(Image image) {
-                        view.uploadSuccess(image.getPath(),type);
+                        if(view != null) view.uploadSuccess(image.getPath(),type);
                     }
                 });
     }
@@ -116,13 +116,18 @@ public class EditAccountPresenter implements EditAccountContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.modifySuccess();
+                        if(view != null) view.modifySuccess();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

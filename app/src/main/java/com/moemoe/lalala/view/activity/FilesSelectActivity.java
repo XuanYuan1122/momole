@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFileComponent;
 import com.moemoe.lalala.di.modules.FileModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -45,7 +45,7 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.tv_sava)
+    @BindView(R.id.tv_menu)
     TextView mTvSave;
     @BindView(R.id.gv_select_photos)
     GridView mGridImages;
@@ -73,7 +73,7 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
     protected void initViews(Bundle savedInstanceState) {
         DaggerFileComponent.builder()
                 .fileModule(new FileModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         folderId = getIntent().getStringExtra("folderId");
@@ -83,6 +83,8 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
             return;
         }
         change = false;
+        mTvSave.setVisibility(View.VISIBLE);
+        mTvSave.setText("全选");
         mSelectMap = new HashMap<>();
         mSelectorAdapter = new SelectorAdapter();
         mGridImages.setAdapter(mSelectorAdapter);
@@ -327,4 +329,9 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
         return minute;
     }
 
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
+    }
 }

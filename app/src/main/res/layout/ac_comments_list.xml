@@ -1,112 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_f2f2f3"
-    android:fitsSystemWindows="true">
+    android:background="@color/bg_f2f2f3">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <include layout="@layout/app_toolbar"/>
+    
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/main_cyan"
-        app:navigationIcon="@drawable/ic_go_back"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
-
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        
+        <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        
         <TextView
-            android:id="@+id/tv_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textSize="18dp"
-            android:textStyle="bold"
-            android:text=""
-            android:layout_gravity="center"
+            android:id="@+id/tv_pingbi"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:textColor="@color/white"
-            android:gravity="center"/>
-
-        <ImageView
-            android:id="@+id/iv_menu_search"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_menu_search"
+            android:textSize="@dimen/size_14"
+            android:gravity="center"
+            android:background="@color/alph_80"
+            android:text="你已屏蔽了该用户"
             android:visibility="gone"/>
 
         <ImageView
-            android:id="@+id/iv_menu_list"
-            android:layout_height="match_parent"
+            android:id="@+id/iv_to_last"
             android:layout_width="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_menu_loli"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tv_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="18dp"
-            android:text="主页"
-            android:layout_gravity="right"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:paddingRight="5dp"
-            android:visibility="gone"
-            />
-    </android.support.v7.widget.Toolbar>
-
-    <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/white"/>
-
-    <com.moemoe.lalala.view.widget.view.KeyboardListenerLayout
-        android:id="@+id/ll_comment_pannel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bg_f2f2f3"
-        android:gravity="bottom"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:paddingBottom="7dp"
-        android:paddingTop="7dp"
-        android:visibility="visible" >
-
-        <EditText
-            android:id="@+id/edt_comment_input"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="6dp"
-            android:layout_toLeftOf="@+id/iv_comment_send"
-            android:layout_weight="1"
-            android:background="@drawable/bg_white_border_gray"
-            android:gravity="center_vertical"
-            android:hint="@string/a_hint_input_comment"
-            android:maxLines="5"
-            android:minHeight="34dp"
-            android:paddingBottom="4dp"
-            android:paddingLeft="14dp"
-            android:paddingRight="14dp"
-            android:paddingTop="4dp"
-            android:textSize="@dimen/size_15" />
+            android:src="@drawable/ic_arrow_left"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="@dimen/size_10"
+            android:visibility="gone"/>
+        
+    </FrameLayout>
 
-        <TextView
-            android:id="@+id/iv_comment_send"
-            android:layout_width="48dp"
-            android:layout_height="34dp"
-            android:layout_alignBottom="@+id/edt_comment_input"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/bg_rect_white_click_cyan"
-            android:gravity="center"
-            android:text="@string/label_confirm"
-            android:textColor="@color/txt_white_gray"
-            android:textSize="@dimen/size_15" />
-    </com.moemoe.lalala.view.widget.view.KeyboardListenerLayout>
+    <include layout="@layout/view_no_pic_keyboard"/>
 </LinearLayout>

@@ -1,16 +1,24 @@
 package com.moemoe.lalala.view.widget.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.DocTagEntity;
+import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -26,7 +34,7 @@ public class NewDocLabelAdapter extends BaseAdapter {
     private boolean mIsNeedAdd;
     private boolean mNeedShow;
 
-    private int[] mBackGround = { R.drawable.shape_rect_label_cyan, R.drawable.shape_rect_label_yellow, R.drawable.shape_rect_label_orange, R.drawable.shape_rect_label_pink, R.drawable.shape_rect_label_green, R.drawable.shape_rect_label_purple, R.drawable.shape_rect_label_tab_blue};
+    private int[] mBackGround = { R.drawable.shape_rect_label_cyan, R.drawable.shape_rect_label_yellow, R.drawable.shape_rect_label_orange, R.drawable.shape_rect_label_pink, R.drawable.shape_rect_border_green_5, R.drawable.shape_rect_label_purple, R.drawable.shape_rect_label_tab_blue};
 
     public NewDocLabelAdapter(Context context, boolean needShow){
         mContext = context;
@@ -98,6 +106,7 @@ public class NewDocLabelAdapter extends BaseAdapter {
                 holder.labelRoot = (LinearLayout) convertView.findViewById(R.id.ll_label_root);
                 holder.labelContent = (TextView) convertView.findViewById(R.id.tv_item_label_content);
                 holder.labelFollowNum = (TextView) convertView.findViewById(R.id.tv_item_label_num);
+                holder.labelEt = (EditText) convertView.findViewById(R.id.et_item_label_add);
                 convertView.setTag(holder);
             } else if (type == TYPE_ADD) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_doc_label_add, viewGroup,false);
@@ -105,17 +114,70 @@ public class NewDocLabelAdapter extends BaseAdapter {
         }
         if (type == TYPE_LABEL) {
             holder = (ViewHolder) convertView.getTag();
-            DocTagEntity b = getItem(position);
+            final DocTagEntity b = getItem(position);
             String content = b.getName();
-            if(b.isLiked() || mNeedShow){
-                int index = StringUtils.getHashOfString(content, mBackGround.length);
-                holder.labelRoot.setBackgroundResource(mBackGround[index]);
-                holder.labelContent.setTextColor(Color.WHITE);
-                holder.labelFollowNum.setTextColor(Color.WHITE);
-            }else{
+            if(b.isEdit()){
                 holder.labelRoot.setBackgroundResource(R.drawable.btn_follow_label);
-                holder.labelContent.setTextColor(Color.BLACK);
+                holder.labelContent.setVisibility(View.GONE);
+                holder.labelEt.setVisibility(View.VISIBLE);
+                holder.labelEt.setTextColor(Color.BLACK);
                 holder.labelFollowNum.setTextColor(Color.BLACK);
+                holder.labelEt.setHint("添加标签吧~~");
+                holder.labelEt.requestFocus();
+                final ViewHolder finalHolder = holder;
+                holder.labelEt.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        Editable editable = finalHolder.labelEt.getText();
+                        int len = editable.length();
+                        if (len > 15) {
+                            int selEndIndex = Selection.getSelectionEnd(editable);
+                            String str = editable.toString();
+                            String newStr = str.substring(0, 15);
+                            finalHolder.labelEt.setText(newStr);
+                            editable = finalHolder.labelEt.getText();
+                            int newLen = editable.length();
+                            if (selEndIndex > newLen) {
+                                selEndIndex = editable.length();
+                            }
+                            Selection.setSelection(editable, selEndIndex);
+                        }
+                        b.setName(finalHolder.labelEt.getText().toString());
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+                holder.labelEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if(actionId == EditorInfo.IME_ACTION_DONE) {
+                            SoftKeyboardUtils.dismissSoftKeyboard((Activity)mContext);
+                        }
+                        return false;
+                    }
+                });
+                SoftKeyboardUtils.showSoftKeyboard(mContext, holder.labelEt);
+            }else {
+                holder.labelContent.setVisibility(View.VISIBLE);
+                holder.labelEt.setVisibility(View.GONE);
+                if(b.isLiked() || mNeedShow){
+                    int index = StringUtils.getHashOfString(content, mBackGround.length);
+                    holder.labelRoot.setBackgroundResource(mBackGround[index]);
+                    holder.labelContent.setTextColor(Color.WHITE);
+                    holder.labelFollowNum.setTextColor(Color.WHITE);
+                }else{
+                    holder.labelRoot.setBackgroundResource(R.drawable.btn_follow_label);
+                    holder.labelContent.setTextColor(Color.BLACK);
+                    holder.labelFollowNum.setTextColor(Color.BLACK);
+                }
             }
             holder.labelContent.setText(content);
             holder.labelFollowNum.setText(StringUtils.getNumberInLengthLimit((int) b.getLikes(),2));
@@ -128,5 +190,6 @@ public class NewDocLabelAdapter extends BaseAdapter {
         LinearLayout labelRoot;
         TextView labelContent;
         TextView labelFollowNum;
+        EditText labelEt;
     }
 }

@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.BagDirEntity;
@@ -167,7 +167,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
-                .retrofit(MoeMoeApplicationLike.getInstance().getNetComponent().getRetrofit());
+                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     public void releaseAdapter(){
@@ -570,7 +570,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    private void createCreator(CreatorHolder holder){
+    private void createCreator(final CreatorHolder holder){
         Glide.with(mContext)
                 .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + mDocBean.getUserIcon(), DensityUtil.dip2px(mContext,44), DensityUtil.dip2px(mContext,44),false,false))
                 .override(DensityUtil.dip2px(mContext,44), DensityUtil.dip2px(mContext,44))
@@ -593,6 +593,24 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         shapeDrawable1.getPaint().setStyle(Paint.Style.FILL);
         shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(mDocBean.getUserLevelColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
         holder.ivLevelColor.setBackgroundDrawable(shapeDrawable1);
+        Observable.range(0,3)
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        holder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
+                        holder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
+                    }
+                });
         if(mDocBean.getBadgeList().size() > 0){
             int size = 3;
             if(mDocBean.getBadgeList().size() < 3){
@@ -616,11 +634,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
                 shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(badgeEntity.getColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
                 holder.huiZhangRoots[i].setBackgroundDrawable(shapeDrawable2);
-            }
-        }else {
-            for(int i = 0;i < 3;i++){
-                holder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
-                holder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -669,7 +682,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private void createImage(final ImageHolder holder, final int position, int size){
         final Image image  = (Image) getItem(position);
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
+        final int[] wh = BitmapUtils.getDocIconSize(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
         if(wh[1] > 2048){
             holder.mIvImage.setVisibility(View.GONE);
             holder.mIvLongImage.setVisibility(View.VISIBLE);
@@ -718,6 +731,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         .load(ApiService.URL_QINIU + image.getPath())
                         .asGif()
                         .override(wh[0], wh[1])
+                        .dontAnimate()
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
                         .into(holder.mIvImage);
@@ -730,6 +744,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 Glide.with(mContext)
                         .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + image.getPath(), wh[0], wh[1], true, true))
                         .override(wh[0], wh[1])
+                        .dontAnimate()
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
                         .into(holder.mIvImage);
@@ -752,7 +767,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private void createHideImage(final HideImageHolder holder, final int position, int size){
         Image image  = (Image) getItem(position);
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
+        final int[] wh = BitmapUtils.getDocIconSize(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
         if(wh[1] > 4000){
             holder.mIvImage.setVisibility(View.GONE);
             holder.mIvLongImage.setVisibility(View.VISIBLE);
@@ -799,6 +814,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         .load(ApiService.URL_QINIU + image.getPath())
                         .asGif()
                         .override(wh[0], wh[1])
+                        .dontAnimate()
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
                         .into(holder.mIvImage);
@@ -811,6 +827,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 Glide.with(mContext)
                         .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + image.getPath(), wh[0], wh[1], true, true))
                         .override(wh[0], wh[1])
+                        .dontAnimate()
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
                         .into(holder.mIvImage);
@@ -1015,7 +1032,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 .override(DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,20), DensityUtil.dip2px(mContext,120))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
-                .centerCrop()
                 .transform(new GlideRoundTransform(mContext,5))
                 .into(holder.ivBg);
         holder.tvNum.setText(entity.getNumber() + "项");
@@ -1417,12 +1433,12 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     ClipboardManager cmb = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData mClipData = ClipData.newPlainText("回复内容", content);
                     cmb.setPrimaryClip(mClipData);
-                    ToastUtils.showCenter(mContext, mContext.getString(R.string.label_level_copy_success));
+                    ToastUtils.showShortToast(mContext, mContext.getString(R.string.label_level_copy_success));
                     return false;
                 }
             });
         }else {
-            holder.mTvContent.setTextColor(ContextCompat.getColor(mContext,R.color.gray_d7d7d8));
+            holder.mTvContent.setTextColor(ContextCompat.getColor(mContext,R.color.gray_d7d7d7));
             holder.itemView.setOnTouchListener(null);
             holder.itemView.setOnLongClickListener(null);
         }
@@ -1483,7 +1499,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     mMusicHolder.ivMusicCtrl.setImageResource(R.drawable.btn_doc_video_stop);
                 }
             }else {
-                ToastUtils.showCenter(mContext, mContext.getString(R.string.msg_connection));
+                ToastUtils.showShortToast(mContext, mContext.getString(R.string.msg_connection));
             }
         }
     };
@@ -1663,7 +1679,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ClipboardManager cmb = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData mClipData = ClipData.newPlainText("回复内容", content);
                 cmb.setPrimaryClip(mClipData);
-                ToastUtils.showCenter(mContext, mContext.getString(R.string.label_level_copy_success));
+                ToastUtils.showShortToast(mContext, mContext.getString(R.string.label_level_copy_success));
             }else if(id == R.id.ll_own_del_root){
                 NewCommentEntity bean = (NewCommentEntity) getItem((Integer) v.getTag());
                 Intent intent = new Intent(mContext, JuBaoActivity.class);

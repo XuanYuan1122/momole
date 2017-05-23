@@ -34,12 +34,12 @@ public class DonationPresenter implements DonationContract.Presenter {
                 .subscribe(new NetResultSubscriber<DonationInfoEntity>() {
                     @Override
                     public void onSuccess(DonationInfoEntity entity) {
-                        view.updateDonationView(entity);
+                        if(view != null) view.updateDonationView(entity);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -52,12 +52,12 @@ public class DonationPresenter implements DonationContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.donationCoinSuccess();
+                        if(view != null) view.donationCoinSuccess();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -70,13 +70,18 @@ public class DonationPresenter implements DonationContract.Presenter {
                 .subscribe(new NetResultSubscriber<DonationInfoEntity>() {
                     @Override
                     public void onSuccess(DonationInfoEntity entity) {
-                        view.updateDonationBook(entity,index == 0);
+                        if(view != null) view.updateDonationBook(entity,index == 0);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

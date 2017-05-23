@@ -5,7 +5,7 @@ package com.moemoe.lalala.presenter;
  */
 
 public interface EditAccountContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void uploadAvatar(String path,int type);
         void modify(String name,String sex,String birthday,String bg,String headPath,String sign);
     }

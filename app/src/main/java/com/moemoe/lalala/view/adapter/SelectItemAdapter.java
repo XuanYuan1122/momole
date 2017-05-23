@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.model.entity.BookEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 
@@ -69,12 +71,21 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
                         .centerCrop()
                         .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
                         .into(holder.mIvImg);
+                holder.mTvTitle.setText(((MusicLoader.MusicInfo) path).getTitle());
+            }else if(path instanceof BookEntity){
+                Glide.with(mContext)
+                        .load(R.drawable.ic_word_choice)
+                        .centerCrop()
+                        .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
+                        .into(holder.mIvImg);
+                holder.mTvTitle.setText(((BookEntity) path).getTitle());
             }else {
                 Glide.with(mContext)
                         .load(path)
                         .centerCrop()
                         .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
                         .into(holder.mIvImg);
+                holder.mTvTitle.setText("");
             }
             final Object del = paths.get(position);
             holder.mIvDel.setOnClickListener(new View.OnClickListener() {
@@ -111,11 +122,13 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
     class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView mIvImg;
         ImageView mIvDel;
+        TextView mTvTitle;
 
         MyViewHolder(View itemView) {
             super(itemView);
             mIvImg = (ImageView) itemView.findViewById(R.id.iv_img);
             mIvDel = (ImageView) itemView.findViewById(R.id.iv_del_img);
+            mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
         }
     }
 }

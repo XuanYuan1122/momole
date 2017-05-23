@@ -41,8 +41,8 @@ public class MapLayer
 	
 	public MapLayer(long theLayerId, MapWidget parent)
 	{
-		drawables = new ArrayList<MapObject>();
-		touchables = new ArrayList<MapObject>();
+		drawables = new ArrayList<>();
+		touchables = new ArrayList<>();
 		
 		//Visible by default
 		isVisible = true;
@@ -172,16 +172,14 @@ public class MapLayer
 	 * @param touchRect
 	 * @return
 	 */
-	public ArrayList<Object> getTouched(Rect touchRect)
-	{
-		ArrayList<Object> result = new ArrayList<Object>();
+	public ArrayList<Object> getTouched(Rect touchRect) {
+		ArrayList<Object> result = new ArrayList<>();
 		
 		for (MapObject touchable:touchables) {
-			if (touchable.isTouched(touchRect)) {
+			if (touchable.isTouched(touchRect) && touchable.isVisible()) {
 				result.add(touchable.getId());
 			}
 		}
-		
 		return result;
 	}
 	
@@ -198,8 +196,7 @@ public class MapLayer
 	}
 	
 	
-	public void setScale(float scale)
-	{
+	public void setScale(float scale) {
 		int size = drawables.size();
 		
 		for (int i=0; i < size; ++i) {
@@ -209,8 +206,7 @@ public class MapLayer
 	}
 	
 	
-	public void draw(Canvas canvas, Rect drawingRect)
-	{
+	public void draw(Canvas canvas, Rect drawingRect) {
 		if (!isVisible)
 			return;
 
@@ -224,8 +220,7 @@ public class MapLayer
 	}
 
 
-	public void clearAll() 
-	{
+	public void clearAll() {
 		if (Looper.myLooper() == null) {
 			throw new RuntimeException("clearAll should be called from UI thread.");
 		}
@@ -234,13 +229,12 @@ public class MapLayer
 		touchables.clear();
 		drawables = null;
 		touchables = null;
-		drawables = new ArrayList<MapObject>();
-		touchables = new ArrayList<MapObject>();
+		drawables = new ArrayList<>();
+		touchables = new ArrayList<>();
 	}
 
 	
-	public boolean equals(Object o)
-	{
+	public boolean equals(Object o) {
 	    if (o == null) {
 	        return false;
 	    }
@@ -269,15 +263,13 @@ public class MapLayer
 	}
 	
 	
-	void invalidate(MapObject object)
-	{
+	void invalidate(MapObject object) {
 		Rect bounds = object.getBounds();
 		parent.postInvalidate(bounds.left, bounds.top, bounds.right, bounds.bottom);
 	}
 	
 	
-	public void scheduleDrawable(Drawable who, Runnable what, long when)
-	{		
+	public void scheduleDrawable(Drawable who, Runnable what, long when) {
 		parent.scheduleDrawable(who, what, when);
 	}
 	

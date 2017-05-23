@@ -8,7 +8,7 @@ import com.moemoe.lalala.model.entity.SnowInfo;
  */
 
 public interface SnowContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestSnowInfo();
         void requestSnowRankInfo(int index);
     }

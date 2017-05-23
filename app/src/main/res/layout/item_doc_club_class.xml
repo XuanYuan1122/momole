@@ -37,7 +37,7 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginStart="25dp"
                 android:padding="@dimen/size_1"
-                android:background="@drawable/shape_white_10">
+                android:background="@drawable/shape_white_5">
 
                 <RelativeLayout
                     android:id="@+id/rl_level_bg"

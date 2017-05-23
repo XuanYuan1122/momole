@@ -7,7 +7,7 @@ import com.moemoe.lalala.model.entity.TrashPut;
  */
 
 public interface CreateTrashContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void createTrash(TrashPut put);
         void createUploadTrash(TrashPut put,String path);
     }

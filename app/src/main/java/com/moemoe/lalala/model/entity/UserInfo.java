@@ -9,7 +9,6 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by yi on 2016/12/15.
  */
-
 public class UserInfo implements Parcelable{
     @SerializedName("background")
     private String background;
@@ -45,6 +44,7 @@ public class UserInfo implements Parcelable{
     private long size;
     @SerializedName("openBag")
     private boolean openBag;
+
 
     public String getBackground() {
         return background;

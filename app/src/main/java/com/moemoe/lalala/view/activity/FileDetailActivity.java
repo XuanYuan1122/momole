@@ -21,7 +21,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFileComponent;
 import com.moemoe.lalala.di.modules.FileModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -121,7 +121,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
     protected void initViews(Bundle savedInstanceState) {
         DaggerFileComponent.builder()
                 .fileModule(new FileModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTvSaveToGallery.setVisibility(View.GONE);
@@ -155,7 +155,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                     .maxThread(3)
                     .maxRetryCount(3)
                     .defaultSavePath(StorageUtils.getGalleryDirPath())
-                    .retrofit(MoeMoeApplicationLike.getInstance().getNetComponent().getRetrofit());
+                    .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
 
@@ -404,7 +404,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                         view = viewPack;
                     }
                 }
-            }else {
+            }else if(fb.getType().equals("music")){
                 int time = fb.getAttr().get("timestamp").getAsInt();
                 View viewTemp = View.inflate(FileDetailActivity.this,R.layout.item_music_detail,null);
                 ImageView bg = (ImageView) viewTemp.findViewById(R.id.iv_bg);
@@ -433,13 +433,36 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                                 ivControl.setImageResource(R.drawable.btn_doc_video_stop);
                             }
                         }else {
-                            ToastUtils.showCenter(FileDetailActivity.this, getString(R.string.msg_connection));
+                            ToastUtils.showShortToast(FileDetailActivity.this, getString(R.string.msg_connection));
                         }
                     }
                 });
                 container.addView(viewTemp);
                 view = viewTemp;
                 view.setOnClickListener(clickListener);
+            }else {
+                ImagePreView viewPack = new ImagePreView(FileDetailActivity.this);
+                container.addView(viewPack);
+                final ScaleView scaleView = viewPack.getImageView();
+                Glide.with(FileDetailActivity.this)
+                        .load(R.drawable.ic_bag_unknow)
+                        .placeholder(R.drawable.bg_default_square)
+                        .error(R.drawable.bg_default_square)
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(new SimpleTarget<GlideDrawable>() {
+                            @Override
+                            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                                scaleView.setImageDrawable(resource);
+                            }
+                        });
+                scaleView.setOnViewTapListener(new ScaleViewAttacher.OnViewTapListener() {
+                    @Override
+                    public void onViewTap(View view, float x, float y) {
+                        finish();
+                    }
+                });
+                view = viewPack;
             }
             mViews.put(position, view);
             return view;
@@ -467,17 +490,20 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        mPresenter.release();
         mPlayer.pause();
         mPlayer.unregisterCallback(this);
+        super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent();
-        i.putExtra("change",change);
-        i.putExtra("number",changeNum);
-        setResult(RESULT_OK,i);
+        if(change){
+            Intent i = new Intent();
+            i.putExtra("change",change);
+            i.putExtra("number",changeNum);
+            setResult(RESULT_OK,i);
+        }
         finish();
     }
 

@@ -39,7 +39,7 @@ public class DepartPresenter implements DepartContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<BannerEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<BannerEntity> bannerEntities) {
-                        view.onBannerLoadSuccess(bannerEntities);
+                        if(view != null) view.onBannerLoadSuccess(bannerEntities);
                     }
 
                     @Override
@@ -56,7 +56,7 @@ public class DepartPresenter implements DepartContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<FeaturedEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<FeaturedEntity> featuredEntities) {
-                        view.onFeaturedLoadSuccess(featuredEntities);
+                        if(view != null) view.onFeaturedLoadSuccess(featuredEntities);
                     }
 
                     @Override
@@ -78,12 +78,12 @@ public class DepartPresenter implements DepartContract.Presenter {
                         @Override
                         public void onSuccess(DepartmentEntity departmentEntity) {
                             before = departmentEntity.getBefore();
-                            view.onDocLoadSuccess(departmentEntity,index == 0);
+                            if(view != null) view.onDocLoadSuccess(departmentEntity,index == 0);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 1){
@@ -94,15 +94,15 @@ public class DepartPresenter implements DepartContract.Presenter {
                         @Override
                         public void onSuccess(ArrayList<DocListEntity> docListEntities) {
                             if(room.equals("change")){
-                                view.onChangeSuccess(docListEntities);
+                                if(view != null) view.onChangeSuccess(docListEntities);
                             }else {
-                                view.onDocLoadSuccess(docListEntities,index == 0);
+                                if(view != null)  view.onDocLoadSuccess(docListEntities,index == 0);
                             }
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 2){
@@ -113,15 +113,15 @@ public class DepartPresenter implements DepartContract.Presenter {
                         @Override
                         public void onSuccess(ArrayList<DocListEntity> docListEntities) {
                             if(room.equals("change")){
-                                view.onChangeSuccess(docListEntities);
+                                if(view != null) view.onChangeSuccess(docListEntities);
                             }else {
-                                view.onDocLoadSuccess(docListEntities,index == 0);
+                                if(view != null) view.onDocLoadSuccess(docListEntities,index == 0);
                             }
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 3){
@@ -132,18 +132,23 @@ public class DepartPresenter implements DepartContract.Presenter {
                         @Override
                         public void onSuccess(ArrayList<DocListEntity> docListEntities) {
                             if(room.equals("change")){
-                                view.onChangeSuccess(docListEntities);
+                                if(view != null) view.onChangeSuccess(docListEntities);
                             }else{
-                                view.onDocLoadSuccess(docListEntities,index == 0);
+                                if(view != null) view.onDocLoadSuccess(docListEntities,index == 0);
                             }
 
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by yi on 2016/12/1.
@@ -16,13 +17,14 @@ import butterknife.ButterKnife;
 public abstract class BaseFragment extends Fragment {
 
     protected View rootView;
+    private Unbinder bind;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (rootView == null)
             rootView = inflater.inflate(getLayoutId(), container, false);
-        ButterKnife.bind(this, rootView);
+        bind = ButterKnife.bind(this, rootView);
         initViews(savedInstanceState);
         return rootView;
     }
@@ -34,6 +36,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        bind.unbind();
     }
 
     @Override

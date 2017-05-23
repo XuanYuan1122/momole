@@ -16,7 +16,9 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCreateDocComponent;
 import com.moemoe.lalala.di.modules.CreateDocModule;
 import com.moemoe.lalala.dialog.AlertDialog;
@@ -35,6 +37,7 @@ import com.moemoe.lalala.model.entity.NewDocType;
 import com.moemoe.lalala.presenter.CreateDocContract;
 import com.moemoe.lalala.presenter.CreateDocPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -71,11 +74,9 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
     public static final int TYPE_MUSIC_DOC = 1;
     public static final int REQUEST_CODE_CREATE_DOC = 9000;
     public static final int RESPONSE_CODE = 10000;
-
     private final int REQ_GET_FROM_GALLERY = 1002;
     private final int REQ_GET_FROM_SELECT_MUSIC = 1003;
     private final int REQ_ADD_HIDE = 1004;
-
     /**
      * 标题限制长度
      */
@@ -88,11 +89,9 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
      * 9张图片上限
      */
     private final int ICON_NUM_LIMIT = 9;
-
     /**
      * 编辑版本，图库选图
      */
-
     private static final int REQ_SELECT_FOLDER = 5001;
     private final int REQ_GET_EDIT_VERSION_IMG = 2333;
     private final int REQ_GET_EDIT_VERSION_IMG_2 = 233;
@@ -104,46 +103,39 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
     TextView mTvTitle;
     @BindView(R.id.tv_menu)
     TextView mTvSend;
-    @BindView(R.id.edt_title)
-    EditText mEdtTitle;
+    @BindView(R.id.stub_doc_title_ed)
+    ViewStub mStubTitle;
     @BindView(R.id.edt_content)
     EditText mEdtContent;
     @BindView(R.id.tv_content_rm)
     TextView mTvContentNumRemain;
-    @BindView(R.id.dv_doc_label_root)
-    DocLabelView mDocLabel;
-    @BindView(R.id.edt_comment_input)
-    EditText mEdtCommentInput;
-    @BindView(R.id.ll_comment_pannel)
-    KeyboardListenerLayout mKlCommentBoard;
-    @BindView(R.id.iv_comment_send)
-    View mTvSendComment;
+    @BindView(R.id.stub_doc_add_label)
+    ViewStub mStubLabel;
+    @BindView(R.id.stub_doc_keyboard)
+    ViewStub mStubKeyboard;
     @BindView(R.id.rl_add_img_root)
     View mRlAddRoot;
-    @BindView(R.id.ll_add_music_root)
-    View mLlAddRoot;
-    @BindView(R.id.ll_select_music)
-    View mLlSelectMusic;
-    @BindView(R.id.ll_select_img)
-    View mLlSelectImg;
-    @BindView(R.id.tv_select_music)
-    TextView mTvMusic;
-    @BindView(R.id.tv_select_img)
-    TextView mTvImg;
-    @BindView(R.id.iv_select_music)
-    ImageView mIvMusic;
-    @BindView(R.id.iv_select_img)
-    ImageView mIvImg;
+    @BindView(R.id.stub_doc_add_music)
+    ViewStub mStubMusic;
     @BindView(R.id.rv_img)
     RecyclerView mRvSelectImg;
-    @BindView(R.id.ll_jiecao)
-    View mRlHideRoot;
-    @BindView(R.id.tv_add)
-    TextView mTvAddHide;
-    @BindView(R.id.ll_bag)
-    View mRlBagRoot;
-    @BindView(R.id.tv_bag_add)
-    TextView mTvAddBag;
+    @BindView(R.id.stub_doc_add_hide)
+    ViewStub mStubHide;
+    private View mRlHideRoot;
+    private TextView mTvAddHide;
+    private View mRlBagRoot;
+    private TextView mTvAddBag;
+    private EditText mEdtTitle;
+    private DocLabelView mDocLabel;
+    private View mTvSendComment;
+    private EditText mEdtCommentInput;
+    private KeyboardListenerLayout mKlCommentBoard;
+    private View mLlSelectMusic;
+    private View mLlSelectImg;
+    private TextView mTvMusic;
+    private TextView mTvImg;
+    private ImageView mIvMusic;
+    private ImageView mIvImg;
 
     @Inject
     CreateDocPresenter mPresenter;
@@ -162,6 +154,8 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
     private String mCoinContent;
     private ArrayList<String> mIconPaths = new ArrayList<>();
     private ArrayList<String> mCoinPaths = new ArrayList<>();
+    private String mFromSchema;
+    private String mFromName;
 
     @Override
     protected int getLayoutId() {
@@ -170,6 +164,7 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
         Intent i = getIntent();
         if(i == null){
             finish();
@@ -177,12 +172,14 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
         }
         DaggerCreateDocComponent.builder()
                 .createDocModule(new CreateDocModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTags = new ArrayList<>();
         mType = i.getIntExtra(TYPE_CREATE, TYPE_IMG_DOC);
         mTagNameDef = i.getStringExtra(TYPE_TAG_NAME_DEFAULT);
+        mFromSchema = i.getStringExtra("from_schema");
+        mFromName = i.getStringExtra("from_name");
         if(!TextUtils.isEmpty(mTagNameDef)){
             DocTagEntity DocTag = new DocTagEntity();
             DocTag.setLikes(1);
@@ -190,16 +187,38 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
             DocTag.setLiked(true);
             mTags.add(DocTag);
         }
+        //title edit
+        View titleV = mStubTitle.inflate();
+        mEdtTitle = (EditText) titleV.findViewById(R.id.edt_title);
+        //label
+        View labelV = mStubLabel.inflate();
+        mDocLabel = (DocLabelView) labelV.findViewById(R.id.dv_doc_label_root);
+        //keyboard
+        mKlCommentBoard = (KeyboardListenerLayout) mStubKeyboard.inflate();
+        mEdtCommentInput = (EditText) mKlCommentBoard.findViewById(R.id.edt_comment_input);
+        mTvSendComment = mKlCommentBoard.findViewById(R.id.iv_comment_send);
+        mKlCommentBoard.setVisibility(View.GONE);
         if(mType == TYPE_IMG_DOC){
-            mLlAddRoot.setVisibility(View.GONE);
             mRlAddRoot.setVisibility(View.VISIBLE);
-            mRlHideRoot.setVisibility(View.VISIBLE);
-            mRlBagRoot.setVisibility(View.VISIBLE);
+            View extendV = mStubHide.inflate();
+            mRlHideRoot = extendV.findViewById(R.id.layout_hide);
+            mTvAddHide = (TextView) mRlHideRoot.findViewById(R.id.tv_add);
+            mRlBagRoot = extendV.findViewById(R.id.layout_bag);
+            mTvAddBag = (TextView) mRlBagRoot.findViewById(R.id.tv_bag_add);
+            LinearLayoutManager selectRvL = new LinearLayoutManager(this);
+            selectRvL.setOrientation(LinearLayoutManager.HORIZONTAL);
+            mRvSelectImg.setLayoutManager(selectRvL);
+            mSelectAdapter = new SelectImgAdapter(this);
+            mRvSelectImg.setAdapter(mSelectAdapter);
         }else if(mType == TYPE_MUSIC_DOC){
-            mLlAddRoot.setVisibility(View.VISIBLE);
             mRlAddRoot.setVisibility(View.GONE);
-            mRlHideRoot.setVisibility(View.GONE);
-            mRlBagRoot.setVisibility(View.GONE);
+            View musicV = mStubMusic.inflate();
+            mLlSelectMusic = musicV.findViewById(R.id.ll_select_music);
+            mIvMusic = (ImageView) musicV.findViewById(R.id.iv_select_music);
+            mTvMusic = (TextView) musicV.findViewById(R.id.tv_select_music);
+            mLlSelectImg = musicV.findViewById(R.id.ll_select_img);
+            mIvImg = (ImageView) musicV.findViewById(R.id.iv_select_img);
+            mTvImg = (TextView) musicV.findViewById(R.id.tv_select_img);
         }else {
             finish();
             return;
@@ -208,20 +227,19 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
         mTvTitle.setText(R.string.label_create_post);
         mTvSend.setVisibility(View.VISIBLE);
         mTvSend.setText(R.string.label_menu_publish_doc);
-        mTvAddHide.setVisibility(View.INVISIBLE);
-        mTvAddBag.setVisibility(View.INVISIBLE);
         mContentRemain = CONTENT_LIMIT;
-        LinearLayoutManager selectRvL = new LinearLayoutManager(this);
-        selectRvL.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRvSelectImg.setLayoutManager(selectRvL);
-        mSelectAdapter = new SelectImgAdapter(this);
-        mRvSelectImg.setAdapter(mSelectAdapter);
         mDocLabel.setContentAndNumList(true,mTags);
     }
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     @Override
@@ -232,44 +250,52 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
                 finish();
             }
         });
-        mRlHideRoot.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                Intent i = new Intent(CreateNormalDocActivity.this,DocHideAddActivity.class);
-                startActivityForResult(i,REQ_ADD_HIDE);
-            }
-        });
-        mRlBagRoot.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                Intent i = new Intent(CreateNormalDocActivity.this,FolderSelectActivity.class);
-                startActivityForResult(i,REQ_SELECT_FOLDER);
-            }
-        });
+        if(mRlHideRoot != null){
+            mRlHideRoot.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i = new Intent(CreateNormalDocActivity.this,DocHideAddActivity.class);
+                    i.putExtra("hide_content",mCoinContent);
+                    i.putStringArrayListExtra("hide_paths",mCoinPaths);
+                    startActivityForResult(i,REQ_ADD_HIDE);
+                }
+            });
+        }
+        if(mRlBagRoot != null){
+            mRlBagRoot.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i = new Intent(CreateNormalDocActivity.this,FolderSelectActivity.class);
+                    startActivityForResult(i,REQ_SELECT_FOLDER);
+                }
+            });
+        }
         mTvSend.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 createPost();
             }
         });
-        mSelectAdapter.setOnItemClickListener(new SelectImgAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                if(position == mIconPaths.size()){
-                    choosePhoto();
+        if(mSelectAdapter != null){
+            mSelectAdapter.setOnItemClickListener(new SelectImgAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    if(position == mIconPaths.size()){
+                        choosePhoto();
+                    }
                 }
-            }
 
-            @Override
-            public void onItemLongClick(View view, int position) {
+                @Override
+                public void onItemLongClick(View view, int position) {
 
-            }
+                }
 
-            @Override
-            public void onAllDelete() {
+                @Override
+                public void onAllDelete() {
 
-            }
-        });
+                }
+            });
+        }
         mEdtTitle.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -294,6 +320,19 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
                 }
                 mTitle = s.toString();
                 mHasModified = true;
+            }
+        });
+        mEdtContent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // 解决scrollView中嵌套EditText导致不能上下滑动的问题
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_UP:
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                return false;
             }
         });
         mEdtContent.addTextChangedListener(new TextWatcher() {
@@ -382,41 +421,45 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
                 createLabel();
             }
         });
-        mLlSelectMusic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(AppSetting.IS_EDITOR_VERSION){
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("audio/*");
-                    try {
-                        startActivityForResult(intent,REQ_GET_EDIT_VERSION_MUSIC);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+        if(mLlSelectMusic != null){
+            mLlSelectMusic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(AppSetting.IS_EDITOR_VERSION){
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setType("audio/*");
+                        try {
+                            startActivityForResult(intent,REQ_GET_EDIT_VERSION_MUSIC);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        Intent intent = new Intent(CreateNormalDocActivity.this, SelectMusicActivity.class);
+                        startActivityForResult(intent,REQ_GET_FROM_SELECT_MUSIC);
                     }
-                }else {
-                    Intent intent = new Intent(CreateNormalDocActivity.this, SelectMusicActivity.class);
-                    startActivityForResult(intent,REQ_GET_FROM_SELECT_MUSIC);
                 }
-            }
-        });
-        mLlSelectImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(AppSetting.IS_EDITOR_VERSION){
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
-                    try {
-                        startActivityForResult(intent, REQ_GET_EDIT_VERSION_IMG_2);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            });
+        }
+        if(mLlSelectImg != null){
+            mLlSelectImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(AppSetting.IS_EDITOR_VERSION){
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setType("image/*");
+                        try {
+                            startActivityForResult(intent, REQ_GET_EDIT_VERSION_IMG_2);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        Intent intent = new Intent(CreateNormalDocActivity.this, MultiImageChooseActivity.class);
+                        intent.putExtra(MultiImageChooseActivity.EXTRA_KEY_MAX_PHOTO, 1);
+                        startActivityForResult(intent, REQ_GET_FROM_GALLERY);
                     }
-                }else {
-                    Intent intent = new Intent(CreateNormalDocActivity.this, MultiImageChooseActivity.class);
-                    intent.putExtra(MultiImageChooseActivity.EXTRA_KEY_MAX_PHOTO, 1);
-                    startActivityForResult(intent, REQ_GET_FROM_GALLERY);
                 }
-            }
-        });
+            });
+        }
     }
 
     private boolean checkLabel(String content){
@@ -450,7 +493,7 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
     private void deleteLabel(final int position){
         if(!TextUtils.isEmpty(mTagNameDef) && mTagNameDef.equals(mTags.get(position).getName())){
             final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-            alertDialogUtil.createPromptDialog(this, getString(R.string.label_delete),getString( R.string.label_content_tag_del));
+            alertDialogUtil.createPromptNormalDialog(this, getString( R.string.label_content_tag_del));
             alertDialogUtil.setButtonText(getString(R.string.label_confirm), getString(R.string.label_cancel),0);
             alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
                 @Override
@@ -486,9 +529,13 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
                 }
             }
             mTvSend.setEnabled(false);
-            if(mMusicInfo != null && images.size() == 1 && mType == TYPE_MUSIC_DOC){
+            if(mMusicInfo != null && mType == TYPE_MUSIC_DOC){
                 paths.clear();
                 paths.add(mMusicInfo.getUrl());
+                if(images == null){
+                    showToast(R.string.msg_need_one_cover);
+                    return;
+                }
                 if(images.size() < 1){
                     showToast(R.string.msg_need_one_cover);
                     return;
@@ -530,6 +577,8 @@ public class CreateNormalDocActivity extends BaseAppCompatActivity implements Cr
             showToast(R.string.msg_need_one_music);
         }else {
             mDocEntity = new DocPut();
+            mDocEntity.docType = mFromName;
+            mDocEntity.docTypeSchema = mFromSchema;
             mDocEntity.bagFolderId = mFolderId;
             mDocEntity.title = mTitle;
             for (int i = 0;i < mTags.size();i++){

@@ -7,33 +7,60 @@
     android:gravity="bottom"
     android:paddingBottom="12dp">
 
-    <Button
-        android:id="@+id/btn_item_1"
+    <LinearLayout
         android:layout_width="256dp"
-        android:layout_height="@dimen/size_45"
-        android:background="@drawable/shape_rect_label_green"
-        android:textSize="@dimen/size_16"
-        android:textColor="@color/white"
-        android:text="图片"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/shape_rect_label_white">
+
+        <Button
+            android:id="@+id/btn_item_1"
+            android:layout_width="256dp"
+            android:layout_height="@dimen/size_45"
+            android:background="@null"
+            android:textSize="@dimen/size_16"
+            android:textColor="@color/black"
+            android:text="图片"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_1_px"
+            android:background="@color/gray_d7d7d7"/>
+
+        <Button
+            android:id="@+id/btn_item_2"
+            android:layout_width="256dp"
+            android:layout_height="@dimen/size_45"
+            android:background="@null"
+            android:layout_marginTop="@dimen/size_4"
+            android:textSize="@dimen/size_16"
+            android:textColor="@color/black"
+            android:text="音乐"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_1_px"
+            android:background="@color/gray_d7d7d7"/>
+
+        <Button
+            android:id="@+id/btn_item_3"
+            android:layout_width="256dp"
+            android:layout_height="@dimen/size_45"
+            android:background="@null"
+            android:layout_marginTop="@dimen/size_4"
+            android:textSize="@dimen/size_16"
+            android:textColor="@color/black"
+            android:text="小说"/>
+    </LinearLayout>
 
     <Button
-        android:id="@+id/btn_item_2"
-        android:layout_width="256dp"
-        android:layout_height="@dimen/size_45"
-        android:background="@drawable/shape_rect_label_main"
-        android:layout_marginTop="@dimen/size_4"
-        android:textSize="@dimen/size_16"
-        android:textColor="@color/white"
-        android:text="音乐"/>
-
-    <Button
-        android:id="@+id/btn_item_3"
+        android:id="@+id/btn_item_4"
         android:layout_width="256dp"
         android:layout_height="@dimen/size_45"
         android:background="@drawable/shape_rect_label_white"
         android:textSize="@dimen/size_16"
         android:layout_marginTop="@dimen/size_10"
-        android:textColor="@color/black"
+        android:textColor="@color/main_red"
         android:text="@string/label_cancel"/>
 
 </LinearLayout>

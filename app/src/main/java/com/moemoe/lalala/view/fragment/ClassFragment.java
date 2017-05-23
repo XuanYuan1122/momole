@@ -13,7 +13,7 @@ import android.view.animation.OvershootInterpolator;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDepartComponent;
 import com.moemoe.lalala.di.modules.DepartModule;
 import com.moemoe.lalala.model.entity.BannerEntity;
@@ -28,6 +28,7 @@ import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.activity.CreateNormalDocActivity;
+import com.moemoe.lalala.view.activity.CreateRichDocActivity;
 import com.moemoe.lalala.view.adapter.ClassAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -67,14 +68,14 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
         mRoomId = "CLASSROOM";
         DaggerDepartComponent.builder()
                 .departModule(new DepartModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListAdapter = new ClassAdapter(getActivity());
         mListDocs.getRecyclerView().setAdapter(mListAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.setLoadMoreEnabled(false);
         mListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -206,8 +207,9 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        mPresenter.release();
         if(mListAdapter !=null )mListAdapter.onDestroy();
+        super.onDestroyView();
     }
 
     private void sendBtnIn(){
@@ -244,8 +246,9 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
     private void go2CreateDoc(int type){
         // 检查是否登录，是否关注，然后前面创建帖子界面
         if (DialogUtils.checkLoginAndShowDlg(getActivity())){
-            Intent intent = new Intent(getActivity(), CreateNormalDocActivity.class);
-            intent.putExtra(CreateNormalDocActivity.TYPE_CREATE,type);
+            Intent intent = new Intent(getActivity(), CreateRichDocActivity.class);
+            intent.putExtra("from_name",getString(R.string.label_square));
+            intent.putExtra("from_schema","neta://com.moemoe.lalala/room_1.0");
             startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
         }
     }
@@ -267,10 +270,10 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
     @Override
     public void onDocLoadSuccess(Object entity, boolean pull) {
         if(((ArrayList<DocListEntity>) entity).size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
-            ToastUtils.showCenter(getContext(),getString(R.string.msg_all_load_down));
+            mListDocs.setLoadMoreEnabled(false);
+            ToastUtils.showShortToast(getContext(),getString(R.string.msg_all_load_down));
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         mListDocs.setComplete();
         isLoading = false;

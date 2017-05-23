@@ -5,7 +5,7 @@ package com.moemoe.lalala.presenter;
  */
 
 public interface ChangePasswordContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void changePassword(String oldPwd,String newPwd);
         void resetPwdByCode(String phone,String pwd);
     }

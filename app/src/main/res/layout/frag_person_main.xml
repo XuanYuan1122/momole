@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/size_9"
-                    android:textColor="@color/gray_d7d7d8"
+                    android:textColor="@color/gray_d7d7d7"
                     android:layout_toLeftOf="@+id/tv_need_score"
                     android:layout_toStartOf="@+id/tv_need_score"
                     android:text="还需要"/>
@@ -102,7 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/size_9"
-                    android:textColor="@color/gray_d7d7d8"
+                    android:textColor="@color/gray_d7d7d7"
                     android:layout_toRightOf="@+id/tv_need_score"
                     android:layout_toEndOf="@+id/tv_need_score"
                     android:text="学分升级"/>
@@ -317,7 +317,7 @@
             android:gravity="center"
             android:background="@drawable/bg_normal_white_btn"
             android:textSize="@dimen/size_15"
-            android:textColor="@color/gray_d7d7d8"
+            android:textColor="@color/gray_d7d7d7"
             android:text="查看全部"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

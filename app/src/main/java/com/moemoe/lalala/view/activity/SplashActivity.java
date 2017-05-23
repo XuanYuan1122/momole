@@ -20,7 +20,9 @@ import android.widget.Toast;
 import com.igexin.sdk.PushManager;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.AppStatusConstant;
+import com.moemoe.lalala.app.AppStatusManager;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.broadcast.PushIntentService;
 import com.moemoe.lalala.broadcast.PushService;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
@@ -77,6 +79,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppStatusManager.getInstance().setAppStatus(AppStatusConstant.STATUS_NORMAL); //进入应用初始化设置成未登录状态
         super.onCreate(savedInstanceState);
     }
 
@@ -113,7 +116,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
     private void init(){
         DaggerSimpleComponent.builder()
                 .simpleModule(new SimpleModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         AppSetting.initDeviceInfo(getApplicationContext());
@@ -124,22 +127,28 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         PushManager.getInstance().registerPushIntentService(getApplicationContext(), PushIntentService.class);
         Calendar today = Calendar.getInstance();
         Calendar last = Calendar.getInstance();
+
         long lastTime = PreferenceUtils.getsLastLauncherTime(this);
         last.setTimeInMillis(lastTime);
         SnowShowEntity.initFromCache(this);
         if (today.get(Calendar.YEAR) == last.get(Calendar.YEAR) && today.get(Calendar.MONTH) == last.get(Calendar.MONTH)
                 && today.get(Calendar.DAY_OF_MONTH) == last.get(Calendar.DAY_OF_MONTH)) {
             AppSetting.isFirstLauncherToday = false;
+            AppSetting.isShowBackSchoolAll = PreferenceUtils.getAllBackSchool(this);
         } else if (last.before(today)) {
             AppSetting.isFirstLauncherToday = true;
+            AppSetting.isShowBackSchoolAll = false;
+            PreferenceUtils.setAllBackSchool(this,false);
+            PreferenceUtils.setBackSchoolDialog(this,false);
             SnowShowEntity.init();
-           // PreferenceUtils.setSignState(this,false);
         }
+
         long lastTime1 = PreferenceUtils.getLastEventTime(this);
         last.setTimeInMillis(lastTime1);
         AppSetting.isEnterEventToday = today.get(Calendar.YEAR) == last.get(Calendar.YEAR) && today.get(Calendar.MONTH) == last.get(Calendar.MONTH)
                 && today.get(Calendar.DAY_OF_MONTH) == last.get(Calendar.DAY_OF_MONTH);
         PreferenceUtils.setsLastLauncherTime(this,System.currentTimeMillis());
+
         AppSetting.IS_DOWNLOAD_LOW_IN_3G = PreferenceUtils.getLowIn3G(this);
         AppSetting.SUB_TAG = PreferenceUtils.getSimpleLabel(this);
         if(NetworkUtils.isNetworkAvailable(this)){
@@ -249,5 +258,11 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
     @Override
     public void onFailure(int code,String msg) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

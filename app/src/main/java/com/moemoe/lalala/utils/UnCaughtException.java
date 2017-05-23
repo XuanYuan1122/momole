@@ -9,7 +9,6 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.view.activity.SplashActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -76,24 +75,16 @@ public class UnCaughtException implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
-       // if(!handleException(ex) && mDefaultHandler != null){
-       //     mDefaultHandler.uncaughtException(thread, ex);
-       // }else{
-        handleException(ex);
-//        try{
-//            //程序多久结束
-//            Thread.sleep(2000);
-//        }catch(InterruptedException e){
-//            e.printStackTrace();
-//        }
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(1);
-        Intent intent = new Intent(mContext,
-        SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(intent);
-        android.os.Process.killProcess(android.os.Process.myPid());
-      //  }
+        ex.printStackTrace();
+        if (!handleException(ex) && mDefaultHandler != null) {
+            mDefaultHandler.uncaughtException(thread, ex);
+        } else {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+            System.exit(0);
+        }
     }
 
     private boolean handleException(Throwable ex) {

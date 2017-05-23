@@ -8,13 +8,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagComponent;
 import com.moemoe.lalala.di.modules.BagModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -26,6 +27,7 @@ import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
+import com.moemoe.lalala.utils.GridItemDecoration;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -57,8 +59,8 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
     private static final int REQ_MODIFY_BAG = 30004;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.rl_is_bag)
-    RelativeLayout mRlHaveRoot;
+    @BindView(R.id.stub_open_bag)
+    ViewStub mStubOpenBag;
     @BindView(R.id.tv_use_space)
     TextView mTvSpaceNum;
     @BindView(R.id.collapsing_toolbar)
@@ -72,6 +74,10 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
 
     @Inject
     BagPresenter mPresenter;
+
+    private RelativeLayout mRlHaveRoot;
+    private View mBack;
+    private View mOpenBag;
     private BagAdapter mAdapter;
     private PopupListMenu mMenu;
     private String mUserId;
@@ -88,22 +94,22 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
     protected void initViews(Bundle savedInstanceState) {
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mUserId = getIntent().getStringExtra(UUID);
         if(mUserId.equals(PreferenceUtils.getUUid())){
             if(PreferenceUtils.getAuthorInfo().isOpenBag()){
-                mRlHaveRoot.setVisibility(View.GONE);
                 mTvSpaceNum.setText("");
                 mTitleView.setTitle("");
                 init();
                 initPopupMenus();
             }else {
-                mRlHaveRoot.setVisibility(View.VISIBLE);
+                mRlHaveRoot = (RelativeLayout) mStubOpenBag.inflate();
+                mBack = mRlHaveRoot.findViewById(R.id.iv_back);
+                mOpenBag = mRlHaveRoot.findViewById(R.id.tv_get_bag);
             }
         }else {
-            mRlHaveRoot.setVisibility(View.GONE);
             mTvSpaceNum.setText("");
             mTitleView.setTitle("");
             init();
@@ -118,14 +124,17 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
             item = new MenuItem(0, getString(R.string.label_setting));
             items.addMenuItem(item);
 
-            item = new MenuItem(1, getString(R.string.label_records));
+            item = new MenuItem(1, getString(R.string.label_bag_buy_list));
             items.addMenuItem(item);
 
-            item = new MenuItem(2, getString(R.string.label_add_space));
+            item = new MenuItem(2, getString(R.string.label_bag_follow_list));
+            items.addMenuItem(item);
+
+            item = new MenuItem(3, getString(R.string.label_add_space));
             items.addMenuItem(item);
         }else {
             // 举报
-            item = new MenuItem(3, getString(R.string.label_jubao));
+            item = new MenuItem(4, getString(R.string.label_jubao));
             items.addMenuItem(item);
         }
 
@@ -138,16 +147,20 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
                     Intent i = new Intent(BagActivity.this,BagEditActivity.class);
                     i.putExtra("bg",mBg);
                     i.putExtra("name",mBagName);
+                    i.putExtra("read_type","");
                     i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_BAG_MODIFY);
                     startActivityForResult(i,REQ_MODIFY_BAG);
                 }else if(itemId == 1){
-                    Intent i = new Intent(BagActivity.this,BagFavoriteActivity.class);
+                    Intent i = new Intent(BagActivity.this,BagBuyActivity.class);
                     startActivity(i);
-                }else if (itemId == 2) {
+                }else if(itemId == 2){
+                    Intent i = new Intent(BagActivity.this,BagFollowActivity.class);
+                    startActivity(i);
+                }else if (itemId == 3) {
                     String temp = "neta://com.moemoe.lalala/url_inner_1.0?http://www.moemoe.la/shubao/?token=" + PreferenceUtils.getToken();
                     Uri uri = Uri.parse(temp);
                     IntentUtils.toActivityFromUri(BagActivity.this, uri, null);
-                }else if (itemId == 3) {
+                }else if (itemId == 4) {
                     Intent intent = new Intent(BagActivity.this, JuBaoActivity.class);
                     intent.putExtra(JuBaoActivity.EXTRA_NAME, "");
                     intent.putExtra(JuBaoActivity.EXTRA_CONTENT, "");
@@ -166,7 +179,8 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
         mRv.getRecyclerView().setAdapter(mAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         mRv.setLayoutManager(layoutManager);
-        mRv.isLoadMoreEnabled(false);
+        mRv.getRecyclerView().addItemDecoration(new GridItemDecoration(DensityUtil.dip2px(this,10)));
+        mRv.setLoadMoreEnabled(false);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -174,6 +188,7 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
                 if(entity == null){
                     Intent i = new Intent(BagActivity.this,BagEditActivity.class);
                     i.putExtra("bg","");
+                    i.putExtra("read_type","");
                     i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_DIR_CREATE);
                     startActivityForResult(i,REQ_CREATE_FOLDER);
                 }else {
@@ -239,6 +254,26 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
 
     @Override
     protected void initListeners() {
+        if(mBack != null){
+            mBack.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    finish();
+                }
+            });
+        }
+        if(mOpenBag != null){
+            mOpenBag.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i = new Intent(BagActivity.this,BagEditActivity.class);
+                    i.putExtra("bg","");
+                    i.putExtra("read_type","");
+                    i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_BAG_OPEN);
+                    startActivityForResult(i,REQ_GET_BAG);
+                }
+            });
+        }
     }
 
     @Override
@@ -249,7 +284,7 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQ_GET_BAG && resultCode == RESULT_OK){
-            mRlHaveRoot.setVisibility(View.GONE);
+            if(mRlHaveRoot != null) mRlHaveRoot.setVisibility(View.GONE);
             PreferenceUtils.getAuthorInfo().setOpenBag(true);
             mTvSpaceNum.setText(getString(R.string.label_bag_space,0,500));
             mTitleView.setTitle(data.getStringExtra("name"));
@@ -273,40 +308,16 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
                     .into(mIvBg);
             mBg = data.getStringExtra("bg");
         }else if(requestCode == REQ_TO_FOLDER && resultCode == RESULT_OK){
-           // int position = data.getIntExtra("position",-1);
-          //  BagDirEntity entity = data.getParcelableExtra("info");
             boolean change = data.getBooleanExtra("change",false);
             if(change){
                 mPresenter.getFolderList(mUserId,0);
             }
-//            if(position != -1){
-//                if(entity == null){
-//                    mAdapter.getList().remove(position);
-//                    mAdapter.notifyItemRemoved(position);
-//                }else {
-////                    BagDirEntity bagDirEntity = (BagDirEntity) mAdapter.getList().get(position);
-////                    bagDirEntity = entity;
-//                    mAdapter.getList().add(position,entity);
-//                    mAdapter.notifyItemInserted(position);
-//                   // mAdapter.notifyItemChanged(position);
-//                }
-//            }
-
         }
     }
 
-    @OnClick({R.id.iv_back,R.id.tv_get_bag,R.id.iv_menu_list})
+    @OnClick({R.id.iv_menu_list})
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.iv_back:
-                finish();
-                break;
-            case R.id.tv_get_bag:
-                Intent i = new Intent(BagActivity.this,BagEditActivity.class);
-                i.putExtra("bg","");
-                i.putExtra(BagEditActivity.EXTRA_TYPE,BagEditActivity.TYPE_BAG_OPEN);
-                startActivityForResult(i,REQ_GET_BAG);
-                break;
             case R.id.iv_menu_list:
                 mMenu.showMenu(mIvMenu);
                 break;
@@ -341,9 +352,9 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
         mIsLoading = false;
         mRv.setComplete();
         if(entities.size() == 0){
-            mRv.isLoadMoreEnabled(false);
+            mRv.setLoadMoreEnabled(false);
         }else {
-            mRv.isLoadMoreEnabled(true);
+            mRv.setLoadMoreEnabled(true);
         }
         if(isPull){
             mAdapter.setData(entities);
@@ -387,6 +398,21 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
 
     }
 
+    @Override
+    public void onFollowOrUnFollowFolderSuccess(boolean follow) {
+
+    }
+
+    @Override
+    public void onLoadFolderSuccess(BagDirEntity entity) {
+
+    }
+
+    @Override
+    public void onLoadFolderFail() {
+
+    }
+
     private int getSize(long size){
         return (int) (size/1024/1024);
     }
@@ -396,5 +422,11 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
         mIsLoading = false;
         mRv.setComplete();
         ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

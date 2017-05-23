@@ -1,5 +1,6 @@
 package com.moemoe.lalala.utils;
 
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.greendao.gen.DaoMaster;
 import com.moemoe.lalala.greendao.gen.DaoSession;
 import com.moemoe.lalala.greendao.gen.MySQLiteOpenHelper;
@@ -17,7 +18,7 @@ public class GreenDaoManager {
         if (mInstance == null){
 //            DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(SampleApplicationContext.context,
 //                    "netaInfo_v2.0",null);
-            MySQLiteOpenHelper mySQLiteOpenHelper = new MySQLiteOpenHelper(SampleApplicationContext.context,"netaInfo_v2.0",null);
+            MySQLiteOpenHelper mySQLiteOpenHelper = new MySQLiteOpenHelper(MoeMoeApplication.getInstance(),"netaInfo_v2.0",null);
             mDaoMaster = new DaoMaster(mySQLiteOpenHelper.getWritableDatabase());
             mDaoSession = mDaoMaster.newSession();
         }

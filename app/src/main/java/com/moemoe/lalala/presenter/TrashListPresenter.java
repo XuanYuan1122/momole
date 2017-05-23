@@ -36,12 +36,12 @@ public class TrashListPresenter implements TrashListContract.Presenter {
                         .subscribe(new NetResultSubscriber<ArrayList<TrashEntity>>() {
                             @Override
                             public void onSuccess(ArrayList<TrashEntity> entities) {
-                                view.onSuccess(entities,index == 0);
+                                if(view != null) view.onSuccess(entities,index == 0);
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }else if(list_type == 1){//favorite
@@ -51,12 +51,12 @@ public class TrashListPresenter implements TrashListContract.Presenter {
                         .subscribe(new NetResultSubscriber<ArrayList<TrashEntity>>() {
                             @Override
                             public void onSuccess(ArrayList<TrashEntity> entities) {
-                                view.onSuccess(entities,index == 0);
+                                if(view != null) view.onSuccess(entities,index == 0);
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }
@@ -68,12 +68,12 @@ public class TrashListPresenter implements TrashListContract.Presenter {
                         .subscribe(new NetResultSubscriber<ArrayList<TrashEntity>>() {
                             @Override
                             public void onSuccess(ArrayList<TrashEntity> entities) {
-                                view.onSuccess(entities,index == 0);
+                                if(view != null) view.onSuccess(entities,index == 0);
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }else if(list_type == 1){
@@ -83,15 +83,20 @@ public class TrashListPresenter implements TrashListContract.Presenter {
                         .subscribe(new NetResultSubscriber<ArrayList<TrashEntity>>() {
                             @Override
                             public void onSuccess(ArrayList<TrashEntity> entities) {
-                                view.onSuccess(entities,index == 0);
+                                if(view != null) view.onSuccess(entities,index == 0);
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }
         }
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

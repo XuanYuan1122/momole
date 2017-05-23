@@ -26,7 +26,6 @@ import butterknife.BindView;
 public class SelectMusicActivity extends BaseAppCompatActivity {
 
     public static final String EXTRA_SELECT_MUSIC = "select_music";
-    private final int RES_OK = 2333;
 
     @BindView(R.id.list)
     ListView mList;
@@ -69,7 +68,7 @@ public class SelectMusicActivity extends BaseAppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent();
                 i.putExtra(EXTRA_SELECT_MUSIC,mMusicList.get(position));
-                setResult(RES_OK,i);
+                setResult(RESULT_OK,i);
                 finish();
             }
         });

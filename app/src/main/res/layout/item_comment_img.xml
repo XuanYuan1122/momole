@@ -19,4 +19,15 @@
         android:layout_marginRight="3dp"
         android:layout_marginEnd="3dp"
         android:src="@drawable/btn_doc_reply_pic_cancel"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="@dimen/size_6"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textSize="@dimen/size_9"
+        android:textColor="@color/white"/>
 </RelativeLayout>

@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 
 public interface CommentDetailContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestCommentDetail(CommentDetailRqEntity data);
         void deleteComment(NewCommentEntity entity);
         void sendComment(ArrayList<String> paths, CommentSendEntity entity);

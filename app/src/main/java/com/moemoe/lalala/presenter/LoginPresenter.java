@@ -44,12 +44,12 @@ public class LoginPresenter implements LoginContract.Presenter {
                 .subscribe(new NetResultSubscriber<LoginResultEntity>() {
                     @Override
                     public void onSuccess(LoginResultEntity loginResultEntity) {
-                        view.onLoginSuccess(loginResultEntity);
+                        if(view != null) view.onLoginSuccess(loginResultEntity);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -75,7 +75,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                                     authorInfo.setUserName(db.getUserName());
                                 }else {
                                     authorInfo.setUserName(entity.getUserName());
-                                    if(!entity.getHeadPath().contains("http")){
+                                    if(!entity.getHeadPath().startsWith("http")){
                                         authorInfo.setHeadPath(ApiService.URL_QINIU + entity.getHeadPath());
                                     }else {
                                         authorInfo.setHeadPath(entity.getHeadPath());
@@ -109,24 +109,24 @@ public class LoginPresenter implements LoginContract.Presenter {
                                             });
                                 }
                                 PreferenceUtils.setAuthorInfo(authorInfo);
-                                view.onLoginThirdSuccess(entity.getUserId());
+                                if(view != null) view.onLoginThirdSuccess(entity.getUserId());
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }
 
             @Override
             public void onError(Platform platform, int i, Throwable throwable) {
-                view.onFailure(-3,"");
+                if(view != null) view.onFailure(-3,"");
             }
 
             @Override
             public void onCancel(Platform platform, int i) {
-                view.onFailure(-2,"");
+                if(view != null) view.onFailure(-2,"");
             }
         });
     }
@@ -136,7 +136,13 @@ public class LoginPresenter implements LoginContract.Presenter {
     private void getUserInfo(String platform, PlatformActionListener listener){
         Platform p = ShareSDK.getPlatform(platform);
         p.setPlatformActionListener(listener);
-        p.SSOSetting(true);
+        p.SSOSetting(false);
+        p.authorize();
         p.showUser(null);
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">neta</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">4.1.0_20170217</string>
-    <string name="app_version_code">4100</string>
+    <string name="app_version">4.4.2_20170428</string>
+    <string name="app_version_code">4420</string>
 
     <string name="label_scheme">neta</string>
     <string name="label_host">com.moemoe.lalala</string>
@@ -46,6 +46,12 @@
     <string name="label_user_info_user_comment_action">user_info_user_comment_1.0</string>
     <string name="label_user_info_notify_path">/user_info_notify_1.0</string>
     <string name="label_user_info_notify_action">user_info_notify_1.0</string>
+    <string name="label_blackboard_path">/blackboard_1.0</string>
+    <string name="label_blackboard_action">blackboard_1.0</string>
+    <string name="label_talk_path">/talk_1.0</string>
+    <string name="label_talk_action">talk_1.0</string>
+    <string name="label_folder_path">/folder_1.0</string>
+    <string name="label_folder_action">folder_1.0</string>
 
     <string name="label_can_not_use">施工中,敬请期待......</string>
     <string name="label_signed">今天已经签过啦</string>
@@ -72,6 +78,7 @@
     <string name="label_doc_only_9_photos">共可选择9张图片</string>
     <string name="label_create_doc_tag">添加标签可以加经验哦</string>
     <string name="label_select_music">选择音乐</string>
+    <string name="label_select_book">选择文本</string>
     <string name="label_select_img">选择封面</string>
     <string name="label_add_hide">添加隐藏区域</string>
     <string name="label_add_bag">添加一项书包内容</string>
@@ -85,7 +92,7 @@
     <string name="label_tag_ctrl">标签管理</string>
     <string name="label_create_post">发表帖子</string>
     <string name="label_create_trash">丢个纸条</string>
-    <string name="label_menu_publish_doc">发帖</string>
+    <string name="label_menu_publish_doc">发布</string>
     <string name="label_content_tag_del">如删除该标签，当前标签贴组将不能看到该帖</string>
     <string name="label_more_doc_content">你写得太多啦</string>
     <string name="label_select_img_finish">封面选择完成</string>
@@ -172,6 +179,7 @@
     <string name="label_log_out">退出登录</string>
     <string name="label_setting">设置</string>
     <string name="label_coin_details">节操记录</string>
+    <string name="label_doc_history">浏览历史</string>
     <string name="label_select_deskmate">选择同桌</string>
     <string name="label_3g_pic">3G下浏览高清图片</string>
     <string name="label_version_update">版本更新</string>
@@ -180,6 +188,7 @@
     <string name="label_about">关于</string>
     <string name="label_clear">清空</string>
     <string name="label_square">广场</string>
+    <string name="label_club">社团</string>
     <string name="label_class">班级</string>
     <string name="label_open_out">用外部浏览器打开</string>
     <string name="label_share">分享</string>
@@ -220,27 +229,45 @@
     <string name="label_followed">已关注</string>
     <string name="label_home_page">主页</string>
     <string name="label_prop">道具</string>
+    <string name="label_chat">私信</string>
     <string name="label_msg">消息</string>
     <string name="label_level_1" formatted="false">LV %d</string>
     <string name="label_show_favorite">公开显示我的收藏</string>
     <string name="label_show_follow">公开显示我的关注</string>
     <string name="label_show_fans">公开显示我的粉丝</string>
+    <string name="label_shield">屏蔽消息</string>
     <string name="label_my_snow_num" formatted="false">我推掉的雪人数：%d</string>
     <string name="label_snow_my_num" formatted="false">我消灭了%d个</string>
     <string name="label_snow_my_rank" formatted="false">，排名No.%d</string>
     <string name="label_task_limit" formatted="false">/%d</string>
     <string name="label_liuyan" formatted="false">%d条留言</string>
     <string name="label_modify">修改</string>
+    <string name="label_bag">书包</string>
     <string name="label_bag_name">书包名称</string>
-    <string name="label_normal_name">书包名称</string>
+    <string name="label_dir_name">文件夹名称</string>
     <string name="label_cover">封面图片</string>
     <string name="label_bag_space" formatted="false">%dMB / %dMB</string>
-    <string name="label_records">书包收藏</string>
+    <string name="label_bag_buy_list">购买记录</string>
+    <string name="label_bag_follow_list">收藏夹</string>
     <string name="label_add_space">扩展容量</string>
     <string name="label_coin_set">节操价格设定</string>
     <string name="label_create">新建</string>
     <string name="label_add">添加</string>
-    <string name="label_delete_confirm">确认删除</string>
+    <string name="label_delete_confirm">确认删除?</string>
+    <string name="label_user">用户</string>
+    <string name="label_read_progress" formatted="false">第%d/%d页</string>
+    <string name="label_normal_type">正常模式</string>
+    <string name="label_img_type">看图模式</string>
+    <string name="label_img_type_detail">预览美图、漫画的特殊模式</string>
+    <string name="label_read_type">阅读模式</string>
+    <string name="label_read_type_detail">预览小说、文字的特殊模式</string>
+    <string name="label_edit_doc_hint">标题 (选填)</string>
+    <string name="label_give_up">放弃</string>
+    <string name="label_coin_watch">节操可见</string>
+    <string name="label_report_watch">回复可见</string>
+    <string name="label_report_watch_info">别人可通过回复来查看隐藏区</string>
+    <string name="label_coin_watch_info">别人可通过消费1节操来查看隐藏区</string>
+    <string name="label_change_type">切换</string>
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>
@@ -279,8 +306,8 @@
     <string name="msg_doc_content_cannot_null">还什么都没写呢~</string>
     <string name="msg_doc_img_cannot_null">还没有选图片呢</string>
     <string name="msg_need_one_tag">至少需要一个标签哦~</string>
-    <string name="msg_need_one_music">必须选择一首歌~</string>
-    <string name="msg_create_doc_9_jpg">一个帖子最多能只能有9张图</string>
+    <string name="msg_need_one_music">必须选择一首歌和封面~</string>
+    <string name="msg_create_doc_9_jpg">一个帖子最多能只能有15张图</string>
     <string name="msg_select_9_item">一次最多能只能有9个文件</string>
     <string name="msg_can_not_empty">内容不能为空</string>
     <string name="msg_nickname_cannot_null">昵称不能为空</string>

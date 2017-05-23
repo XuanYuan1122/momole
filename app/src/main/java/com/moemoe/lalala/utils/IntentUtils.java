@@ -45,6 +45,9 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         sSupportSchame.add(context.getResources().getString(R.string.label_user_info_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_user_info_user_comment_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_user_info_notify_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_blackboard_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_talk_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_folder_action));
         sSupportSchame.add("event_1.0");
     }
 
@@ -167,7 +170,7 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
             return i;
         }
     }
-//
+
     private static void showEvent(final Context context){
         int pass = PreferenceUtils.getPassEvent(context);
         if(StringUtils.isKillEvent() && pass < 3){

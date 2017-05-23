@@ -78,12 +78,12 @@ public class ClubPostPresenter implements ClubPostContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        view.onFailure(-1,"");
+                        if(view != null) view.onFailure(-1,"");
                     }
 
                     @Override
                     public void onNext(ClubZipEntity clubZipEntity) {
-                        view.bindListViewData(clubZipEntity);
+                        if(view != null) view.bindListViewData(clubZipEntity);
                     }
                 });
     }
@@ -96,13 +96,18 @@ public class ClubPostPresenter implements ClubPostContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<DocListEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<DocListEntity> docListEntities) {
-                        view.onLoadDocList(docListEntities,index == 0);
+                        if(view != null) view.onLoadDocList(docListEntities,index == 0);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

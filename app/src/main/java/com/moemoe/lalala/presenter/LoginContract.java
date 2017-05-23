@@ -8,7 +8,7 @@ import com.moemoe.lalala.model.entity.LoginResultEntity;
  */
 
 public interface LoginContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void login(LoginEntity entity);
         void loginThird(String platform,String DevId);
     }

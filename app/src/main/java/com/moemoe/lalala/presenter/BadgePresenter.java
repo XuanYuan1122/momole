@@ -36,12 +36,12 @@ public class BadgePresenter implements BadgeContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<BadgeEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<BadgeEntity> badgeEntities) {
-                        view.loadMyBadgeSuccess(badgeEntities,index == 0);
+                        if(view != null) view.loadMyBadgeSuccess(badgeEntities,index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -54,12 +54,12 @@ public class BadgePresenter implements BadgeContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<BadgeEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<BadgeEntity> badgeEntities) {
-                        view.loadAllBadgeSuccess(badgeEntities,index == 0);
+                        if(view != null) view.loadAllBadgeSuccess(badgeEntities,index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -72,12 +72,12 @@ public class BadgePresenter implements BadgeContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.saveSuccess();
+                        if(view != null) view.saveSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -90,13 +90,18 @@ public class BadgePresenter implements BadgeContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.buySuccess(position);
+                        if(view != null) view.buySuccess(position);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

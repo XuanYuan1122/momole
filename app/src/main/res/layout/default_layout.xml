@@ -13,7 +13,7 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:textSize="@dimen/size_12"
-        android:textColor="@color/gray_d7d7d8"
+        android:textColor="@color/gray_d7d7d7"
         android:textStyle="bold"
         android:visibility="invisible"/>
 </android.support.v4.widget.NestedScrollView>

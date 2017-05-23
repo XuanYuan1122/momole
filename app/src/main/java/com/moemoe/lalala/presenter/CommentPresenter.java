@@ -39,12 +39,12 @@ public class CommentPresenter implements CommentContract.Presenter {
                     .subscribe(new NetResultSubscriber<ArrayList<ReplyEntity>>() {
                         @Override
                         public void onSuccess(ArrayList<ReplyEntity> replyEntities) {
-                            view.onSuccess(replyEntities,data == 0);
+                            if(view != null) view.onSuccess(replyEntities,data == 0);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 3 || type == 2){
@@ -55,16 +55,16 @@ public class CommentPresenter implements CommentContract.Presenter {
                         @Override
                         public void onSuccess(ArrayList<DocListEntity> docListEntities) {
                             if(type == 3){
-                                view.onSuccess(docListEntities,data == 0);
+                                if(view != null)  view.onSuccess(docListEntities,data == 0);
                             }else if(type == 2){
-                                view.onChangeSuccess(docListEntities);
+                                if(view != null) view.onChangeSuccess(docListEntities);
                             }
 
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 4){
@@ -74,12 +74,12 @@ public class CommentPresenter implements CommentContract.Presenter {
                     .subscribe(new NetResultSubscriber<ArrayList<WallBlock>>() {
                         @Override
                         public void onSuccess(ArrayList<WallBlock> wallBlocks) {
-                            view.onSuccess(wallBlocks,data == 1);
+                            if(view != null) view.onSuccess(wallBlocks,data == 1);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 5){
@@ -89,14 +89,19 @@ public class CommentPresenter implements CommentContract.Presenter {
                     .subscribe(new NetResultSubscriber<ArrayList<CoinDetailEntity>>() {
                         @Override
                         public void onSuccess(ArrayList<CoinDetailEntity> coinDetailEntities) {
-                            view.onSuccess(coinDetailEntities,data == 0);
+                            if(view != null) view.onSuccess(coinDetailEntities,data == 0);
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

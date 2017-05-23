@@ -49,7 +49,7 @@ public interface IScaleView {
     float getScale();
 
     /**
-     * Return the current scale type in use by the ImageView.
+     * Return the current scale index in use by the ImageView.
      */
     ImageView.ScaleType getScaleType();
 

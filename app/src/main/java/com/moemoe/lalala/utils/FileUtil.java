@@ -16,6 +16,7 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.view.activity.MultiImageChooseActivity;
 import com.orhanobut.logger.Logger;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.DataInputStream;
@@ -107,6 +108,27 @@ public class FileUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * 转换文件大小
+     *
+     * @param fileLen 单位B
+     * @return
+     */
+    public static String formatFileSizeToString(long fileLen) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        String fileSizeString = "";
+        if (fileLen < 1024) {
+            fileSizeString = df.format((double) fileLen) + "B";
+        } else if (fileLen < 1048576) {
+            fileSizeString = df.format((double) fileLen / 1024) + "K";
+        } else if (fileLen < 1073741824) {
+            fileSizeString = df.format((double) fileLen / 1048576) + "M";
+        } else {
+            fileSizeString = df.format((double) fileLen / 1073741824) + "G";
+        }
+        return fileSizeString;
     }
 
     /**
@@ -755,5 +777,111 @@ public class FileUtil {
             };
         }.start();
 
+    }
+
+    public static File getChapterFile(String bookId, int chapter) {
+        File file = new File(StorageUtils.getNovRootPath() + bookId,chapter + ".txt");
+        if(!file.exists()){
+            createFile(file);
+        }
+        return file;
+    }
+
+    public static String createFile(File file){
+        try {
+            if (file.getParentFile().exists()) {
+                file.createNewFile();
+                return file.getAbsolutePath();
+            } else {
+                createDir(file.getParentFile().getAbsolutePath());
+                file.createNewFile();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static String createDir(String dirPath) {
+        try {
+            File file = new File(dirPath);
+            if (file.getParentFile().exists()) {
+                file.mkdir();
+                return file.getAbsolutePath();
+            } else {
+                createDir(file.getParentFile().getAbsolutePath());
+                file.mkdir();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dirPath;
+    }
+
+    public static String getCharset(String fileName) {
+        BufferedInputStream bis = null;
+        String charset = "GBK";
+        byte[] first3Bytes = new byte[3];
+        try {
+            boolean checked = false;
+            bis = new BufferedInputStream(new FileInputStream(fileName));
+            bis.mark(0);
+            int read = bis.read(first3Bytes, 0, 3);
+            if (read == -1)
+                return charset;
+            if (first3Bytes[0] == (byte) 0xFF && first3Bytes[1] == (byte) 0xFE) {
+                charset = "UTF-16LE";
+                checked = true;
+            } else if (first3Bytes[0] == (byte) 0xFE
+                    && first3Bytes[1] == (byte) 0xFF) {
+                charset = "UTF-16BE";
+                checked = true;
+            } else if (first3Bytes[0] == (byte) 0xEF
+                    && first3Bytes[1] == (byte) 0xBB
+                    && first3Bytes[2] == (byte) 0xBF) {
+                charset = "UTF-8";
+                checked = true;
+            }
+            bis.mark(0);
+            if (!checked) {
+                while ((read = bis.read()) != -1) {
+                    if (read >= 0xF0)
+                        break;
+                    if (0x80 <= read && read <= 0xBF) // 单独出现BF以下的，也算是GBK
+                        break;
+                    if (0xC0 <= read && read <= 0xDF) {
+                        read = bis.read();
+                        if (0x80 <= read && read <= 0xBF) // 双字节 (0xC0 - 0xDF)
+                            // (0x80 - 0xBF),也可能在GB编码内
+                            continue;
+                        else
+                            break;
+                    } else if (0xE0 <= read && read <= 0xEF) {// 也有可能出错，但是几率较小
+                        read = bis.read();
+                        if (0x80 <= read && read <= 0xBF) {
+                            read = bis.read();
+                            if (0x80 <= read && read <= 0xBF) {
+                                charset = "UTF-8";
+                                break;
+                            } else
+                                break;
+                        } else
+                            break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return charset;
     }
 }

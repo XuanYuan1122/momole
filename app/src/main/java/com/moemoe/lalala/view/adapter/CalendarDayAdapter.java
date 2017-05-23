@@ -33,7 +33,7 @@ public class CalendarDayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static final int TYPE_DAY = 0;
     private static final int TYPE_NORMAL = 1;
     private static final int TYPE_IMG = 2;
-    private int[] mBackGround = { R.drawable.shape_rect_label_cyan, R.drawable.shape_rect_label_yellow, R.drawable.shape_rect_label_orange, R.drawable.shape_rect_label_pink, R.drawable.shape_rect_label_green, R.drawable.shape_rect_label_purple, R.drawable.shape_rect_label_tab_blue};
+    private int[] mBackGround = { R.drawable.shape_rect_label_cyan, R.drawable.shape_rect_label_yellow, R.drawable.shape_rect_label_orange, R.drawable.shape_rect_label_pink, R.drawable.shape_rect_border_green_5, R.drawable.shape_rect_label_purple, R.drawable.shape_rect_label_tab_blue};
     private Context mContext;
     private ArrayList<Object> items;
     private LayoutInflater mInflater;

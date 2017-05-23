@@ -5,7 +5,7 @@ package com.moemoe.lalala.presenter;
  */
 
 public interface CommentContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void doRequest(int data,int type);
     }
 

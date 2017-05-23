@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,17 +23,19 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagComponent;
 import com.moemoe.lalala.di.modules.BagModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
+import com.moemoe.lalala.model.entity.BookEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -62,11 +66,13 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     private final int REQ_CROP_AVATAR = 1003;
     public static final String EXTRA_TYPE = "extra_type";
     private final int REQ_GET_FROM_SELECT_MUSIC = 1004;
+    private final int REQ_GET_FROM_SELECT_BOOK = 1005;
     public static final int TYPE_BAG_OPEN = 2000;
     public static final int TYPE_BAG_MODIFY = 2001;
     public static final int TYPE_DIR_CREATE = 2002;
     public static final int TYPE_DIR_ITEM_ADD = 2003;
     public static final int TYPE_DIR_MODIFY = 2004;
+    public static final int TYPE_READ_CHANGE = 2005;
 
     private final int LIMIT_NICK_NAME = 10;
     private final int ICON_NUM_LIMIT = 9;
@@ -75,12 +81,10 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     Toolbar mToolbar;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
-    @BindView(R.id.tv_name_label)
-    TextView mTvNameLabel;
-    @BindView(R.id.tv_name)
-    TextView mTvName;
-    @BindView(R.id.tv_coin)
-    TextView mTvCoin;
+    @BindView(R.id.tv_menu)
+    TextView mTvSave;
+    @BindView(R.id.stub_read_type)
+    ViewStub mStubReadType;
     @BindView(R.id.tv_folder_name)
     TextView mTvFolderName;
     @BindView(R.id.tv_have_coin)
@@ -89,12 +93,12 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     TextView mTvDelete;
     @BindView(R.id.iv_cover)
     ImageView mIvBg;
-    @BindView(R.id.ll_name)
-    LinearLayout mLlNameRoot;
+    @BindView(R.id.stub_name)
+    ViewStub mStubNameRoot;
     @BindView(R.id.ll_bg_root)
     LinearLayout mLlBgRoot;
-    @BindView(R.id.ll_coin)
-    LinearLayout mLlCoin;
+    @BindView(R.id.stub_coin)
+    ViewStub mStubCoinRoot;
     @BindView(R.id.ll_images)
     LinearLayout mLlImages;
     @BindView(R.id.ll_add_root)
@@ -113,6 +117,11 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     @Inject
     BagPresenter mPresenter;
 
+    private TextView mTvNameLabel;
+    private TextView mTvName;
+    private TextView mTvCoin;
+    private TextView mModeName;
+
     private boolean mIsName;
     private boolean mIsCover;
     private boolean mHasModified = false;
@@ -120,6 +129,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     private String mBgPath;
     private String mName;
     private String folderId;
+    private String readMode;
     private long size;
     private boolean isBuy;
     private int mCoin;
@@ -135,9 +145,10 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mType = getIntent().getIntExtra(EXTRA_TYPE,-1);
@@ -147,10 +158,22 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
         folderId = getIntent().getStringExtra("folderId");
         mCoin = getIntent().getIntExtra("coin",0);
         size = getIntent().getLongExtra("size",0);
+        readMode = "";
+        readMode = getIntent().getStringExtra("read_type");
         if(mType == -1) {
             finish();
             return;
         }
+        mTvSave.setVisibility(View.VISIBLE);
+        mTvSave.setText(getString(R.string.label_done));
+        if(mType != TYPE_DIR_ITEM_ADD){
+            initNameRoot();
+        }
+        if(mType == TYPE_DIR_CREATE || mType == TYPE_DIR_MODIFY){
+            initCoinRoot();
+            initReadTypeRoot();
+        }
+
         if(mType == TYPE_BAG_OPEN || mType == TYPE_BAG_MODIFY){
             mTvNameLabel.setText(getString(R.string.label_bag_name));
             mTvTitle.setText(getString(R.string.label_modify));
@@ -173,9 +196,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                 }
             }
         }else if(mType == TYPE_DIR_CREATE){
-            mTvNameLabel.setText(getString(R.string.label_normal_name));
+            mTvNameLabel.setText(getString(R.string.label_dir_name));
             mTvTitle.setText(getString(R.string.label_create));
-            mLlCoin.setVisibility(View.VISIBLE);
             mLlImages.setVisibility(View.VISIBLE);
             mSelectAdapter = new SelectItemAdapter(this);
             LinearLayoutManager selectRvL = new LinearLayoutManager(this);
@@ -185,7 +207,6 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             mTvCoin.setText("0节操");
         }else if(mType == TYPE_DIR_ITEM_ADD){
             mTvTitle.setText(getString(R.string.label_add));
-            mLlNameRoot.setVisibility(View.GONE);
             mLlBgRoot.setVisibility(View.GONE);
             mLlAddRoot.setVisibility(View.VISIBLE);
             mLlImages.setVisibility(View.VISIBLE);
@@ -203,9 +224,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                     .error(R.drawable.bg_default_square)
                     .into(mIvAddCover);
         }else if(mType == TYPE_DIR_MODIFY){
-            mTvNameLabel.setText(getString(R.string.label_normal_name));
+            mTvNameLabel.setText(getString(R.string.label_dir_name));
             mTvTitle.setText(getString(R.string.label_modify));
-            mLlCoin.setVisibility(View.VISIBLE);
             mTvDelete.setVisibility(View.VISIBLE);
             mTvName.setText(mName);
             mTvCoin.setText(mCoin + "节操");
@@ -269,6 +289,63 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
         });
     }
 
+    private void initReadTypeRoot(){
+        View typeRoot = mStubReadType.inflate();
+        TextView tvNameLabel = (TextView) typeRoot.findViewById(R.id.tv_name_label);
+        typeRoot.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                Intent i = new Intent(BagEditActivity.this,ReadTypeSettingActivity.class);
+                i.putExtra("read_type",readMode);
+                startActivityForResult(i,TYPE_READ_CHANGE);
+            }
+        });
+        tvNameLabel.setText("默认浏览模式");
+        mModeName = (TextView) typeRoot.findViewById(R.id.tv_name);
+        mModeName.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+        if(readMode.equalsIgnoreCase("IMAGE")){
+            mModeName.setText("看图模式");
+        }else if(readMode.equalsIgnoreCase("TEXT")){
+            mModeName.setText("阅读模式");
+        }else {
+            mModeName.setText("正常模式");
+        }
+    }
+
+    private void initCoinRoot() {
+         View mLlCoin = mStubCoinRoot.inflate();
+        TextView tvNameLabel = (TextView) mLlCoin.findViewById(R.id.tv_name_label);
+        tvNameLabel.setText(getString(R.string.label_coin_set));
+        mTvCoin = (TextView) mLlCoin.findViewById(R.id.tv_name);
+        mTvCoin.setTextColor(ContextCompat.getColor(this,R.color.pink_fb7ba2));
+        mLlCoin.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                showDialog();
+            }
+        });
+    }
+
+    private void initNameRoot() {
+        View mLlNameRoot =  mStubNameRoot.inflate();
+        mTvNameLabel = (TextView) mLlNameRoot.findViewById(R.id.tv_name_label);
+        mTvName = (TextView) mLlNameRoot.findViewById(R.id.tv_name);
+        mTvName.setTextColor(ContextCompat.getColor(this,R.color.txt_gray_929292_red));
+        mLlNameRoot.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                mKlCommentBoard.setVisibility(View.VISIBLE);
+                mEdtCommentInput.setText("");
+                if(mType == TYPE_BAG_OPEN || mType == TYPE_BAG_MODIFY){
+                    mEdtCommentInput.setHint(getString(R.string.label_bag_name));
+                }
+                mEdtCommentInput.requestFocus();
+                mIsName = true;
+                SoftKeyboardUtils.showSoftKeyboard(BagEditActivity.this, mEdtCommentInput);
+            }
+        });
+    }
+
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
         mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
@@ -279,21 +356,12 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
         });
     }
 
-    @OnClick({R.id.tv_sava,R.id.ll_name,R.id.ll_bg_root,R.id.ll_coin,R.id.tv_delete})
+    @OnClick({R.id.tv_menu,R.id.ll_bg_root,R.id.tv_delete})
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.tv_sava:
+            case R.id.tv_menu:
+                mTvSave.setEnabled(false);
                 modify();
-                break;
-            case R.id.ll_name:
-                mKlCommentBoard.setVisibility(View.VISIBLE);
-                mEdtCommentInput.setText("");
-                if(mType == TYPE_BAG_OPEN || mType == TYPE_BAG_MODIFY){
-                    mEdtCommentInput.setHint(getString(R.string.label_bag_name));
-                }
-                mEdtCommentInput.requestFocus();
-                mIsName = true;
-                SoftKeyboardUtils.showSoftKeyboard(this, mEdtCommentInput);
                 break;
             case R.id.ll_bg_root:
                 try {
@@ -304,12 +372,9 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                     e.printStackTrace();
                 }
                 break;
-            case R.id.ll_coin:
-                showDialog();
-                break;
             case R.id.tv_delete:
                 final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-                alertDialogUtil.createPromptDialog(this, getString(R.string.label_delete),getString( R.string.label_delete_confirm));
+                alertDialogUtil.createPromptNormalDialog(this, getString( R.string.label_delete_confirm));
                 alertDialogUtil.setButtonText(getString(R.string.label_confirm), getString(R.string.label_cancel),0);
                 alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
                     @Override
@@ -319,7 +384,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
                     @Override
                     public void ConfirmOnClick() {
-                        ArrayList<String> ids = new ArrayList<String>();
+                        ArrayList<String> ids = new ArrayList<>();
                         ids.add(folderId);
                         mPresenter.deleteFolder(ids);
                         alertDialogUtil.dismissDialog();
@@ -366,6 +431,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     private void modify() {
         if (!NetworkUtils.isNetworkAvailable(this)) {
             showToast(R.string.msg_connection);
+            mTvSave.setEnabled(true);
             return;
         }
         if(mType == TYPE_BAG_OPEN || mType == TYPE_BAG_MODIFY){
@@ -418,6 +484,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                     size += new File(((Image) o).getPath()).length();
                 }else if(o instanceof MusicLoader.MusicInfo){
                     size += new File(((MusicLoader.MusicInfo) o).getUrl()).length();
+                }else if(o instanceof BookEntity){
+                    size += new File(((BookEntity) o).getPath()).length();
                 }
             }
             mPresenter.checkSize(size);
@@ -488,6 +556,10 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                         alertDialogUtil.dismissDialog();
                         break;
                     case 2:
+                        chooseItem(2);
+                        alertDialogUtil.dismissDialog();
+                        break;
+                    case 3:
                         alertDialogUtil.dismissDialog();
                         break;
                 }
@@ -514,9 +586,12 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                }else {
+                }else if(type == 1){
                     Intent intent = new Intent(BagEditActivity.this, SelectMusicActivity.class);
                     startActivityForResult(intent,REQ_GET_FROM_SELECT_MUSIC);
+                }else if(type == 2){
+                    Intent intent = new Intent(BagEditActivity.this, SelectBookActivity.class);
+                    startActivityForResult(intent,REQ_GET_FROM_SELECT_BOOK);
                 }
         } else {
             showToast(R.string.msg_select_9_item);
@@ -536,7 +611,6 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                     showToast(R.string.msg_connection);
                     return;
                 }
-               // mBgPath = data.getData().getPath();
                 mBgPath = data.getStringExtra("path");
                 Glide.with(this)
                         .load(mBgPath)
@@ -549,10 +623,29 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
         }else if (requestCode == REQ_GET_FROM_SELECT_MUSIC) {
             if (data != null) {
                 MusicLoader.MusicInfo mMusicInfo = data.getParcelableExtra(SelectMusicActivity.EXTRA_SELECT_MUSIC);
-                if(!checkMusicInfo(mMusicInfo.getUrl())){
+                if(!checkInfo(mMusicInfo.getUrl())){
                     mItemPaths.add(mMusicInfo);
                 }
                 mSelectAdapter.setData(mItemPaths);
+            }
+        }else if(requestCode == REQ_GET_FROM_SELECT_BOOK && resultCode == RESULT_OK){
+            if(data != null){
+                BookEntity entity = data.getParcelableExtra(SelectBookActivity.EXTRA_SELECT_BOOK);
+                if(!checkInfo(entity.getPath())){
+                    mItemPaths.add(entity);
+                }
+                mSelectAdapter.setData(mItemPaths);
+            }
+        }else if(requestCode == TYPE_READ_CHANGE && resultCode == RESULT_OK){
+            if(data != null){
+                readMode = data.getStringExtra("read_type");
+                if(readMode.equalsIgnoreCase("IMAGE")){
+                    mModeName.setText("看图模式");
+                }else if(readMode.equalsIgnoreCase("TEXT")){
+                    mModeName.setText("阅读模式");
+                }else {
+                    mModeName.setText("正常模式");
+                }
             }
         }else {
             DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
@@ -576,7 +669,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
         for(Object o : mItemPaths){
             if(o instanceof String){
                 for(String path : paths){
-                    if(path.equals((String)o)){
+                    if(path.equals(o)){
                         temp.add(path);
                     }
                 }
@@ -592,11 +685,16 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
         paths.removeAll(temp);
     }
 
-    private boolean checkMusicInfo(String path){
+    private boolean checkInfo(String path){
         for (Object o : mItemPaths){
             if(o instanceof MusicLoader.MusicInfo){
                 MusicLoader.MusicInfo info = (MusicLoader.MusicInfo) o;
                 if(info.getUrl().equals(path)){
+                    return true;
+                }
+            }else if(o instanceof BookEntity){
+                BookEntity entity = (BookEntity) o;
+                if(entity.getPath().equals(path)){
                     return true;
                 }
             }
@@ -625,12 +723,14 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
     @Override
     public void onFailure(int code, String msg) {
+        mTvSave.setEnabled(true);
         finalizeDialog();
         ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
     }
 
     @Override
     public void openOrModifyBagSuccess() {
+        mTvSave.setEnabled(true);
         finalizeDialog();
         Intent i = new Intent();
         if(mType == TYPE_BAG_OPEN || mType == TYPE_BAG_MODIFY){
@@ -653,6 +753,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
     @Override
     public void createFolderSuccess() {
+        mTvSave.setEnabled(true);
         finalizeDialog();
         setResult(RESULT_OK);
         finish();
@@ -660,6 +761,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
     @Override
     public void uploadFolderSuccess() {
+        mTvSave.setEnabled(true);
         finalizeDialog();
         Intent i = new Intent();
         i.putExtra("number",mItemPaths.size());
@@ -685,13 +787,13 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             }else if(mType == TYPE_DIR_CREATE){
                 String name = mTvName.getText().toString();
                 int coin = Integer.valueOf(mTvCoin.getText().toString().replace("节操",""));
-                mPresenter.createFolder(name,coin,images.get(0),items);
+                mPresenter.createFolder(name,coin,images.get(0),items,readMode);
             }else if(mType == TYPE_DIR_ITEM_ADD){
                 mPresenter.uploadFilesToFolder(folderId,items);
             }else if(mType == TYPE_DIR_MODIFY){
                 String name = mTvName.getText().toString();
                 int coin = Integer.valueOf(mTvCoin.getText().toString().replace("节操",""));
-                mPresenter.modifyFolder(folderId,name,coin,images.get(0),size);
+                mPresenter.modifyFolder(folderId,name,coin,images.get(0),size,readMode);
             }
         }else {
             showToast("空间不足");
@@ -705,17 +807,41 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
     @Override
     public void deleteFolderSuccess() {
+        mTvSave.setEnabled(true);
         setResult(RES_DELETE);
         finish();
     }
 
     @Override
     public void modifyFolderSuccess() {
+        mTvSave.setEnabled(true);
         finalizeDialog();
         Intent i = new Intent();
         i.putExtra("name",mTvName.getText().toString());
         i.putExtra("bg",mBgPath);
+        i.putExtra("read_type",readMode);
         setResult(RESULT_OK,i);
         finish();
+    }
+
+    @Override
+    public void onFollowOrUnFollowFolderSuccess(boolean follow) {
+
+    }
+
+    @Override
+    public void onLoadFolderSuccess(BagDirEntity entity) {
+
+    }
+
+    @Override
+    public void onLoadFolderFail() {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.igexin.sdk.PushManager;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerPhoneStateComponent;
 import com.moemoe.lalala.di.modules.PhoneStateModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -26,6 +26,7 @@ import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.presenter.PhoneStateContract;
 import com.moemoe.lalala.presenter.PhoneStatePresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -92,9 +93,10 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerPhoneStateComponent.builder()
                 .phoneStateModule(new PhoneStateModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTitle.setText(R.string.label_register);
@@ -181,8 +183,9 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
     }
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        mPresenter.release();
         mHandler.removeMessages(MSG_RESEND_COLD_TIME);
+        super.onDestroy();
     }
 
     @Override
@@ -217,7 +220,7 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
         info.setUserName(entity.getUserName());
         info.setCoin(0);
         info.setOpenBag(entity.isOpenBag());
-        if(!entity.getHeadPath().contains("http")){
+        if(!entity.getHeadPath().startsWith("http")){
             info.setHeadPath(ApiService.URL_QINIU + entity.getHeadPath());
         }else {
             info.setHeadPath(entity.getHeadPath());

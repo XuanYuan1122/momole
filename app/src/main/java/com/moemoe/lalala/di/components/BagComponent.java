@@ -6,6 +6,7 @@ import com.moemoe.lalala.view.activity.BagActivity;
 import com.moemoe.lalala.view.activity.BagEditActivity;
 import com.moemoe.lalala.view.activity.FolderActivity;
 import com.moemoe.lalala.view.activity.FolderSelectActivity;
+import com.moemoe.lalala.view.activity.MangaActivity;
 
 import dagger.Component;
 
@@ -19,4 +20,5 @@ public interface BagComponent {
     void inject(BagEditActivity activity);
     void inject(FolderActivity activity);
     void inject(FolderSelectActivity activity);
+    void inject(MangaActivity activity);
 }

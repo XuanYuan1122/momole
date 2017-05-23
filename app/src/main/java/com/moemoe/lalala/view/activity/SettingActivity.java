@@ -15,10 +15,14 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSettingComponent;
 import com.moemoe.lalala.di.modules.SettingModule;
 import com.moemoe.lalala.dialog.AlertDialog;
+import com.moemoe.lalala.greendao.gen.ChatContentDbEntityDao;
+import com.moemoe.lalala.greendao.gen.ChatUserEntityDao;
+import com.moemoe.lalala.greendao.gen.GroupUserEntityDao;
+import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.presenter.SettingContract;
 import com.moemoe.lalala.presenter.SettingPresenter;
@@ -26,6 +30,7 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.CommonLoadingTask;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -36,6 +41,10 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.wechat.friends.Wechat;
 
 /**
  * Created by yi on 2016/12/1.
@@ -65,7 +74,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         mHander = new Handler();
         DaggerSettingComponent.builder()
                 .settingModule(new SettingModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTvTitle.setText(R.string.label_setting);
@@ -93,6 +102,12 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     private void initPersonSetting(View parent){
@@ -313,9 +328,34 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     public void logoutSuccess() {
-        PreferenceUtils.clearAuthorInfo();
-        setResult(REQUEST_SETTING_LOGOUT);
-        finish();
+        //清除数据库相关私信信息
+        //私信列表
+        try {
+            if(isThirdParty(PreferenceUtils.getAuthorInfo().getPlatform())){
+                Platform p = ShareSDK.getPlatform(PreferenceUtils.getAuthorInfo().getPlatform());
+                if(p.isAuthValid()){
+                    p.removeAccount();
+                }
+            }
+            PreferenceUtils.clearAuthorInfo();
+            PrivateMessageItemEntityDao privateMessageItemEntityDao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
+            privateMessageItemEntityDao.deleteAll();
+            ChatContentDbEntityDao chatContentDbEntityDao = GreenDaoManager.getInstance().getSession().getChatContentDbEntityDao();
+            chatContentDbEntityDao.deleteAll();
+            GroupUserEntityDao groupUserEntityDao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
+            groupUserEntityDao.deleteAll();
+            ChatUserEntityDao chatUserEntityDao = GreenDaoManager.getInstance().getSession().getChatUserEntityDao();
+            chatUserEntityDao.deleteAll();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            setResult(REQUEST_SETTING_LOGOUT);
+            finish();
+        }
+    }
+
+    public boolean isThirdParty(String platform){
+        return platform != null && (platform.equals(cn.sharesdk.tencent.qq.QQ.NAME) || platform.equals(Wechat.NAME) || platform.equals(SinaWeibo.NAME));
     }
 
     @Override
@@ -326,6 +366,11 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     @Override
     public void noUpdate() {
         showToast("已经是最新版本了");
+    }
+
+    @Override
+    public void shieldUserFail() {
+
     }
 
     @Override

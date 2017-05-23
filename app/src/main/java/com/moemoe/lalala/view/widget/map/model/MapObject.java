@@ -46,6 +46,7 @@ public class MapObject {
 
 	private boolean isScalable; // Map object is scalable or not (on map zoom)
 	private boolean isTouchable; // Shows whether this object should respond to touch events.
+	private boolean isVisible;
 	
 	protected Rect touchRect; // Object's touch area.	
 
@@ -73,8 +74,7 @@ public class MapObject {
 	 * @param drawable - image
 	 * @param position - coordinate of the object in map coordinates.
 	 */
-	public MapObject(Object id, Drawable drawable, Point position)
-	{
+	public MapObject(Object id, Drawable drawable, Point position) {
 		this(id, drawable, position.x, position.y, false);
 	}
 	
@@ -99,8 +99,7 @@ public class MapObject {
 	 * @param position - coordinate of the object in map coordinates.
 	 * @param pivotPoint - coordinate of the pivot point in image coordinates.
 	 */
-	public MapObject(Object id, Drawable drawable, Point position, Point pivotPoint)
-	{
+	public MapObject(Object id, Drawable drawable, Point position, Point pivotPoint) {
 		this(id, drawable, position.x, position.y, pivotPoint.x, pivotPoint.y);
 	}
 	
@@ -112,8 +111,7 @@ public class MapObject {
 	 * @param y - y coordinate of the object in map coordinates.
 	 * @param isTouchable - true if the object should respond to touch events, false otherwise.
 	 */
-	public MapObject(Object id, Drawable drawable, int x, int y, boolean isTouchable)
-	{
+	public MapObject(Object id, Drawable drawable, int x, int y, boolean isTouchable) {
 		this(id, drawable, x, y, isTouchable, true);
 	}
 	
@@ -123,8 +121,7 @@ public class MapObject {
 	 * @param drawable - image.
 	 * @param position - coordinate of the object in map coordinates.
 	 * @param isTouchable - true if the object should respond to touch events, false otherwise.
-	 */
-	public MapObject (Object id, Drawable drawable, Point position, boolean isTouchable)
+	 */public MapObject (Object id, Drawable drawable, Point position, boolean isTouchable)
 	{
 		this(id, drawable, position.x, position.y, true, true);
 	}
@@ -137,8 +134,7 @@ public class MapObject {
 	 * @param pivotPoint - coordinate of the pivot point in image coordinates.
 	 * @param isTouchable - true if the object should respond to touch events, false otherwise.
 	 */
-	public MapObject (Object id, Drawable drawable, Point position, Point pivotPoint, boolean isTouchable)
-	{
+	public MapObject (Object id, Drawable drawable, Point position, Point pivotPoint, boolean isTouchable) {
 		this(id, drawable, position.x, position.y, pivotPoint.x, pivotPoint.y, isTouchable, true);
 	}
 	
@@ -151,8 +147,7 @@ public class MapObject {
 	 * @param isTouchable - true if the object should respond to touch events, false otherwise.
 	 * @param isScalable - true, if map object should be scaled on map zoom, false otherwise.
 	 */
-	public MapObject(Object id, Drawable drawable, int x, int y,  boolean isTouchable, boolean isScalable)
-	{
+	public MapObject(Object id, Drawable drawable, int x, int y,  boolean isTouchable, boolean isScalable) {
 		this(id, drawable, x, y, 0, 0, isTouchable, isScalable);
 	}
 	
@@ -164,8 +159,7 @@ public class MapObject {
 	 * @param isTouchable - true if the object should respond to touch events, false otherwise.
 	 * @param isScalable - true, if map object should be scaled on map zoom, false otherwise.
 	 */
-	public MapObject(Object id, Drawable drawable, Point position,  boolean isTouchable, boolean isScalable)
-	{
+	public MapObject(Object id, Drawable drawable, Point position,  boolean isTouchable, boolean isScalable) {
 		this(id, drawable, position.x, position.y, 0, 0, isTouchable, isScalable);
 	}
 	
@@ -178,12 +172,24 @@ public class MapObject {
 	 * @param isTouchable - true if the object should respond to touch events, false otherwise.
 	 * @param isScalable - true, if map object should be scaled on map zoom, false otherwise.
 	 */
-	public MapObject (Object id, Drawable drawable, Point position, Point pivotPoint, boolean isTouchable, boolean isScalable)
-	{
+	public MapObject (Object id, Drawable drawable, Point position, Point pivotPoint, boolean isTouchable, boolean isScalable) {
 		this(id, drawable, position.x, position.y, pivotPoint.x, pivotPoint.y, isTouchable, isScalable);
 	}
-	
 
+	public MapObject(Object id, Drawable drawable, int x, int y, int pivotX, int pivotY, boolean isTouchable, boolean isScalable,boolean isVisible) {
+		this.id = id;
+		this.drawable = drawable;
+
+		pos = new Point(x, y);
+		posScaled = new Point();
+		this.pivotPoint = new Point(pivotX, pivotY);
+
+		this.isTouchable = isTouchable;
+		this.isScalable = isScalable;
+		this.isVisible = isVisible;
+		this.scale = 1.0f;
+		this.touchRect = new Rect();
+	}
 	/**
 	 * Creates new MapObject.
 	 * @param id - id of the object.
@@ -195,24 +201,10 @@ public class MapObject {
 	 * @param isTouchable - true if the object should respond to touch events, false otherwise.
 	 * @param isScalable - true, if map object should be scaled on map zoom, false otherwise.
 	 */
-	public MapObject(Object id, Drawable drawable, int x, int y, int pivotX, int pivotY, boolean isTouchable, boolean isScalable)
-	{
-		this.id = id;
-		this.drawable = drawable;
-		
-		pos = new Point(x, y);
-		posScaled = new Point();
-		this.pivotPoint = new Point(pivotX, pivotY);
-
-		this.isTouchable = isTouchable;
-		this.isScalable = isScalable;
-		
-		this.scale = 1.0f;
-		
-		this.touchRect = new Rect();	
+	public MapObject(Object id, Drawable drawable, int x, int y, int pivotX, int pivotY, boolean isTouchable, boolean isScalable) {
+		this(id,drawable,x,y,pivotX,pivotY,isTouchable,isScalable,true);
 	}
-	
-	
+
 	/**
 	 * Returns image that was passed to the constructor.
 	 * @return instance of Drawable.
@@ -245,9 +237,8 @@ public class MapObject {
 	 * Draws the map object on the canvas
 	 * @param canvas - Canvas
 	 */
-	public void draw(Canvas canvas)
-	{
-		if (drawable != null) {
+	public void draw(Canvas canvas) {
+		if (drawable != null && isVisible) {
 	        drawable.draw(canvas);
 		}
 	}
@@ -268,8 +259,7 @@ public class MapObject {
 	 * @param touchRect - area inside of the map.
 	 * @return - true if touchRect intersects the map object's touch area, false otherwise.
 	 */
-	public boolean isTouched(Rect touchRect)
-	{
+	public boolean isTouched(Rect touchRect) {
 		return Rect.intersects(this.touchRect, touchRect);
 	}
 
@@ -325,6 +315,10 @@ public class MapObject {
 	public boolean isTouchable() {
 		return isTouchable;
 	}
+
+	public boolean isVisible(){ return isVisible; }
+
+	public void setVisible(boolean visible){ isVisible = visible;}
 
 	/**
 	 * Set's pivot point within the drawable

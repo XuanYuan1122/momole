@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,21 +28,26 @@ import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.PersonDocEntity;
 import com.moemoe.lalala.model.entity.PersonFollowEntity;
+import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 import com.moemoe.lalala.model.entity.ReplyEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.GlideRoundTransform;
+import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.BadgeActivity;
+import com.moemoe.lalala.view.activity.BagActivity;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
 import com.moemoe.lalala.view.activity.TagControlActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -134,8 +141,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-         if(mType == 0){//doc favorite
-             return new DocViewHolder(LayoutInflater.from(context).inflate(R.layout.item_person_doc,parent,false));
+         if(mType == 0 || mType == 10){//doc favorite
+             return new SearchDocViewHolder(LayoutInflater.from(context).inflate(R.layout.item_search_doc,parent,false));
          }else if(mType == 1){//follow
              return new FollowViewHolder(LayoutInflater.from(context).inflate(R.layout.item_person_follow,parent,false));
          }else if(mType == 2){//msg
@@ -158,30 +165,55 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
              return new TagHolder(LayoutInflater.from(context).inflate(R.layout.item_tag_del,parent,false));
          }else if (mType == 9){
              return new SysMsgHolder(LayoutInflater.from(context).inflate(R.layout.item_msg_offical_detail,parent,false));
+         }else if(mType == 11){
+             return new BagItemViewHolder(LayoutInflater.from(context).inflate(R.layout.item_search_bag_dir,parent,false));
+         }else if(mType == 12){
+             return new MsgViewHolder(LayoutInflater.from(context).inflate(R.layout.item_message_new,parent,false));
          }
         return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        if(mType == 0){
-            PersonDocEntity entity = (PersonDocEntity) getItem(position);
-            DocViewHolder docViewHolder = (DocViewHolder) holder;
+        if(mType == 0 || mType == 10){
+            final PersonDocEntity entity = (PersonDocEntity) getItem(position);
+            SearchDocViewHolder searchDocViewHolder = (SearchDocViewHolder) holder;
             Glide.with(context)
                     .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getImage(), DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80),false,true))
                     .override(DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80))
                     .error(R.drawable.bg_default_square)
                     .placeholder(R.drawable.bg_default_square)
-                    .into(docViewHolder.img);
-            docViewHolder.title.setText(entity.getTitle());
-            docViewHolder.content.setText(entity.getDesc());
-            docViewHolder.time.setText(entity.getCreateTime());
+                    .into(searchDocViewHolder.img);
+            searchDocViewHolder.title.setText(entity.getTitle());
+            searchDocViewHolder.content.setText(entity.getDesc());
+            searchDocViewHolder.time.setText(StringUtils.timeFormate(entity.getCreateTime()));
             // 点赞/评论
-            docViewHolder.commentNum.setText(StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
-            docViewHolder.likeNum.setText(StringUtils.getNumberInLengthLimit(entity.getLikes(), 3));
+            searchDocViewHolder.commentNum.setText(StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
+            searchDocViewHolder.likeNum.setText(StringUtils.getNumberInLengthLimit(entity.getLikes(), 3));
+            searchDocViewHolder.name.setText(entity.getCreateUserName());
+            searchDocViewHolder.name.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    if(!entity.getCreateUserId().equals(PreferenceUtils.getUUid())){
+                        Intent i = new Intent(context, NewPersonalActivity.class);
+                        i.putExtra("uuid",entity.getCreateUserId());
+                        context.startActivity(i);
+                    }
+                }
+            });
+            searchDocViewHolder.address.setText(entity.getDocType());
+            searchDocViewHolder.address.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    if (!TextUtils.isEmpty(entity.getDocTypeSchema())) {
+                        Uri uri = Uri.parse(entity.getDocTypeSchema());
+                        IntentUtils.toActivityFromUri(context, uri,v);
+                    }
+                }
+            });
         }else if(mType == 1){
             PersonFollowEntity entity = (PersonFollowEntity) getItem(position);
-            FollowViewHolder followViewHolder = (FollowViewHolder) holder;
+            final FollowViewHolder followViewHolder = (FollowViewHolder) holder;
             Glide.with(context)
                     .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getUserIcon(), DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50),false,true))
                     .override(DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50))
@@ -189,9 +221,58 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .into(followViewHolder.img);
-            followViewHolder.levelBg.setBackgroundColor(StringUtils.readColorStr(entity.getUserLevelColor(), ContextCompat.getColor(context,R.color.main_cyan)));
             followViewHolder.level.setText(String.valueOf(entity.getUserLevel()));
-            followViewHolder.level.setTextColor(StringUtils.readColorStr(entity.getUserLevelColor(),ContextCompat.getColor(context,R.color.main_cyan)));
+            int radius1 = DensityUtil.dip2px(context,5);
+            float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
+            RoundRectShape roundRectShape1 = new RoundRectShape(outerR1, null, null);
+            ShapeDrawable shapeDrawable1 = new ShapeDrawable();
+            shapeDrawable1.setShape(roundRectShape1);
+            shapeDrawable1.getPaint().setStyle(Paint.Style.FILL);
+            shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(entity.getUserLevelColor(), ContextCompat.getColor(context, R.color.main_cyan)));
+            followViewHolder.ivLevelColor.setBackgroundDrawable(shapeDrawable1);
+            Observable.range(0,3)
+                    .subscribe(new Subscriber<Integer>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Integer i) {
+                            followViewHolder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
+                            followViewHolder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
+                        }
+                    });
+            if(entity.getBadgeList().size() > 0){
+                int size = 3;
+                if(entity.getBadgeList().size() < 3){
+                    size = entity.getBadgeList().size();
+                }
+                for (int i = 0;i < size;i++){
+                    followViewHolder.huiZhangTexts[i].setVisibility(View.VISIBLE);
+                    followViewHolder.huiZhangRoots[i].setVisibility(View.VISIBLE);
+                    BadgeEntity badgeEntity = entity.getBadgeList().get(i);
+                    TextView tv = followViewHolder.huiZhangTexts[i];
+                    tv.setText(badgeEntity.getTitle());
+                    tv.setText(badgeEntity.getTitle());
+                    tv.setBackgroundResource(R.drawable.bg_badge_cover);
+                    int px = DensityUtil.dip2px(context,4);
+                    tv.setPadding(px,0,px,0);
+                    int radius2 = DensityUtil.dip2px(context,2);
+                    float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
+                    RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
+                    ShapeDrawable shapeDrawable2 = new ShapeDrawable();
+                    shapeDrawable2.setShape(roundRectShape2);
+                    shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
+                    shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(badgeEntity.getColor(), ContextCompat.getColor(context, R.color.main_cyan)));
+                    followViewHolder.huiZhangRoots[i].setBackgroundDrawable(shapeDrawable2);
+                }
+            }
             followViewHolder.name.setText(entity.getUserName());
             followViewHolder.content.setText(entity.getSignature());
         }else if(mType == 2){
@@ -206,7 +287,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         .transform(new GlideCircleTransform(context))
                         .into(msgViewHolder.ivAvatar);
                 msgViewHolder.tvName.setText(bean.getFromName());
-                msgViewHolder.tvDate.setText(bean.getCreateTime());
+                msgViewHolder.tvDate.setText(StringUtils.timeFormate(bean.getCreateTime()));
                 msgViewHolder.tvContent.setText(bean.getContent());
             }else {
                 RedMsgViewHolder viewHolder = (RedMsgViewHolder) holder;
@@ -253,8 +334,13 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 coinViewHolder.tvCoin.setTextColor(ContextCompat.getColor(context,R.color.pink_fb7ba2));
                 coinViewHolder.tvLabel.setTextColor(ContextCompat.getColor(context,R.color.pink_fb7ba2));
             }
+            if(!TextUtils.isEmpty(entity.getSchema())){
+                coinViewHolder.tvType.setTextColor(ContextCompat.getColor(context,R.color.main_cyan));
+            }else {
+                coinViewHolder.tvType.setTextColor(ContextCompat.getColor(context,R.color.gray_d7d7d7));
+            }
             coinViewHolder.tvType.setText(entity.getType());
-            coinViewHolder.tvTime.setText(entity.getCreateTime());
+            coinViewHolder.tvTime.setText(StringUtils.timeFormate(entity.getCreateTime()));
         }else if(mType == 4){
             final NewCommentEntity commentEntity = (NewCommentEntity) getItem(position);
             final CommentHolder commentHolder = (CommentHolder) holder;
@@ -367,7 +453,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final BadgeEntity badgeEntity = (BadgeEntity) getItem(position);
             BadgeAllHolder badgeHolder = (BadgeAllHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + badgeEntity.getImg(), DensityUtil.dip2px(context,80), DensityUtil.dip2px(context,80), false, true))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + badgeEntity.getImg(), DensityUtil.dip2px(context,80), DensityUtil.dip2px(context,80), false, false))
                     .override(DensityUtil.dip2px(context,80), DensityUtil.dip2px(context,80))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
@@ -397,14 +483,13 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .override(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,20), DensityUtil.dip2px(context,120))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
-                    .centerCrop()
                     .transform(new GlideRoundTransform(context,5))
                     .into(bagFavoriteHolder.ivBg);
             bagFavoriteHolder.ivSelect.setVisibility(canDelete?View.VISIBLE:View.GONE);
             bagFavoriteHolder.ivSelect.setSelected(entity.isSelect());
             bagFavoriteHolder.tvNum.setText(entity.getNumber() + "项");
             bagFavoriteHolder.tvName.setText(entity.getName());
-            bagFavoriteHolder.tvTime.setText(entity.getUpdateTime() + " 更新");
+            bagFavoriteHolder.tvTime.setText(StringUtils.timeFormate(entity.getUpdateTime()) + " 更新");
         }else if(mType == 8){
             final DocTagEntity entity = (DocTagEntity) getItem(position);
             TagHolder tagHolder = (TagHolder) holder;
@@ -424,7 +509,120 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }else {
                 msgHolder.watch.setVisibility(View.INVISIBLE);
             }
-            msgHolder.time.setText(entity.getCreateTime());
+            msgHolder.time.setText(StringUtils.timeFormate(entity.getCreateTime()));
+        }
+//        else if(mType == 10){
+//            final PersonDocEntity entity = (PersonDocEntity) getItem(position);
+//            SearchDocViewHolder searchDocViewHolder = (SearchDocViewHolder) holder;
+//            Glide.with(context)
+//                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getImage(), DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80),false,true))
+//                    .override(DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80))
+//                    .error(R.drawable.bg_default_square)
+//                    .placeholder(R.drawable.bg_default_square)
+//                    .into(searchDocViewHolder.img);
+//            searchDocViewHolder.title.setText(entity.getTitle());
+//            searchDocViewHolder.content.setText(entity.getDesc());
+//            searchDocViewHolder.time.setText(entity.getCreateTime());
+//            // 点赞/评论
+//            searchDocViewHolder.commentNum.setText(StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
+//            searchDocViewHolder.likeNum.setText(StringUtils.getNumberInLengthLimit(entity.getLikes(), 3));
+//            searchDocViewHolder.name.setText(entity.getCreateUserName());
+//            searchDocViewHolder.name.setOnClickListener(new NoDoubleClickListener() {
+//                @Override
+//                public void onNoDoubleClick(View v) {
+//                    if(!entity.getCreateUserId().equals(PreferenceUtils.getUUid())){
+//                        Intent i = new Intent(context, NewPersonalActivity.class);
+//                        i.putExtra("uuid",entity.getCreateUserId());
+//                        context.startActivity(i);
+//                    }
+//                }
+//            });
+//            searchDocViewHolder.address.setText(entity.getDocType());
+//            searchDocViewHolder.address.setOnClickListener(new NoDoubleClickListener() {
+//                @Override
+//                public void onNoDoubleClick(View v) {
+//                    if (!TextUtils.isEmpty(entity.getDocTypeSchema())) {
+//                        Uri uri = Uri.parse(entity.getDocTypeSchema());
+//                        IntentUtils.toActivityFromUri(context, uri,v);
+//                    }
+//                }
+//            });
+//        }
+        else if(mType == 11){
+            BagItemViewHolder viewHolder = (BagItemViewHolder) holder;
+            final BagDirEntity entity = (BagDirEntity) getItem(position);
+            String path ;
+            if(entity.getCover().startsWith("/")){
+                path = entity.getCover();
+            }else {
+                path = StringUtils.getUrl(context, ApiService.URL_QINIU +  entity.getCover(), (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2 ,(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2, false, true);
+            }
+            Glide.with(context)
+                    .load(path)
+                    .override((DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2,(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2)
+                    .placeholder(R.drawable.bg_default_square)
+                    .error(R.drawable.bg_default_square)
+                    .centerCrop()
+                    .transform(new GlideRoundTransform(context,5))
+                    .into(viewHolder.ivBg);
+            if (entity.getCoin() > 0){
+                viewHolder.tvMark.setBackgroundResource(R.drawable.ic_bag_mask_red);
+                viewHolder.tvMark.setText(entity.getCoin() + " 节操");
+                viewHolder.tvMark.setTextSize(TypedValue.COMPLEX_UNIT_DIP,12);
+            }else {
+                viewHolder.tvMark.setBackgroundResource(R.drawable.ic_bag_mask_green);
+                viewHolder.tvMark.setText("无料");
+                viewHolder.tvMark.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
+            }
+            viewHolder.tvNum.setText(entity.getNumber() + "项");
+            viewHolder.tvName.setText(entity.getName());
+            viewHolder.tvTime.setText(StringUtils.timeFormate(entity.getUpdateTime()));
+            viewHolder.ivSelected.setVisibility(View.GONE);
+            viewHolder.tvCreator.setText(entity.getUserName());
+            viewHolder.tvCreator.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    if(!entity.getUserId().equals(PreferenceUtils.getUUid())){
+                        Intent i = new Intent(context, NewPersonalActivity.class);
+                        i.putExtra("uuid",entity.getUserId());
+                        context.startActivity(i);
+                    }
+                }
+            });
+            viewHolder.tvBag.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i2 = new Intent(context,BagActivity.class);
+                    i2.putExtra("uuid",entity.getUserId());
+                    context.startActivity(i2);
+                }
+            });
+        }else if(mType == 12){
+            PrivateMessageItemEntity bean = (PrivateMessageItemEntity) getItem(position);
+            MsgViewHolder msgViewHolder = (MsgViewHolder) holder;
+            String path;
+            if(bean.getIcon().startsWith("http")){
+                path = bean.getIcon();
+            }else {
+                path = ApiService.URL_QINIU + bean.getIcon();
+            }
+            Glide.with(context)
+                    .load(StringUtils.getUrl(context, path, DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50),false,false))
+                    .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
+                    .placeholder(R.drawable.bg_default_circle)
+                    .error(R.drawable.bg_default_circle)
+                    .transform(new GlideCircleTransform(context))
+                    .into(msgViewHolder.ivAvatar);
+            msgViewHolder.tvName.setText(bean.getName());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            msgViewHolder.tvDate.setText(StringUtils.timeFormate(simpleDateFormat.format(bean.getUpdateTime())));
+            msgViewHolder.tvContent.setText(bean.getContent());
+            if(bean.getDot() > 0){
+                msgViewHolder.tvDot.setVisibility(View.VISIBLE);
+                msgViewHolder.tvDot.setText(bean.getDot() + "");
+            }else {
+                msgViewHolder.tvDot.setVisibility(View.GONE);
+            }
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -466,16 +664,33 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private class FollowViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView img,levelBg;
+        ImageView img;
         TextView name,content,level;
+        View ivLevelColor;
+        View rlHuiZhang1;
+        View rlHuiZhang2;
+        View rlHuiZhang3;
+        TextView tvHuiZhang1;
+        TextView tvHuiZhang2;
+        TextView tvHuiZhang3;
+        View[] huiZhangRoots;
+        TextView[] huiZhangTexts;
 
         FollowViewHolder(View itemView) {
             super(itemView);
             img = (ImageView) itemView.findViewById(R.id.iv_img);
-            levelBg = (ImageView) itemView.findViewById(R.id.iv_level_bg);
             name = (TextView) itemView.findViewById(R.id.tv_name);
+            ivLevelColor = itemView.findViewById(R.id.rl_level_bg);
             content = (TextView) itemView.findViewById(R.id.tv_content);
             level = (TextView) itemView.findViewById(R.id.tv_level);
+            tvHuiZhang1 = (TextView)itemView.findViewById(R.id.tv_huizhang_1);
+            tvHuiZhang2 = (TextView)itemView.findViewById(R.id.tv_huizhang_2);
+            tvHuiZhang3 = (TextView)itemView.findViewById(R.id.tv_huizhang_3);
+            rlHuiZhang1 = itemView.findViewById(R.id.fl_huizhang_1);
+            rlHuiZhang2 = itemView.findViewById(R.id.fl_huizhang_2);
+            rlHuiZhang3 = itemView.findViewById(R.id.fl_huizhang_3);
+            huiZhangRoots = new View[]{rlHuiZhang1,rlHuiZhang2,rlHuiZhang3};
+            huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
         }
     }
 
@@ -486,6 +701,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tvContent;
         TextView tvDocContent;
         TextView tvClubName;
+        TextView tvDot;
+
         MsgViewHolder(View itemView) {
             super(itemView);
             ivAvatar = (ImageView) itemView.findViewById(R.id.iv_creator);
@@ -494,6 +711,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tvContent = (TextView) itemView.findViewById(R.id.tv_content);
             tvDocContent = (TextView) itemView.findViewById(R.id.tv_doc_content);
             tvClubName = (TextView) itemView.findViewById(R.id.tv_club_name);
+            tvDot = (TextView) itemView.findViewById(R.id.tv_dot);
         }
     }
 
@@ -636,6 +854,54 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             content = (TextView) itemView.findViewById(R.id.tv_content);
             watch = (TextView) itemView.findViewById(R.id.tv_watch);
             time = (TextView) itemView.findViewById(R.id.tv_time);
+        }
+    }
+
+    private class SearchDocViewHolder extends RecyclerView.ViewHolder{
+
+        ImageView img;
+        TextView title,content,time,likeNum,commentNum,name,address;
+        SearchDocViewHolder(View itemView) {
+            super(itemView);
+            img = (ImageView) itemView.findViewById(R.id.iv_img);
+            title = (TextView) itemView.findViewById(R.id.tv_title);
+            content = (TextView) itemView.findViewById(R.id.tv_content);
+            time = (TextView) itemView.findViewById(R.id.tv_time);
+            likeNum = (TextView) itemView.findViewById(R.id.tv_post_pants_num);
+            commentNum = (TextView) itemView.findViewById(R.id.tv_post_comment_num);
+            name = (TextView) itemView.findViewById(R.id.tv_create_name);
+            address = (TextView) itemView.findViewById(R.id.tv_address);
+        }
+    }
+
+    private class BagItemViewHolder extends RecyclerView.ViewHolder{
+
+        TextView tvMark,tvTime,tvName,tvNum,tvCreator,tvBag;
+        ImageView ivSelected,ivBg;
+
+        View root;
+
+        public BagItemViewHolder(View itemView) {
+            super(itemView);
+            root = itemView.findViewById(R.id.rl_root);
+            tvMark = (TextView) itemView.findViewById(R.id.tv_mark);
+            tvTime = (TextView) itemView.findViewById(R.id.tv_time);
+            tvName = (TextView) itemView.findViewById(R.id.tv_name);
+            tvNum = (TextView) itemView.findViewById(R.id.tv_num);
+            tvBag = (TextView) itemView.findViewById(R.id.tv_bag);
+            tvCreator = (TextView) itemView.findViewById(R.id.tv_create_name);
+            ivBg = (ImageView) itemView.findViewById(R.id.iv_bg);
+            ivSelected = (ImageView) itemView.findViewById(R.id.iv_selected);
+            ViewGroup.MarginLayoutParams layoutParams1 = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
+            layoutParams1.height = (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2;
+            layoutParams1.width = (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2;
+            layoutParams1.topMargin = DensityUtil.dip2px(context,10);
+            layoutParams1.rightMargin = DensityUtil.dip2px(context,10);
+            root.setLayoutParams(layoutParams1);
+            ViewGroup.LayoutParams layoutParams = ivBg.getLayoutParams();
+            layoutParams.height = (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2;
+            layoutParams.width = (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2;
+            ivBg.setLayoutParams(layoutParams);
         }
     }
 }

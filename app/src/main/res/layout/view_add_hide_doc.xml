@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_hide_root"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_hide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="@dimen/size_16"
+        android:textColor="@color/main_cyan"
+        android:text="@string/label_add_hide" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_hide"
+        android:layout_alignBottom="@+id/tv_hide"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/main_red"
+        android:textSize="@dimen/size_12"
+        android:text="@string/label_use_jiecao" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_hide"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:textSize="@dimen/size_12"
+        android:textColor="@color/gray_d7d7d7"
+        android:text="@string/label_hide_info"/>
+
+    <ImageView
+        android:id="@+id/iv_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_array_right_gray"/>
+
+    <TextView
+        android:id="@+id/tv_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/iv_arrow"
+        android:textColor="@color/green_93d856"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:textSize="@dimen/size_16"
+        android:text="@string/label_added"
+        android:visibility="invisible"/>
+</RelativeLayout>

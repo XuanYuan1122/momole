@@ -34,8 +34,18 @@ public class BitmapUtils {
      */
     public static final int IMAGE_QUALITY = 80;
 
-    public static Bitmap loadThumb(String path, int width, int height, boolean isWHMaxLimit) {
-        return loadThumb(path, width, height, DEFAULT_BITMAP_CONFIG, isWHMaxLimit);
+    public static int[] getImageSize(String imagePath) {
+        int[] res = new int[2];
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        options.inSampleSize = 1;
+        BitmapFactory.decodeFile(imagePath, options);
+
+        res[0] = options.outWidth;
+        res[1] = options.outHeight;
+
+        return res;
     }
 
     public static Bitmap loadThumb(String path, int width, int height) {
@@ -125,6 +135,22 @@ public class BitmapUtils {
         }else{
             res[0] = width;
             res[1] = height;
+        }
+        return res;
+    }
+
+    public static int[] getDocIconSize(double width, double height, int widthLimit){
+        int[] res = new int[2];
+        int scale = 2;
+        // width = width * scale;
+        // height = height * scale;
+
+        if(width > widthLimit){
+            res[0] = widthLimit;
+            res[1] = (int) (height * widthLimit / width);
+        }else{
+            res[0] = (int) width;
+            res[1] = (int) height;
         }
         return res;
     }

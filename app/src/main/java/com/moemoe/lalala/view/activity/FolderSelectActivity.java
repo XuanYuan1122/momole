@@ -4,14 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagComponent;
 import com.moemoe.lalala.di.modules.BagModule;
 import com.moemoe.lalala.model.entity.BagDirEntity;
@@ -19,6 +19,8 @@ import com.moemoe.lalala.model.entity.BagEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
+import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.GridItemDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.adapter.BagAdapter;
@@ -38,11 +40,11 @@ import butterknife.BindView;
 
 public class FolderSelectActivity extends BaseAppCompatActivity implements BagContract.View{
 
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
-    @BindView(R.id.tv_title)
-    TextView mTvTitle;
-    @BindView(R.id.tv_select)
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.tv_toolbar_title)
+    TextView mTitle;
+    @BindView(R.id.tv_menu)
     TextView mTvDone;
     @BindView(R.id.rv_list)
     PullAndLoadView mListDocs;
@@ -63,17 +65,22 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
     protected void initViews(Bundle savedInstanceState) {
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mFolderId = getIntent().getStringExtra("folderId");
+        mTvDone.setVisibility(View.VISIBLE);
+        mTvDone.setText(getString(R.string.label_done));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new BagAdapter(this,false,0);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.getRecyclerView().setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         mListDocs.setLayoutManager(layoutManager);
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.getRecyclerView().addItemDecoration(new GridItemDecoration(DensityUtil.dip2px(this,10)));
+        mListDocs.setLoadMoreEnabled(false);
+        mTitle.setText("选择文件夹");
+
     }
 
     @Override
@@ -82,8 +89,14 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
     }
 
     @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
+    }
+
+    @Override
     protected void initListeners() {
-        mIvBack.setOnClickListener(new NoDoubleClickListener() {
+        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
@@ -171,7 +184,7 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
     public void loadFolderListSuccess(ArrayList<BagDirEntity> entities, boolean isPull) {
         isLoading = false;
         mListDocs.setComplete();
-        mListDocs.isLoadMoreEnabled(true);
+        mListDocs.setLoadMoreEnabled(true);
         if(isPull){
             mAdapter.setData(entities);
         }else {
@@ -211,6 +224,21 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
 
     @Override
     public void modifyFolderSuccess() {
+
+    }
+
+    @Override
+    public void onFollowOrUnFollowFolderSuccess(boolean follow) {
+
+    }
+
+    @Override
+    public void onLoadFolderSuccess(BagDirEntity entity) {
+
+    }
+
+    @Override
+    public void onLoadFolderFail() {
 
     }
 

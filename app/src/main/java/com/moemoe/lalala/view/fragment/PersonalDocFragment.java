@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.model.entity.PersonDocEntity;
@@ -58,7 +58,7 @@ public class PersonalDocFragment extends BaseFragment implements PersonalListCon
         }
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         final String id = getArguments().getString("uuid");
@@ -66,7 +66,7 @@ public class PersonalDocFragment extends BaseFragment implements PersonalListCon
         mAdapter = new PersonListAdapter(getContext(),0);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.setLoadMoreEnabled(false);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -114,12 +114,18 @@ public class PersonalDocFragment extends BaseFragment implements PersonalListCon
     }
 
     @Override
+    public void onDestroyView() {
+        mPresenter.release();
+        super.onDestroyView();
+    }
+
+    @Override
     public void onSuccess(Object o,boolean isPull) {
         isLoading = false;
         if(((ArrayList<Object>) o).size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
+            mListDocs.setLoadMoreEnabled(false);
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         mListDocs.setComplete();
         if(isPull){

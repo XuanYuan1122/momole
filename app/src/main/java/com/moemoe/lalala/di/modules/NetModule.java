@@ -3,11 +3,12 @@ package com.moemoe.lalala.di.modules;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.gson.GsonBuilder;
 import com.moemoe.lalala.BuildConfig;
 import com.moemoe.lalala.app.AppSetting;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.utils.SampleApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,10 +54,11 @@ public class NetModule {
     @Provides
     @Singleton
     public Retrofit provideRetrofit(OkHttpClient okHttpClient){
+
         Retrofit retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
                 .baseUrl(BuildConfig.DEBUG ? TextUtils.isEmpty(PreferenceUtils.getIp(mContext))? BuildConfig.BASE_URL : PreferenceUtils.getIp(mContext): BuildConfig.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         return retrofit;
@@ -65,7 +67,7 @@ public class NetModule {
     @Provides
     @Singleton
     public OkHttpClient provideOkHttpClient(Context context){
-        File cache =  SampleApplicationContext.application.getCacheDir();
+        File cache =  MoeMoeApplication.getInstance().getCacheDir();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()

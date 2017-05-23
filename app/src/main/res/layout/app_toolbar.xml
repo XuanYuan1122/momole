@@ -2,10 +2,11 @@
 <android.support.design.widget.AppBarLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:elevation="1dp"
-    android:background="@color/main_cyan"
+    android:background="@color/white"
     android:paddingTop="@dimen/status_bar_height"
     android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -13,7 +14,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="@drawable/ic_go_back"
+        app:navigationIcon="@drawable/btn_back_blue_normal"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
         <TextView
@@ -30,14 +31,6 @@
             android:gravity="center"/>
 
         <ImageView
-            android:id="@+id/iv_menu_search"
-            android:layout_height="match_parent"
-            android:layout_width="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_menu_search"
-            android:visibility="gone"/>
-
-        <ImageView
             android:id="@+id/iv_menu_list"
             android:layout_height="match_parent"
             android:layout_width="wrap_content"
@@ -48,15 +41,15 @@
         <TextView
             android:id="@+id/tv_menu"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:textSize="18dp"
-            android:text="主页"
-            android:layout_gravity="right"
+            android:text=""
+            android:layout_gravity="end"
             android:textColor="@color/white"
             android:gravity="center"
-            android:paddingRight="5dp"
-            android:visibility="gone"
-            />
+            android:layout_marginRight="@dimen/size_10"
+            android:layout_marginEnd="@dimen/size_10"
+            android:visibility="gone" />
     </android.support.v7.widget.Toolbar>
 
 </android.support.design.widget.AppBarLayout>

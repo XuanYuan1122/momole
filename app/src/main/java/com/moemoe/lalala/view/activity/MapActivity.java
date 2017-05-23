@@ -6,32 +6,37 @@ import android.animation.ValueAnimator;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.AppStatusConstant;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerMapComponent;
 import com.moemoe.lalala.di.modules.MapModule;
 import com.moemoe.lalala.dialog.SignDialog;
+import com.moemoe.lalala.event.BackSchoolEvent;
 import com.moemoe.lalala.galgame.FileManager;
 import com.moemoe.lalala.galgame.Live2DManager;
 import com.moemoe.lalala.galgame.Live2DView;
@@ -43,6 +48,7 @@ import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
 import com.moemoe.lalala.model.entity.MapMarkContainer;
 import com.moemoe.lalala.model.entity.MapMarkEntity;
+import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.model.entity.SnowShowEntity;
@@ -69,6 +75,7 @@ import com.moemoe.lalala.view.widget.map.interfaces.OnMapTilesFinishedLoadingLis
 import com.moemoe.lalala.view.widget.map.interfaces.OnMapTouchListener;
 import com.moemoe.lalala.view.widget.map.model.MapImage;
 import com.moemoe.lalala.view.widget.map.model.MapImgLayer;
+import com.moemoe.lalala.view.widget.map.model.MapObject;
 import com.moemoe.lalala.view.widget.tooltip.Tooltip;
 import com.moemoe.lalala.view.widget.tooltip.TooltipAnimation;
 import com.tencent.tinker.lib.tinker.TinkerInstaller;
@@ -76,9 +83,13 @@ import com.tencent.tinker.lib.tinker.TinkerInstaller;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import javax.inject.Inject;
@@ -86,7 +97,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import zlc.season.rxdownload.RxDownload;
 import zlc.season.rxdownload.entity.DownloadStatus;
@@ -102,11 +115,16 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private static final int MAP_SCHOOL = 0;
     private static final int MAP_SCHOOL_YORU = 1;
     private static final int MAP_SCHOOL_KILL = 2;
+    private static final int MAP_SCHOOL_BACK = 3;
 
+    @BindView(R.id.main_root)
+    RelativeLayout mMainRoot;
     @BindView(R.id.fl_map_root)
     FrameLayout mMap;
     @BindView(R.id.iv_bag)
     ImageView mIvBag;
+    @BindView(R.id.iv_search)
+    ImageView mIvSearch;
     @BindView(R.id.iv_cal)
     ImageView mIvCal;
     @BindView(R.id.iv_card)
@@ -138,25 +156,22 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     @Inject
     MapPresenter mPresenter;
     private MapWidget mapWidget;
+    private TextView mEventTv;
 
+    private boolean isGisterReciver;
     private long mLastBackTime = 0;
     private String mSchema;
     public static String updateApkName;
     private Live2DManager live2DMgr;
     private String mFuku;
     private Live2DView mLive2dView;
-    private boolean mIsSign = false;
     private boolean mIsOut = false;
-    private boolean mIsPressed = false;
-    private boolean mIsFirstIn = false;
-    private int signDay;
     private int mMapState = MAP_SCHOOL;
     private ObjectAnimator mSoundLoadAnim;
     public static long mUpdateDownloadId = Integer.MIN_VALUE;
     private MapMarkContainer mContainer;
     private ExplosionField mExplosionField;
     private boolean mIsSignPress = false;
-    private boolean debug = false;
 
     @Override
     protected int getLayoutId() {
@@ -166,14 +181,13 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     @Override
     protected void initViews(Bundle savedInstanceState) {
         AppSetting.isRunning = true;
-        mIsFirstIn = true;
         Intent intent = getIntent();
         if(intent != null){
             mSchema = intent.getStringExtra("schema");
         }
         DaggerMapComponent.builder()
                 .mapModule(new MapModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
@@ -186,43 +200,20 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mFuku = PreferenceUtils.getSelectFuku(this);
         mExplosionField = ExplosionField.attach2Window(this);
         live2DMgr = new Live2DManager(mFuku);
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        registerReceiver(mReceiver, filter);
+        if(!isGisterReciver){
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+            registerReceiver(mReceiver, filter);
+            isGisterReciver = true;
+        }
         if(NetworkUtils.isNetworkAvailable(this) && NetworkUtils.isWifi(this)){
             mPresenter.checkVersion();
         }
         if(NetworkUtils.isNetworkAvailable(this)){
             mPresenter.checkBuild(PreferenceUtils.getBuildVersion(this),AppSetting.VERSION_CODE);
         }
-        if(debug){
-            mIp.setVisibility(View.VISIBLE);
-            mIp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final EditText text = new EditText(MapActivity.this);
-                    new AlertDialog.Builder(MapActivity.this).setTitle("输入IP")
-                            .setView(text)
-                            .setPositiveButton(R.string.label_confirm, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    String coinStr = text.getText().toString();
-                                    String res = "http://" + coinStr + "/";
-                                    PreferenceUtils.setIp(MapActivity.this,res);
-                                    dialogInterface.dismiss();
-                                    showToast("设置完毕，请重启应用");
-                                }
-                            })
-                            .setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            })
-                            .show();
-                }
-            });
-        }
+        subscribeSearchChangedEvent();
+        mPresenter.getEventList();
     }
 
     private void initMap(String map){
@@ -244,15 +235,16 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mPresenter.addDayMapMark(this,mapWidget,scale);
         }else if(mMapState == MAP_SCHOOL_YORU){
             mPresenter.addNightMapMark(this,mapWidget,scale);
-        }else {
+        }else if(mMapState == MAP_SCHOOL_KILL){
             mPresenter.addNightEventMapMark(this,mapWidget,scale);
+        }else if(mMapState == MAP_SCHOOL_BACK){
+            mPresenter.addBackSchoolMapMark(this,mapWidget,scale);
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mIsFirstIn = false;
         hideBtn();
     }
 
@@ -268,7 +260,24 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         super.onResume();
         showBtn();
         if(StringUtils.isyoru()){
-            if(mMapState != MAP_SCHOOL_YORU){
+            if(StringUtils.isBackSchool()){
+                if(mMapState != MAP_SCHOOL_BACK){
+                    clearMap();
+                    mMapState = MAP_SCHOOL_BACK;
+                    initMap("map_back_school");
+                    initMapListeners();
+                    if(!PreferenceUtils.getBackSchoolDialog(this) && PreferenceUtils.getBackSchoolLevel(this) == 0){
+                        mPresenter.getServerTime();
+                    }
+                }
+            }else if(!AppSetting.isEnterEventToday && StringUtils.isKillEvent() ){
+                if(mMapState != MAP_SCHOOL_KILL){
+                    clearMap();
+                    mMapState = MAP_SCHOOL_KILL;
+                    initMap("map_kill_event");
+                    initMapListeners();
+                }
+            }else if(mMapState != MAP_SCHOOL_YORU){
                 clearMap();
                 mMapState = MAP_SCHOOL_YORU;
                 initMap("map_yoru");
@@ -282,27 +291,173 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 initMapListeners();
             }
             Layer layer = mapWidget.getLayerById(3);
+            boolean isVisible = layer.isVisible();
             if(!StringUtils.isDayEvent()){
-                layer.setVisible(false);
+                if(isVisible){
+                    layer.setVisible(false);
+                    mapWidget.invalidate();
+                }
             }else {
-                layer.setVisible(true);
+                if(!isVisible){
+                    layer.setVisible(true);
+                    mapWidget.invalidate();
+                }
             }
-            mapWidget.invalidate();
+
         }
-        if(!AppSetting.isEnterEventToday && StringUtils.isKillEvent() ){
-            if(mMapState != MAP_SCHOOL_KILL){
-                clearMap();
-                mMapState = MAP_SCHOOL_KILL;
-                initMap("map_kill_event");
-                initMapListeners();
-            }
-        }
-        showSnowman();
+        //showSnowman();
         if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
             mCardDot.setVisibility(View.VISIBLE);
         }else {
             mCardDot.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onGetTimeSuccess(Date time) {
+        try {
+            String temp = "2017-04-30 22:00:00";
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            Date checkTime = sdf.parse(temp);
+            if(time.getTime() > checkTime.getTime()){
+                showEventDialog(getString(R.string.label_enter_event),1);
+                PreferenceUtils.setBackSchoolDialog(this,true);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void getEventSuccess(ArrayList<NetaEvent> events) {
+        for (NetaEvent event : events){
+            if(event.getSign().equals("BS")){
+                if(!TextUtils.isEmpty(event.getSchedule())) PreferenceUtils.setBackSchoolLevel(this,Integer.valueOf(event.getSchedule()));
+            }
+        }
+    }
+
+    @Override
+    public void saveEventSuccess() {
+
+    }
+
+    private void showEventDialog(String content, final int type){
+        final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+        alertDialogUtil.createNormalDialog(this,content);
+        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+            @Override
+            public void CancelOnClick() {
+                alertDialogUtil.dismissDialog();
+            }
+
+            @Override
+            public void ConfirmOnClick() {
+                alertDialogUtil.dismissDialog();
+                if(type == 1){
+                    backSchoolEvent();
+                }else if(type == 2){
+                    showEventMapMark(true);
+                    AppSetting.isShowBackSchoolAll = true;
+                    PreferenceUtils.setAllBackSchool(MapActivity.this,true);
+                }
+            }
+        });
+        alertDialogUtil.showDialog();
+    }
+
+    private void backSchoolEvent(){
+        if(!mIsOut){
+            imgOut();
+            mIsOut = true;
+        }
+
+        mEventTv = new TextView(this);
+        mEventTv.setGravity(Gravity.CENTER);
+        mEventTv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mEventTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
+        mEventTv.setTextColor(Color.WHITE);
+        mEventTv.setBackgroundColor(ContextCompat.getColor(this,R.color.alph_80));
+        TextPaint paint = mEventTv.getPaint();
+        paint.setFakeBoldText(true);
+        mEventTv.setText("“我在哪儿？我是谁？”\n" + "我慌乱的从地上做了起来，周围烟雾弥漫，气氛诡异");
+        mMainRoot.addView(mEventTv);
+        mEventTv.bringToFront();
+        mEventTv.setOnClickListener(new View.OnClickListener() {
+            int i = 1;
+            @Override
+            public void onClick(View v) {
+                switch (i){
+                    case 1:
+                        mEventTv.setText("隐约记得我是在找人来着\n" + "也不知着了什么魔怔，一下什么也想不起来\n" + "“魏仲廷！对了，就是他！”");
+                        i++;
+                        break;
+                    case 2:
+                        mEventTv.setText("脑海里，隐约想起了一些\n" + "记得是一场台风，将我两个人困在了学校\n" + "和他的相识便是在这个时候");
+                        i++;
+                        break;
+                    case 3:
+                        mEventTv.setText("本来在教室说笑的我们本打算就这么过夜了\n" + "突然他说要去打电话试试能不能联系外界，便让他去了");
+                        i++;
+                        break;
+                    case 4:
+                        mEventTv.setText("他的脚步声轻声回荡，勾起我心中一丝不安\n" + "然而时间戛然停止，世界分崩离析\n" + "转眼间虚无已将我吞噬……\n" + "回过神来时……我已站在了这儿");
+                        i++;
+                        break;
+                    case 5:
+                        mEventTv.setVisibility(View.GONE);
+                        mMainRoot.removeView(mEventTv);
+                        mEventTv.setOnClickListener(null);
+                        mEventTv = null;
+                        showEventMapMark(false);
+                        break;
+                }
+            }
+        });
+    }
+
+    private void showEventMapMark(boolean showAll){
+        Layer layer = mapWidget.getLayerById(5);
+        if(layer == null){
+            return;
+        }
+        int i = PreferenceUtils.getBackSchoolLevel(this);
+        int n = layer.getMapObjectCount();
+        for(int h = 0;h < n - 1;h++){
+            MapObject mapObject = layer.getMapObjectByIndex(h);
+            if(h == i || showAll){
+                mapObject.setVisible(true);
+            }else {
+                mapObject.setVisible(false);
+            }
+        }
+        if(i > 0){
+            MapObject mapObject = layer.getMapObjectByIndex(n - 1);
+            mapObject.setVisible(true);
+        }
+        mapWidget.invalidate();
+    }
+
+    private void subscribeSearchChangedEvent() {
+        Subscription subscription = RxBus.getInstance()
+                .toObservable(BackSchoolEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Action1<BackSchoolEvent>() {
+                    @Override
+                    public void call(BackSchoolEvent event) {
+                        mPresenter.saveEvent(new NetaEvent(event.getPass()+"","BS"));
+                        showEventMapMark(false);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        RxBus.getInstance().unSubscribe(this);
+        RxBus.getInstance().addSubscription(this, subscription);
     }
 
     private void showSnowman(){
@@ -358,7 +513,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                     .maxThread(3)
                     .maxRetryCount(3)
                     .defaultSavePath(StorageUtils.getTempRootPath())
-                    .retrofit(MoeMoeApplicationLike.getInstance().getNetComponent().getRetrofit());
+                    .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
             if(!path.contains("http://") && !path.contains("https://")){
                 path = ApiService.URL_QINIU + path;
             }
@@ -434,6 +589,16 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                                         e.printStackTrace();
                                     }
                                 }
+                            }else if(entity.getId().equals("返校-人物")){
+                                int level = PreferenceUtils.getBackSchoolLevel(MapActivity.this);
+                                if(level == 5){
+                                    if(!AppSetting.isShowBackSchoolAll) showEventDialog("是否回顾剧情",2);
+                                }else {
+                                    temp += "?token=" + PreferenceUtils.getToken()
+                                            + "&full_screen";
+                                    Uri uri = Uri.parse(temp);
+                                    IntentUtils.toActivityFromUri(MapActivity.this, uri, v);
+                                }
                             }else {
                                 if(temp.contains("http://prize.moemoe.la:8000/mt")){
                                     AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
@@ -446,6 +611,13 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                                 if(temp.contains("http://neta.facehub.me/")){
                                     AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
                                     temp +="?open_id=" + authorInfo.getUserId() + "&nickname=" + authorInfo.getUserName() + "&pay_way=alipay,wx,qq"+"&full_screen";
+                                }
+                                if(temp.contains("fanxiao/final.html")){
+                                    temp += "?token=" + PreferenceUtils.getToken()
+                                            + "&full_screen";
+                                }
+                                if(temp.contains("fanxiao/paihang.html")){
+                                    temp += "?token=" + PreferenceUtils.getToken();
                                 }
                                 Uri uri = Uri.parse(temp);
                                 IntentUtils.toActivityFromUri(MapActivity.this, uri, v);
@@ -570,13 +742,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     public void changeSignState(SignEntity entity,boolean sign) {
-        if(entity != null){
-            mIsSign = entity.isCheckState();
-            signDay = entity.getDay();
-        }else {
-            mIsSign = false;
-            signDay = 0;
-        }
         if(sign) showToast(R.string.label_sign_suc);
     }
 
@@ -631,7 +796,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         ErrorCodeUtils.showErrorMsgByCode(MapActivity.this,code,msg);
     }
 
-    @OnClick({R.id.iv_bag,R.id.iv_cal,R.id.iv_card,R.id.iv_live2d,R.id.iv_square,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign})
+    @OnClick({R.id.iv_bag,R.id.iv_search,R.id.iv_cal,R.id.iv_card,R.id.iv_live2d,R.id.iv_square,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_bag:
@@ -694,6 +859,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                     mPresenter.getDailyTask();
                 }
                 break;
+            case R.id.iv_search:
+                Intent i6 = new Intent(MapActivity.this,SearchActivity.class);
+                startActivity(i6);
+                break;
         }
     }
 
@@ -722,6 +891,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",-mIvBag.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
+        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",-mIvSearch.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
+        searchAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator calAnimator = ObjectAnimator.ofFloat(mIvCal,"translationY",mIvCal.getHeight()+DensityUtil.dip2px(this,5),0).setDuration(300);
         calAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvSquare,"translationY",mIvSquare.getHeight()+DensityUtil.dip2px(this,5),0).setDuration(300);
@@ -732,7 +903,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         signAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
-        set.play(bagAnimator).with(squareAnimator);
+        set.play(bagAnimator).with(searchAnimator);
+        set.play(searchAnimator).with(squareAnimator);
         set.play(squareAnimator).with(calAnimator);
         set.play(calAnimator).with(galAnimator);
         set.play(galAnimator).with(signAnimator);
@@ -744,6 +916,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",0,-mIvBag.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
+        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",0,-mIvSearch.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
+        searchAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator calAnimator = ObjectAnimator.ofFloat(mIvCal,"translationY",0,mIvCal.getHeight()+DensityUtil.dip2px(this,5)).setDuration(300);
         calAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvSquare,"translationY",0,mIvSquare.getHeight()+DensityUtil.dip2px(this,5)).setDuration(300);
@@ -754,7 +928,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         signAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
-        set.play(bagAnimator).with(calAnimator);
+        set.play(bagAnimator).with(searchAnimator);
+        set.play(searchAnimator).with(calAnimator);
         set.play(calAnimator).with(squareAnimator);
         set.play(squareAnimator).with(galAnimator);
         set.play(galAnimator).with(signAnimator);
@@ -764,6 +939,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private void showBtn(){
         mCardRoot.setVisibility(View.VISIBLE);
         mIvBag.setVisibility(View.VISIBLE);
+        mIvSearch.setVisibility(View.VISIBLE);
         mIvCal.setVisibility(View.VISIBLE);
         mIvSquare.setVisibility(View.VISIBLE);
         mIvGal.setVisibility(View.VISIBLE);
@@ -773,6 +949,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private void hideBtn(){
         mCardRoot.setVisibility(View.INVISIBLE);
         mIvBag.setVisibility(View.INVISIBLE);
+        mIvSearch.setVisibility(View.INVISIBLE);
         mIvCal.setVisibility(View.INVISIBLE);
         mIvSquare.setVisibility(View.INVISIBLE);
         mIvGal.setVisibility(View.INVISIBLE);
@@ -814,10 +991,17 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        mPresenter.release();
         SnowShowEntity.onDestroy(this);
-        unregisterReceiver(mReceiver);
+        if(isGisterReciver){
+            unregisterReceiver(mReceiver);
+            isGisterReciver = false;
+        }
+        RxBus.getInstance().unSubscribe(this);
         AppSetting.isRunning = false;
+        SoundManager.release();
+        FileManager.release();
+        super.onDestroy();
     }
 
     protected BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -838,4 +1022,22 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             }
         }
     };
+
+    @Override
+    protected void restartApp() {
+       // super.restartApp();
+        startActivity(new Intent(this, SplashActivity.class));
+        finish();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        int action = intent.getIntExtra(AppStatusConstant.KEY_HOME_ACTION,AppStatusConstant.ACTION_BACK_TO_HOME);
+        switch (action) {
+            case AppStatusConstant.ACTION_RESTART_APP:
+                restartApp();
+                break;
+        }
+    }
 }

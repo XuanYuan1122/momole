@@ -55,12 +55,12 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                 .subscribe(new NetResultSubscriber<CommentDetailEntity>() {
                     @Override
                     public void onSuccess(CommentDetailEntity commentDetailEntity) {
-                        view.onGetDetailSuccess(commentDetailEntity);
+                        if(view != null)  view.onGetDetailSuccess(commentDetailEntity);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -73,12 +73,12 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onDeleteComment();
+                        if(view != null) view.onDeleteComment();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -92,12 +92,12 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSendComment();
+                            if(view != null) view.onSendComment();
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else {
@@ -171,19 +171,19 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                                     .subscribe(new NetSimpleResultSubscriber() {
                                         @Override
                                         public void onSuccess() {
-                                            view.onSendComment();
+                                            if(view != null) view.onSendComment();
                                         }
 
                                         @Override
                                         public void onFail(int code,String msg) {
-                                            view.onFailure(code,msg);
+                                            if(view != null) view.onFailure(code,msg);
                                         }
                                     });
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            view.onFailure(-1,"");
+                            if(view != null) view.onFailure(-1,"");
                         }
 
                         @Override
@@ -192,5 +192,10 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                         }
                     });
         }
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

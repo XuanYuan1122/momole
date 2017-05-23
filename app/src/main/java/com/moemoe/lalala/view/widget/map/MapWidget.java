@@ -2461,8 +2461,7 @@ public class MapWidget extends View implements MapLocationListener {
 	}
 	
 
-	private void updateMapTouchedEvent(MotionEvent event) 
-	{
+	private void updateMapTouchedEvent(MotionEvent event) {
 		ArrayList<ObjectTouchEvent> touchedElementIds = getTouchedElementIds(
 				(int) event.getX() + getScrollX(),
 				(int) event.getY() + getScrollY());

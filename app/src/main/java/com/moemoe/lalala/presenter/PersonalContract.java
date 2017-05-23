@@ -1,5 +1,6 @@
 package com.moemoe.lalala.presenter;
 
+import com.moemoe.lalala.model.entity.CreatePrivateMsgEntity;
 import com.moemoe.lalala.model.entity.UserInfo;
 
 /**
@@ -7,14 +8,16 @@ import com.moemoe.lalala.model.entity.UserInfo;
  */
 
 public interface PersonalContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestUserInfo(String id);
         void followUser(String id,boolean isFollow);
+        void createPrivateMsg(String userId);
     }
 
     interface View extends BaseView{
         void onLoadUserInfo(UserInfo info);
         void onFollowSuccess(boolean isFollow);
         void onLoadUserInfoFail();
+        void onCreatePrivateMsgSuccess(CreatePrivateMsgEntity entity);
     }
 }

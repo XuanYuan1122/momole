@@ -13,8 +13,6 @@ public class TagNodeEntity {
     private String id;
     @SerializedName("name")
     private String name;
-    @SerializedName("type")
-    private String type;
     @SerializedName("icon")
     private Image icon;
     @SerializedName("bg")
@@ -46,13 +44,13 @@ public class TagNodeEntity {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
+//    public String getType() {
+//        return index;
+//    }
+//
+//    public void setType(String index) {
+//        this.index = index;
+//    }
 
     public Image getIcon() {
         return icon;

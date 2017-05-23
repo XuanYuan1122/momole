@@ -8,9 +8,11 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
+import com.moemoe.lalala.event.SystemMessageEvent;
 import com.moemoe.lalala.model.entity.ReplyEntity;
 import com.moemoe.lalala.presenter.PersonaListPresenter;
 import com.moemoe.lalala.presenter.PersonalListContract;
@@ -28,6 +30,10 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/12/15.
@@ -56,13 +62,19 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
     }
 
     @Override
+    public void onDestroyView() {
+        mPresenter.release();
+        super.onDestroyView();
+    }
+
+    @Override
     protected void initViews(Bundle savedInstanceState) {
         if(savedInstanceState != null){
             return;
         }
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         final String id = getArguments().getString("uuid");
@@ -70,7 +82,7 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
         mAdapter = new PersonListAdapter(getContext(),2);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.setLoadMoreEnabled(false);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -137,6 +149,7 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
                 return false;
             }
         });
+        subscribeEvent();
         mPresenter.doRequest(id,0,4);
     }
 
@@ -145,9 +158,9 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
         isLoading = false;
         mListDocs.setComplete();
         if(((ArrayList<Object>) o).size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
+            mListDocs.setLoadMoreEnabled(false);
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         if(isPull){
             mAdapter.setData((ArrayList<Object>) o);
@@ -160,5 +173,36 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
     public void onFailure(int code,String msg) {
         isLoading = false;
         mListDocs.setComplete();
+    }
+
+    private void subscribeEvent() {
+        Subscription sysSubscription = RxBus.getInstance()
+                .toObservable(SystemMessageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Action1<SystemMessageEvent>() {
+                    @Override
+                    public void call(SystemMessageEvent event) {
+                        if(event.getType().equals("neta")){
+                            mAdapter.notifyItemChanged(1);
+                        }else if(event.getType().equals("system")){
+                            mAdapter.notifyItemChanged(0);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        RxBus.getInstance().unSubscribe(this);
+        RxBus.getInstance().addSubscription(this, sysSubscription);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus.getInstance().unSubscribe(this);
     }
 }

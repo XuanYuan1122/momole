@@ -37,11 +37,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:textColor="@color/gray_d7d7d8"
+                android:textColor="@color/gray_d7d7d7"
                 android:textSize="@dimen/size_15" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
-
-
-
 </RelativeLayout>

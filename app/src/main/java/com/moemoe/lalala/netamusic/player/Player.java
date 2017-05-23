@@ -2,7 +2,7 @@ package com.moemoe.lalala.netamusic.player;
 
 import android.media.MediaPlayer;
 
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.netamusic.data.model.PlayList;
 import com.moemoe.lalala.netamusic.data.model.Song;
 import com.moemoe.lalala.utils.CommonUtils;
@@ -48,7 +48,7 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getMusicRootPath())
-                .retrofit(MoeMoeApplicationLike.getInstance().getNetComponent().getRetrofit());
+                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     public static Player getInstance(){

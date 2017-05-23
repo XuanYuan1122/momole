@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public interface CreateDocContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void createDoc(DocPut doc,int type);
         void createUploadDoc(DocPut doc, ArrayList<String> paths,int type,int isQiu,int visibleSize,DocPut.DocPutMusic music);
     }

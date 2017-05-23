@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDepartComponent;
 import com.moemoe.lalala.di.modules.DepartModule;
 import com.moemoe.lalala.model.entity.BannerEntity;
@@ -77,7 +77,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
     protected void initViews(Bundle savedInstanceState) {
         DaggerDepartComponent.builder()
                 .departModule(new DepartModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mRoomId = "AUTUMN";
@@ -175,7 +175,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
                 go2CreateDoc(CreateNormalDocActivity.TYPE_IMG_DOC);
             }
         });
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.setLoadMoreEnabled(false);
         mListDocs.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
@@ -228,10 +228,10 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
     @Override
     public void onDocLoadSuccess(Object entity, boolean pull) {
         if(((ArrayList<DocListEntity>) entity).size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
-            ToastUtils.showCenter(this,getString(R.string.msg_all_load_down));
+            mListDocs.setLoadMoreEnabled(false);
+            ToastUtils.showShortToast(this,getString(R.string.msg_all_load_down));
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         mListDocs.setComplete();
         isLoading = false;
@@ -275,6 +275,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
 
     @Override
     protected void onDestroy() {
+        mPresenter.release();
         super.onDestroy();
     }
 
@@ -304,6 +305,8 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
             Intent intent = new Intent(QiuMingShanActivity.this, CreateNormalDocActivity.class);
             intent.putExtra(CreateNormalDocActivity.TYPE_CREATE,type);
             intent.putExtra(CreateNormalDocActivity.TYPE_QIU_MING_SHAN,1);
+            intent.putExtra("from_name","后山");
+            intent.putExtra("from_schema","neta://com.moemoe.lalala/qiu_1.0");
             startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
         }
     }

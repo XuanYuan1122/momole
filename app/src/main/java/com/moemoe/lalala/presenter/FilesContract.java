@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public interface FilesContract {
-    interface Presenter {
+    interface Presenter extends BasePresenter{
         void deleteFiles(String folderId, ArrayList<String> ids);
         void moveFiles(String folderId, MoveFileEntity entity);
         void modifyFile(String fileId,String fileName);

@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -102,7 +102,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         }
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         uuid = getArguments().getString("uuid");
@@ -112,7 +112,6 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
             mMoreBadge.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    //TODO 查看所有徽章
                     Intent i = new Intent(getContext(), BadgeActivity.class);
                     getActivity().startActivityForResult(i,REQ_BADGE);
                 }
@@ -140,6 +139,12 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
     }
 
     @Override
+    public void onDestroyView() {
+        mPresenter.release();
+        super.onDestroyView();
+    }
+
+    @Override
     public void onSuccess(Object o,boolean is) {
         entity = (PersonalMainEntity) o;
         mTvSign.setText(entity.getSignature());
@@ -162,7 +167,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         ShapeDrawable shapeDrawable = new ShapeDrawable();
         shapeDrawable.setShape(roundRectShape0);
         shapeDrawable.getPaint().setStyle(Paint.Style.FILL);
-        shapeDrawable.getPaint().setColor(ContextCompat.getColor(getContext(),R.color.gray_d7d7d8));
+        shapeDrawable.getPaint().setColor(ContextCompat.getColor(getContext(),R.color.gray_d7d7d7));
 
         Drawable[] layers = new Drawable[]{shapeDrawable,clipDrawable};
         LayerDrawable layerDrawable = new LayerDrawable(layers);

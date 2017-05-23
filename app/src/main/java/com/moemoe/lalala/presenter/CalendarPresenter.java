@@ -32,13 +32,18 @@ public class CalendarPresenter implements CalendarContract.Presenter {
                 .subscribe(new NetResultSubscriber<CalendarDayEntity>() {
                     @Override
                     public void onSuccess(CalendarDayEntity calendarDayEntity) {
-                        view.onSuccess(calendarDayEntity,pull);
+                        if(view != null) view.onSuccess(calendarDayEntity,pull);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

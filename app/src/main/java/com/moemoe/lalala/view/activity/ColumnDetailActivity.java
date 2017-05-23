@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerColumnComponent;
 import com.moemoe.lalala.di.modules.ColumnModule;
 import com.moemoe.lalala.model.entity.CalendarDayItemEntity;
@@ -78,17 +78,17 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
         String title = i.getStringExtra(EXTRA_TITLE);
         DaggerColumnComponent.builder()
                 .columnModule(new ColumnModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTvTitle.setText(title);
-        mFuturePv.isLoadMoreEnabled(false);
+        mFuturePv.setLoadMoreEnabled(false);
         mFuturePv.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mFuturePv.setLayoutManager(new LinearLayoutManager(this));
         mFutureAdapter = new ColumnDetailAdapter(this);
         mFuturePv.getRecyclerView().setAdapter(mFutureAdapter);
 
-        mPastPv.isLoadMoreEnabled(true);
+        mPastPv.setLoadMoreEnabled(true);
         mPastPv.getSwipeRefreshLayout().setEnabled(false);
         mPastPv.setLayoutManager(new LinearLayoutManager(this));
         mPastAdapter = new ColumnDetailAdapter(this);
@@ -245,6 +245,7 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
 
     @Override
     protected void onDestroy() {
+        mPresenter.release();
         super.onDestroy();
     }
 

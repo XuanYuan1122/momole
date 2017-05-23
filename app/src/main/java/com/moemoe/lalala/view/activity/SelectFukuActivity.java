@@ -11,10 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSnowComponent;
 import com.moemoe.lalala.di.modules.SnowModule;
 import com.moemoe.lalala.galgame.Live2DDefine;
@@ -33,6 +32,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
+ *
  * Created by yi on 2016/12/2.
  */
 
@@ -64,7 +64,7 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements SnowCon
     protected void initViews(Bundle savedInstanceState) {
         DaggerSnowComponent.builder()
                 .snowModule(new SnowModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mModel = PreferenceUtils.getSelectFuku(this);
@@ -73,6 +73,12 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements SnowCon
         mRvList.setLayoutManager(manager);
         mRvList.setAdapter(new FukuSelectAdapter());
         mPresenter.requestSnowInfo();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     @Override
@@ -228,7 +234,7 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements SnowCon
                             notifyDataSetChanged();
                         }
                     }else {
-                        showToast("快去升级吧", Toast.LENGTH_SHORT);
+                        showToast("快去升级吧");
                     }
 
                 }

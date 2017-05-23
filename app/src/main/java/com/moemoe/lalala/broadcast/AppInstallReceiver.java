@@ -21,7 +21,7 @@ public class AppInstallReceiver extends BroadcastReceiver {
             String packageName = intent.getDataString().split(":")[1];
             if(packageName.equals(mPackageName)){
                 PreferenceUtils.saveHaveGameFuku(context,true);
-                ToastUtils.showCenter(context,"安装成功，快去试试新衣服吧");
+                ToastUtils.showShortToast(context,"安装成功，快去试试新衣服吧");
             }
         }
     }

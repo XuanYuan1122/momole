@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
 import com.moemoe.lalala.di.modules.SimpleModule;
 import com.moemoe.lalala.model.entity.DelTagEntity;
@@ -58,7 +58,7 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
     protected void initViews(Bundle savedInstanceState) {
         DaggerSimpleComponent.builder()
                 .simpleModule(new SimpleModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mDocTags = getIntent().getParcelableArrayListExtra("tags");
@@ -67,6 +67,8 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
             finish();
             return;
         }
+        mTvDone.setVisibility(View.VISIBLE);
+        mTvDone.setText(getString(R.string.label_done));
         mDelId = new ArrayList<>();
         mTvTitle.setText("管理标签");
         mRvList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
@@ -76,13 +78,19 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
         mRvList.getRecyclerView().setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         mRvList.setLayoutManager(layoutManager);
-        mRvList.isLoadMoreEnabled(false);
+        mRvList.setLoadMoreEnabled(false);
         mRvList.getSwipeRefreshLayout().setEnabled(false);
     }
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     @Override

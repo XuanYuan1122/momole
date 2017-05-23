@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 
 public interface CommentListContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void doRequest(int index,String userId);
         void sendComment(CommentListSendEntity entity);
     }

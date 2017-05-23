@@ -38,7 +38,7 @@
         android:layout_marginLeft="18dp"
         android:layout_marginStart="18dp"
         android:padding="@dimen/size_1"
-        android:background="@drawable/shape_white_10">
+        android:background="@drawable/shape_white_5">
 
         <RelativeLayout
             android:id="@+id/rl_level_bg"
@@ -81,7 +81,9 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/iv_comment_creator"
         android:layout_alignLeft="@+id/iv_comment_creator"
+        android:layout_alignStart="@+id/iv_comment_creator"
         android:layout_alignRight="@+id/iv_comment_creator"
+        android:layout_alignEnd="@+id/iv_comment_creator"
         android:layout_alignTop="@+id/iv_comment_creator"
         android:layout_marginBottom="-3dp"
         android:layout_marginLeft="-2dp"
@@ -95,8 +97,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
         android:layout_marginTop="16dp"
         android:layout_toRightOf="@+id/iv_comment_creator"
+        android:layout_toEndOf="@+id/iv_comment_creator"
         android:text=""
         android:textColor="@color/txt_creator"
         android:textSize="@dimen/size_15" />
@@ -110,6 +114,7 @@
         android:layout_toEndOf="@+id/tv_comment_creator_name"
         android:layout_marginTop="@dimen/size_1"
         android:layout_marginLeft="@dimen/size_5"
+        android:layout_marginStart="@dimen/size_5"
         android:layout_gravity="center_horizontal"
         android:visibility="invisible">
 
@@ -137,6 +142,7 @@
         android:layout_toRightOf="@+id/fl_huizhang_1"
         android:layout_toEndOf="@+id/fl_huizhang_1"
         android:layout_marginLeft="@dimen/size_5"
+        android:layout_marginStart="@dimen/size_5"
         android:layout_gravity="center_horizontal"
         android:visibility="invisible">
 
@@ -164,6 +170,7 @@
         android:layout_toRightOf="@+id/fl_huizhang_2"
         android:layout_toEndOf="@+id/fl_huizhang_2"
         android:layout_marginLeft="@dimen/size_5"
+        android:layout_marginStart="@dimen/size_5"
         android:layout_gravity="center_horizontal"
         android:visibility="invisible">
 
@@ -187,7 +194,7 @@
         android:id="@+id/tv_floor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/gray_d7d7d8"
+        android:textColor="@color/gray_d7d7d7"
         android:textSize="@dimen/size_12"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -203,6 +210,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tv_comment_creator_name"
+        android:layout_alignStart="@+id/tv_comment_creator_name"
         android:layout_below="@+id/tv_comment_creator_name"
         android:layout_marginTop="3dp"
         android:text="00:00"
@@ -218,6 +226,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
         android:layout_alignLeft="@+id/tv_comment_creator_name"
+        android:layout_alignStart="@+id/tv_comment_creator_name"
         android:text=""
         android:textColor="@color/gray_595e64"
         android:textSize="@dimen/size_15" />
@@ -227,6 +236,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="13dp"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
@@ -251,6 +261,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_alignLeft="@+id/tv_comment_creator_name"
+        android:layout_alignStart="@+id/tv_comment_creator_name"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:visibility="gone">

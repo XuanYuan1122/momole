@@ -204,7 +204,7 @@ public static java.lang.String TABLENAME;
    public *;
 }
 
--keepclassmembers class com.moemoe.lalala.webview.CustomWebView$NetaPay{
+-keepclassmembers class com.moemoe.lalala.webview.CustomWebView$NetaJs{
    public *;
 }
 #避免混淆泛型 如果混淆报错建议关掉
@@ -217,7 +217,7 @@ public static java.lang.String TABLENAME;
 ## Application classes that will be serialized/deserialized over Gson
 #-keep class com.google.gson.examples.android.model.** { *; }
 ##---------------Begin: proguard configuration for Gson  ----------
-# Gson uses generic type information stored in a class file when working with fields. Proguard
+# Gson uses generic index information stored in a class file when working with fields. Proguard
 # removes such information by default, so configure it to keep all of it.
 -keepattributes Signature
 -keepattributes Exceptions
@@ -232,6 +232,8 @@ public static java.lang.String TABLENAME;
 
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.moemoe.lalala.model.entity.** { *; }
+-keep class com.moemoe.lalala.greendao.gen.**{ *; }
+-keep class com.moemoe.lalala.utils.MigrationHelper{ *; }
 
 ##---------------End: proguard configuration for Gson  ----------
 

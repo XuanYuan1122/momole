@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBadgeComponent;
 import com.moemoe.lalala.di.modules.BadgeModule;
 import com.moemoe.lalala.model.entity.BadgeEntity;
@@ -34,8 +34,6 @@ import butterknife.BindView;
  */
 
 public class BadgeActivity extends BaseAppCompatActivity implements BadgeContract.View{
-
-    private static int MAX_SELECT = 3;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -64,17 +62,18 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
     protected void initViews(Bundle savedInstanceState) {
         DaggerBadgeComponent.builder()
                 .badgeModule(new BadgeModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTvTitle.setText("我的徽章");
         mTvDone.setText("保存");
+        mTvDone.setVisibility(View.VISIBLE);
         mTvAll.setVisibility(View.VISIBLE);
         mRvList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new PersonListAdapter(this,5);
         mRvList.getRecyclerView().setAdapter(mAdapter);
         mRvList.setLayoutManager(new LinearLayoutManager(this));
-        mRvList.isLoadMoreEnabled(false);
+        mRvList.setLoadMoreEnabled(false);
         mCurType = 0;
 
     }
@@ -132,9 +131,6 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
             public void onNoDoubleClick(View v) {
                 HashMap<Integer,BadgeEntity> hashMap = mAdapter.getCurSelectNum();
                 ArrayList<String> ids = new ArrayList<>();
-//                for (BadgeEntity set : hashMap.keySet()){
-//                    ids.add(set.getId());
-//                }
                 for(int i = 1;i <= hashMap.size();i++){
                     BadgeEntity set = hashMap.get(i);
                     ids.add(set.getId());
@@ -216,9 +212,9 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
         isLoading = false;
         mRvList.setComplete();
         if(entities.size() == 0){
-            mRvList.isLoadMoreEnabled(false);
+            mRvList.setLoadMoreEnabled(false);
         }else {
-            mRvList.isLoadMoreEnabled(true);
+            mRvList.setLoadMoreEnabled(true);
         }
         if(pull){
             mAdapter.setData(entities);
@@ -232,9 +228,9 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
         isLoading = false;
         mRvList.setComplete();
         if(entities.size() == 0){
-            mRvList.isLoadMoreEnabled(false);
+            mRvList.setLoadMoreEnabled(false);
         }else {
-            mRvList.isLoadMoreEnabled(true);
+            mRvList.setLoadMoreEnabled(true);
         }
         if(pull){
             mAllAdapter.setData(entities);
@@ -287,5 +283,11 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
         entity.setRank(0);
         mAllAdapter.notifyItemChanged(position);
         mAdapter.addData(0,entity);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

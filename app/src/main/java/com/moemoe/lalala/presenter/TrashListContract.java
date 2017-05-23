@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public interface TrashListContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void doRequest(int index, String type,int list_type);
     }
 

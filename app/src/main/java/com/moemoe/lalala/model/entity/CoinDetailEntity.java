@@ -13,6 +13,8 @@ public class CoinDetailEntity {
     private String createTime;
     @SerializedName("type")
     private String type;
+    @SerializedName("schema")
+    private String schema;
 
     public int getCoin() {
         return coin;
@@ -36,5 +38,13 @@ public class CoinDetailEntity {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 }

@@ -156,7 +156,11 @@ public class PullAndLoadView extends FrameLayout {
         this.mLoadMoreOffset = mLoadMoreOffset;
     }
 
-    public void isLoadMoreEnabled(boolean mIsLoadMoreEnabled) {
+    public void setLoadMoreEnabled(boolean mIsLoadMoreEnabled) {
         this.mIsLoadMoreEnabled = mIsLoadMoreEnabled;
+    }
+
+    public boolean isLoadMoreEnabled(){
+        return mIsLoadMoreEnabled;
     }
 }

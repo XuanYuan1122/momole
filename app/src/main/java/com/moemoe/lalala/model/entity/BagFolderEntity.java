@@ -16,12 +16,14 @@ public class BagFolderEntity {
         public String cover;
         public String name;
         public long size;
+        public String readType;
 
-        public FolderInfo(int coin, String cover, String name,long size) {
+        public FolderInfo(int coin, String cover, String name,long size,String readType) {
             this.coin = coin;
             this.cover = cover;
             this.name = name;
             this.size = size;
+            this.readType = readType;
         }
 
         public FolderInfo(){

@@ -85,6 +85,7 @@ public class MusicLoader {
 
             }while(cursor.moveToNext());
         }
+        contentResolver = null;
     }
 //
 //    // 查找sdcard卡上的所有歌曲信息

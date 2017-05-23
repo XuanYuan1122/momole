@@ -27,7 +27,7 @@ public class AlertDialogUtil {
     private OnClickListener onClickListener;
     private OnItemClickListener onItemClickListener;
     private Button confirm, cancel;
-    private Button item1,item2,item3;
+    private Button item1,item2,item3,item4;
     private EditText editText;
     private Context context;
 
@@ -128,6 +128,7 @@ public class AlertDialogUtil {
         item1 = (Button) contentView.findViewById(R.id.btn_item_1);
         item2 = (Button) contentView.findViewById(R.id.btn_item_2);
         item3 = (Button) contentView.findViewById(R.id.btn_item_3);
+        item4 = (Button) contentView.findViewById(R.id.btn_item_4);
     }
 
     public void createNormalDialog(Context context,String content){
@@ -273,6 +274,14 @@ public class AlertDialogUtil {
                 }
             });
         }
+        if(item4 != null){
+            item4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onItemClick(3);
+                }
+            });
+        }
     }
 
     public void showDialog() {
@@ -285,7 +294,20 @@ public class AlertDialogUtil {
     public void dismissDialog() {
         if (this.dialog != null && this.dialog.isShowing()) {
             this.dialog.dismiss();
+            this.context = null;
             this.dialog = null;
+            alertDialogUtil = null;
+            dialog = null;
+            view = null;
+            onClickListener = null;
+            onItemClickListener = null;
+            confirm = null;
+            cancel = null;
+            item1 = null;
+            item2 = null;
+            item3 = null;
+            item4 = null;
+            editText = null;
         }
     }
 

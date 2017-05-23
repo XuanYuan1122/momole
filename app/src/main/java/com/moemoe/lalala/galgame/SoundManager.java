@@ -20,7 +20,7 @@ public class SoundManager {
         context=c;
 
         soundPool = new SoundPool( 50, AudioManager.STREAM_MUSIC, 0 );
-        soundList=new HashMap<String ,Integer>();
+        soundList=new HashMap<>();
     }
 
     static public void load(String path) {
@@ -44,5 +44,6 @@ public class SoundManager {
     static public void release() {
         soundList.clear();
         soundPool.release();
+        context = null;
     }
 }

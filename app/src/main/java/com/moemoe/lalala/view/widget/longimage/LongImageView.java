@@ -13,10 +13,14 @@
 package com.moemoe.lalala.view.widget.longimage;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.ViewGroup.LayoutParams;
 
 public class LongImageView extends LargeImageView {
+
+	private String path;
+	private Bitmap bitmap;
 
 	public LongImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
 		super(context, attrs, defStyleAttr, defStyleRes);
@@ -50,5 +54,21 @@ public class LongImageView extends LargeImageView {
 		LayoutParams layoutParams = getLayoutParams();
 		layoutParams.height = (int) (1.0f * imageHeight * layoutWidth / imageWidth);
 		setLayoutParams(layoutParams);
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public Bitmap getBitmap() {
+		return bitmap;
+	}
+
+	public void setBitmap(Bitmap bitmap) {
+		this.bitmap = bitmap;
 	}
 }

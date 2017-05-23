@@ -10,7 +10,7 @@ import java.util.HashMap;
  */
 
 public interface BagFavoriteContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void getFavoriteList(int index);
         void deleteFavoriteList(HashMap<Integer,BagDirEntity> map);
     }

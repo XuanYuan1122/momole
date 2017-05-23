@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.entity.EventDataEntity;
 import com.moemoe.lalala.model.entity.OldSimpleResult;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -442,7 +442,7 @@ public class EventActivity extends BaseAppCompatActivity implements View.OnClick
     }
 
     private void requestCount(){
-        MoeMoeApplicationLike.getInstance().getNetComponent().getApiService().getUrl("http://prize.moemoe.la:8000/principal_samsara")
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().getUrl("http://prize.moemoe.la:8000/principal_samsara")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<OldSimpleResult>() {

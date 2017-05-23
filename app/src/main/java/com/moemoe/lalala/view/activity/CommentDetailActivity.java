@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCommentDetailComponent;
 import com.moemoe.lalala.di.modules.CommentDetailModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -39,6 +39,7 @@ import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.presenter.CommentDetailContract;
 import com.moemoe.lalala.presenter.CommentDetailPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -70,6 +71,8 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.tv_toolbar_title)
+    TextView mTvToolbarTitle;
     @BindView(R.id.ll_doc)
     View mDocRoot;
     @BindView(R.id.tv_title)
@@ -86,8 +89,6 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
     TextView mTvContent;
     @BindView(R.id.iv_club_owner_flag)
     View mIvOwnerFlag;
-    @BindView(R.id.iv_comment_open)
-    ImageView mIvOpsOpen;
     @BindView(R.id.rl_level_bg)
     View mIvLevelColor;
     @BindView(R.id.tv_level)
@@ -128,7 +129,6 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
     private int mType;
     private NewCommentEntity mCommentEntity;
     private SelectImgAdapter mSelectAdapter;
-    private ArrayList<Image> mImages ;
     private ArrayList<String> mIconPaths = new ArrayList<>();
 
     @Override
@@ -138,17 +138,18 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerCommentDetailComponent.builder()
                 .commentDetailModule(new CommentDetailModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-
         mSchema = getIntent().getStringExtra("schema");
         if(TextUtils.isEmpty(mSchema)){
             finish();
             return;
         }
+        mTvToolbarTitle.setText("回复");
         mCommentId = getIntent().getStringExtra("commentId");
         mDocId = mSchema.substring(mSchema.lastIndexOf("?") + 1);
         mType = -1;
@@ -156,7 +157,6 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
         huiZhangRoots = new View[]{rlHuiZhang1,rlHuiZhang2,rlHuiZhang3};
         huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
         mFloor.setVisibility(View.GONE);
-        mImages = new ArrayList<>();
         mSelectAdapter = new SelectImgAdapter(this);
         LinearLayoutManager selectRvL = new LinearLayoutManager(this);
         selectRvL.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -517,12 +517,12 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
                     ClipboardManager cmb = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData mClipData = ClipData.newPlainText("回复内容", content);
                     cmb.setPrimaryClip(mClipData);
-                    ToastUtils.showCenter(CommentDetailActivity.this, getString(R.string.label_level_copy_success));
+                    ToastUtils.showShortToast(CommentDetailActivity.this, getString(R.string.label_level_copy_success));
                     return false;
                 }
             });
         }else {
-            mTvContent.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d8));
+            mTvContent.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
         }
         mIvCreator.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -583,5 +583,11 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
     public void onFailure(int code, String msg) {
         finalizeDialog();
         ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

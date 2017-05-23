@@ -3,7 +3,8 @@ package com.moemoe.lalala.greendao.gen;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.github.yuweiguocn.library.greendao.MigrationHelper;
+import com.moemoe.lalala.utils.MigrationHelper;
+
 
 /**
  * Created by yi on 2017/1/22.
@@ -17,6 +18,10 @@ public class MySQLiteOpenHelper extends DaoMaster.OpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-       // MigrationHelper.migrate(db, AuthorInfoDao.class);
+        try {
+            MigrationHelper.migrate(db, AuthorInfoDao.class,PrivateMessageItemEntityDao.class,ChatContentDbEntityDao.class,ChatUserEntityDao.class,GroupUserEntityDao.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

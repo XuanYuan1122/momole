@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 
 public interface ClubPostContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestClubData(String tagId);
         void requestDocList(int index);
     }

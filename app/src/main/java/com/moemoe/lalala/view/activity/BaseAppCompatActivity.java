@@ -1,21 +1,24 @@
 package com.moemoe.lalala.view.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
+import com.moemoe.lalala.app.AppStatusConstant;
+import com.moemoe.lalala.app.AppStatusManager;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * base activity
@@ -26,6 +29,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     protected ProgressDialog mDialog;
     public static final String UUID = "uuid";
     public ProgressBar mProgressBar;
+    private Unbinder bind;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,12 +37,26 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             savedInstanceState.putParcelable("android:support:fragments", null);
         }
         super.onCreate(savedInstanceState);
-        this.setContentView(this.getLayoutId());
-        ButterKnife.bind(this);
-        this.initToolbar(savedInstanceState);
-        this.initViews(savedInstanceState);
-        this.initData();
-        this.initListeners();
+        this.getWindow().setBackgroundDrawable(null);//移除默认背景，避免overdraw
+        switch (AppStatusManager.getInstance().getAppStatus()) {
+            case AppStatusConstant.STATUS_FORCE_KILLED:
+                restartApp();
+                break;
+            case AppStatusConstant.STATUS_NORMAL:
+                this.setContentView(this.getLayoutId());
+                bind = ButterKnife.bind(this);
+                this.initToolbar(savedInstanceState);
+                this.initViews(savedInstanceState);
+                this.initData();
+                this.initListeners();
+                break;
+        }
+    }
+
+    protected void restartApp() {
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.putExtra(AppStatusConstant.KEY_HOME_ACTION,AppStatusConstant.ACTION_RESTART_APP);
+        startActivity(intent);
     }
 
     /**
@@ -70,32 +88,34 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     protected abstract void initData();
 
     public void showToast(String msg) {
-        this.showToast(msg, Toast.LENGTH_SHORT);
+        ToastUtils.showShortToast(this,msg);
+        //this.showToast(msg, Toast.LENGTH_SHORT);
     }
 
 
-    public void showToast(String msg, int duration) {
-        if (msg == null) return;
-        if (duration == Toast.LENGTH_SHORT || duration == Toast.LENGTH_LONG) {
-            ToastUtils.show(this, msg, duration);
-        } else {
-            ToastUtils.show(this, msg, ToastUtils.LENGTH_SHORT);
-        }
-    }
+//    public void showToast(String msg, int duration) {
+//        if (msg == null) return;
+//        if (duration == Toast.LENGTH_SHORT || duration == Toast.LENGTH_LONG) {
+//            ToastUtils.show(this, msg, duration);
+//        } else {
+//            ToastUtils.show(this, msg, ToastUtils.LENGTH_SHORT);
+//        }
+//    }
 
 
     public void showToast(int resId) {
-        this.showToast(resId, Toast.LENGTH_SHORT);
+        ToastUtils.showShortToast(this,resId);
+      //  this.showToast(resId, Toast.LENGTH_SHORT);
     }
 
 
-    public void showToast(int resId, int duration) {
-        if (duration == Toast.LENGTH_SHORT || duration == Toast.LENGTH_LONG) {
-            ToastUtils.show(this, resId, duration);
-        } else {
-            ToastUtils.show(this, resId, ToastUtils.LENGTH_SHORT);
-        }
-    }
+//    public void showToast(int resId, int duration) {
+//        if (duration == Toast.LENGTH_SHORT || duration == Toast.LENGTH_LONG) {
+//            ToastUtils.show(this, resId, duration);
+//        } else {
+//            ToastUtils.show(this, resId, ToastUtils.LENGTH_SHORT);
+//        }
+//    }
 
     public void createDialog(String message) {
         if (this.isFinishing())
@@ -133,6 +153,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(bind != null) bind.unbind();
     }
 
     @Override

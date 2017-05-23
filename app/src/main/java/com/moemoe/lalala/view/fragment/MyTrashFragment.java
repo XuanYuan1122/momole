@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerTrashListComponent;
 import com.moemoe.lalala.di.modules.TrashListModule;
 import com.moemoe.lalala.model.entity.TrashEntity;
@@ -51,7 +51,7 @@ public class MyTrashFragment extends BaseFragment implements TrashListContract.V
     protected void initViews(Bundle savedInstanceState) {
         DaggerTrashListComponent.builder()
                 .trashListModule(new TrashListModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mType = getArguments().getString(TrashFavoriteActivity.EXTRA_TYPE);
@@ -61,7 +61,7 @@ public class MyTrashFragment extends BaseFragment implements TrashListContract.V
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.getRecyclerView().setHasFixedSize(true);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.setLoadMoreEnabled(false);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -102,6 +102,12 @@ public class MyTrashFragment extends BaseFragment implements TrashListContract.V
             }
         });
         mPresenter.doRequest(0,mType,mListType);
+    }
+
+    @Override
+    public void onDestroyView() {
+        mPresenter.release();
+        super.onDestroyView();
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.GlideRoundTransform;
 import com.moemoe.lalala.utils.StringUtils;
 
@@ -176,9 +177,9 @@ public class BagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }else if(entity.getType().equals("music")){
                 viewHolder.mMusicRoot.setVisibility(View.VISIBLE);
-                viewHolder.ivMusic.setVisibility(View.VISIBLE);
+                viewHolder.ivMusic.setVisibility(View.INVISIBLE);
                 Glide.with(mContext)
-                        .load(R.drawable.bg_green)
+                        .load(R.drawable.bg_bag_music)
                         .override((DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2)
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
@@ -186,6 +187,29 @@ public class BagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         .into(viewHolder.ivImg);
                 viewHolder.tvMusicName.setText(entity.getFileName());
                 viewHolder.tvMusicTime.setText(getMinute(entity.getAttr().get("timestamp").getAsInt()));
+            }else if(entity.getType().equals("txt")){
+                viewHolder.mMusicRoot.setVisibility(View.VISIBLE);
+                viewHolder.ivMusic.setVisibility(View.INVISIBLE);
+                Glide.with(mContext)
+                        .load(R.drawable.bg_bag_word)
+                        .override((DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2)
+                        .placeholder(R.drawable.bg_default_square)
+                        .error(R.drawable.bg_default_square)
+                        .centerCrop()
+                        .into(viewHolder.ivImg);
+                viewHolder.tvMusicName.setText(entity.getFileName());
+                viewHolder.tvMusicTime.setText(FileUtil.formatFileSizeToString(entity.getAttr().get("size").getAsLong()));
+            }else {
+                viewHolder.mMusicRoot.setVisibility(View.VISIBLE);
+                viewHolder.ivMusic.setVisibility(View.INVISIBLE);
+                Glide.with(mContext)
+                        .load(R.drawable.bg_bag_unknow)
+                        .override((DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2)
+                        .placeholder(R.drawable.bg_default_square)
+                        .error(R.drawable.bg_default_square)
+                        .centerCrop()
+                        .into(viewHolder.ivImg);
+                viewHolder.tvMusicName.setText(entity.getFileName());
             }
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -234,8 +258,8 @@ public class BagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ViewGroup.MarginLayoutParams layoutParams1 = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
             layoutParams1.height = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
             layoutParams1.width = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
-            layoutParams1.topMargin = DensityUtil.dip2px(mContext,10);
-            layoutParams1.rightMargin = DensityUtil.dip2px(mContext,10);
+//            layoutParams1.topMargin = DensityUtil.dip2px(mContext,10);
+//            layoutParams1.rightMargin = DensityUtil.dip2px(mContext,10);
             root.setLayoutParams(layoutParams1);
         }
     }
@@ -259,8 +283,8 @@ public class BagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ViewGroup.MarginLayoutParams layoutParams1 = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
             layoutParams1.height = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
             layoutParams1.width = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
-            layoutParams1.topMargin = DensityUtil.dip2px(mContext,10);
-            layoutParams1.rightMargin = DensityUtil.dip2px(mContext,10);
+//            layoutParams1.topMargin = DensityUtil.dip2px(mContext,10);
+//            layoutParams1.rightMargin = DensityUtil.dip2px(mContext,10);
             root.setLayoutParams(layoutParams1);
             ViewGroup.LayoutParams layoutParams = ivBg.getLayoutParams();
             layoutParams.height = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
@@ -287,8 +311,8 @@ public class BagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ViewGroup.MarginLayoutParams layoutParams1 = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
             layoutParams1.height = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
             layoutParams1.width = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
-            layoutParams1.topMargin = DensityUtil.dip2px(mContext,10);
-            layoutParams1.rightMargin = DensityUtil.dip2px(mContext,10);
+//            layoutParams1.topMargin = DensityUtil.dip2px(mContext,10);
+//            layoutParams1.rightMargin = DensityUtil.dip2px(mContext,10);
             root.setLayoutParams(layoutParams1);
             ViewGroup.LayoutParams layoutParams = ivImg.getLayoutParams();
             layoutParams.height = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;

@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public interface BadgeContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestMyBadge(int index);
         void requestAllBadge(int index);
         void saveBadge(ArrayList<String> ids);

@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <!--new color-->
+    <color name="gray_444444">#444444</color>
+    <color name="black_1e1e1e">#1e1e1e</color>
+
     <color name="alph_30">#30000000</color>
     <color name="alph_60">#60000000</color>
     <color name="alph_80">#80000000</color>
@@ -13,6 +17,7 @@
     <color name="white_20">#20ffffff</color>
     <color name="white_50">#50ffffff</color>
     <color name="white_70">#70ffffff</color>
+    <color name="white_95">#95ffffff</color>
     <color name="black">#000000</color>
     <color name="main_cyan">#42beec</color>
     <color name="main_cyan_90">#f042beec</color>
@@ -29,11 +34,14 @@
     <color name="gray_c1c1c1">#c1c1c1</color>
     <color name="gray_d9dbdc">#d9dBdC</color>
     <color name="gray_aaaaaa">#aaaaaa</color>
-    <color name="gray_d7d7d8">#d7d7d8</color>
+    <color name="gray_d7d7d7">#d7d7d7</color>
     <color name="gray_dbdbdb">#dbdbdb</color>
     <color name="gray_595e64">#595E64</color>
     <color name="gray_f6f6f6">#f6f6f6</color>
     <color name="gray_383d40">#383d40</color>
+    <color name="gray_4b5052">#4b5052</color>
+    <color name="gray_bcbcbc">#bcbcbc</color>
+    <color name="gray_e8e8e8">#e8e8e8</color>
     <color name="bg_f2f2f3">#f2f2f3</color>
     <color name="green_93d856">#93D856</color>
     <color name="green_7ebf40">#7EBF40</color>
@@ -41,6 +49,7 @@
     <color name="orange_ed853e">#ED853E</color>
     <color name="orange_f6d27b">#F6D27B</color>
     <color name="orange_fd9f00">#FD9F00</color>
+    <color name="orange_f2cc2c">#f2cc2c</color>
     <color name="red_cc6666">#CC6666</color>
     <color name="blue_24c6bd">#24C6BD</color>
     <color name="blue_39d8d8">#39D8D8</color>
@@ -51,6 +60,7 @@
     <color name="yellow_f2cc2c">#F2CC2C</color>
     <color name="yellow_ddb922">#DDB922</color>
     <color name="purple_cd8add">#cd8add</color>
+
     <color name="event_background">#1e1e1e</color>
     <color name="default_shadow_color">#30000000</color>
     <color name="date_picker_text_normal">#ff999999</color>
@@ -62,6 +72,7 @@
     <color name="calendar_header">#ff999999</color>
     <color name="default_bg">#4B5052</color>
 
+    <color name="chapter_content_night">#444444</color>
     <color name="list_selector_normal">#00000000</color>
     <color name="list_selector_pressed">#dddddd</color>
     <color name="list_selector_long_pressed">#cccccc</color>

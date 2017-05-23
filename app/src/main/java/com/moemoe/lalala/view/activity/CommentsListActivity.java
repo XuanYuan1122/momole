@@ -1,6 +1,7 @@
 package com.moemoe.lalala.view.activity;
 
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -11,13 +12,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCommentListComponent;
 import com.moemoe.lalala.di.modules.CommentListModule;
 import com.moemoe.lalala.model.entity.CommentListSendEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.presenter.CommentListContract;
 import com.moemoe.lalala.presenter.CommentListPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
@@ -68,12 +70,14 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerCommentListComponent.builder()
                 .commentListModule(new CommentListModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         uuid = getIntent().getStringExtra(UUID);
+        mKlCommentBoard.setVisibility(View.VISIBLE);
         mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setText(getString(R.string.label_liuyan,0));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
@@ -81,6 +85,7 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
         mListDocs.getRecyclerView().setHasFixedSize(true);
+        mListDocs.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
         mEdtCommentInput.setHint("输入留言");
         mTvSendComment.setEnabled(false);
     }
@@ -220,9 +225,9 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
         mIsLoading = false;
         mListDocs.setComplete();
         if(entities.size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
+            mListDocs.setLoadMoreEnabled(false);
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         if(pull){
             mAdapter.setData(entities);
@@ -242,5 +247,11 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
         mToUserId = "";
         mEdtCommentInput.setHint(R.string.a_hint_input_comment);
         mEdtCommentInput.setText("");
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

@@ -59,6 +59,16 @@ public class CropAvatarActivity extends BaseAppCompatActivity implements View.On
 
         if(!TextUtils.isEmpty(mRawPath)){
             Bitmap raw = BitmapUtils.loadThumb(mRawPath, 1600, 1600);
+//            Glide.with(this)
+//                    .load(mRawPath)
+//                    .asBitmap()
+//                    .override(1600,1600)
+//                    .into(new SimpleTarget<Bitmap>() {
+//                        @Override
+//                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                            mCropAvatar.setImageBitmap(resource);
+//                        }
+//                    });
             mCropAvatar.setImageBitmap(raw);
             mCropedPath = StorageUtils.getIconByFileName(System.currentTimeMillis() + new File(mRawPath).getName());
            // mCropedPath = StorageUtils.getIconByFileName(System.currentTimeMillis() + "");

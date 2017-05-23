@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import com.moemoe.lalala.BuildConfig;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDetailComponent;
 import com.moemoe.lalala.di.modules.DetailModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -102,12 +102,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     ImageView mIvMenu;
     @BindView(R.id.rv_img)
     RecyclerView mRvComment;
-    @BindView(R.id.iv_add_img)
-    ImageView mIvAddImg;
     @BindView(R.id.tv_only_host)
     TextView mTvOnlyHost;
-    @BindView(R.id.iv_cancel_jump)
-    ImageView mIvCancelJump;
     @BindView(R.id.tv_jump_to)
     TextView mTvJumpTo;
     @BindView(R.id.ll_jump_root)
@@ -149,7 +145,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     protected void initViews(Bundle savedInstanceState) {
         DaggerDetailComponent.builder()
                 .detailModule(new DetailModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTvTitle.setText("");
@@ -162,7 +158,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mShareTitle = "";
         mShareIcon = "";
         mIvMenu.setVisibility(View.VISIBLE);
-        mList.isLoadMoreEnabled(false);
+        mList.setLoadMoreEnabled(false);
         mList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new DocRecyclerViewAdapter(this);
         mList.getRecyclerView().setAdapter(mAdapter);
@@ -230,7 +226,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(!isFinishing()) Glide.with(NewDocDetailActivity.this).resumeRequests();
+                   // if(!isFinishing()) Glide.with(NewDocDetailActivity.this).resumeRequests();
                     int pos = recyclerViewHelper.findFirstVisibleItemPosition();
                     if(pos >= 0){
                         Object o = mAdapter.getItem(pos);
@@ -243,7 +239,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                         }
                     }
                 } else {
-                    if(!isFinishing()) Glide.with(NewDocDetailActivity.this).pauseRequests();
+                  //  if(!isFinishing()) Glide.with(NewDocDetailActivity.this).pauseRequests();
                 }
             }
         });
@@ -267,6 +263,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     Intent i = new Intent(NewDocDetailActivity.this,FolderActivity.class);
                     i.putExtra("info",entity);
                     i.putExtra("position",position);
+                    i.putExtra("show_more",true);
                     i.putExtra(UUID, entity.getUserId());
                     startActivityForResult(i,REQ_TO_FOLDER);
                 }
@@ -279,7 +276,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     ClipboardManager cmb = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
                     ClipData mClipData = ClipData.newPlainText("绅士内容", (String) o);
                     cmb.setPrimaryClip(mClipData);
-                    ToastUtils.showCenter(NewDocDetailActivity.this, "复制成功");
+                    ToastUtils.showShortToast(NewDocDetailActivity.this, "复制成功");
                 }
             }
         });
@@ -442,7 +439,23 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     private void deleteDoc(){
         if(NetworkUtils.checkNetworkAndShowError(this)){
-            mPresenter.deleteDoc(mDocId);
+            final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+            alertDialogUtil.createPromptNormalDialog(this, getString( R.string.label_delete_confirm));
+            alertDialogUtil.setButtonText(getString(R.string.label_confirm), getString(R.string.label_cancel),0);
+            alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                @Override
+                public void CancelOnClick() {
+                    alertDialogUtil.dismissDialog();
+                }
+
+                @Override
+                public void ConfirmOnClick() {
+                    mPresenter.deleteDoc(mDocId);
+                    alertDialogUtil.dismissDialog();
+                }
+            });
+            alertDialogUtil.showDialog();
+
         }
     }
 
@@ -547,9 +560,10 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        mPresenter.release();
         mAdapter.releaseAdapter();
         PreferenceUtils.saveDocCurFloor(this,mDocId,mCurFloor);
+        super.onDestroy();
     }
 
     @Override
@@ -667,7 +681,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             boolean change = data.getBooleanExtra("change",false);
             int position = data.getIntExtra("position",-1);
             BagDirEntity entity = data.getParcelableExtra("info");
-            if(change){
+            if(entity != null && change){
                 if(position != -1){
                     Object o = mAdapter.getItem(position);
                     ((BagDirEntity)o).setBuy(entity.isBuy());
@@ -865,7 +879,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     public void onDocLoaded(DocDetailEntity entity) {
         mIsLoading = false;
         mList.setComplete();
-        mList.isLoadMoreEnabled(true);
+        mList.setLoadMoreEnabled(true);
         mCommentNum = entity.getComments();
         hasLoaded = true;
         mUserName = entity.getUserName();

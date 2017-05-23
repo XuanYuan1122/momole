@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 
 public interface ColumnContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestFutureFresh(String barId,int index);
         void requestPastFresh(String barId,int index);
     }

@@ -11,12 +11,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
 import com.moemoe.lalala.di.modules.SimpleModule;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.CountryCode;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
@@ -69,9 +70,10 @@ public class FindPasswordActivity extends BaseAppCompatActivity implements Simpl
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerSimpleComponent.builder()
                 .simpleModule(new SimpleModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTitle.setText(R.string.label_find_password);
@@ -143,6 +145,12 @@ public class FindPasswordActivity extends BaseAppCompatActivity implements Simpl
             }
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     @OnClick({R.id.tv_tab_phone,R.id.tv_tab_email,R.id.tv_country_code,R.id.tv_to_next})

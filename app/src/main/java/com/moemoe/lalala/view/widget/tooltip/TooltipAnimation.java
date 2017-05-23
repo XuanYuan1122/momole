@@ -64,7 +64,7 @@ public class TooltipAnimation {
     /**
      * Create a new Animation object for {@link Tooltip}
      * <br/>
-     * type {@link #DEFAULT_TYPE}
+     * index {@link #DEFAULT_TYPE}
      * <br/>
      * duration {@link #DEFAULT_DURATION}
      */

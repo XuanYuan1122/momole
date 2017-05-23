@@ -53,6 +53,8 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by yi on 2016/12/2.
@@ -309,6 +311,8 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     holder.vDocSep.setVisibility(View.GONE);
                 }
 
+                holder.tvCreatorName.setText(post.getUserName());
+                holder.tvLevel.setText(String.valueOf(post.getUserLevel()));
                 int radius1 = DensityUtil.dip2px(context,5);
                 float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
                 RoundRectShape roundRectShape1 = new RoundRectShape(outerR1, null, null);
@@ -317,8 +321,24 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 shapeDrawable1.getPaint().setStyle(Paint.Style.FILL);
                 shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(post.getUserLevelColor(), ContextCompat.getColor(context, R.color.main_cyan)));
                 holder.mLevelRoot.setBackgroundDrawable(shapeDrawable1);
-                holder.tvLevel.setText(String.valueOf(post.getUserLevel()));
-                holder.tvCreatorName.setText(post.getUserName());
+                Observable.range(0,3)
+                        .subscribe(new Subscriber<Integer>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(Integer i) {
+                                holder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
+                                holder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
+                            }
+                        });
                 if(post.getBadgeList().size() > 0){
                     int size = 3;
                     if(post.getBadgeList().size() < 3){
@@ -343,12 +363,6 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(badgeEntity.getColor(), ContextCompat.getColor(context, R.color.main_cyan)));
                         holder.huiZhangRoots[i].setBackgroundDrawable(shapeDrawable2);
                     }
-                }else {
-                    for (int i = 0;i < 3;i++){
-                        holder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
-                        holder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
-                    }
-
                 }
                 if(holder.ivCreatorAvatar != null){
                     Glide.with(context)

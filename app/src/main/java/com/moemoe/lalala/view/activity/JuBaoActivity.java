@@ -9,13 +9,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
 import com.moemoe.lalala.di.modules.SimpleModule;
 import com.moemoe.lalala.model.entity.DelCommentEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -69,9 +70,10 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerSimpleComponent.builder()
                 .simpleModule(new SimpleModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mTvTitle.setText(R.string.label_jubao);
@@ -133,6 +135,12 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     @Override

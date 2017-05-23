@@ -34,9 +34,9 @@ public class SettingPresenter implements SettingContract.Presenter {
                     @Override
                     public void onSuccess(AppUpdateEntity appUpdateEntity) {
                         if(appUpdateEntity.getUpdateStatus() != 0){
-                            view.showUpdateDialog(appUpdateEntity);
+                            if(view != null) view.showUpdateDialog(appUpdateEntity);
                         }else {
-                            view.noUpdate();
+                            if(view != null) view.noUpdate();
                         }
                     }
 
@@ -54,12 +54,12 @@ public class SettingPresenter implements SettingContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.logoutSuccess();
+                        if(view != null) view.logoutSuccess();
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -77,8 +77,10 @@ public class SettingPresenter implements SettingContract.Presenter {
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.modifySecretFail(type);
-                            view.onFailure(code,msg);
+                            if(view != null) {
+                                view.modifySecretFail(type);
+                                view.onFailure(code, msg);
+                            }
                         }
                     });
         }else if(type == 1) {
@@ -92,8 +94,10 @@ public class SettingPresenter implements SettingContract.Presenter {
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.modifySecretFail(type);
-                            view.onFailure(code,msg);
+                            if(view != null) {
+                                view.modifySecretFail(type);
+                                view.onFailure(code, msg);
+                            }
                         }
                     });
         }else if(type == 2){
@@ -107,10 +111,38 @@ public class SettingPresenter implements SettingContract.Presenter {
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.modifySecretFail(type);
-                            view.onFailure(code,msg);
+                            if(view != null) {
+                                view.modifySecretFail(type);
+                                view.onFailure(code, msg);
+                            }
                         }
                     });
         }
+    }
+
+    @Override
+    public void shieldUser(boolean shield, String talkId) {
+        apiService.ignoreUser(talkId,shield)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) {
+                            view.shieldUserFail();
+                            view.onFailure(code, msg);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

@@ -37,7 +37,7 @@ public class NetworkUtils {
             ((Activity)context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ToastUtils.showCenter(context, context.getString(R.string.msg_connection));
+                    ToastUtils.showShortToast(context, context.getString(R.string.msg_connection));
                 }
             });
             return false;

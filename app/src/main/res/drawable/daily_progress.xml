@@ -4,7 +4,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="@dimen/size_10" />
-            <solid android:color="@color/gray_d7d7d8" />
+            <solid android:color="@color/gray_d7d7d7" />
         </shape>
     </item>
     <!-- 第二条进度条颜色 -->

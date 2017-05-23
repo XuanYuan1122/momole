@@ -3,7 +3,6 @@ package com.moemoe.lalala.model.entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 /**
@@ -24,7 +23,6 @@ public class AuthorInfo {
     private int coin;
     private String userName;
     private int level;
-    @Transient
     private boolean openBag;
 
     public AuthorInfo(){
@@ -41,10 +39,10 @@ public class AuthorInfo {
         openBag = false;
     }
 
-    @Generated(hash = 1013327685)
+    @Generated(hash = 669657143)
     public AuthorInfo(long id, String headPath, String userId, String openId,
             String platform, String token, String password, String phone, int coin,
-            String userName, int level) {
+            String userName, int level, boolean openBag) {
         this.id = id;
         this.headPath = headPath;
         this.userId = userId;
@@ -56,6 +54,7 @@ public class AuthorInfo {
         this.coin = coin;
         this.userName = userName;
         this.level = level;
+        this.openBag = openBag;
     }
 
     public long getId() {

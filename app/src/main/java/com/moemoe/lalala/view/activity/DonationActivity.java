@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDonationComponent;
 import com.moemoe.lalala.di.modules.DonationModule;
 import com.moemoe.lalala.model.entity.DonationInfoEntity;
@@ -75,14 +75,14 @@ public class DonationActivity extends BaseAppCompatActivity implements DonationC
     protected void initViews(Bundle savedInstanceState) {
         DaggerDonationComponent.builder()
                 .donationModule(new DonationModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mRvList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new DonationAdapter(this,0);
         mRvList.getRecyclerView().setAdapter(mAdapter);
         mRvList.setLayoutManager(new LinearLayoutManager(this));
-        mRvList.isLoadMoreEnabled(false);
+        mRvList.setLoadMoreEnabled(false);
     }
 
     @Override
@@ -209,7 +209,7 @@ public class DonationActivity extends BaseAppCompatActivity implements DonationC
     public void updateDonationBook(DonationInfoEntity entity,boolean pull) {
         mIsLoading = false;
         mRvList.setComplete();
-        mRvList.isLoadMoreEnabled(true);
+        mRvList.setLoadMoreEnabled(true);
         if (entity.getMyRank() == 0) {
             mTvBookMyDonation.setVisibility(View.GONE);
             tvBookMyRank.setVisibility(View.GONE);
@@ -232,5 +232,11 @@ public class DonationActivity extends BaseAppCompatActivity implements DonationC
         mIsLoading = false;
         mRvList.setComplete();
         ErrorCodeUtils.showErrorMsgByCode(DonationActivity.this,code,msg);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

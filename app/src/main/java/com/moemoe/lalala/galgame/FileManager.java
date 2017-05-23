@@ -40,4 +40,8 @@ public class FileManager {
     public static InputStream open_resource(String path ) throws IOException {
         return context.getAssets().open(path) ;
     }
+
+    static public void release() {
+        context = null;
+    }
 }

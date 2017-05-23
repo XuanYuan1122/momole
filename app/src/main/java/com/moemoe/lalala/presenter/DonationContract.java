@@ -7,7 +7,7 @@ import com.moemoe.lalala.model.entity.DonationInfoEntity;
  */
 
 public interface DonationContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void requestDonationInfo();
         void donationCoin(long num);
         void requestDonationBookInfo(int index);

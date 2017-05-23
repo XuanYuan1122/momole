@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 
 public interface TrashContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void getTrashList(int type,int time);
         void operationTrash(String id,boolean fun);
         void favoriteTrash(TrashEntity entity,String type);

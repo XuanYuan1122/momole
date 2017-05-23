@@ -20,6 +20,8 @@ public class DocTagEntity implements Parcelable{
     @SerializedName("liked")
     private  boolean liked;
 
+    private boolean isEdit;
+
     public String getId() {
         return id;
     }
@@ -52,6 +54,14 @@ public class DocTagEntity implements Parcelable{
         this.liked = liked;
     }
 
+    public boolean isEdit() {
+        return isEdit;
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,6 +77,7 @@ public class DocTagEntity implements Parcelable{
             image.name = bundle.getString("name");
             image.liked = bundle.getBoolean("liked");
             image.likes = bundle.getLong("likes");
+            image.isEdit = bundle.getBoolean("isEdit");
             return image;
         }
 
@@ -83,6 +94,7 @@ public class DocTagEntity implements Parcelable{
         bundle.putString("name",name);
         bundle.putLong("likes", likes);
         bundle.putBoolean("liked", liked);
+        bundle.putBoolean("isEdit",isEdit);
         dest.writeBundle(bundle);
     }
 }

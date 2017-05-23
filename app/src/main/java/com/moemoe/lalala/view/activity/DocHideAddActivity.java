@@ -7,13 +7,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -41,12 +44,14 @@ public class DocHideAddActivity extends BaseAppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.tv_toolbar_title)
+    TextView mToolbarTitle;
+    @BindView(R.id.tv_menu)
+    TextView mToolbarMenu;
     @BindView(R.id.edt_content)
     EditText mEdtContent;
     @BindView(R.id.rv_img)
     RecyclerView mRvSelectImg;
-    @BindView(R.id.tv_menu)
-    TextView mTvDone;
     private String mContent;
     private int mContentRemain;
     private SelectImgAdapter mSelectAdapter;
@@ -54,16 +59,24 @@ public class DocHideAddActivity extends BaseAppCompatActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_add_hide_doc;
+        return R.layout.ac_create_doc_normal;
     }
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
+        mContent = getIntent().getStringExtra("hide_content");
+        mIconPaths.addAll(getIntent().getStringArrayListExtra("hide_paths"));
         LinearLayoutManager selectRvL = new LinearLayoutManager(this);
         selectRvL.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mToolbarTitle.setText(getString(R.string.label_hide_area));
+        mToolbarMenu.setVisibility(View.VISIBLE);
+        mToolbarMenu.setText(getString(R.string.label_done));
         mRvSelectImg.setLayoutManager(selectRvL);
         mSelectAdapter = new SelectImgAdapter(this);
         mRvSelectImg.setAdapter(mSelectAdapter);
+        if(!TextUtils.isEmpty(mContent)) mEdtContent.setText(mContent);
+        onGetPhotos();
     }
 
     @Override
@@ -77,6 +90,19 @@ public class DocHideAddActivity extends BaseAppCompatActivity {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
+            }
+        });
+        mEdtContent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // 解决scrollView中嵌套EditText导致不能上下滑动的问题
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_UP:
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                return false;
             }
         });
         mEdtContent.addTextChangedListener(new TextWatcher() {
@@ -98,7 +124,7 @@ public class DocHideAddActivity extends BaseAppCompatActivity {
                 mContent = s.toString();
             }
         });
-        mTvDone.setOnClickListener(new NoDoubleClickListener() {
+        mToolbarMenu.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 done();
@@ -157,6 +183,7 @@ public class DocHideAddActivity extends BaseAppCompatActivity {
             showToast(R.string.msg_create_doc_9_jpg);
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQ_GET_EDIT_VERSION_IMG || requestCode == REQ_GET_EDIT_VERSION_IMG_2) {
@@ -209,6 +236,7 @@ public class DocHideAddActivity extends BaseAppCompatActivity {
             });
         }
     }
+
     private void onGetPhotos() {
         mSelectAdapter.setData(mIconPaths);
     }

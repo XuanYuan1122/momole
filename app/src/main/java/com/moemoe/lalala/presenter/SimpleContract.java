@@ -5,7 +5,7 @@ package com.moemoe.lalala.presenter;
  */
 
 public interface SimpleContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void doRequest(Object data,int type);
     }
 

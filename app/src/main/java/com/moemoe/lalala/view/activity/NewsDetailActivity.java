@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.model.entity.NetaMsgEntity;
@@ -39,8 +39,6 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
     PullAndLoadView mListDocs;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.tv_menu)
-    TextView mTvDone;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
 
@@ -59,7 +57,7 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
     protected void initViews(Bundle savedInstanceState) {
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mType = getIntent().getStringExtra("tab");
@@ -67,7 +65,6 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
             finish();
             return;
         }
-        mTvDone.setVisibility(View.GONE);
         if(mType.equals("user")){
             mTvTitle.setText("系统通知");
         }else if(mType.equals("system")){
@@ -78,6 +75,12 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     @Override
@@ -92,7 +95,7 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
         mAdapter = new PersonListAdapter(this,9);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.setLoadMoreEnabled(false);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -144,9 +147,9 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
         isLoading = false;
         mListDocs.setComplete();
         if(((ArrayList<Object>) o).size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
+            mListDocs.setLoadMoreEnabled(false);
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         if(isPull){
             mAdapter.setData((ArrayList<Object>) o);

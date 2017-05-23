@@ -93,7 +93,7 @@
                 <TextView
                     android:layout_width="30dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/shape_rect_label_green"
+                    android:background="@drawable/shape_rect_border_green_5"
                     android:textColor="@color/white"
                     android:text="66"
                     android:gravity="center"
@@ -119,7 +119,7 @@
                 <TextView
                     android:layout_width="30dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/shape_rect_label_green"
+                    android:background="@drawable/shape_rect_border_green_5"
                     android:textColor="@color/white"
                     android:text="168"
                     android:gravity="center"
@@ -145,7 +145,7 @@
                 <TextView
                     android:layout_width="30dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/shape_rect_label_green"
+                    android:background="@drawable/shape_rect_border_green_5"
                     android:textColor="@color/white"
                     android:text="233"
                     android:gravity="center"
@@ -171,7 +171,7 @@
                 <TextView
                     android:layout_width="30dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/shape_rect_label_green"
+                    android:background="@drawable/shape_rect_border_green_5"
                     android:textColor="@color/white"
                     android:text="444"
                     android:gravity="center"
@@ -206,7 +206,7 @@
                 <TextView
                     android:layout_width="30dp"
                     android:layout_height="15dp"
-                    android:background="@drawable/shape_rect_label_green"
+                    android:background="@drawable/shape_rect_border_green_5"
                     android:textColor="@color/white"
                     android:text="648"
                     android:gravity="center"

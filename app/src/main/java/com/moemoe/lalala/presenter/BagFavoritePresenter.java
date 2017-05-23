@@ -36,12 +36,12 @@ public class BagFavoritePresenter implements BagFavoriteContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<BagDirEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<BagDirEntity> entities) {
-                        view.loadListSuccess(entities,index == 0);
+                        if(view != null) view.loadListSuccess(entities,index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -58,13 +58,18 @@ public class BagFavoritePresenter implements BagFavoriteContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.deleteSuccess();
+                        if(view != null) view.deleteSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

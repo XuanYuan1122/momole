@@ -72,14 +72,6 @@ public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
                 }
             }
         }
-//        else if(layoutManager instanceof LinearLayoutManager){
-//            if(pos == childCount - 1){
-//                return true;
-//            }else {
-//                return false;
-//            }
-//        }
-//        return false;
         return -1;
     }
 

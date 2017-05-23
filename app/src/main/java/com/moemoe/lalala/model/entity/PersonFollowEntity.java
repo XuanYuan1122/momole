@@ -2,6 +2,8 @@ package com.moemoe.lalala.model.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by yi on 2016/12/15.
  */
@@ -21,6 +23,8 @@ public class PersonFollowEntity {
     private String userLevelName;
     @SerializedName("userName")
     private String userName;
+    @SerializedName("badgeList")
+    private ArrayList<BadgeEntity> badgeList;
 
     public String getSignature() {
         return signature;
@@ -76,5 +80,13 @@ public class PersonFollowEntity {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public ArrayList<BadgeEntity> getBadgeList() {
+        return badgeList;
+    }
+
+    public void setBadgeList(ArrayList<BadgeEntity> badgeList) {
+        this.badgeList = badgeList;
     }
 }

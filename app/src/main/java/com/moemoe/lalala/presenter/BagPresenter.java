@@ -8,6 +8,7 @@ import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
 import com.moemoe.lalala.model.entity.BagFolderEntity;
 import com.moemoe.lalala.model.entity.BagModifyEntity;
+import com.moemoe.lalala.model.entity.BookEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
@@ -61,14 +62,14 @@ public class BagPresenter implements BagContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.openOrModifyBagSuccess();
+                            if(view != null) view.openOrModifyBagSuccess();
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
-                    }); ;
+                    });
         }else {
             apiService.requestQnFileKey(suffix)
                     .subscribeOn(Schedulers.io())
@@ -125,12 +126,12 @@ public class BagPresenter implements BagContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.openOrModifyBagSuccess();
+                            if(view != null) view.openOrModifyBagSuccess();
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }
@@ -144,12 +145,12 @@ public class BagPresenter implements BagContract.Presenter {
                 .subscribe(new NetResultSubscriber<BagEntity>() {
                     @Override
                     public void onSuccess(BagEntity entity) {
-                        view.loadBagInfoSuccess(entity);
+                        if(view != null) view.loadBagInfoSuccess(entity);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -162,18 +163,18 @@ public class BagPresenter implements BagContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<BagDirEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<BagDirEntity> entities) {
-                        view.loadFolderListSuccess(entities,index == 0);
+                        if(view != null) view.loadFolderListSuccess(entities,index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
 
     @Override
-    public void createFolder(final String folderName, final int coin, final Image cover, final ArrayList<Object> items) {
+    public void createFolder(final String folderName, final int coin, final Image cover, final ArrayList<Object> items, final String readType) {
         final ArrayList<NewUploadEntity> entities = new ArrayList<>();
         final ArrayList<Integer> range = new ArrayList<>();
         final ArrayList<UploadResultEntity> resList = new ArrayList<>();
@@ -186,6 +187,9 @@ public class BagPresenter implements BagContract.Presenter {
             }else if(o instanceof MusicLoader.MusicInfo){
                 MusicLoader.MusicInfo info = (MusicLoader.MusicInfo) o;
                 entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(info.getUrl())),FileUtil.getExtensionName(info.getUrl())));
+            }else if(o instanceof BookEntity){
+                BookEntity entity = (BookEntity) o;
+                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
             }
             range.add(range.size());
         }
@@ -213,6 +217,9 @@ public class BagPresenter implements BagContract.Presenter {
                                                 uploadResultEntity.setFilePath(((MusicLoader.MusicInfo) o).getUrl());
                                                 uploadResultEntity.setType("music");
                                                 uploadResultEntity.setMusicTime(((MusicLoader.MusicInfo) o).getDuration());
+                                            }else if(o instanceof BookEntity){
+                                                uploadResultEntity.setFilePath(((BookEntity) o).getPath());
+                                                uploadResultEntity.setType("txt");
                                             }
                                         }
                                         return uploadResultEntity;
@@ -253,6 +260,9 @@ public class BagPresenter implements BagContract.Presenter {
                                                     }else if(uploadResultEntity.getType().equals("music")){
                                                         String attr = "{\"timestamp\":" + uploadResultEntity.getMusicTime() + "}";
                                                         entity.setAttr(attr);
+                                                    }else if(uploadResultEntity.getType().equals("txt")){
+                                                        String attr = "{\"size\":"+ file.length() +"}";
+                                                        entity.setAttr(attr);
                                                     }
                                                     subscriber.onNext(entity);
                                                     subscriber.onCompleted();
@@ -290,25 +300,25 @@ public class BagPresenter implements BagContract.Presenter {
                                 .subscribe(new NetSimpleResultSubscriber() {
                                     @Override
                                     public void onSuccess() {
-                                        view.createFolderSuccess();
+                                        if(view != null) view.createFolderSuccess();
                                     }
 
                                     @Override
                                     public void onFail(int code, String msg) {
-                                        view.onFailure(code, msg);
+                                        if(view != null) view.onFailure(code, msg);
                                     }
                                 });
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        view.onFailure(-1,"");
+                        if(view != null) view.onFailure(-1,"");
                     }
 
                     @Override
                     public void onNext(UploadResultEntity uploadResultEntity) {
                         if(uploadResultEntity.getType().equals("cover")){
-                            resFolder.setFolderInfo(new BagFolderEntity.FolderInfo(coin,uploadResultEntity.getPath(),folderName,uploadResultEntity.getSize()));
+                            resFolder.setFolderInfo(new BagFolderEntity.FolderInfo(coin,uploadResultEntity.getPath(),folderName,uploadResultEntity.getSize(),readType));
                         }else {
                             resList.add(uploadResultEntity);
                         }
@@ -317,25 +327,26 @@ public class BagPresenter implements BagContract.Presenter {
     }
 
     @Override
-    public void modifyFolder(final String folderId, final String folderName, final int coin, final Image cover,long size) {
+    public void modifyFolder(final String folderId, final String folderName, final int coin, final Image cover, long size, final String readType) {
         if(!cover.getPath().startsWith("/")){
             BagFolderEntity.FolderInfo info = new BagFolderEntity.FolderInfo();
             info.size = size;
             info.coin = coin;
             info.cover = cover.getPath();
             info.name = folderName;
+            info.readType = readType;
             apiService.modifyFolder(folderId,info)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.modifyFolderSuccess();
+                            if(view != null) view.modifyFolderSuccess();
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code, msg);
+                            if(view != null) view.onFailure(code, msg);
                         }
                     });
         }else {
@@ -402,19 +413,19 @@ public class BagPresenter implements BagContract.Presenter {
                                     .subscribe(new NetSimpleResultSubscriber() {
                                         @Override
                                         public void onSuccess() {
-                                            view.modifyFolderSuccess();
+                                            if(view != null) view.modifyFolderSuccess();
                                         }
 
                                         @Override
                                         public void onFail(int code, String msg) {
-                                            view.onFailure(code, msg);
+                                            if(view != null) view.onFailure(code, msg);
                                         }
                                     });
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            view.onFailure(-1,"");
+                            if(view != null) view.onFailure(-1,"");
                         }
 
                         @Override
@@ -423,6 +434,7 @@ public class BagPresenter implements BagContract.Presenter {
                             info.coin = coin;
                             info.cover = uploadResultEntity.getPath();
                             info.name = folderName;
+                            info.readType = readType;
                         }
                     });
         }
@@ -438,6 +450,9 @@ public class BagPresenter implements BagContract.Presenter {
             }else if(o instanceof MusicLoader.MusicInfo){
                 MusicLoader.MusicInfo info = (MusicLoader.MusicInfo) o;
                 entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(info.getUrl())),FileUtil.getExtensionName(info.getUrl())));
+            }else if(o instanceof BookEntity){
+                BookEntity entity = (BookEntity) o;
+                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
             }
         }
         apiService.checkMd5(entities)
@@ -459,6 +474,9 @@ public class BagPresenter implements BagContract.Presenter {
                                             uploadResultEntity.setFilePath(((MusicLoader.MusicInfo) o).getUrl());
                                             uploadResultEntity.setType("music");
                                             uploadResultEntity.setMusicTime(((MusicLoader.MusicInfo) o).getDuration());
+                                        }else if(o instanceof BookEntity){
+                                            uploadResultEntity.setFilePath(((BookEntity) o).getPath());
+                                            uploadResultEntity.setType("txt");
                                         }
                                         return uploadResultEntity;
                                     }
@@ -498,6 +516,9 @@ public class BagPresenter implements BagContract.Presenter {
                                                     }else if(uploadResultEntity.getType().equals("music")){
                                                         String attr = "{\"timestamp\":" + uploadResultEntity.getMusicTime() + "}";
                                                         entity.setAttr(attr);
+                                                    }else if(uploadResultEntity.getType().equals("txt")){
+                                                        String attr = "{\"size\":"+ file.length() +"}";
+                                                        entity.setAttr(attr);
                                                     }
                                                     subscriber.onNext(entity);
                                                     subscriber.onCompleted();
@@ -534,19 +555,19 @@ public class BagPresenter implements BagContract.Presenter {
                                 .subscribe(new NetSimpleResultSubscriber() {
                                     @Override
                                     public void onSuccess() {
-                                        view.uploadFolderSuccess();
+                                        if(view != null) view.uploadFolderSuccess();
                                     }
 
                                     @Override
                                     public void onFail(int code, String msg) {
-                                        view.onFailure(code, msg);
+                                        if(view != null) view.onFailure(code, msg);
                                     }
                                 });
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        view.onFailure(-1,"");
+                        if(view != null) view.onFailure(-1,"");
                     }
 
                     @Override
@@ -564,12 +585,12 @@ public class BagPresenter implements BagContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<FileEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<FileEntity> folderItemEntities) {
-                        view.loadFolderItemListSuccess(folderItemEntities,index == 0);
+                        if(view != null) view.loadFolderItemListSuccess(folderItemEntities,index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -582,12 +603,12 @@ public class BagPresenter implements BagContract.Presenter {
                 .subscribe(new NetResultSubscriber<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        view.onCheckSize(aBoolean);
+                        if(view != null) view.onCheckSize(aBoolean);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -600,12 +621,12 @@ public class BagPresenter implements BagContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onBuyFolderSuccess();
+                        if(view != null) view.onBuyFolderSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -618,15 +639,74 @@ public class BagPresenter implements BagContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.deleteFolderSuccess();
+                        if(view != null) view.deleteFolderSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
 
+    @Override
+    public void followFolder(String folderId) {
+        apiService.followFolder(folderId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view != null) view.onFollowOrUnFollowFolderSuccess(true);
+                    }
 
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void unFollowFolder(String folderId) {
+        ArrayList<String> id = new ArrayList<>();
+        id.add(folderId);
+        apiService.deleteBagFollowList(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view != null) view.onFollowOrUnFollowFolderSuccess(false);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void getFolder(String userId, String folderId) {
+        apiService.getFolder(userId,folderId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<BagDirEntity>() {
+                    @Override
+                    public void onSuccess(BagDirEntity entity) {
+                        if(view != null) view.onLoadFolderSuccess(entity);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onLoadFolderFail();
+                    }
+                });
+    }
+
+    @Override
+    public void release() {
+        view = null;
+    }
 }

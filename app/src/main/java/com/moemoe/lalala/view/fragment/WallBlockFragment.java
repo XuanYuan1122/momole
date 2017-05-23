@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCommentComponent;
 import com.moemoe.lalala.di.modules.CommentModule;
 import com.moemoe.lalala.model.entity.WallBlock;
@@ -46,7 +46,7 @@ public class WallBlockFragment extends BaseFragment implements CommentContract.V
     protected void initViews(Bundle savedInstanceState) {
         DaggerCommentComponent.builder()
                 .commentModule(new CommentModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
@@ -97,7 +97,7 @@ public class WallBlockFragment extends BaseFragment implements CommentContract.V
         mList.setComplete();
         if(((ArrayList<WallBlock>) entities).size() == 0){
             mList.isLoadMoreEnabled(false);
-            ToastUtils.showCenter(getContext(),getString(R.string.msg_all_load_down));
+            ToastUtils.showShortToast(getContext(),getString(R.string.msg_all_load_down));
         }else {
             mList.isLoadMoreEnabled(true);
         }
@@ -114,5 +114,11 @@ public class WallBlockFragment extends BaseFragment implements CommentContract.V
     @Override
     public void onChangeSuccess(Object entities) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.release();
     }
 }

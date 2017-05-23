@@ -11,12 +11,14 @@ import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.CalendarDayEntity;
 import com.moemoe.lalala.model.entity.CalendarDayItemEntity;
+import com.moemoe.lalala.model.entity.ChatContentEntity;
 import com.moemoe.lalala.model.entity.CodeEntity;
 import com.moemoe.lalala.model.entity.CoinDetailEntity;
 import com.moemoe.lalala.model.entity.CommentDetailEntity;
 import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
 import com.moemoe.lalala.model.entity.CommentListSendEntity;
 import com.moemoe.lalala.model.entity.CommentSendEntity;
+import com.moemoe.lalala.model.entity.CreatePrivateMsgEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
 import com.moemoe.lalala.model.entity.DelCommentEntity;
 import com.moemoe.lalala.model.entity.DelTagEntity;
@@ -33,6 +35,7 @@ import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.model.entity.ModifyEntity;
 import com.moemoe.lalala.model.entity.MoveFileEntity;
+import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
@@ -43,6 +46,8 @@ import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.RegisterEntity;
 import com.moemoe.lalala.model.entity.ReplyEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
+import com.moemoe.lalala.model.entity.SearchEntity;
+import com.moemoe.lalala.model.entity.SendPrivateMsgEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.model.entity.SnowEntity;
 import com.moemoe.lalala.model.entity.SnowInfo;
@@ -59,6 +64,7 @@ import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.model.entity.WallBlock;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -82,6 +88,9 @@ public interface ApiService {
     int LENGHT = 20;
     String SHARE_BASE = "http://2333.moemoe.la/share/doc/";
     String SHARE_BASE_DEBUG = "http:/183.131.152.216:8088/share/doc/";
+
+    @GET("api/sys/getTime")
+    Observable<ApiResult<Date>> getServerTime();
 
     @GET
     Observable<OldSimpleResult> getUrl(@Url String url);
@@ -130,13 +139,13 @@ public interface ApiService {
     @POST("api/upload/{suffix}")
     Observable<ApiResult<UploadEntity>> requestQnFileKey(@Path("suffix") String suffix);
 
-    @POST("api/doc/add")
+    @POST("api/doc/addV2")
     Observable<ApiResult> createNormalDoc(@Body DocPut doc);
 
-    @POST("api/doc/addAutumn")
+    @POST("api/doc/addAutumnV2")
     Observable<ApiResult> createQiuMingShanDoc(@Body DocPut doc);
 
-    @POST("api/doc/addSwimPool")
+    @POST("api/doc/addSwimPoolV2")
     Observable<ApiResult> createSwimPoolDoc(@Body DocPut doc);
 
     @GET("api/classroom/banner")
@@ -410,6 +419,9 @@ public interface ApiService {
     @POST("api/bag/favorites")
     Observable<ApiResult<ArrayList<BagDirEntity>>> getBagFavoriteList(@Query("size")int size,@Query("index")int index);
 
+    @POST("api/bag/follows")
+    Observable<ApiResult<ArrayList<BagDirEntity>>> getBagFollowList(@Query("size")int size,@Query("index")int index);
+
     @POST("api/bag/favorite/delete")
     Observable<ApiResult> deleteBagFavoriteList(@Body ArrayList<String> ids);
 
@@ -418,6 +430,12 @@ public interface ApiService {
 
     @POST("api/bag/folder/{folderId}/buy")
     Observable<ApiResult> buyFolder(@Path("folderId")String folderId);
+
+    @POST("api/bag/folder/{folderId}/follow")
+    Observable<ApiResult> followFolder(@Path("folderId")String folderId);
+
+    @POST("api/bag/follow/delete")
+    Observable<ApiResult> deleteBagFollowList(@Body ArrayList<String> ids);
 
     @POST("api/bag/folder/delete")
     Observable<ApiResult> deleteFolders(@Body ArrayList<String> folderIds);
@@ -448,4 +466,40 @@ public interface ApiService {
 
     @GET("api/user/getNetaMsg")
     Observable<ApiResult<ArrayList<NetaMsgEntity>>> getNetaMsg(@Query("index")int index,@Query("size")int size);
+
+    @POST("api/search/searchDoc")
+    Observable<ApiResult<ArrayList<PersonDocEntity>>> getSearchDoc(@Body SearchEntity entity);
+
+    @POST("api/search/searchBag")
+    Observable<ApiResult<ArrayList<BagDirEntity>>> getSearchBag(@Body SearchEntity entity);
+
+    @POST("api/search/searchUser")
+    Observable<ApiResult<ArrayList<PersonFollowEntity>>> getSearchUser(@Body SearchEntity entity);
+
+    @POST("api/talk/create/{toUserId}")
+    Observable<ApiResult<CreatePrivateMsgEntity>> createPrivateMsg(@Path("toUserId")String userId);
+
+    @GET("api/talk/find/{talkId}/history")
+    Observable<ApiResult<ArrayList<ChatContentEntity>>> loadTalkHistory(@Path("talkId")String talkId);
+
+    @GET("api/talk/find/{talkId}/message")
+    Observable<ApiResult<ArrayList<ChatContentEntity>>> findTalk(@Path("talkId")String talkId,@Query("startTime")String startTime,@Query("endTime")String endTime);
+
+    @POST("api/talk/send")
+    Observable<ApiResult<String>> sendPrivateMsg(@Body SendPrivateMsgEntity entity);
+
+    @GET("api/talk/{open}/ignore/{talkId}")
+    Observable<ApiResult> ignoreUser(@Path("talkId")String talkId,@Path("open")boolean open);
+
+    @GET("api/user/list/activity")
+    Observable<ApiResult<ArrayList<NetaEvent>>> getEventList();
+
+    @POST("api/user/save/activity")
+    Observable<ApiResult> saveEvent(@Body NetaEvent event);
+
+    @GET("api/bag/{userId}/folder/info/{folderId}")
+    Observable<ApiResult<BagDirEntity>> getFolder(@Path("userId")String userId,@Path("folderId")String folderId);
+
+    @GET("api/user/getBrowseDoc")
+    Observable<ApiResult<ArrayList<PersonDocEntity>>> getDocHistory(@Query("index")int index,@Query("size")int size);
 }

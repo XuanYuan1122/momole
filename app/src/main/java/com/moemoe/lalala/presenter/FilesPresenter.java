@@ -34,12 +34,12 @@ public class FilesPresenter implements FilesContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.deleteFilesSuccess();
+                        if(view != null) view.deleteFilesSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -52,12 +52,12 @@ public class FilesPresenter implements FilesContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.moveFilesSuccess();
+                        if(view != null) view.moveFilesSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -70,12 +70,12 @@ public class FilesPresenter implements FilesContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.modifyFileSuccess(fileName);
+                        if(view != null) view.modifyFileSuccess(fileName);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -88,14 +88,18 @@ public class FilesPresenter implements FilesContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.copyFileSuccess();
+                        if(view != null) view.copyFileSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
 
+    @Override
+    public void release() {
+        view = null;
+    }
 }

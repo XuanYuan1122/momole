@@ -15,6 +15,7 @@ import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
 import com.moemoe.lalala.model.entity.MapMarkContainer;
 import com.moemoe.lalala.model.entity.MapMarkEntity;
+import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.model.entity.SnowShowEntity;
@@ -26,6 +27,7 @@ import com.moemoe.lalala.view.widget.map.model.MapImgLayer;
 import com.moemoe.lalala.view.widget.map.model.MapObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -55,13 +57,31 @@ public class MapPresenter implements MapContract.Presenter {
                     @Override
                     public void onSuccess(AppUpdateEntity appUpdateEntity) {
                         if(appUpdateEntity.getUpdateStatus() != 0){
-                            view.showUpdateDialog(appUpdateEntity);
+                            if(view != null) view.showUpdateDialog(appUpdateEntity);
                         }
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
 
+                    }
+                });
+    }
+
+    @Override
+    public void getServerTime() {
+        apiService.getServerTime()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<Date>() {
+                    @Override
+                    public void onSuccess(Date date) {
+                        if(view != null) view.onGetTimeSuccess(date);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -74,12 +94,12 @@ public class MapPresenter implements MapContract.Presenter {
                 .subscribe(new NetResultSubscriber<PersonalMainEntity>() {
                     @Override
                     public void onSuccess(PersonalMainEntity personalMainEntity) {
-                        view.onPersonMainLoad(personalMainEntity);
+                        if(view != null) view.onPersonMainLoad(personalMainEntity);
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -92,7 +112,7 @@ public class MapPresenter implements MapContract.Presenter {
                 .subscribe(new NetResultSubscriber<BuildEntity>() {
                     @Override
                     public void onSuccess(BuildEntity s) {
-                        view.checkBuildSuccess(s);
+                        if(view != null) view.checkBuildSuccess(s);
                     }
 
                     @Override
@@ -110,12 +130,12 @@ public class MapPresenter implements MapContract.Presenter {
                 .subscribe(new NetResultSubscriber<DailyTaskEntity>() {
                     @Override
                     public void onSuccess(DailyTaskEntity dailyTaskEntity) {
-                        view.onDailyTaskLoad(dailyTaskEntity);
+                        if(view != null) view.onDailyTaskLoad(dailyTaskEntity);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -128,15 +148,17 @@ public class MapPresenter implements MapContract.Presenter {
                 .subscribe(new NetResultSubscriber<SignEntity>() {
                     @Override
                     public void onSuccess(SignEntity entity) {
-                        view.changeSignState(entity,true);
-                        dialog.setIsSign(true)
-                                .setSignDay(entity.getDay())
-                                .changeSignState();
+                        if(view != null) {
+                            view.changeSignState(entity, true);
+                            dialog.setIsSign(true)
+                                    .setSignDay(entity.getDay())
+                                    .changeSignState();
+                        }
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -167,6 +189,14 @@ public class MapPresenter implements MapContract.Presenter {
     }
 
     @Override
+    public void addBackSchoolMapMark(Context context, MapWidget map, float scale) {
+        MapMarkContainer container = new MapMarkContainer();
+        addMapMarkOneDay(context,map,container);
+        addMapMarkBackSchoolEvent(context,map,container);
+        view.onMapMarkLoaded(container);
+    }
+
+    @Override
     public void clickSnowman(final Object o, final int mapX, final int mapY) {
         apiService.clickSnowman()
                 .subscribeOn(Schedulers.io())
@@ -174,12 +204,12 @@ public class MapPresenter implements MapContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onSnowmanSuccess(o,mapX,mapY);
+                        if(view != null) view.onSnowmanSuccess(o,mapX,mapY);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -230,9 +260,45 @@ public class MapPresenter implements MapContract.Presenter {
         map.invalidate();
     }
 
+    @Override
+    public void getEventList() {
+        apiService.getEventList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<NetaEvent>>() {
+                    @Override
+                    public void onSuccess(ArrayList<NetaEvent> events) {
+                        if(view != null) view.getEventSuccess(events);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void saveEvent(NetaEvent event) {
+        apiService.saveEvent(event)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view != null) view.saveEventSuccess();
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
     private void addMapMarkOneDay(Context context, MapWidget map, MapMarkContainer container){
         Layer layer = map.createLayer(0);//0 全天可点击事件
-        MapMarkEntity entity = new MapMarkEntity("体育馆",2759,440,"neta://com.moemoe.lalala/department_1.0?uuid=393341d4-5f7f-11e6-a5af-d0a637eac7d7&name=体育馆",R.drawable.btn_map_tiyu_normal);
+        MapMarkEntity entity = new MapMarkEntity("体育馆",2511,528,"neta://com.moemoe.lalala/department_1.0?uuid=393341d4-5f7f-11e6-a5af-d0a637eac7d7&name=体育馆",R.drawable.btn_map_tiyu_normal);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -352,32 +418,32 @@ public class MapPresenter implements MapContract.Presenter {
         entity = new MapMarkEntity("募捐箱纪念碑",2077,2112,"neta://com.moemoe.lalala/doc_1.0?bcfc69a8-b2fd-11e6-954d-525400761152",R.drawable.btn_map_trash_normal);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("返校剧情通关排行榜",465,396,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/paihang.html",R.drawable.btn_map_trash_normal);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
     }
 
     private void addMapMarkDay(Context context, MapWidget map,MapMarkContainer container){
         Layer layer = map.createLayer(1);//1 白天可点击事件
 
-        MapMarkEntity entity = new MapMarkEntity("希亚",1023,550,null,"“这风尘的造型和媚俗的颜色…嗯？很好看吗？”\n" + "“谢、谢谢…新的一年我也会尽量给大家收集些好东西的…”",R.drawable.btn_map_click);
+        MapMarkEntity entity = new MapMarkEntity("千石",1982,286 ,null,"“………………”\n" + "（没有反应，好像是个假人……）",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("千石",1982,286 ,null,"“只过去了一年时间，Neta居然已经这么繁荣了。”\n" + "“2017的它，又会是什么样子呢？”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("樱木军团",1519,66,null,"“终于要到夏天了啊！”\n" + "“你说我们天天趴在这会不会被当成变态？”\n" + "“男人喜欢看泳装有什么错！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("樱木军团",1519,66,null,"“冬天游泳池都没有人了。”\n" + "“听说学校里开了个温泉，是不是…”\n" + "“走着！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("湘北跑步三人组",1540,66,null,"“我们这样就算看泳池也不会被当成变态呢~”\n" + "“突然感觉变成篮球也不错！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("湘北跑步三人组",1540,66,null,"“为什么我们直接变成篮球了？”\n" + "“跑了半年，可以滚了不是很好吗？”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("风纪委员",713,616,null,"“最近学校发生了很多灵异事件，我一定要追查到底！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("风纪委员",713,616,null,"“为什么要把本风纪委员的帽子拿掉！！！！”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("一拳超人",1581,704,null,"“本来这里站着的是第三个老师，结果他去了拉面店，闪亮的光头还能再坚挺一个寒假！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("一拳超人",1581,704,null,"““世界真和平呐……”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -393,19 +459,15 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("小莲和喵帕斯",1147,1958,null,"“喵…喵帕斯，是这样吧？”\n" + "“只要举起一只手就够了。”\n" + "“这是新年好的意思吗？”\n" + "“清明、劳动、中秋、端午也可以用的，喵帕斯！”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
         entity = new MapMarkEntity("猫之茗角色",1488,1892,null,"“看了一圈，发现本喵是这里最萌的！”\n" + "“但是大家并不知道咱是谁喵…”\n" + "“戳戳游戏部上面那块广告牌就可以了！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("东马",1147,1628,null,"“雪菜碧……嘴啦！”\n" + "“校长就在那边看着，偷懒被抓到要扣薪水的！",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("东马",1147,1628,null,"“雪菜碧……嘴啦！校长不知道在哪儿监视着，偷懒被抓到要扣薪水的！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("雪莱",1054,1518,null,"“喂！冬马小……姐姐！”\n" + "“辛苦了，要不要一起去旁边喝杯奶茶？”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("雪莱",1054,1518,null,"“喂！冬马小……姐姐！要不要一起去旁边喝杯奶茶？”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -413,11 +475,11 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("栗山未来",1984,1386,null,"“我还是要说，没有未来的未来不是要我的未来。”\n" + "“可从期末考试的成绩看来，你也不能拥有什么未来。”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("栗山未来",1984,1386,null,"“我还是要说，没有未来的未来不是我要的未来。”\n" + "“可从期末考试的成绩看来，你也不能拥有什么未来。”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("四之宫隼人和六见游马",2852,1540,null,"“凉宫和朝比奈放寒假了，学姐不喜欢我们吗？”\n" + "“才、才、才没有不喜欢！！！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("四之宫隼人和六见游马",2852,1540,null,"“游马学弟，隼人学弟，一起拍张照吧！”\n" + "“太受欢迎了该怎么办！！！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -425,11 +487,11 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("五十岚祐辅",2542,1232,null,"“你确定不要认真研究一下新年特别版Neta吗？”\n" + "“我们可是赶工赶得险些不能回家过年呢。”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("五十岚祐辅",2542,1232,null,"“什么！Neta又换了新版本啊！我又要发新的传单了吗！！！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("齐木楠雄",2790,814,null,"“可惜我帅不过版本大佬？”\n" + "“是……么？”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("齐木楠雄",2790,814,null,"“下课了去尝尝新出的咖啡果冻吧！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -445,7 +507,7 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("K-on",2201,682,null,"“新年好呀、新年好呀、祝贺大家新年好！”\n" + "“梓喵你为什么要唱儿歌…？”\n" + "“T T，我又不是主唱！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("K-on",2201,682,null,"“两只老虎，两只老虎，跑得快！跑得快！”\n" + "“梓喵你为什么还是在唱儿歌…？”\n" + "“因为我们最近都没有新歌啊！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -453,11 +515,7 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("人渣的本愿",1302,308,null,"“我们出现在这里会不会败坏了学校的风气？”\n" + "“唔，作为新番之星，总是要露个脸的。”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("夏目贵志",527,1056,null,"“为什么第五季结束那么久了我们才出场？”\n" + "“赶上新年版本不是很好吗，老师。”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("人渣的本愿",1302,308,null,"“这位同学请问你对封杀事件有什么想法？”\n" + "“都是世界的错”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -465,15 +523,51 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("唐服校长",775,1848,null,"“嚯，那边的同学，4.0版本是不是超厉害的啊！”\n" + "“是啊、是啊（敷衍）”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("阿克娅和佐藤和真",186,1826,null,"“和真和真，为什么我们要进这个塔？看起来好危险的说。”\n" + "“还不是因为你欠了那么多债！你个笨蛋女神！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("准备进魔塔的路人",248,1892,null,"“我出发了，这次一定要拿到勋章！”\n" + "“再提醒你一次，不到4000攻5000防千万不要去最后一层！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("真宫寺樱",341,1980,null,"“你脸上的十字刀疤怎么来的？”\n" + "“这本来只是作者的趣味，后来还真让他编出了一个故事……”\n" + "“……”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("滑稽侠",868,1848,null,"“放大画面看我表情。”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("小林和托尔",496,1892,null,"“啊，这绝美的樱花！”\n" + "“小林，快尝尝我的手艺吧！”\n" + "“不准再用你的尾巴做材料了！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("康娜",589,1870,null,"“马基雅吧库内！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("小莲",713,1848,null,"“好吃……”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("斧子",713,1936,null,"“穿着和服跳广场舞感觉好奇怪呀，算了，开心就好！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("枳实和希亚",806,1848,null,"““Neta真是越来越繁荣了呢！”\n" + "“是啊，我们也要更努力才行！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("玉子和夏目",1209,1936,null,"“我家的猫会说人话！”\n" + "“巧了，我家的鸟也会说人话！”\n" + "“喵呜~”\n" + "“咕咕~”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("平和岛静雄",496,1122,null,"“临也那个混蛋跑哪儿去了！！！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("折原临也",1240,1782,null,"“甩掉那个暴力笨蛋真不容易……好了，该想想怎么搞下一个大新闻了！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("绯村剑心",403,2046,null,"“听说你的拔刀术很厉害，有机会切磋一下。”\n" + "“好啊，随时奉陪！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("月野兔",2170,1474,null,"“我要代表月……喂！大白天的哪来的月亮啊喂！！！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -493,7 +587,7 @@ public class MapPresenter implements MapContract.Presenter {
 
     private void addMapMarkNight(Context context, MapWidget map,MapMarkContainer container){
         Layer layer = map.createLayer(2);//2 晚上可点击事件
-        MapMarkEntity entity = new MapMarkEntity("樱木军团_晚上",1436,66,null,"“冬天游泳池都没有人了。”\n" + "“听说学校里开了个温泉，是不是…”\n" + "“走着！”",R.drawable.btn_map_click);
+        MapMarkEntity entity = new MapMarkEntity("樱木军团_晚上",1436,66,null,"“我们大晚上的为什么还趴在这里？”\n" + "“晚上也有福利啊笨蛋！”\n" + "“女鬼也是福利？！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -501,31 +595,11 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("风纪委员_晚上",713,616,null,"“为什么要把本风纪委员的帽子拿掉！！！！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("风纪委员_晚上",713,616,null,"“谁也不许靠近这栋楼，别问这么多！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("鸣人和路飞_晚上",403,1122,null,"“那只猫为什么一直看着我们？”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("银时_晚上",310,1892,null,"“虽然不知道你想到那里去了，不过，我告诉你，这是【阿姆斯特朗回旋加速喷气式阿姆斯特朗炮】”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("新八_晚上",186,1892,null,"“啊！你是想让这个APP被腰斩吗？！”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("神乐_晚上",217,1980,null,"“这个炮好雄伟的说！”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("麦克雷和小美_晚上",124,2024,null,"“小美用起来可真方便啊，明明没有下雪居然也可以堆雪♂人”\n" + "“不洗澡！请不要让我帮你们做奇怪的事情！",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("一拳超人_晚上",1618,704,null,"“本来这里站着的是第三个老师，结果他去了拉面店，闪亮的光头还能再坚挺一个寒假！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("一拳超人_晚上",1618,704,null,"“为什么心里总是忐忑不安，算了，一会去吃完拉面吧”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -533,39 +607,23 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("东马_晚上",1147,1628,null,"“雪菜碧……嘴啦！”\n" + "“校长就在那边看着，偷懒被抓到要扣薪水的！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("东马_晚上",1147,1628,null,"“雪菜碧……嘴啦！校长不知道在哪儿监视着，偷懒被抓到要扣薪水的！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("雪莱_晚上",1054,1518,null,"“喂！冬马小……姐姐！”\n" + "“辛苦了，要不要一起去旁边喝杯奶茶？”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("雪莱_晚上",1054,1518,null,"“喂！冬马小……姐姐！要不要一起去旁边喝杯奶茶？”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("北原春希_晚上",992,1694,null,"“一脸懵逼”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("栗山未来_晚上",1984,1386,null,"“我还是要说，没有未来的未来不是我要的未来。”\n" + "“可从期末考试的成绩看来，你也不能拥有什么未来。”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("栗山未来_晚上",1984,1386,null,"“我还是要说，没有未来的未来不是要我的未来。”\n" + "“可从期末考试的成绩看来，你也不能拥有什么未来。”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("五十岚祐辅_晚上",2542,1232,null,"“你确定不要认真研究一下新年特别版Neta吗？”\n" + "“我们可是赶工赶得险些不能回家过年呢。”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("坂本君_晚上",2790,814,null,"“你以为坂本又回来了吗？”\n" + "“天真，我是你齐神。”\n" + "（绝妙的花式偷懒！）",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("黄鸡_晚上",2790,660,null,"“恕瑞玛，你的黄鸡回来了！”\n" + "“咕叽咕叽…”\n" + "“咳咳，祝同学们鸡年大吉吧！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("五十岚祐辅_晚上",2542,1232,null,"“什么！Neta又换了新版本啊！我又要发新的传单了吗！！！”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
         entity = new MapMarkEntity("风夏_晚上",2480,814,null,"“为什么不让我们登台的说？”\n" + "“因为主编喜欢K-on吧…”\n" + "“气…！”",R.drawable.btn_map_click);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
-        entity = new MapMarkEntity("K-on_晚上",2201,682,null,"新年好呀新年好呀！\n" + "祝贺大家新年好！\n" + "我们唱歌！我们跳舞！\n" + "祝贺大家新年好！\n" + "（我们还是去隔壁看LiveLive吧…）",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -577,11 +635,11 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("人渣的本愿_晚上",1302,308,null,"“我们出现在这里会不会败坏了学校的风气？”\n" + "“唔，作为新番之星，总是要露个脸的。”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("人渣的本愿_晚上",1302,308,null,"“最近听说晚上会发生什么奇怪的事情，我好害怕。”\n" + "“没事的，我也怕”\n" + "“……”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("夏目贵志_晚上",527,1056,null,"“为什么第五季结束那么久了我们才出场？”\n" + "“赶上新年版本不是很好吗，老师。”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("夏目贵志_晚上",527,1056,null,"“第六季这么快就上了呀，赶片场累死我了。”\n" + "“我们去吃七辻屋的点心犒劳一下您吧，老师。”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -589,15 +647,39 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("唐服校长_晚上",775,1848,null,"“嚯，那边的同学，4.0版本是不是超厉害的啊！”\n" + "“是啊、是啊（敷衍）”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("凸变英雄_晚上",1519,1540,null,"“道理我都懂，但咱们绘梦的阵仗为什么这么大？”\n" + "“不知道啊，是不是要支持国漫的说？”\n" + "“嘁、我们这杰出的画风和剧情，需要特别支持？”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("真选组舞狮_晚上",1178,1936,null,"“为什么要走在我后面？胆子真是小啊…”\n" + "“在王的雕像下总要堤防一手吧，尤其是跟你这个抖S在一起。”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("桔梗_晚上",992,1782,null,"“听说这里有四魂之玉？”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("喵帕斯_晚上",868,1848,null,"“那边…那个人，会给俺们红包吗？”\n" + "“不要靠近奇怪的家伙！！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("雪代巴_晚上",1364,2024,null,"“奇怪，明明白天还看见剑心了呢……”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("教学楼鬼影_晚上",1984,572,null,"“嗷呜……”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("大屏幕的贞子_晚上",2294,440,null,"“嘎……嘎……嘎……等等！我爬错地方了吧！这里怎么这么高啊喂！！！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("艾斯和路飞_晚上",2139,1298,null,"“艾斯！你怎么在这里！哈哈哈哈！！”\n" + "“我来看看你成长的怎么样了。”\n" + "“别说了，作者拖剧情拖得太慢了啊！！！”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("鼬_晚上",434,1298,null,"“鸣人，佐助他，怎么样了……”\n" + "“呜啊，你这是秽土转生了吗？”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("鸣人_晚上",496,1342,null,"“佐助现在应该在其他地方守护忍者世界吧。”\n" + "“笨蛋弟弟，我还有好多话想跟他说……”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("影音部鬼影",2449,1716,null,"“嘎呜……”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -621,6 +703,42 @@ public class MapPresenter implements MapContract.Presenter {
         addMarkToMap(context,entity.getId(),entity,layer);
     }
 
+    private void addMapMarkBackSchoolEvent(Context context, MapWidget map,MapMarkContainer container){
+        Layer layer = map.createLayer(5);//5 返校剧情
+        int level = PreferenceUtils.getBackSchoolLevel(context) + 1;
+        if(level > 6) level = 6;
+
+        MapMarkEntity entity = new MapMarkEntity("返校-体育馆",2790,528,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/first.html?full_screen",R.drawable.btn_map_fx);
+      //  MapMarkEntity entity = new MapMarkEntity("返校-体育馆",2790,528,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/first.html?full_screen",R.drawable.btn_map_fx);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer,level == 1 || (level == 6 && AppSetting.isShowBackSchoolAll));
+
+        entity = new MapMarkEntity("返校-图书馆",2976,1122,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/changjing1.html?full_screen",R.drawable.btn_map_fx);
+       // entity = new MapMarkEntity("返校-图书馆",2976,1122,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/changjing1.html?full_screen",R.drawable.btn_map_fx);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer,level == 2 || (level == 6 && AppSetting.isShowBackSchoolAll));
+
+        entity = new MapMarkEntity("返校-旧教学楼二楼",992,330,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/changjing2.html?full_screen",R.drawable.btn_map_fx);
+       // entity = new MapMarkEntity("返校-旧教学楼二楼",992,330,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/changjing2.html?full_screen",R.drawable.btn_map_fx);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer,level == 3 || (level == 6 && AppSetting.isShowBackSchoolAll));
+
+        entity = new MapMarkEntity("返校-旧教学楼四楼",868,198,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/changjing3.html?full_screen",R.drawable.btn_map_fx);
+       // entity = new MapMarkEntity("返校-旧教学楼四楼",868,198,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/changjing3.html?full_screen",R.drawable.btn_map_fx);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer,level == 4 || (level == 6 && AppSetting.isShowBackSchoolAll));
+
+        entity = new MapMarkEntity("返校-结尾",2666,352,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/final.html",R.drawable.btn_map_fx);
+       // entity = new MapMarkEntity("返校-结尾",2666,352,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/final.html",R.drawable.btn_map_fx);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer,level == 5 || (level == 6 && AppSetting.isShowBackSchoolAll));
+
+        entity = new MapMarkEntity("返校-人物",2263,858,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/xiansuo.html",R.drawable.btn_map_fxnpc);
+      //  entity = new MapMarkEntity("返校-人物",2263,858,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/xiansuo.html",R.drawable.btn_map_fxnpc);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer,level > 1);
+    }
+
     private void addMarkToMap(Context context,String id,MapMarkEntity entity,Layer layer){
         Drawable drawable = ContextCompat.getDrawable(context, entity.getBg());
         MapObject object = new MapObject(id
@@ -634,5 +752,27 @@ public class MapPresenter implements MapContract.Presenter {
         layer.addMapObject(object);
         entity.setW(drawable.getIntrinsicWidth());
         entity.setH(drawable.getIntrinsicHeight());
+    }
+
+    private void addMarkToMap(Context context,String id,MapMarkEntity entity,Layer layer,boolean visible){
+        Drawable drawable = ContextCompat.getDrawable(context, entity.getBg());
+        MapObject object = new MapObject(id
+                ,drawable
+                ,entity.getX() - drawable.getIntrinsicWidth() /2
+                ,entity.getY() - drawable.getIntrinsicHeight() / 2
+                ,0
+                ,0
+                ,true
+                ,false
+                ,visible);
+        layer.addMapObject(object);
+        entity.setW(drawable.getIntrinsicWidth());
+        entity.setH(drawable.getIntrinsicHeight());
+    }
+
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

@@ -13,6 +13,7 @@ public class UploadEntity {
     private String uploadToken;
 
     private String localPath;
+    private boolean isImg;
 
     public String getFilePath() {
         return filePath;
@@ -36,5 +37,13 @@ public class UploadEntity {
 
     public void setLocalPath(String localPath) {
         this.localPath = localPath;
+    }
+
+    public boolean isImg() {
+        return isImg;
+    }
+
+    public void setImg(boolean img) {
+        isImg = img;
     }
 }

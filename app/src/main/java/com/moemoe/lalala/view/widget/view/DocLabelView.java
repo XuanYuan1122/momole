@@ -268,9 +268,6 @@ public class DocLabelView extends ViewGroup {
             }
             drawLayout();
         }
-//        else {
-//            drawLayout();
-//        }
     }
 
     public void setChapter(ArrayList<DocDetailEntity.DocGroupLink.DocGroupLinkDetail> details, Context context){

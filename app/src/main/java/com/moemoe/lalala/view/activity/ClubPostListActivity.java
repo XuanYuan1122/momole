@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerClubComponent;
 import com.moemoe.lalala.di.modules.ClubModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -113,13 +113,13 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         }
         DaggerClubComponent.builder()
                 .clubModule(new ClubModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mHeadRoot.setVisibility(View.INVISIBLE);
         mDocNum.setText(getString(R.string.label_doc_num, 0));
         mLikesNum.setText(getString(R.string.label_like_num, 0));
-        mListPost.isLoadMoreEnabled(false);
+        mListPost.setLoadMoreEnabled(false);
         mListPost.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListPost.setLayoutManager(new LinearLayoutManager(this));
         mDocAdapter = new DocListAdapter(this,true);
@@ -277,6 +277,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
 
     @Override
     protected void onDestroy() {
+        mPresenter.release();
         super.onDestroy();
     }
 
@@ -325,7 +326,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         mDocAdapter.clearTopAndHot();
         mListPost.setComplete();
         if(entity.docList.getState() == 200 && entity.docList.getData() != null){
-            mListPost.isLoadMoreEnabled(true);
+            mListPost.setLoadMoreEnabled(true);
         }
         if(entity.topList.getState() == 200 && entity.topList.getData() != null){
             mDocAdapter.setTopData(entity.topList.getData(),entity.topList.getData().size());
@@ -385,6 +386,8 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
             intent.putExtra(UUID, mClubUuid);
             intent.putExtra(CreateNormalDocActivity.TYPE_CREATE,type);
             intent.putExtra(CreateNormalDocActivity.TYPE_TAG_NAME_DEFAULT,mTagName);
+            intent.putExtra("from_name",mTagName);
+            intent.putExtra("from_schema","neta://com.moemoe.lalala/tag_1.0?" + mClubUuid);
             startActivityForResult(intent, CreateNormalDocActivity.REQUEST_CODE_CREATE_DOC);
         }
     }

@@ -1,18 +1,23 @@
 package com.moemoe.lalala.view.activity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCommentComponent;
 import com.moemoe.lalala.di.modules.CommentModule;
+import com.moemoe.lalala.model.entity.CoinDetailEntity;
 import com.moemoe.lalala.presenter.CommentContract;
 import com.moemoe.lalala.presenter.CommentPresenter;
+import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
@@ -29,13 +34,11 @@ import butterknife.BindView;
 
 public class CoinDetailActivity extends BaseAppCompatActivity implements CommentContract.View{
 
-    @BindView(R.id.rl_bar)
-    View mRlRoot;
-    @BindView(R.id.tv_title)
+    @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
-    @BindView(R.id.list)
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.rv_list)
     PullAndLoadView mListDocs;
 
     @Inject
@@ -46,17 +49,16 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_pulltorefresh_list;
+        return R.layout.ac_bag_favorite;
     }
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
         DaggerCommentComponent.builder()
                 .commentModule(new CommentModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        mRlRoot.setVisibility(View.VISIBLE);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new PersonListAdapter(this,3);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
@@ -72,10 +74,27 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
 
     @Override
     protected void initListeners() {
-        mIvBack.setOnClickListener(new NoDoubleClickListener() {
+        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
+            }
+        });
+        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Object item = mAdapter.getItem(position);
+                if(item instanceof CoinDetailEntity){
+                    if(!TextUtils.isEmpty(((CoinDetailEntity) item).getSchema())){
+                        Uri uri = Uri.parse(((CoinDetailEntity) item).getSchema());
+                        IntentUtils.toActivityFromUri(CoinDetailActivity.this, uri, view);
+                    }
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
             }
         });
         mListDocs.setPullCallback(new PullCallback() {
@@ -113,9 +132,9 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
         mIsLoading = false;
         mListDocs.setComplete();
         if(((ArrayList<Object>) entities).size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
+            mListDocs.setLoadMoreEnabled(false);
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         if(pull){
             mAdapter.setData((ArrayList<Object>) entities);
@@ -133,5 +152,11 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
     public void onFailure(int code, String msg) {
         mIsLoading = false;
         mListDocs.setComplete();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 }

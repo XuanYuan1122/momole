@@ -7,7 +7,7 @@ import com.moemoe.lalala.model.entity.CalendarDayEntity;
  */
 
 public interface CalendarContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void doRequest(String day,boolean pull);
     }
 

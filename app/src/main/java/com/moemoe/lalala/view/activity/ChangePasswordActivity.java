@@ -14,12 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerChangePwdComponent;
 import com.moemoe.lalala.di.modules.ChangePwdModule;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.presenter.ChangePasswordContract;
 import com.moemoe.lalala.presenter.ChangePasswordPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
@@ -69,9 +70,10 @@ public class ChangePasswordActivity extends BaseAppCompatActivity implements Cha
             finish();
             return;
         }
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerChangePwdComponent.builder()
                 .changePwdModule(new ChangePwdModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mAction = i.getIntExtra(PhoneStateCheckActivity.EXTRA_ACTION,PhoneStateCheckActivity.ACTION_CHAGE_PASSWORD);
@@ -99,6 +101,12 @@ public class ChangePasswordActivity extends BaseAppCompatActivity implements Cha
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     @Override

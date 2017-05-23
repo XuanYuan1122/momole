@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerTrashComponent;
 import com.moemoe.lalala.di.modules.TrashModule;
 import com.moemoe.lalala.model.api.ApiService;
@@ -29,6 +29,7 @@ import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.model.entity.TrashEntity;
 import com.moemoe.lalala.presenter.TrashContract;
 import com.moemoe.lalala.presenter.TrashPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -112,9 +113,10 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
             finish();
             return;
         }
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerTrashComponent.builder()
                 .trashModule(new TrashModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mType = getIntent().getStringExtra("type");
@@ -124,7 +126,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
-                .retrofit(MoeMoeApplicationLike.getInstance().getNetComponent().getRetrofit());
+                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
         if("text".equals(mType)){
             mContent.setVisibility(View.VISIBLE);
             mIvContent.setVisibility(View.GONE);
@@ -151,6 +153,12 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     private void createLabel(){
@@ -214,7 +222,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
                 ClipboardManager cmb = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData mClipData = ClipData.newPlainText("绅士内容", mContent.getText());
                 cmb.setPrimaryClip(mClipData);
-                ToastUtils.showCenter(TrashDetailActivity.this, getString(R.string.msg_trash_get));
+                ToastUtils.showShortToast(TrashDetailActivity.this, getString(R.string.msg_trash_get));
                 return false;
             }
         });

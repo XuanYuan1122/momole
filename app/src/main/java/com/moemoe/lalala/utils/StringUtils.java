@@ -197,6 +197,10 @@ public class StringUtils {
         return res;
     }
 
+    public static boolean isBackSchool(){
+        return matchCurrentTime(parseSentenceTime("22:00"),parseSentenceTime("23:00"));
+    }
+
     public static boolean isKillEvent(){
         return matchCurrentTime(parseSentenceTime("00:00"),parseSentenceTime("01:00"));
     }

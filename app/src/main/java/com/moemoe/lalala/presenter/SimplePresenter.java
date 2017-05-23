@@ -50,12 +50,12 @@ public class SimplePresenter implements SimpleContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSuccess(null);
+                            if(view != null) view.onSuccess(null);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 1){//register
@@ -67,12 +67,12 @@ public class SimplePresenter implements SimpleContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSuccess(null);
+                            if(view != null) view.onSuccess(null);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 3){//jubao
@@ -82,18 +82,22 @@ public class SimplePresenter implements SimpleContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSuccess(null);
+                            if(view != null) view.onSuccess(null);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 4){
             AuthorInfoDao dao = GreenDaoManager.getInstance().getSession().getAuthorInfoDao();
             AuthorInfo info = dao.load((long) 1);
-            if(info == null) info = new AuthorInfo();
+            if(info == null) {
+                info = new AuthorInfo();
+            }else {
+                PreferenceUtils.setAuthorInfo(info);
+            }
             if(isThirdParty(info.getPlatform())){
                 //三方登录
                 ThirdLoginEntity bean = new ThirdLoginEntity(info.getUserName(),info.getOpenId(),info.getPlatform(), (String) data);
@@ -111,13 +115,13 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo1.setLevel(entity.getLevel());
                                 finalInfo1.setOpenBag(entity.isOpenBag());
                                 PreferenceUtils.setAuthorInfo(finalInfo1);
-                                view.onSuccess(entity);
+                                if(view != null) view.onSuccess(entity);
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
                                 PreferenceUtils.clearAuthorInfo();
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
 
@@ -138,13 +142,13 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo.setLevel(entity.getLevel());
                                 finalInfo.setOpenBag(entity.isOpenBag());
                                 PreferenceUtils.setAuthorInfo(finalInfo);
-                                view.onSuccess(entity);
+                                if(view != null)  view.onSuccess(entity);
                             }
 
                             @Override
                             public void onFail(int code,String msg) {
                                 PreferenceUtils.clearAuthorInfo();
-                                view.onFailure(code,msg);
+                                if(view != null) view.onFailure(code,msg);
                             }
                         });
             }
@@ -155,12 +159,12 @@ public class SimplePresenter implements SimpleContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSuccess(null);
+                            if(view != null) view.onSuccess(null);
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 6){
@@ -170,12 +174,12 @@ public class SimplePresenter implements SimpleContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSuccess(null);
+                            if(view != null) view.onSuccess(null);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if (type == 7){
@@ -185,12 +189,12 @@ public class SimplePresenter implements SimpleContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSuccess(null);
+                            if(view != null) view.onSuccess(null);
                         }
 
                         @Override
                         public void onFail(int code,String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }else if(type == 8){
@@ -200,12 +204,12 @@ public class SimplePresenter implements SimpleContract.Presenter {
                     .subscribe(new NetResultSubscriber<CommentDetailEntity>() {
                         @Override
                         public void onSuccess(CommentDetailEntity commentDetailEntity) {
-                            view.onSuccess(commentDetailEntity);
+                            if(view != null) view.onSuccess(commentDetailEntity);
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code,msg);
+                            if(view != null) view.onFailure(code,msg);
                         }
                     });
         }
@@ -213,5 +217,10 @@ public class SimplePresenter implements SimpleContract.Presenter {
 
     public boolean isThirdParty(String platform){
         return platform != null && (platform.equals(cn.sharesdk.tencent.qq.QQ.NAME) || platform.equals(Wechat.NAME) || platform.equals(SinaWeibo.NAME));
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

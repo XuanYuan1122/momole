@@ -7,10 +7,11 @@ import com.moemoe.lalala.model.entity.AppUpdateEntity;
  */
 
 public interface SettingContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void checkVersion();
         void logout();
         void modifySecret(boolean show,int type);
+        void shieldUser(boolean shield,String talkId);
     }
 
     interface View extends BaseView{
@@ -18,5 +19,6 @@ public interface SettingContract {
         void logoutSuccess();
         void modifySecretFail(int type);
         void noUpdate();
+        void shieldUserFail();
     }
 }

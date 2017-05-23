@@ -1,48 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:background="@color/bg_f2f2f3">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/main_cyan"
-        app:navigationIcon="@drawable/ic_go_back"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
-
-        <TextView
-            android:id="@+id/tv_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:maxLength="16"
-            android:textSize="18dp"
-            android:text="@string/label_modify"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/tv_sava"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/label_done"
-            android:textSize="16dp"
-            android:layout_gravity="right"
-            android:gravity="center"
-            android:paddingRight="12dp"
-            android:textColor="@color/white"/>
-    </android.support.v7.widget.Toolbar>
+    <include
+        android:id="@+id/app_toolbar"
+        layout="@layout/app_toolbar"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+        android:layout_below="@+id/app_toolbar">
 
         <LinearLayout
             android:id="@+id/ll_name_root"
@@ -51,39 +21,14 @@
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/size_10">
 
-            <LinearLayout
-                android:id="@+id/ll_name"
+            <ViewStub
+                android:id="@+id/stub_name"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:orientation="horizontal"
                 android:layout_marginTop="@dimen/size_2"
-                android:background="@drawable/bg_normal_white_btn">
+                android:layout="@layout/view_bag_edit_text_item"
+                android:inflatedId="@+id/name_item"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_15"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/size_15"
-                    android:layout_marginStart="@dimen/size_15"
-                    android:text="@string/label_bag_name"
-                    android:id="@+id/tv_name_label" />
-
-                <TextView
-                    android:id="@+id/tv_name"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/size_15"
-                    android:layout_marginEnd="@dimen/size_15"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/size_15"
-                    android:gravity="right"
-                    android:textColor="@color/txt_gray_929292_red"/>
-            </LinearLayout>
             <LinearLayout
                 android:id="@+id/ll_bg_root"
                 android:layout_width="match_parent"
@@ -113,39 +58,21 @@
                     android:layout_marginEnd="@dimen/size_15"/>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/ll_coin"
+            <ViewStub
+                android:id="@+id/stub_coin"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
-                android:orientation="horizontal"
+                android:layout="@layout/view_bag_edit_text_item"
                 android:layout_marginTop="@dimen/size_2"
-                android:background="@drawable/bg_normal_white_btn"
-                android:visibility="gone">
+                android:inflatedId="@+id/coin_item"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_15"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/size_15"
-                    android:layout_marginStart="@dimen/size_15"
-                    android:text="@string/label_coin_set" />
-
-                <TextView
-                    android:id="@+id/tv_coin"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/size_15"
-                    android:layout_marginEnd="@dimen/size_15"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/size_15"
-                    android:gravity="right"
-                    android:textColor="@color/pink_fb7ba2"/>
-            </LinearLayout>
+            <ViewStub
+                android:id="@+id/stub_read_type"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout="@layout/view_bag_edit_text_item"
+                android:layout_marginTop="@dimen/size_2"
+                android:inflatedId="@+id/read_type_item"/>
 
             <LinearLayout
                 android:id="@+id/ll_add_root"
@@ -238,48 +165,8 @@
                 android:visibility="gone"/>
         </LinearLayout>
     </ScrollView>
-    <com.moemoe.lalala.view.widget.view.KeyboardListenerLayout
+
+    <include
         android:id="@+id/ll_comment_pannel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bg_f2f2f3"
-        android:gravity="bottom"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:paddingBottom="7dp"
-        android:paddingTop="7dp"
-        android:visibility="gone" >
-
-        <EditText
-            android:id="@+id/edt_comment_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="6dp"
-            android:layout_toLeftOf="@+id/iv_comment_send"
-            android:layout_weight="1"
-            android:background="@drawable/bg_white_border_gray"
-            android:gravity="center_vertical"
-            android:hint="@string/a_hint_input_comment"
-            android:maxLines="5"
-            android:minHeight="34dp"
-            android:paddingBottom="4dp"
-            android:paddingLeft="14dp"
-            android:paddingRight="14dp"
-            android:paddingTop="4dp"
-            android:textSize="@dimen/size_15" />
-
-        <TextView
-            android:id="@+id/iv_comment_send"
-            android:layout_width="48dp"
-            android:layout_height="34dp"
-            android:layout_alignBottom="@+id/edt_comment_input"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="12dp"
-            android:background="@drawable/bg_rect_white_click_cyan"
-            android:gravity="center"
-            android:text="@string/label_confirm"
-            android:textColor="@color/txt_white_gray"
-            android:textSize="@dimen/size_15" />
-    </com.moemoe.lalala.view.widget.view.KeyboardListenerLayout>
+        layout="@layout/view_no_pic_keyboard"/>
 </RelativeLayout>

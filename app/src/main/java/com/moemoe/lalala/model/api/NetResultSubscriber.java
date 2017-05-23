@@ -18,6 +18,7 @@ public abstract class NetResultSubscriber<T> extends Subscriber<ApiResult<T>> {
     @Override
     public void onError(Throwable e) {
         onFail(-1,"");
+        e.printStackTrace();
     }
 
     @Override

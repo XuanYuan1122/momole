@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerTrashComponent;
 import com.moemoe.lalala.di.modules.TrashModule;
 import com.moemoe.lalala.model.entity.DocTagEntity;
@@ -94,7 +94,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
     protected void initViews(Bundle savedInstanceState) {
         DaggerTrashComponent.builder()
                 .trashModule(new TrashModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         entities = new ArrayList<>();
@@ -587,9 +587,10 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         mPresenter.sendOperationTrash();
+        mPresenter.release();
         historyEntities.clear();
         if(mCurTime != 0) PreferenceUtils.setLastTrashTime(this,mCurTime,"image");
+        super.onDestroy();
     }
 }

@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDepartComponent;
 import com.moemoe.lalala.di.modules.DepartModule;
 import com.moemoe.lalala.model.entity.BannerEntity;
@@ -86,7 +86,7 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
         mRoomId = "SWIM_POOL";
         DaggerDepartComponent.builder()
                 .departModule(new DepartModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mRlRoot.setVisibility(View.VISIBLE);
@@ -100,7 +100,7 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
         mListAdapter = new ClassAdapter(this);
         mListDocs.getRecyclerView().setAdapter(mListAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.setLoadMoreEnabled(false);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
@@ -298,8 +298,9 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        mPresenter.release();
         if(mListAdapter !=null )mListAdapter.onDestroy();
+        super.onDestroy();
     }
 
     private void sendBtnIn(){
@@ -345,6 +346,8 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
             Intent intent = new Intent(this, CreateNormalDocActivity.class);
             intent.putExtra(CreateNormalDocActivity.TYPE_CREATE,type);
             intent.putExtra(CreateNormalDocActivity.TYPE_QIU_MING_SHAN,2);
+            intent.putExtra("from_name","温泉");
+            intent.putExtra("from_schema","neta://com.moemoe.lalala/swim_1.0");
             startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
         }
     }
@@ -366,10 +369,10 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
     @Override
     public void onDocLoadSuccess(Object entity, boolean pull) {
         if(((ArrayList<DocListEntity>) entity).size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
-            ToastUtils.showCenter(this,getString(R.string.msg_all_load_down));
+            mListDocs.setLoadMoreEnabled(false);
+            ToastUtils.showShortToast(this,getString(R.string.msg_all_load_down));
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         mListDocs.setComplete();
         isLoading = false;

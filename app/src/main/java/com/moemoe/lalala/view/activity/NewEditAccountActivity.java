@@ -19,13 +19,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerEditAccountComponent;
 import com.moemoe.lalala.di.modules.EditAccountModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.presenter.EditAccountContract;
 import com.moemoe.lalala.presenter.EditAccountPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
@@ -61,6 +62,10 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
     private final int REQ_SECRET = 1004;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.tv_toolbar_title)
+    TextView mTvTitle;
+    @BindView(R.id.tv_menu)
+    TextView mTvSave;
     @BindView(R.id.iv_avatar)
     ImageView mIvAvatar;
     @BindView(R.id.iv_bg)
@@ -87,6 +92,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
     private String mBgPath;
     private Uri mTmpAvatar;
     private String mRawAvatarPath;
+    private String mUploadPath;
     private boolean mIsNickname;
     private boolean mHasModified = false;
 
@@ -97,12 +103,16 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerEditAccountComponent.builder()
                 .editAccountModule(new EditAccountModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mInfo = getIntent().getParcelableExtra("info");
+        mTvSave.setVisibility(View.VISIBLE);
+        mTvSave.setText(getString(R.string.label_save_modify));
+        mTvTitle.setText(getString(R.string.label_edit_personal_data));
         mDatePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -174,10 +184,16 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
         updateView();
     }
 
-    @OnClick({R.id.tv_sava,R.id.ll_head_root,R.id.ll_bg_root,R.id.ll_birthday,R.id.ll_gender,R.id.ll_secret,R.id.ll_nickname,R.id.ll_sign})
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
+    }
+
+    @OnClick({R.id.tv_menu,R.id.ll_head_root,R.id.ll_bg_root,R.id.ll_birthday,R.id.ll_gender,R.id.ll_secret,R.id.ll_nickname,R.id.ll_sign})
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.tv_sava:
+            case R.id.tv_menu:
                 modify();
                 break;
             case R.id.ll_head_root:
@@ -374,7 +390,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
                     .transform(new GlideCircleTransform(this))
                     .error(R.drawable.bg_default_circle)
                     .into(mIvAvatar);
-            mRawAvatarPath = path;
+            mUploadPath = path;
         }else {
             Glide.with(this)
                     .load(StringUtils.getUrl(this,ApiService.URL_QINIU + path,DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56),false,true))
@@ -418,8 +434,8 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
             showToast(R.string.msg_nickname_illegal);
             return;
         }
-        if(!TextUtils.isEmpty(mRawAvatarPath)){
-            mInfo.setHeadPath(ApiService.URL_QINIU + mRawAvatarPath);
+        if(!TextUtils.isEmpty(mUploadPath)){
+            mInfo.setHeadPath(ApiService.URL_QINIU + mUploadPath);
         }
         if(!TextUtils.isEmpty(mBgPath)){
             mInfo.setBackground(mBgPath);

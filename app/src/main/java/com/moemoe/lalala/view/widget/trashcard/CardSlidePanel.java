@@ -96,13 +96,13 @@ public class CardSlidePanel extends ViewGroup {
                 } else {
                     // 点击的是bottomLayout里面的一些按钮
 //                    btnLock = true;
-//                    int type = -1;
+//                    int index = -1;
 //                    if (view == leftBtn) {
-//                        type = VANISH_TYPE_LEFT;
+//                        index = VANISH_TYPE_LEFT;
 //                    } else if (view == rightBtn) {
-//                        type = VANISH_TYPE_RIGHT;
+//                        index = VANISH_TYPE_RIGHT;
 //                    }
-//                    vanishOnBtnClick(type);
+//                    vanishOnBtnClick(index);
                 }
             }
         };

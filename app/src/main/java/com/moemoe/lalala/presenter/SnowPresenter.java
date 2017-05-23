@@ -33,12 +33,12 @@ public class SnowPresenter implements SnowContract.Presenter {
                 .subscribe(new NetResultSubscriber<SnowEntity>() {
                     @Override
                     public void onSuccess(SnowEntity snowEntity) {
-                        view.updateSnowView(snowEntity);
+                        if(view != null) view.updateSnowView(snowEntity);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -51,13 +51,18 @@ public class SnowPresenter implements SnowContract.Presenter {
                 .subscribe(new NetResultSubscriber<SnowInfo>() {
                     @Override
                     public void onSuccess(SnowInfo snowInfo) {
-                        view.updateSnowList(snowInfo,index == 0);
+                        if(view != null) view.updateSnowList(snowInfo,index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

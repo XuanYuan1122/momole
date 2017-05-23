@@ -11,6 +11,9 @@ public class DocPut {
     public ArrayList<DocDetail> details;
     public DocPutCoin coin;
     public String bagFolderId;
+    public String docType;
+    public String docTypeSchema;
+    public boolean coinComment;
 
     public DocPut(){
         tags = new ArrayList<>();

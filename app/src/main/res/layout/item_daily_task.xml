@@ -19,7 +19,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:textColor="@color/gray_d7d7d8"
+        android:textColor="@color/gray_d7d7d7"
         android:textSize="@dimen/size_9"
         android:layout_marginLeft="@dimen/size_3"
         android:layout_marginStart="@dimen/size_3" />

@@ -14,7 +14,7 @@ public class BagDirEntity implements Parcelable{
     @SerializedName("buy")
     private boolean buy;
     @SerializedName("coin")
-    private int coin;
+    private Integer coin;
     @SerializedName("cover")
     private String cover;
     @SerializedName("folderId")
@@ -24,7 +24,7 @@ public class BagDirEntity implements Parcelable{
     @SerializedName("name")
     private String name;
     @SerializedName("number")
-    private int number;
+    private Integer number;
     @SerializedName("updateTime")
     private String updateTime;
     @SerializedName("bagName")
@@ -32,7 +32,15 @@ public class BagDirEntity implements Parcelable{
     @SerializedName("userId")
     private String userId;
     @SerializedName("size")
-    private long size;
+    private Long size;
+    @SerializedName("userName")
+    private String userName;
+    @SerializedName("buyUserNum")
+    private Integer buyUserNum;
+    @SerializedName("readType")
+    private String readType;//IMAGE TEXT ""
+    @SerializedName("follow")
+    private boolean follow;
 
     private transient boolean isSelect;
 
@@ -42,14 +50,6 @@ public class BagDirEntity implements Parcelable{
 
     public void setBuy(boolean buy) {
         this.buy = buy;
-    }
-
-    public int getCoin() {
-        return coin;
-    }
-
-    public void setCoin(int coin) {
-        this.coin = coin;
     }
 
     public String getCover() {
@@ -74,14 +74,6 @@ public class BagDirEntity implements Parcelable{
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
     }
 
     public String getUpdateTime() {
@@ -116,20 +108,68 @@ public class BagDirEntity implements Parcelable{
         this.userId = userId;
     }
 
-    public long getSize() {
-        return size;
-    }
-
-    public void setSize(long size) {
-        this.size = size;
-    }
-
     public boolean isSelect() {
         return isSelect;
     }
 
     public void setSelect(boolean select) {
         isSelect = select;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setCoin(Integer coin) {
+        this.coin = coin;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
+    public Integer getBuyUserNum() {
+        return buyUserNum;
+    }
+
+    public void setBuyUserNum(Integer buyUserNum) {
+        this.buyUserNum = buyUserNum;
+    }
+
+    public Integer getCoin() {
+        return coin;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public String getReadType() {
+        return readType;
+    }
+
+    public void setReadType(String readType) {
+        this.readType = readType;
+    }
+
+    public boolean isFollow() {
+        return follow;
+    }
+
+    public void setFollow(boolean follow) {
+        this.follow = follow;
     }
 
     public static final Parcelable.Creator<BagDirEntity> CREATOR = new Parcelable.Creator<BagDirEntity>() {
@@ -150,6 +190,10 @@ public class BagDirEntity implements Parcelable{
             entity.bagName = bundle.getString("bagName");
             entity.userId = bundle.getString("userId");
             entity.size = bundle.getLong("size");
+            entity.userName = bundle.getString("userName");
+            entity.buyUserNum = bundle.getInt("buyUserNum");
+            entity.readType = bundle.getString("readType");
+            entity.follow = bundle.getBoolean("follow");
             return entity;
         }
 
@@ -179,6 +223,10 @@ public class BagDirEntity implements Parcelable{
         bundle.putString("bagName",bagName);
         bundle.putString("userId",userId);
         bundle.putLong("size",size);
+        bundle.putString("userName",userName);
+        bundle.putInt("buyUserNum",buyUserNum);
+        bundle.putString("readType",readType);
+        bundle.putBoolean("follow",follow);
         parcel.writeBundle(bundle);
     }
 }

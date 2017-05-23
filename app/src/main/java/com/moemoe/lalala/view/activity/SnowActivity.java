@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSnowComponent;
 import com.moemoe.lalala.di.modules.SnowModule;
 import com.moemoe.lalala.model.entity.SnowEntity;
@@ -57,19 +57,25 @@ public class SnowActivity extends BaseAppCompatActivity implements SnowContract.
     protected void initViews(Bundle savedInstanceState) {
         DaggerSnowComponent.builder()
                 .snowModule(new SnowModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mRvList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new DonationAdapter(this,1);
         mRvList.getRecyclerView().setAdapter(mAdapter);
         mRvList.setLayoutManager(new LinearLayoutManager(this));
-        mRvList.isLoadMoreEnabled(false);
+        mRvList.setLoadMoreEnabled(false);
     }
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
     }
 
     @Override
@@ -137,7 +143,7 @@ public class SnowActivity extends BaseAppCompatActivity implements SnowContract.
     public void updateSnowList(SnowInfo entity, boolean pull) {
         mIsLoading = false;
         mRvList.setComplete();
-        mRvList.isLoadMoreEnabled(true);
+        mRvList.setLoadMoreEnabled(true);
         mTvMyNum.setText(getString(R.string.label_snow_my_num, entity.getMyNumber()));
         if (entity.getMyNumber() == 0) {
             mTvMyRank.setVisibility(View.GONE);

@@ -34,15 +34,15 @@ public class ColumnPresenter implements ColumnContract.Presenter {
                     @Override
                     public void onSuccess(ArrayList<CalendarDayItemEntity> calendarDayItemEntities) {
                         if(isFuture){
-                            view.loadColumnFutureData(calendarDayItemEntities);
+                            if(view != null)  view.loadColumnFutureData(calendarDayItemEntities);
                         }else {
-                            view.loadColumnPastData(calendarDayItemEntities);
+                            if(view != null) view.loadColumnPastData(calendarDayItemEntities);
                         }
                     }
 
                     @Override
                     public void onFail(int code,String msg) {
-                        view.onFailure(code,msg);
+                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }
@@ -55,5 +55,10 @@ public class ColumnPresenter implements ColumnContract.Presenter {
     @Override
     public void requestPastFresh(String barId,int index) {
         requestFresh(barId,index,false);
+    }
+
+    @Override
+    public void release() {
+        view = null;
     }
 }

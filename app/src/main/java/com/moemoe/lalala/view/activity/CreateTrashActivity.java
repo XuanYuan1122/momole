@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCreateTrashComponent;
 import com.moemoe.lalala.di.modules.CreateTrashModule;
 import com.moemoe.lalala.model.entity.DocTagEntity;
@@ -24,6 +25,7 @@ import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.TrashPut;
 import com.moemoe.lalala.presenter.CreateTrashContract;
 import com.moemoe.lalala.presenter.CreateTrashPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -102,9 +104,10 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
             finish();
             return;
         }
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerCreateTrashComponent.builder()
                 .createTrashModule(new CreateTrashModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mType = i.getIntExtra(TYPE_CREATE, TYPE_TEXT_TRASH);
@@ -170,6 +173,19 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
                 }
                 mTitle = s.toString();
                 mHasModified = true;
+            }
+        });
+        mEdtContent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // 解决scrollView中嵌套EditText导致不能上下滑动的问题
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_UP:
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                return false;
             }
         });
         mEdtContent.addTextChangedListener(new TextWatcher() {
@@ -380,6 +396,12 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.release();
+        super.onDestroy();
+    }
 
     @Override
     public void onCreateSuccess() {

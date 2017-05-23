@@ -91,24 +91,6 @@ public class PreferenceUtils {
         }
         return !TextUtils.isEmpty(sAuthorInfo.getUserId()) && !TextUtils.isEmpty(sAuthorInfo.getToken());
     }
-//
-//    public static void setSignState(Context context,boolean state){
-//        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
-//        SharedPreferences.Editor ed = sp.edit();
-//        ed.putString("sign_id", getUUid());
-//        ed.putBoolean("sign_state",state);
-//        ed.commit();
-//    }
-//
-//    public static boolean getSignState(Context context){
-//        SharedPreferences sp = context.getSharedPreferences(
-//                FILE_NAME,Activity.MODE_PRIVATE);
-//        String tempId = sp.getString("sign_id","");
-//        if(!tempId.equals(getUUid())){
-//            return false;
-//        }
-//        return sp.getBoolean("sign_state",false);
-//    }
 
     public static void setsLastLauncherTime(Context context,long time){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
@@ -249,6 +231,32 @@ public class PreferenceUtils {
         return sp.getLong("last_event_time",0);
     }
 
+    public static void setAllBackSchool(Context context, boolean show){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("all_back_school", show);
+        ed.commit();
+    }
+
+    public static boolean getAllBackSchool(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getBoolean("all_back_school",false);
+    }
+
+    public static void setBackSchoolDialog(Context context, boolean show){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("back_school_dialog", show);
+        ed.commit();
+    }
+
+    public static boolean getBackSchoolDialog(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getBoolean("back_school_dialog",false);
+    }
+
     public static void setSimpleLabel(Context context,boolean isLow){
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME, Activity.MODE_PRIVATE);
@@ -380,5 +388,88 @@ public class PreferenceUtils {
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME, Activity.MODE_PRIVATE);
         return sp.getInt(docId, 0);
+    }
+
+    public static int getReadFontSize(Context context) {
+        return getReadFontSize(context,"");
+    }
+
+    public static int getReadFontSize(Context context,String bookId){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getInt("bookId", DensityUtil.dip2px(context,15));
+    }
+
+    public static void saveFontSize(Context context,String bookId,int fontSizePx){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(bookId,fontSizePx);
+        editor.commit();
+    }
+
+    public static void saveFontSize(Context context,int fontSizePx){
+        saveFontSize(context,"",fontSizePx);
+    }
+
+    public static void saveReadProgress(Context context,String bookId, int currentChapter, int curBeginPos, int curEndPos) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt(bookId+"_chapter",currentChapter);
+        editor.putInt(bookId+"_startPos",curBeginPos);
+        editor.putInt(bookId+"_endPos",curEndPos);
+        editor.commit();
+    }
+
+    public static int[] getReadProgress(Context context,String bookId){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        int chapter = sp.getInt(bookId + "_chapter", 1);
+        int startPos = sp.getInt(bookId + "_startPos", 0);
+        int endPos = sp.getInt(bookId + "_endPos", 0);
+        return new int[]{chapter,startPos,endPos};
+    }
+
+    public static boolean isNight(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getBoolean("is_night",false);
+    }
+
+    public static void setNight(Context context,boolean isNight){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("is_night",isNight);
+        editor.commit();
+    }
+
+    public static int getReadBrightness(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getInt("read_light", (int) ScreenUtils.getScreenBrightness(context));
+    }
+
+    public static void saveReadBrightness(Context context,int percent) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("read_light",percent);
+        editor.commit();
+    }
+
+    public static int getBackSchoolLevel(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getInt("back_school_level", 0);
+    }
+
+    public static void setBackSchoolLevel(Context context,int level){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("back_school_level",level);
+        editor.commit();
     }
 }

@@ -17,7 +17,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.utils.AnimationUtil;
@@ -132,7 +132,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                     .maxThread(3)
                     .maxRetryCount(3)
                     .defaultSavePath(StorageUtils.getGalleryDirPath())
-                    .retrofit(MoeMoeApplicationLike.getInstance().getNetComponent().getRetrofit());
+                    .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     /**

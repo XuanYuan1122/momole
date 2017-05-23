@@ -11,7 +11,7 @@ public class LoginResultEntity {
     private String token;
     @SerializedName("userId")
     private String userId;
-    @SerializedName("isNew")
+    @SerializedName("new")
     private boolean isNew;
     @SerializedName("coin")
     private int coin;

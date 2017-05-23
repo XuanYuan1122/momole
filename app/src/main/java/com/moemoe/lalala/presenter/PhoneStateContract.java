@@ -9,7 +9,7 @@ import com.moemoe.lalala.model.entity.LoginResultEntity;
  */
 
 public interface PhoneStateContract {
-    interface Presenter{
+    interface Presenter extends BasePresenter{
         void checkPhoneCode(int action, AuthorInfo info,String code);
         void login(AuthorInfo info,LoginEntity entity);
     }

@@ -4,16 +4,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplicationLike;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDepartComponent;
 import com.moemoe.lalala.di.modules.DepartModule;
 import com.moemoe.lalala.model.entity.BannerEntity;
@@ -47,14 +48,15 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     private final String EXTRA_NAME = "name";
 
-    @BindView(R.id.rl_bar)
-    View mRlRoot;
-    @BindView(R.id.tv_title)
+    @BindView(R.id.app_bar)
+    AppBarLayout mAppBar;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
-    @BindView(R.id.list)
+    @BindView(R.id.rv_list)
     PullAndLoadView mListDocs;
+
     @Inject
     DepartPresenter mPresenter;
     private DepartmentListAdapter mListAdapter;
@@ -63,7 +65,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_one_pulltorefresh_list;
+        return R.layout.ac_bag_favorite;
     }
 
     @Override
@@ -85,18 +87,17 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
         }
         DaggerDepartComponent.builder()
                 .departModule(new DepartModule(this))
-                .netComponent(MoeMoeApplicationLike.getInstance().getNetComponent())
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        mRlRoot.setVisibility(View.VISIBLE);
-        mRlRoot.getBackground().mutate().setAlpha(0);
+        mAppBar.getBackground().mutate().setAlpha(0);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListAdapter = new DepartmentListAdapter(this);
         mListDocs.getRecyclerView().setAdapter(mListAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         mListDocs.setLayoutManager(layoutManager);
         mListDocs.getRecyclerView().addItemDecoration(new SpacesItemDecoration(DensityUtil.dip2px(this,9)));
-        mListDocs.isLoadMoreEnabled(false);
+        mListDocs.setLoadMoreEnabled(false);
     }
 
     @Override
@@ -106,7 +107,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     @Override
     protected void initListeners() {
-        mIvBack.setOnClickListener(new NoDoubleClickListener() {
+        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
@@ -156,7 +157,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if(!isFinishing()) Glide.with(DepartmentActivity.this).resumeRequests();
                 } else {
-                    if(!isFinishing())Glide.with(DepartmentActivity.this).pauseRequests();
+                    if(!isFinishing()) Glide.with(DepartmentActivity.this).pauseRequests();
                 }
             }
 
@@ -199,17 +200,17 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     public void toolBarAlpha(int curY) {
         int startOffset = 0;
-        int endOffset = mRlRoot.getHeight();
+        int endOffset = mToolbar.getHeight();
         if (Math.abs(curY) <= startOffset) {
-            mRlRoot.getBackground().mutate().setAlpha(0);
+            mAppBar.getBackground().mutate().setAlpha(0);
             mTitle.setTextColor(Color.argb(0, 255, 255, 255));
         } else if (Math.abs(curY) > startOffset && Math.abs(curY) < endOffset) {
             float precent = (float) (Math.abs(curY) - startOffset) / endOffset;
             int alpha = Math.round(precent * 255);
-            mRlRoot.getBackground().mutate().setAlpha(alpha);
+            mAppBar.getBackground().mutate().setAlpha(alpha);
             mTitle.setTextColor(Color.argb(alpha, 255, 255, 255));
         } else if (Math.abs(curY) >= endOffset) {
-            mRlRoot.getBackground().mutate().setAlpha(255);
+            mAppBar.getBackground().mutate().setAlpha(255);
             mTitle.setTextColor(Color.argb(255, 255, 255, 255));
         }
     }
@@ -221,8 +222,10 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        mPresenter.release();
         if(mListAdapter !=null )mListAdapter.onDestroy();
+        super.onDestroy();
+
     }
 
     @Override
@@ -251,10 +254,10 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
     public void onDocLoadSuccess(Object entity,boolean pull) {
         mIsLoading = false;
         if(((DepartmentEntity)entity).getList().size() == 0){
-            mListDocs.isLoadMoreEnabled(false);
-            ToastUtils.showCenter(this,getString(R.string.msg_all_load_down));
+            mListDocs.setLoadMoreEnabled(false);
+            ToastUtils.showShortToast(this,getString(R.string.msg_all_load_down));
         }else {
-            mListDocs.isLoadMoreEnabled(true);
+            mListDocs.setLoadMoreEnabled(true);
         }
         mListDocs.setComplete();
         if(pull){

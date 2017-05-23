@@ -1,7 +1,7 @@
 package com.moemoe.lalala.model.entity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Created by Haru on 2016/6/6 0006.
@@ -14,19 +14,19 @@ public class ReceiverInfo {
     public boolean showNotify;
     public String type;
     public String messageType;
+    public JsonObject data;
+    public Integer id;
 
     public void readFromJsonContent(String str){
-        try {
-            JSONObject json = new JSONObject(str);
-            logoUrl = json.optString("logoUrl");
-            title = json.optString("title");
-            content = json.optString("content");
-            schema = json.optString("schema");
-            type = json.optString("type");
-            showNotify = json.optBoolean("showNotify");
-            if(json.has("messageType")) messageType = json.optString("messageType");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JsonObject json =  new JsonParser().parse(str).getAsJsonObject();
+        logoUrl = json.get("logoUrl").getAsString();
+        title = json.get("title").getAsString();
+        content = json.get("content").getAsString();
+        schema = json.get("schema").getAsString();
+        type = json.get("type").getAsString();
+        showNotify = json.get("showNotify").getAsBoolean();
+        if(json.has("data")) data = new JsonParser().parse(json.get("data").getAsString()).getAsJsonObject();
+        if (json.has("id")) id = json.get("id").getAsInt();
+        if(json.has("messageType")) messageType = json.get("messageType").getAsString();
     }
 }

@@ -1,11 +1,14 @@
 package com.moemoe.lalala.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.view.View;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.view.activity.NewPersonalActivity;
 import com.moemoe.lalala.view.activity.WebViewActivity;
 
 /**
@@ -34,13 +37,28 @@ public class CustomUrlSpan extends ClickableSpan {
     }
     @Override
     public void onClick(View widget) {
-        WebViewActivity.startActivity(mContext, mUrl, mTitle, false, true);
+        if(mUrl.startsWith("http")){
+            WebViewActivity.startActivity(mContext, mUrl, mTitle, false, true);
+        }else {
+            Intent i = new Intent(mContext, NewPersonalActivity.class);
+            i.putExtra("uuid",mUrl);
+            mContext.startActivity(i);
+        }
+
     }
 
     @Override
     public void updateDrawState(TextPaint ds) {
         super.updateDrawState(ds);
-        ds.setColor(mContext.getResources().getColor(R.color.main_cyan));
+        ds.setColor(ContextCompat.getColor(mContext,R.color.main_cyan));
         ds.setUnderlineText(false);
+    }
+
+    public String getmUrl() {
+        return mUrl;
+    }
+
+    public void setmUrl(String mUrl) {
+        this.mUrl = mUrl;
     }
 }
