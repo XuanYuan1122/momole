@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <com.moemoe.lalala.view.widget.menu.DotableTextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/size_40"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dip"
+        android:paddingRight="16dip"
+        android:singleLine="true"
+        android:textSize="@dimen/size_15" />
+
+    <TextView
+        android:id="@+id/tv_news_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="4dp"
+        android:layout_toRightOf="@+id/title"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="9dp"
+        android:text="1"
+        android:visibility="gone" />
+
+</RelativeLayout>

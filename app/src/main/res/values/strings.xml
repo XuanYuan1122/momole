@@ -1,0 +1,363 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">neta</string>
+    <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
+    <string name="app_version">4.4.2_20170428</string>
+    <string name="app_version_code">4420</string>
+
+    <string name="label_scheme">neta</string>
+    <string name="label_host">com.moemoe.lalala</string>
+    <string name="label_doc_path">/doc_1.0</string>
+    <string name="label_doc_action">doc_1.0</string>
+    <string name="label_doc_path_old">/doc_0.9</string>
+    <string name="label_doc_action_old">doc_0.9</string>
+    <string name="label_word_path">/word_1.1</string>
+    <string name="label_tag_path">/tag_1.0</string>
+    <string name="label_tag_action">tag_1.0</string>
+    <string name="label_room_path">/room_1.0</string>
+    <string name="label_room_action">room_1.0</string>
+    <string name="label_class_path">/func_go2class_1.0</string>
+    <string name="label_url_path">/url_inner_1.0</string>
+    <string name="label_url_action">url_inner_1.0</string>
+    <string name="label_out_url_path">/url_outter_1.0</string>
+    <string name="label_out_url_action">url_outter_1.0</string>
+    <string name="label_department_path">/department_1.0</string>
+    <string name="label_department_action">department_1.0</string>
+    <string name="label_trash_path">/garbage_1.0</string>
+    <string name="label_img_trash_path">/garbage_img_1.0</string>
+    <string name="label_trash_action">garbage_1.0</string>
+    <string name="label_img_trash_action">garbage_img_1.0</string>
+    <string name="label_gacha_path">/gacha_1.0</string>
+    <string name="label_gacha_action">gacha_1.0</string>
+    <string name="label_cal_column_path">/calui_1.0</string>
+    <string name="label_cal_column_action">calui_1.0</string>
+    <string name="label_plot_path">/plot_1.0</string>
+    <string name="label_plot_action">plot_1.0</string>
+    <string name="label_qiu_path">/qiu_1.0</string>
+    <string name="label_qiu_action">qiu_1.0</string>
+    <string name="label_donation_action">donation_1.0</string>
+    <string name="label_donation_path">/donation_1.0</string>
+    <string name="label_snow_action">snow_1.0</string>
+    <string name="label_snow_path">/snow_1.0</string>
+    <string name="label_swim_path">/swim_1.0</string>
+    <string name="label_swim_action">swim_1.0</string>
+    <string name="label_user_info_path">/user_info_1.0</string>
+    <string name="label_user_info_action">user_info_1.0</string>
+    <string name="label_user_info_user_comment_path">/user_info_user_comment_1.0</string>
+    <string name="label_user_info_user_comment_action">user_info_user_comment_1.0</string>
+    <string name="label_user_info_notify_path">/user_info_notify_1.0</string>
+    <string name="label_user_info_notify_action">user_info_notify_1.0</string>
+    <string name="label_blackboard_path">/blackboard_1.0</string>
+    <string name="label_blackboard_action">blackboard_1.0</string>
+    <string name="label_talk_path">/talk_1.0</string>
+    <string name="label_talk_action">talk_1.0</string>
+    <string name="label_folder_path">/folder_1.0</string>
+    <string name="label_folder_action">folder_1.0</string>
+
+    <string name="label_can_not_use">施工中,敬请期待......</string>
+    <string name="label_signed">今天已经签过啦</string>
+    <string name="label_sign_suc">签到成功</string>
+    <string name="label_later">以后再说</string>
+    <string name="label_update">更新</string>
+    <string name="label_error_storage">请检查你的存储卡是否正常</string>
+    <string name="label_about_neta">关于neta</string>
+    <string name="label_hint_new_password">新密码</string>
+    <string name="label_hint_again_password">确认密码</string>
+    <string name="label_show_password">显示密码</string>
+    <string name="label_change_password">修改密码</string>
+    <string name="label_reset_password">重置密码</string>
+    <string name="label_hint_old_password">旧密码</string>
+    <string name="label_password_format">密码长度在6~18之间，只能包含字符、数字和下划线</string>
+    <string name="label_like_num" formatted="false">讨论%d</string>
+    <string name="label_doc_num" formatted="false">帖子%d</string>
+    <string formatted="false" name="label_doc_vote_nums">已有%d人参与投票</string>
+    <string name="label_top">置顶</string>
+    <string name="label_hot">精华</string>
+    <string formatted="false" name="label_post_icon_num">共%d张</string>
+    <string name="label_coming_soon">即将到来</string>
+    <string name="label_review_past">回顾过去</string>
+    <string name="label_doc_only_9_photos">共可选择9张图片</string>
+    <string name="label_create_doc_tag">添加标签可以加经验哦</string>
+    <string name="label_select_music">选择音乐</string>
+    <string name="label_select_book">选择文本</string>
+    <string name="label_select_img">选择封面</string>
+    <string name="label_add_hide">添加隐藏区域</string>
+    <string name="label_add_bag">添加一项书包内容</string>
+    <string name="label_use_jiecao">（消耗1枚节操）</string>
+    <string name="label_hide_info">其他同学需要献上节操才能看见</string>
+    <string name="label_bag_info">请选择书包中的一个文件夹</string>
+    <string name="label_added">已添加</string>
+    <string name="label_confirm">确定</string>
+    <string name="label_cancel">取消</string>
+    <string name="label_delete">删除</string>
+    <string name="label_tag_ctrl">标签管理</string>
+    <string name="label_create_post">发表帖子</string>
+    <string name="label_create_trash">丢个纸条</string>
+    <string name="label_menu_publish_doc">发布</string>
+    <string name="label_content_tag_del">如删除该标签，当前标签贴组将不能看到该帖</string>
+    <string name="label_more_doc_content">你写得太多啦</string>
+    <string name="label_select_img_finish">封面选择完成</string>
+    <string name="label_hide_area">隐藏区域</string>
+    <string name="label_done">完成</string>
+    <string name="label_no_num" formatted="false">No.%d</string>
+    <string name="label_donation_book" formatted="false">我捐献了%d枚，</string>
+    <string name="label_donation_book_my_rank" formatted="false">排名No.%d</string>
+    <string name="label_snow_rank" formatted="false">排名：%d</string>
+    <string name="label_book_coin" formatted="false">（%d）</string>
+    <string name="label_edit_personal_data">编辑学生证</string>
+    <string name="label_secret_setting">隐私设置</string>
+    <string name="label_save_modify">保存修改</string>
+    <string name="label_hint_input_nickname">氏名</string>
+    <string name="label_nickname_input_info">不超过10个字符（限汉字、字母、数字）</string>
+    <string name="label_sex">性别</string>
+    <string name="label_sex_male">女</string><!--请修改-->
+    <string name="label_sex_female">男</string>
+    <string name="label_birthday">生日</string>
+    <string name="label_take_avatar">获取证件照</string>
+    <string name="label_take_photo">拍照</string>
+    <string name="label_get_picture">从相册选择</string>
+    <string name="msg_no_system_camera">没有找到你的摄像头~</string>
+    <string name="label_pwd_error_num" formatted="false">密码错误,还可以尝试%d次</string>
+    <string name="label_kill_count" formatted="false">第%d周目,Neta学院校长,死亡</string>
+    <string name="label_find_password">找回密码</string>
+    <string name="label_dlg_select_country">选择国家码</string>
+    <string name="label_dlg_find_pwd_by_phone">手机帐号</string>
+    <string name="label_dlg_find_pwd_by_email">邮箱帐号</string>
+    <string name="label_hint_input_email">电子邮箱</string>
+    <string name="label_label_find_pwd_info">手机号码验证通过后，就可以重置密码啦！</string>
+    <string name="label_next">下一步</string>
+    <string name="label_country_china">+86</string>
+    <string name="label_hint_input_phone_number">请输入手机号码</string>
+    <string name="label_register_info">注册后，您可以使用[手机号 + 密码]直接登录，您也可以用手机号找回密码</string>
+    <string name="label_hint_input_password_register">密码为6-16位数字或字母</string>
+    <string name="label_register">注册学籍</string>
+    <string name="label_register_by_email">使用邮箱注册学籍</string>
+    <string name="label_register_contract">注册即表示您同意使用条款和隐私政策</string>
+    <string name="label_register_contract_url_content">使用条款和隐私政策</string>
+    <string name="label_personal_center">个人中心</string>
+    <string name="label_in_school_time">入学:</string><!--请修改-->
+    <string name="label_name">氏名:</string><!--请修改-->
+    <string name="label_birthday_comm">生日:</string><!--请修改-->
+    <string name="label_level_name">称号:</string>
+    <string name="label_jiecao">节操:</string>
+    <string name="label_login">登录</string>
+    <string name="label_my_post">我的帖子</string>
+    <string name="label_my_favorite">我的收藏</string>
+    <string name="label_friend_post">Ta的帖子</string>
+    <string name="label_save">保存</string>
+    <string name="label_raw">原图</string>
+    <string name="label_save_to_gallery">保存到相册</string>
+    <string name="label_mingan">敏感</string>
+    <string name="label_h">色情</string>
+    <string name="label_manma">谩骂</string>
+    <string name="label_ad">广告</string>
+    <string name="label_shui">水贴</string>
+    <string name="label_avatar">证件照</string>
+    <string name="label_jubao">举报</string>
+    <string name="label_hint_login_account_name">手机号</string>
+    <string name="label_hint_input_password">请输入密码</string>
+    <string name="label_login_third">第三方登陆</string>
+    <string name="label_forger_password">忘记密码?</string>
+    <string name="label_go_go">随便看看</string>
+    <string name="label_reply">回复</string>
+    <string name="label_tongzhi">通知</string>
+    <string name="label_recent_photos">最近照片</string>
+    <string name="label_preview">预览</string>
+    <string name="label_zhang">张</string>
+    <string name="label_doc">帖子</string>
+    <string name="label_pgc">资讯</string>
+    <string name="label_cal_top" formatted="false">%s/%d篇内容，%s</string>
+    <string name="label_level_introduce">等级说明</string>
+    <string formatted="false" name="label_level">%d级</string>
+    <string name="label_level_introduce_prefix">还需</string>
+    <string name="label_level_introduce_suffix">积分升级</string>
+    <string name="label_hint_input_phone_code">请输入短信验证码</string>
+    <string name="label_resend">重新发送</string>
+    <string name="label_select_fuku">选择服装</string>
+    <string name="label_fuku_req" formatted="false">需要等级%d</string>
+    <string name="label_person_setting">个人设置</string>
+    <string name="label_system_setting">系统设置</string>
+    <string name="label_log_out">退出登录</string>
+    <string name="label_setting">设置</string>
+    <string name="label_coin_details">节操记录</string>
+    <string name="label_doc_history">浏览历史</string>
+    <string name="label_select_deskmate">选择同桌</string>
+    <string name="label_3g_pic">3G下浏览高清图片</string>
+    <string name="label_version_update">版本更新</string>
+    <string name="label_clear_cache">清除缓存</string>
+    <string name="label_simple_label">精简标签</string>
+    <string name="label_about">关于</string>
+    <string name="label_clear">清空</string>
+    <string name="label_square">广场</string>
+    <string name="label_club">社团</string>
+    <string name="label_class">班级</string>
+    <string name="label_open_out">用外部浏览器打开</string>
+    <string name="label_share">分享</string>
+    <string name="label_jump_to" formatted="false">上一次看到%d楼</string>
+    <string name="label_send">发送</string>
+    <string name="label_comment_floor" formatted="false">%d楼</string>
+    <string name="label_doc_hide_content">本帖隐藏内容</string>
+    <string name="label_accept_my_coin">楼主同学辛苦了！</string>
+    <string name="label_got_coin" formatted="false">%d枚</string>
+    <string name="label_to_top">回到顶楼</string>
+    <string name="label_load_before_floor">查看之前的楼层</string>
+    <string name="label_comment_already">该评论已被删除</string>
+    <string name="label_copy_dust">复制</string>
+    <string name="label_level_copy_success">复制成功</string>
+    <string name="label_favorite">收藏</string>
+    <string name="label_cancel_favorite">取消收藏</string>
+    <string name="label_favorite_success">收藏成功</string>
+    <string name="label_favorite_failure">收藏失败</string>
+    <string name="label_goto_floor">跳转楼层</string>
+    <string name="label_doc_not_loaded" >你太着急啦，还没加载完呢</string>
+    <string name="label_floor_limit">请输入正确的楼层数</string>
+    <string name="label_cancel_favorite_success">取消收藏成功</string>
+    <string name="label_use_coin_success">支付节操成功</string>
+    <string name="label_give_coin_success">打赏节操成功</string>
+    <string name="label_sign_info_score" formatted="false">学分+%d</string>
+    <string name="label_sign_info_coin" formatted="false">节操+%d</string>
+    <string name="label_sign_times" formatted="false">x%d</string>
+    <string name="label_alert">提示</string>
+    <string name="label_enter_event">是否进入剧情?</string>
+    <string name="label_tag_not_exit">标签不存在</string>
+    <string name="label_tag_exit">标签已经存在</string>
+    <string name="label_trash_not_exit">小纸条不存在</string>
+    <string name="label_mine">我的</string>
+    <string name="label_fans">粉丝</string>
+    <string name="label_my_doc">发帖</string>
+    <string name="label_my_coin">节操</string>
+    <string name="label_follow">关注</string>
+    <string name="label_followed">已关注</string>
+    <string name="label_home_page">主页</string>
+    <string name="label_prop">道具</string>
+    <string name="label_chat">私信</string>
+    <string name="label_msg">消息</string>
+    <string name="label_level_1" formatted="false">LV %d</string>
+    <string name="label_show_favorite">公开显示我的收藏</string>
+    <string name="label_show_follow">公开显示我的关注</string>
+    <string name="label_show_fans">公开显示我的粉丝</string>
+    <string name="label_shield">屏蔽消息</string>
+    <string name="label_my_snow_num" formatted="false">我推掉的雪人数：%d</string>
+    <string name="label_snow_my_num" formatted="false">我消灭了%d个</string>
+    <string name="label_snow_my_rank" formatted="false">，排名No.%d</string>
+    <string name="label_task_limit" formatted="false">/%d</string>
+    <string name="label_liuyan" formatted="false">%d条留言</string>
+    <string name="label_modify">修改</string>
+    <string name="label_bag">书包</string>
+    <string name="label_bag_name">书包名称</string>
+    <string name="label_dir_name">文件夹名称</string>
+    <string name="label_cover">封面图片</string>
+    <string name="label_bag_space" formatted="false">%dMB / %dMB</string>
+    <string name="label_bag_buy_list">购买记录</string>
+    <string name="label_bag_follow_list">收藏夹</string>
+    <string name="label_add_space">扩展容量</string>
+    <string name="label_coin_set">节操价格设定</string>
+    <string name="label_create">新建</string>
+    <string name="label_add">添加</string>
+    <string name="label_delete_confirm">确认删除?</string>
+    <string name="label_user">用户</string>
+    <string name="label_read_progress" formatted="false">第%d/%d页</string>
+    <string name="label_normal_type">正常模式</string>
+    <string name="label_img_type">看图模式</string>
+    <string name="label_img_type_detail">预览美图、漫画的特殊模式</string>
+    <string name="label_read_type">阅读模式</string>
+    <string name="label_read_type_detail">预览小说、文字的特殊模式</string>
+    <string name="label_edit_doc_hint">标题 (选填)</string>
+    <string name="label_give_up">放弃</string>
+    <string name="label_coin_watch">节操可见</string>
+    <string name="label_report_watch">回复可见</string>
+    <string name="label_report_watch_info">别人可通过回复来查看隐藏区</string>
+    <string name="label_coin_watch_info">别人可通过消费1节操来查看隐藏区</string>
+    <string name="label_change_type">切换</string>
+
+    <string name="msg_clear_cache_succ_with_size">清理成功</string>
+    <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>
+    <string name="msg_click_twice_to_exit">再按一次离开neta</string>
+    <string name="msg_server_illegal_pwd">账号或密码错误，再好好想想？</string>
+    <string name="msg_server_login_account_frozen">该帐号已被冻结</string>
+    <string name="msg_server_registe_phone_repeat">该手机号已注册</string>
+    <string name="msg_server_register_vcode_error">验证码发送次数过多，请明天再试</string>
+    <string name="msg_server_no_account">该帐号并不存在</string>
+    <string name="msg_vcode_illegal">验证码错误</string>
+    <string name="msg_change_pwd_ori_pwd_wrong">原密码错误</string>
+    <string name="msg_trash_send">Tips: 有垃圾丢到其他地方去，这里是个【神圣】的地方，由无数前辈积累下的传承，成为了Neta学院里的一项【潜规则】，请好好爱惜和使用 []~(￣▽￣)~*</string>
+    <string name="msg_have_no_coin" >没有足够的节操了</string>
+    <string name="msg_doc_has_deleted">该帖子已被删除</string>
+    <string name="msg_can_not_give_coin_to_self">不能打赏自己哦</string>
+    <string name="msg_only_delete_self_doc">只能删除自己的帖子</string>
+    <string name="msg_only_delete_self_comment">只能删除自己的评论</string>
+    <string name="msg_tag_not_exit">标签不存在</string>
+    <string name="msg_clicked">你已经点过啦</string>
+    <string name="msg_coin_got">楼主已经收到你的节操拉，刷新下试试吧</string>
+    <string name="msg_need_login_first">需要登录后才能继续哦！</string>
+    <string name="msg_refresh_fail">获取信息失败，请检查网络连接或再试一次~</string>
+    <string name="msg_on_loading">正在加载...</string>
+    <string name="msg_connection">网络连接失败，等等再试试~</string>
+    <string name="msg_login_password_form_error">密码格式不对哦！</string>
+    <string name="msg_password_2_not_same">两次输入的密码好像不一样呢~</string>
+    <string name="msg_change_password_success">修改密码成功</string>
+    <string name="msg_set_password_success">密码设置成功！</string>
+    <string name="msg_all_load_down">没有更多啦</string>
+    <string name="msg_doc_title_limit">帖子标题不能超过20个字符哟~~</string>
+    <string name="msg_tag_already_exit">该标签已经存在</string>
+    <string name="msg_doc_comment_not_empty">什么都没写发什么呀~</string>
+    <string name="msg_need_one_cover">必须选择一个封面~</string>
+    <string name="msg_create_doc_success">发布帖子成功！</string>
+    <string name="msg_create_trash_success">扔纸条成功！</string>
+    <string name="msg_doc_content_cannot_null">还什么都没写呢~</string>
+    <string name="msg_doc_img_cannot_null">还没有选图片呢</string>
+    <string name="msg_need_one_tag">至少需要一个标签哦~</string>
+    <string name="msg_need_one_music">必须选择一首歌和封面~</string>
+    <string name="msg_create_doc_9_jpg">一个帖子最多能只能有15张图</string>
+    <string name="msg_select_9_item">一次最多能只能有9个文件</string>
+    <string name="msg_can_not_empty">内容不能为空</string>
+    <string name="msg_nickname_cannot_null">昵称不能为空</string>
+    <string name="msg_name_cannot_null">名称不能为空</string>
+    <string name="msg_nickname_too_long">昵称不能超过10个字符</string>
+    <string name="msg_sign_too_long">签名不能超过50个字符</string>
+    <string name="msg_nickname_illegal">昵称中不能包含特殊字符</string>
+    <string name="msg_modify_avatar_success">证件照修改成功</string>
+    <string name="msg_modify_my_data_success">学生证修改成功</string>
+    <string formatted="false" name="msg_register_to_gallery_success">成功保存到相册，路径为%s</string>
+    <string formatted="false" name="msg_register_to_music_success">成功保存到音乐，路径为%s</string>
+    <string name="msg_jubao_success">操作成功！</string>
+    <string name="msg_login_username_form_error">请输入正确的手机号码</string>
+    <string name="msg_on_login">正在登录...</string>
+    <string name="msg_login_success">登录成功！</string>
+    <string name="msg_user_cancel">用户取消操作</string>
+    <string name="msg_register_to_gallery_fail">保存到相册失败</string>
+    <string formatted="false" name="msg_image_count_limit">最多%d张图片</string>
+    <string formatted="false" name="msg_register_send_phone_code_to">短信验证码已发送至 %s，请注意查收</string>
+    <string name="msg_have_no_comments">还没有任何回复呢！赶紧去回复看看吧</string>
+    <string name="msg_send_comment_success">发送评论成功</string>
+    <string name="msg_comment_delete_success">评论删除成功</string>
+    <string name="msg_top_info">保持良好的出勤率可以快速提升等级，同时获得更多的节操</string>
+    <string name="msg_foot_info">每日0点开启签到，连续签到可以获得大量【学分】和【节操】，缺勤的话就要重新开始获得教导主任的信任了！</string>
+    <string name="msg_confirm_give_coin_bf">确认献上</string>
+    <string name="msg_confirm_give_coin_af">枚节操?</string>
+    <string name="label_total_floor" formatted="false">共有%d楼</string>
+    <string name="label_total_coin" formatted="false">共有%d枚</string>
+
+    <string name="a_hint_input_title">标题(选填)</string>
+    <string name="a_hint_input_content">请输入内容</string>
+    <string name="a_hint_input_comment">输入评论...</string>
+    <string name="a_hint_input_comment_report">补充...</string>
+
+    <string name="day_picker_description" msgid="3968620852217927702">"按月份划分的日期网格"</string>
+    <string name="year_picker_description" msgid="6963340404644587098">"年份列表"</string>
+    <string name="select_day" msgid="3973338219107019769">"选择月份和日期"</string>
+    <string name="select_year" msgid="2603330600102539372">"选择年份"</string>
+    <string name="day_of_week_label_typeface" translatable="false">sans-serif</string>
+    <string name="sans_serif" translatable="false">sans-serif</string>
+
+    <string name="settings">设置</string>
+
+    <string name="a_global_msg_loading">执行中.....</string>
+    <string name="a_dlg_title">提示</string>
+    <string name="a_dlg_clear_cache">确定清除缓存吗？</string>
+    <string name="a_dlg_title_take_photo">获取图像</string>
+    <string name="a_dlg_msg_need_login_first">需要登录后才能继续哦！</string>
+    <string name="a_dlg_go_2_login">登录</string>
+    <string name="a_dlg_abandon">放弃</string>
+    <string name="a_dlg_msg_abandon_modify">确认放弃本次修改？</string>
+    <string name="a_dlg_title_send_error">发送错误报告</string>
+</resources>

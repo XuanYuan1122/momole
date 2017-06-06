@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/main_cyan"
+        android:paddingTop="@dimen/status_bar_height">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_go_back"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:maxLength="16"
+                android:textSize="18dp"
+                android:text="@string/label_recent_photos"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tv_sava"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/label_confirm"
+                android:textSize="16dp"
+                android:layout_gravity="right"
+                android:gravity="center"
+                android:paddingRight="12dp"
+                android:textColor="@color/white"/>
+        </android.support.v7.widget.Toolbar>
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_photo_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
+        <GridView
+            android:id="@+id/gv_select_photos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:clipToPadding="true"
+            android:horizontalSpacing="2dp"
+            android:listSelector="@null"
+            android:numColumns="3"
+            android:scrollbars="none"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="2dp" />
+
+        <RelativeLayout
+            android:id="@+id/ll_select_album"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_dark_translucent"
+            android:visibility="gone" >
+
+            <ListView
+                android:id="@+id/lv_select_ablum"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="60dp"
+                android:background="@android:color/white"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:scrollbarStyle="outsideOverlay" >
+            </ListView>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_toolbar_ar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tv_album_ar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="left|center_vertical"
+                android:minWidth="50dp"
+                android:text="@string/label_recent_photos"
+                android:textColor="@color/main_cyan"
+                android:textSize="@dimen/size_15" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/ic_album_more"
+                android:scaleType="centerInside" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_line_ar"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/tv_preview_ar"
+            android:background="@color/main_cyan" />
+
+        <TextView
+            android:id="@+id/tv_preview_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:enabled="false"
+            android:padding="10dp"
+            android:text="@string/label_preview"
+            android:textColor="@color/main_cyan"
+            android:textSize="@dimen/size_15" />
+    </RelativeLayout>
+
+</LinearLayout>

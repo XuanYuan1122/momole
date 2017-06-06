@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="@string/label_system_setting"
+        android:textColor="@color/gray_929292"
+        android:textSize="@dimen/size_12" />
+
+    <View style="@style/HorizontalSep" />
+
+    <include
+        android:id="@+id/set_3g_pic"
+        layout="@layout/style_setting" />
+
+    <include
+        android:id="@+id/set_label"
+        layout="@layout/style_setting" />
+
+    <include
+        android:id="@+id/set_version_update"
+        layout="@layout/style_setting" />
+
+    <include
+        android:id="@+id/set_clear_cache"
+        layout="@layout/style_setting" />
+
+    <include
+        android:id="@+id/set_about"
+        layout="@layout/style_setting" />
+
+</LinearLayout>

@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+    <RelativeLayout
+        android:id="@+id/rl_snow_main"
+        android:layout_width="270dp"
+        android:layout_height="375dp"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/bg_rect_corner_while">
+
+        <TextView
+            android:id="@+id/tv_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginTop="76dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:textSize="@dimen/size_10"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:textColor="@color/gray_929292"
+            android:text="”啊啊，看到校园里的皑皑白雪高兴过头了，雪人推好像稍微有点多，这位同学能帮忙稍微处理一下吗？“"/>
+
+        <TextView
+            android:id="@+id/tv_top_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_top"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:textSize="@dimen/size_10"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/gray_929292"
+            android:text="——你问我是谁，我是你们的校长啊!"/>
+
+        <TextView
+            android:id="@+id/tv_snow_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_top_end"
+            android:layout_marginTop="10dp"
+            android:textSize="@dimen/size_12"
+            android:textStyle="bold"
+            android:textColor="@color/pink_fb7ba2"
+            android:layout_marginLeft="14dp"
+            android:layout_marginStart="14dp" />
+
+        <TextView
+            android:id="@+id/tv_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_12"
+            android:textStyle="bold"
+            android:textColor="@color/pink_fb7ba2"
+            android:layout_alignTop="@+id/tv_snow_num"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="14dp"
+            android:layout_marginEnd="14dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:paddingLeft="18dp"
+            android:paddingStart="18dp"
+            android:layout_below="@+id/tv_snow_num"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/shape_rect_green_no_background_2">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/shape_rect_border_green_5"
+                    android:textColor="@color/white"
+                    android:text="66"
+                    android:gravity="center"
+                    android:textSize="@dimen/size_9"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
+                    android:textSize="@dimen/size_9"
+                    android:textStyle="bold"
+                    android:textColor="@color/green_93d856"
+                    android:text="学分500+节操50"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/shape_rect_border_green_5"
+                    android:textColor="@color/white"
+                    android:text="168"
+                    android:gravity="center"
+                    android:textSize="@dimen/size_9"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
+                    android:textSize="@dimen/size_9"
+                    android:textStyle="bold"
+                    android:textColor="@color/green_93d856"
+                    android:text="小莲圣诞版服装"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/shape_rect_border_green_5"
+                    android:textColor="@color/white"
+                    android:text="233"
+                    android:gravity="center"
+                    android:textSize="@dimen/size_9"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
+                    android:textSize="@dimen/size_9"
+                    android:textStyle="bold"
+                    android:textColor="@color/green_93d856"
+                    android:text="学分1000+节操100"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/shape_rect_border_green_5"
+                    android:textColor="@color/white"
+                    android:text="444"
+                    android:gravity="center"
+                    android:textSize="@dimen/size_9"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
+                    android:textSize="@dimen/size_9"
+                    android:textStyle="bold"
+                    android:textColor="@color/green_93d856"
+                    android:text="Love Live或者初音未来扭蛋一枚"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_9"
+                    android:textColor="@color/pink_fb7ba2"
+                    android:textStyle="bold"
+                    android:text="（限前100名）"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="30dp"
+                    android:layout_height="15dp"
+                    android:background="@drawable/shape_rect_border_green_5"
+                    android:textColor="@color/white"
+                    android:text="648"
+                    android:gravity="center"
+                    android:textSize="@dimen/size_9"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
+                    android:textSize="@dimen/size_9"
+                    android:textStyle="bold"
+                    android:textColor="@color/green_93d856"
+                    android:text="送现金大奖"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_9"
+                    android:textColor="@color/pink_fb7ba2"
+                    android:textStyle="bold"
+                    android:text="（限前10名）"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_content"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="14dp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_4999e8"
+            android:textSize="@dimen/size_9"
+            android:text="活动时间:"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_time_title"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="14dp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_4999e8"
+            android:textSize="@dimen/size_12"
+            android:text="12月24日早上0点——1月2日晚上12点"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_time"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="14dp"
+            android:textStyle="bold"
+            android:textColor="@color/blue_4999e8"
+            android:textSize="@dimen/size_9"
+            android:text="”这些雪人...只是稍微有点多？“"/>
+
+        <Button
+            android:id="@+id/btn_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/btn_snow_rank"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_snow_rank"
+        android:layout_width="270dp"
+        android:layout_height="375dp"
+        android:layout_marginTop="22dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="@drawable/bg_rect_corner_while">
+
+        <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+            android:id="@+id/pl_list"
+            android:layout_marginTop="80dp"
+            android:layout_marginLeft="28dp"
+            android:layout_marginStart="28dp"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+        </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_snow_my_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#f0afab"
+                android:textSize="@dimen/size_10"
+                android:textStyle="bold"
+                android:layout_marginLeft="28dp"
+                android:layout_marginStart="28dp" />
+
+            <TextView
+                android:id="@+id/tv_snow_my_rank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#f0afab"
+                android:textSize="@dimen/size_10"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/btn_live2d_exit"/>
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/btn_trash_exit" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/ic_snowboy"/>
+    </RelativeLayout>
+
+</FrameLayout>

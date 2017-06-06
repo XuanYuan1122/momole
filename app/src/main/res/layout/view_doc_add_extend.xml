@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/layout_hide"
+            layout="@layout/view_add_hide_doc"/>
+
+        <include
+            android:id="@+id/layout_bag"
+            layout="@layout/view_add_doc_bag"/>
+</LinearLayout>

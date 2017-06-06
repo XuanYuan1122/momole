@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_bg">
+
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:paddingTop="@dimen/status_bar_height"
+        android:src="@drawable/ic_go_back" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/size_15"
+        android:src="@drawable/ic_bag_login"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_centerInParent="true"
+        android:text="是否领取你的书包?"/>
+
+    <TextView
+        android:id="@+id/tv_get_bag"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_rect_label_pink"
+        android:layout_below="@+id/tv_title"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/size_18"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="领取"/>
+</RelativeLayout>

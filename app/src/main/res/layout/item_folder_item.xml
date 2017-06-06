@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:id="@+id/iv_music"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:src="@drawable/ic_bag_musicicon"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="52dp"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/ll_music_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:paddingStart="@dimen/size_8"
+        android:paddingLeft="@dimen/size_8"
+        android:paddingBottom="@dimen/size_8"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_music_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_12" />
+
+        <TextView
+            android:id="@+id/tv_music_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_10"
+            android:layout_marginTop="@dimen/size_5"/>
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/iv_multi_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|end"
+        android:layout_marginRight="5dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/ic_image_checkbox"
+        android:button="@null"
+        android:elevation="5dp"
+        android:visibility="gone"/>
+</FrameLayout>
