@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.moemoe.lalala.view.widget.datetimepicker.date.AccessibleDateAnimator android:gravity="center" android:id="@id/animator" android:background="@color/date_picker_view_animator" android:layout_width="@dimen/size_270" android:layout_height="@dimen/size_270"
+  xmlns:android="http://schemas.android.com/apk/res/android" />

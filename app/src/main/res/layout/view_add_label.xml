@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/keyboard_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_create_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_18"
+        android:textColor="@color/gray_d7d7d7"
+        android:text="@string/label_create_doc_tag"
+        android:textSize="12dp"
+        android:background="@color/white" />
+
+    <com.moemoe.lalala.view.widget.view.DocLabelView
+        android:layout_below="@+id/tv_create_tag"
+        android:id="@+id/dv_doc_label_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingTop="@dimen/size_18"
+        android:paddingBottom="@dimen/size_18"
+        app:child_view_height="22dp"
+        app:child_view_width="wrap_content"
+        app:line_spacing="7dp"
+        app:label_spacing="7dp" />
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_one_list_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_f2f2f3" >
+
+    <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/rl_bar">
+    </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+
+    <LinearLayout
+        android:id="@+id/rl_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_cyan"
+        android:paddingTop="@dimen/status_bar_height"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_go_back"/>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_centerInParent="true"
+                android:textSize="18dp"
+                android:text="班级"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/tv_simple_label"
+                android:layout_width="50dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/size_10"
+                android:layout_marginEnd="@dimen/size_10"
+                android:gravity="center"
+                android:text="标签精简"
+                android:textColor="@color/txt_white_cyan"
+                android:textStyle="bold"
+                android:textSize="9dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/btn_only_host"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

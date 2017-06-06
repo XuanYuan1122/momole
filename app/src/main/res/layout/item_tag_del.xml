@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="38dp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/size_10"
+        android:paddingLeft="@dimen/size_10"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/main_cyan"
+        android:textSize="@dimen/size_12" />
+
+    <ImageView
+        android:id="@+id/iv_del"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/size_10"
+        android:layout_marginRight="@dimen/size_10"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/btn_doc_tap_delete"/>
+</LinearLayout>

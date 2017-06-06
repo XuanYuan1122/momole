@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.moemoe.lalala">
+
+    <!-- normal permission -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <!-- 允许应用读取低级别的系统日志文件 -->
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <!-- SD卡读取权限，用户写入离线定位数据 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+
+    <!-- Dangerous permission -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+
+    <application
+        android:name=".app.MoeMoeApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:debuggable="true"
+        android:supportsRtl="true"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="559b89c267e58ee03e0021b7" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" />
+        <meta-data
+            android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
+            android:value="GlideModule" />
+        <service
+            android:name=".broadcast.SampleResultService"
+            android:exported="false"/>
+        <activity android:name=".view.activity.SplashActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/label_host"
+                    android:scheme="@string/label_scheme" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.ReadActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.MangaActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.MengXinActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreen"/>
+        <activity android:name=".view.activity.GuideActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="plot_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_plot_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.MapActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true"
+            android:theme="@style/ImageTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.NewCalendarActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+
+            <intent-filter>
+                <action android:name="blackboard_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_blackboard_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.WallBlockActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="room_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_room_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.DepartmentActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="department_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_department_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.CoinDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity
+            android:name=".view.activity.QiuMingShanActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="qiu_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_qiu_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.SwimPoolActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="swim_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_swim_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.TrashFavoriteActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.TrashActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Activity_Dialog">
+            <intent-filter>
+                <action android:name="garbage_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_trash_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.DonationActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Activity_Dialog">
+            <intent-filter>
+                <action android:name="donation_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_donation_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.SnowActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Activity_Dialog">
+            <intent-filter>
+                <action android:name="snow_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_snow_path"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".view.activity.ImageTrashActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Activity_Dialog">
+            <intent-filter>
+                <action android:name="garbage_img_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_img_trash_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.EventActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Activity_Dialog"/>
+        <activity android:name=".view.activity.ChangePasswordActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity android:name=".view.activity.FindPasswordActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".view.activity.LoginActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/DefaultColorTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".view.activity.PhoneRegisterActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".view.activity.PhoneStateCheckActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".view.activity.ClubPostListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="tag_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_tag_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.SettingActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.AboutActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.CreateNormalDocActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"  />
+        <activity android:name=".view.activity.CreateRichDocActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"  />
+        <activity android:name=".view.activity.CreateRichDocHideActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"  />
+        <activity android:name=".view.activity.AddMusicActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme" />
+        <activity android:name=".view.activity.CreateTrashActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"  />
+        <activity android:name=".view.activity.CommentsListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"  >
+
+            <intent-filter>
+                <action android:name="user_info_user_comment_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_user_info_user_comment_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.ChatActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"  >
+
+            <intent-filter>
+                <action android:name="talk_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_talk_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.SecretSettingActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.ReadTypeSettingActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.ChatSettingActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.NewEditAccountActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity android:name=".view.activity.BagEditActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity android:name=".view.activity.DocHideAddActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"  />
+        <activity android:name=".view.activity.SelectFukuActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"/>
+        <activity android:name=".view.activity.BadgeActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.TagControlActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.CropAvatarActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.NewPersonalActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="user_info_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_user_info_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.BagActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.FolderActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="folder_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_folder_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.DocHistoryActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.BagBuyActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.BagFollowActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.FolderSelectActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.ImageBigSelectActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.FileDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.FilesSelectActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.SelectMateActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.MultiImageChooseActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.NewsDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+
+            <intent-filter>
+                <action android:name="user_info_notify_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_user_info_notify_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.CommentDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.TrashDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+        <activity android:name=".view.activity.PersonalLevelActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.SelectMusicActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.SelectBookActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.WebViewActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated ="true"
+            android:theme="@style/MainColorTranslucentTheme"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="url_inner_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_url_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.MusicDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.NewDocDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+            <intent-filter>
+                <action android:name="doc_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_doc_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.SearchActivity"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+        android:screenOrientation="portrait"
+        android:theme="@style/ImageTranslucentTheme"
+        android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+        <activity android:name=".view.activity.ColumnDetailActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="calui_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_cal_column_path"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.JuBaoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+
+        <!-- Ping++ SDK -->
+        <activity
+            android:name="com.pingplusplus.android.PaymentActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data android:scheme="qwallet1104765197"/>
+            </intent-filter>
+
+        </activity>
+        <!-- 微信支付 -->
+        <activity-alias
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:targetActivity="com.pingplusplus.android.PaymentActivity" />
+
+
+        <!-- 支付宝 -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
+
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+
+            <intent-filter>
+                <data android:scheme="tencent1104765197" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- 调用新浪原生SDK，需要注册的回调activity -->
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".broadcast.PushReceiver">
+            <intent-filter>
+                <action android:name="com.moemoe.lalala.PUSH_RECEIVER"/>
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".broadcast.PushIntentService"/>
+
+        <service android:name=".broadcast.PushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice">
+        </service>
+        <receiver android:name=".broadcast.AppInstallReceiver" android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

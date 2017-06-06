@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/size_10"
+    android:layout_marginLeft="@dimen/size_10"
+    android:layout_marginStart="@dimen/size_10"
+    android:layout_marginEnd="@dimen/size_10"
+    android:layout_marginRight="@dimen/size_10"
+    android:paddingTop="@dimen/size_12"
+    android:paddingLeft="@dimen/size_10"
+    android:paddingStart="@dimen/size_10"
+    android:paddingRight="@dimen/size_10"
+    android:paddingEnd="@dimen/size_10"
+    android:paddingBottom="@dimen/size_12"
+    android:background="@drawable/shape_gray_f6f6f6_5">
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/size_12"
+        android:textColor="@color/gray_929292"
+        />
+
+    <TextView
+        android:id="@+id/tv_watch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/main_cyan"
+        android:textSize="@dimen/size_12"
+        android:layout_below="@+id/tv_content"
+        android:layout_marginTop="@dimen/size_10"
+        android:text="点击查看"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray_d7d7d7"
+        android:textSize="@dimen/size_12"
+        android:layout_alignBottom="@+id/tv_watch"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>

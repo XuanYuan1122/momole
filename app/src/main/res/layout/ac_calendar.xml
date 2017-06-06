@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_f2f2f3" >
+
+    <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+
+    <RelativeLayout
+        android:id="@+id/suspension_bar"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="144dp">
+
+        <ImageView
+            android:id="@+id/iv_background"
+            android:layout_width="match_parent"
+            android:layout_height="144dp"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:id="@+id/tv_cal_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="40dp"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/ll_time"
+            android:layout_marginBottom="4dp"
+            android:text="2016.10.26"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:orientation="horizontal"
+            android:layout_marginRight="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            android:gravity="center_vertical"
+            android:layout_alignParentBottom="true">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_week"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:text="@string/label_cal_top"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/white"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/status_bar_height"
+        android:src="@drawable/ic_go_back"
+        android:visibility="visible"/>
+</FrameLayout>

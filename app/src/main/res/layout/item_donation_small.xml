@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="6dp">
+
+    <TextView
+        android:id="@+id/tv_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#f0afab"
+        android:textStyle="bold"
+        android:textSize="@dimen/size_10"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/tv_book_top_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#f0afab"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:maxWidth="90dp"
+        android:maxLines="1"
+        android:textSize="@dimen/size_10"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/tv_book_no_coin"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:textColor="#f0afab"
+        android:textSize="@dimen/size_10"
+        android:textStyle="bold"
+        android:text="" />
+</LinearLayout>

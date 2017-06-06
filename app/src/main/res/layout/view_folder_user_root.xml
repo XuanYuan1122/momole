@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:paddingTop="@dimen/size_10"
+    android:paddingLeft="@dimen/size_10"
+    android:paddingStart="@dimen/size_10"
+    android:paddingEnd="@dimen/size_10"
+    android:paddingRight="@dimen/size_10"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="@dimen/size_40"
+        android:layout_height="@dimen/size_40" />
+
+    <TextView
+        android:id="@+id/tv_from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray_929292"
+        android:text="来自"
+        android:textSize="@dimen/size_12"
+        android:layout_marginStart="@dimen/size_8"
+        android:layout_marginLeft="@dimen/size_8"
+        android:layout_marginTop="@dimen/size_3"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toEndOf="@+id/iv_avatar"/>
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tv_from"
+        android:layout_alignStart="@+id/tv_from"
+        android:layout_below="@+id/tv_from"
+        android:textSize="@dimen/size_16"
+        android:textColor="@color/black" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:id="@+id/tv_favorite"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_12"
+            android:gravity="center"
+            android:textColor="@color/txt_white_green"
+            android:background="@drawable/bg_shape_green_5"
+            android:text="收藏"/>
+
+        <TextView
+            android:id="@+id/tv_more"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:background="@drawable/shape_rect_label_main"
+            android:layout_marginStart="@dimen/size_8"
+            android:layout_marginLeft="@dimen/size_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_12"
+            android:gravity="center"
+            android:visibility="visible"
+            android:textStyle="bold"
+            android:text="更多"/>
+    </LinearLayout>
+</RelativeLayout>

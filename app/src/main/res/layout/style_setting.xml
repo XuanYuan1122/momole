@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/bg_normal_white_btn"
+    android:layout_gravity="center_vertical" >
+
+    <TextView
+        android:id="@+id/tv_function_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="25dp"
+        android:textColor="@color/dark_gray"
+        android:textSize="@dimen/size_14"/>
+
+    <TextView
+        android:id="@+id/tv_function_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="25dp"
+        android:textColor="@color/gray_d7d7d7"
+        android:layout_toLeftOf="@+id/iv_indicate_img"
+        android:textSize="@dimen/size_14"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/iv_indicate_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/ic_array_right_gray" />
+    
+    <View style="@style/HorizontalSep"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

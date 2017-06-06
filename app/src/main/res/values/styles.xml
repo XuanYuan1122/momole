@@ -1,0 +1,246 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="AppTheme.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.FullScreen" parent="AppTheme.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="FullScreen" parent="AppTheme.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="CSButtonstyle" parent="@android:style/Widget.Button">
+        <item  name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="VgOneLine">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_marginRight">12dp</item>
+    </style>
+
+    <style name="VgOneLine.White">
+        <item name="android:background">@drawable/bg_rect_corner_while_10</item>
+    </style>
+
+    <style name="VgOneLine.Cyan">
+        <item name="android:background">@drawable/bg_cyan_clickable</item>
+    </style>
+
+    <style name="EdtLoginInput" parent="VgOneLine.White">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">@dimen/size_15</item>
+        <item name="android:textColorHint">@color/gray_c1c1c1</item>
+        <item name="android:lines">1</item>
+    </style>
+
+    <style name="CbNormal">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/size_12</item>
+        <item name="android:textColor">@color/gray_929292</item>
+    </style>
+
+    <style name="BtnCyanOneLine" parent="VgOneLine.Cyan">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_line_btn_green</item>
+        <item name="android:textColor">@color/txt_white_can_disable</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Neta.Card" parent="CardView">
+        <item name="contentPadding">0dp</item>
+        <item name="cardCornerRadius">@dimen/size_2</item>
+        <item name="cardPreventCornerOverlap">false</item>
+        <item name="cardElevation">@dimen/size_3</item>
+    </style>
+
+    <style name="EdtNormal">
+        <item name="android:textColor">@color/gray_595e64</item>
+        <item name="android:textSize">@dimen/size_15</item>
+        <item name="android:textColorHint">@color/gray_c1c1c1</item>
+        <item name="android:padding">6dp</item>
+    </style>
+
+    <style name="HorizontalSep">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/gray_dbdbdb</item>
+    </style>
+
+    <style name="TxtSecondGary">
+        <item name="android:textColor">@color/gray_dbdbdb</item>
+        <item name="android:textSize">@dimen/size_12</item>
+    </style>
+
+    <style name="TxtMainGray">
+        <item name="android:textColor">@color/gray_929292</item>
+        <item name="android:textSize">@dimen/size_15</item>
+    </style>
+
+    <style name="RbMain">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@drawable/ic_rb</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">@dimen/size_15</item>
+        <item name="android:textColor">@color/gray_929292</item>
+    </style>
+    <style name="CbMain">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@drawable/ic_cb_circle</item>
+        <item name="android:background">@null</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">@dimen/size_15</item>
+        <item name="android:textColor">@color/gray_929292</item>
+    </style>
+    <style name="VerticalSep">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/gray_dbdbdb</item>
+    </style>
+
+    <style name="ListDefault">
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:divider">@color/gray_d7d7d7</item>
+        <item name="android:listSelector">@android:color/transparent</item>
+    </style>
+
+    <style name="HorizontalProgressBar" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:maxHeight">50dip</item>
+        <item name="android:minHeight">8dip</item>
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:indeterminateDrawable">@android:drawable/progress_indeterminate_horizontal</item>
+        <item name="android:progressDrawable">@drawable/shape_progress_bar_style</item>
+    </style>
+
+    <style name="TxtPassport">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/main_cyan</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="PersonalTabLayoutTextStyle">
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TxtMainDark">
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">@dimen/size_15</item>
+    </style>
+
+    <style name="Popwindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/pop_scale_in</item>
+        <item name="android:windowExitAnimation">@anim/pop_scale_out</item>
+    </style>
+
+    <style name="NetaDialog" parent="android:Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.4</item>
+    </style>
+
+    <style name="NetaDialog2" parent="android:Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.4</item>
+    </style>
+
+    <style name="dialogWindowAnim" parent="android:Animation" mce_bogus="1">
+        <item name="android:windowEnterAnimation">@anim/dialog_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/dialog_exit_anim</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/Activity_Fade</item>
+    </style>
+
+    <style name="Activity_Fade">
+        <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="MainColorTranslucentTheme" parent="AppTheme.NoActionBar">
+        <item name="colorControlNormal">@color/main_cyan</item>
+        <item name="colorControlActivated">@color/main_cyan</item>
+    </style>
+
+    <style name="DefaultColorTranslucentTheme" parent="AppTheme.NoActionBar">
+        <item name="colorControlNormal">@color/main_cyan</item>
+        <item name="colorControlActivated">@color/main_cyan</item>
+    </style>
+
+    <style name="ImageTranslucentTheme" parent="AppTheme.NoActionBar">
+        <item name="colorControlNormal">@color/main_cyan</item>
+        <item name="colorControlActivated">@color/main_cyan</item>
+    </style>
+    <style name="AppTheme.Dialog" parent="AppTheme.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/alph_30</item>
+    </style>
+
+    <style name="Activity_Dialog" parent="AppTheme.Dialog">
+
+    </style>
+
+    <style name="Neta_EditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/main_cyan</item>
+        <item name="colorControlActivated">@color/main_cyan</item>
+    </style>
+
+    <style name="menu_animation">
+        <item name="android:windowEnterAnimation">@anim/menu_appear</item>
+        <item name="android:windowExitAnimation">@anim/menu_disappear</item>
+    </style>
+</resources>
