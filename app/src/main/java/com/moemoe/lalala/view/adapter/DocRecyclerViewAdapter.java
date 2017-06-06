@@ -1,6 +1,5 @@
 package com.moemoe.lalala.view.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -15,12 +14,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -67,11 +63,12 @@ import com.moemoe.lalala.view.activity.NewPersonalActivity;
 import com.moemoe.lalala.view.activity.WebViewActivity;
 import com.moemoe.lalala.view.widget.adapter.NewDocLabelAdapter;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
+import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
+import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -132,6 +129,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private boolean mTargetId;
     private OnItemClickListener onItemClickListener;
     private int[] ids = new int[] { R.id.tv_comment_delete, R.id.ll_own_del_root,R.id.tv_comment_report , R.id.tv_comment_reply, R.id.tv_comment_copy};
+    private BottomMenuFragment fragment;
     private Handler mHandler = new Handler();
     private Runnable mProgressCallback = new Runnable() {
         @Override
@@ -163,6 +161,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         mTags = new ArrayList<>();
         mPlayer = Player.getInstance();
         mPlayer.registerCallback(this);
+        fragment = new BottomMenuFragment();
         downloadSub = RxDownload.getInstance()
                 .maxThread(3)
                 .maxRetryCount(3)
@@ -243,6 +242,23 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(onItemClickListener != null){
+                    onItemClickListener.onItemClick(view,position);
+                }
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(onItemClickListener != null){
+                    onItemClickListener.onItemLongClick(view,position);
+                }
+                return false;
+            }
+        });
         if(holder instanceof CreatorHolder){
             CreatorHolder creatorHolder = (CreatorHolder) holder;
             createCreator(creatorHolder);
@@ -321,23 +337,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             BagFavoriteHolder bagFavoriteHolder = (BagFavoriteHolder) holder;
             createFolderItem(bagFavoriteHolder,position);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(onItemClickListener != null){
-                    onItemClickListener.onItemClick(view,position);
-                }
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if(onItemClickListener != null){
-                    onItemClickListener.onItemLongClick(view,position);
-                }
-                return false;
-            }
-        });
     }
 
     private void setMusicInfo(Song musicInfo){
@@ -1226,7 +1225,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         TextView mTvTime;
         TextView mTvContent;
         View mIvOwnerFlag;
-        ImageView mIvOpsOpen;
         View mIvLevelColor;
         TextView mTvLevel;
         TextView mFloor;
@@ -1247,7 +1245,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             mTvTime = (TextView) itemView.findViewById(R.id.tv_comment_time);
             mTvContent = (TextView) itemView.findViewById(R.id.tv_comment);
             mIvOwnerFlag = itemView.findViewById(R.id.iv_club_owner_flag);
-            mIvOpsOpen = (ImageView) itemView.findViewById(R.id.iv_comment_open);
             mIvLevelColor = itemView.findViewById(R.id.rl_level_bg);
             mTvLevel = (TextView)itemView.findViewById(R.id.tv_level);
             mFloor = (TextView)itemView.findViewById(R.id.tv_floor);
@@ -1394,36 +1391,12 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.mFloor.setVisibility(View.GONE);
         }
         holder.mIvCreator.setTag(R.id.id_creator_uuid, bean.getFromUserId());
-        holder.mIvOpsOpen.setTag(position);
         if(!bean.isNewDeleteFlag()){
             holder.mTvContent.setTextColor(ContextCompat.getColor(mContext,R.color.gray_595e64));
-            holder.itemView.setOnTouchListener(new View.OnTouchListener() {
+            holder.itemView.setOnClickListener(new NoDoubleClickListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    dismissPopupWindow();
-                    //获取相对屏幕的坐标，即以屏幕左上角为原点
-                    mCurrentInScreenX = (int)event.getRawX();
-                    mCurrentInScreenY = (int)event.getRawY();
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            //记录Down下时的坐标
-                            mDownInScreenX = (int)event.getRawX();
-                            mDownInScreenY = (int)event.getRawY();
-                            mCurrentClickTime = Calendar.getInstance().getTimeInMillis();
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            if(Calendar.getInstance().getTimeInMillis() - mCurrentClickTime <= LONG_PRESS_TIME){
-                                if(Math.abs(mDownInScreenX - mCurrentInScreenX) <= 10 && Math.abs(mDownInScreenY - mCurrentInScreenY) <= 10 ){
-                                    iniPopupWindow(v.getContext(), bean, position);
-                                    int[] location = new int[2];
-                                    v.getLocationOnScreen(location);
-                                    mPop.showAtLocation(v, Gravity.START | Gravity.TOP, mDownInScreenX, mDownInScreenY);
-                                }
-                            }
-                    }
-                    return false;
+                public void onNoDoubleClick(View v) {
+                    showMenu(bean, position);
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -1442,8 +1415,67 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.itemView.setOnTouchListener(null);
             holder.itemView.setOnLongClickListener(null);
         }
-        holder.mIvOpsOpen.setOnClickListener(mOpListener);
         holder.mIvCreator.setOnClickListener(mAvatarListener);
+    }
+
+    private void showMenu(final NewCommentEntity bean, final int position){
+        ArrayList<MenuItem> items = new ArrayList<>();
+        MenuItem item;
+        item = new MenuItem(0,mContext.getString(R.string.label_reply));
+        items.add(item);
+
+        item = new MenuItem(1,mContext.getString(R.string.label_copy_dust));
+        items.add(item);
+
+        item = new MenuItem(2,mContext.getString(R.string.label_jubao));
+        items.add(item);
+
+        if(TextUtils.equals(PreferenceUtils.getUUid(), bean.getFromUserId()) ){
+            item = new MenuItem(3,mContext.getString(R.string.label_delete));
+            items.add(item);
+        }else if( TextUtils.equals(PreferenceUtils.getUUid(), mDocBean.getUserId())){
+            item = new MenuItem(4,mContext.getString(R.string.label_delete));
+            items.add(item);
+        }
+
+        fragment.setShowTop(true);
+        fragment.setTopContent(bean.getContent());
+        fragment.setMenuItems(items);
+        fragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+        fragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
+            @Override
+            public void OnMenuItemClick(int itemId) {
+                if (itemId == 0) {
+                    ((NewDocDetailActivity)mContext).reply(bean);
+                } else if (itemId == 2) {
+                    Intent intent = new Intent(mContext, JuBaoActivity.class);
+                    intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getFromUserName());
+                    intent.putExtra(JuBaoActivity.EXTRA_CONTENT, bean.getContent());
+                    intent.putExtra(JuBaoActivity.UUID,bean.getId());
+                    intent.putExtra(JuBaoActivity.EXTRA_TARGET, REPORT.DOC_COMMENT.toString());
+                    mContext.startActivity(intent);
+                } else if (itemId == 3) {
+                    deleteComment(bean,position);
+                }else if(itemId == 1){
+                    String content = bean.getContent();
+                    ClipboardManager cmb = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData mClipData = ClipData.newPlainText("回复内容", content);
+                    cmb.setPrimaryClip(mClipData);
+                    ToastUtils.showShortToast(mContext, mContext.getString(R.string.label_level_copy_success));
+                }else if(itemId == 4){
+                    Intent intent = new Intent(mContext, JuBaoActivity.class);
+                    intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getFromUserName());
+                    intent.putExtra(JuBaoActivity.EXTRA_CONTENT, bean.getContent());
+                    intent.putExtra(JuBaoActivity.UUID,bean.getId());
+                    intent.putExtra(JuBaoActivity.EXTRA_TYPE,2);
+                    intent.putExtra(JuBaoActivity.EXTRA_POSITION,position);
+                    intent.putExtra(JuBaoActivity.EXTRA_DOC_ID,mDocBean.getId());
+                    intent.putExtra(JuBaoActivity.EXTRA_TARGET, REPORT.DOC_COMMENT.toString());
+                    ((NewDocDetailActivity)mContext).startActivityForResult(intent,6666);
+                }
+            }
+        });
+        fragment.show(((NewDocDetailActivity)mContext).getSupportFragmentManager(),"CommentMenu");
     }
 
      private static class CoinHideViewHolder extends RecyclerView.ViewHolder{
@@ -1602,99 +1634,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((NewDocDetailActivity)mContext).addDocLabelView();
         }
     }
-
-    private void iniPopupWindow(Context context, NewCommentEntity bean, int position) {
-        View layout = LayoutInflater.from(context).inflate(R.layout.popupwindow_comment, null);
-        View[] clickView = new View[ids.length];
-        for (int i = 0; i < ids.length; i++) {
-            clickView[i] = layout.findViewById(ids[i]);
-            clickView[i].setOnClickListener(mOpListener);
-        }
-
-        if (TextUtils.equals(PreferenceUtils.getUUid(), bean.getFromUserId())) {
-            clickView[0].setVisibility(View.VISIBLE);
-            clickView[1].setVisibility(View.GONE);
-            clickView[3].setVisibility(View.GONE);
-        } else if(TextUtils.equals(PreferenceUtils.getUUid(), mDocBean.getUserId())){
-            clickView[0].setVisibility(View.GONE);
-            clickView[1].setVisibility(View.VISIBLE);
-            clickView[3].setVisibility(View.VISIBLE);
-        } else{
-            clickView[0].setVisibility(View.GONE);
-            clickView[1].setVisibility(View.GONE);
-            clickView[3].setVisibility(View.VISIBLE);
-        }
-        for (int i = 0; i < ids.length; i++) {
-            clickView[i].setTag(position);
-        }
-        mPop = new PopupWindow(layout, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        mPop.setOutsideTouchable(true);
-        mPop.setAnimationStyle(R.style.Popwindow_anim_style);
-    }
-
-    public void dismissPopupWindow() {
-        if (mPop != null && mPop.isShowing()) {
-            mPop.dismiss();
-            mPop = null;
-        }
-    }
-
-    private View.OnClickListener mOpListener = new View.OnClickListener() {
-
-        @SuppressLint("RtlHardcoded")
-        @Override
-        public void onClick(View v) {
-            int id = v.getId();
-            if (id == R.id.tv_comment_reply) {
-                dismissPopupWindow();
-                NewCommentEntity bean = (NewCommentEntity) getItem((Integer) v.getTag()); //mComments.get((Integer) v.getTag());
-                if (bean != null) {
-                    ((NewDocDetailActivity)mContext).reply(bean);
-                }
-            } else if (id == R.id.tv_comment_report) {
-                NewCommentEntity bean = (NewCommentEntity) getItem((Integer) v.getTag());
-                Intent intent = new Intent(mContext, JuBaoActivity.class);
-                intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getFromUserName());
-                intent.putExtra(JuBaoActivity.EXTRA_CONTENT, bean.getContent());
-                intent.putExtra(JuBaoActivity.UUID,bean.getId());
-                intent.putExtra(JuBaoActivity.EXTRA_TARGET, REPORT.DOC_COMMENT.toString());
-                mContext.startActivity(intent);
-                dismissPopupWindow();
-            } else if (id == R.id.tv_comment_delete) {
-                NewCommentEntity bean = (NewCommentEntity) getItem((Integer) v.getTag());
-                deleteComment(bean,(Integer) v.getTag());
-                dismissPopupWindow();
-            } else if (id == R.id.iv_comment_open) {
-                Integer position = (Integer) v.getTag();
-                NewCommentEntity bean = (NewCommentEntity) getItem((Integer) v.getTag());
-                dismissPopupWindow();
-                iniPopupWindow(v.getContext(), bean, position);
-                int[] location = new int[2];
-                v.getLocationOnScreen(location);
-                mPop.showAtLocation(v, Gravity.LEFT | Gravity.TOP, location[0], location[1]);
-            }else if(id == R.id.tv_comment_copy){
-                dismissPopupWindow();
-                NewCommentEntity bean = (NewCommentEntity) getItem((Integer) v.getTag());
-                String content = bean.getContent();
-                ClipboardManager cmb = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData mClipData = ClipData.newPlainText("回复内容", content);
-                cmb.setPrimaryClip(mClipData);
-                ToastUtils.showShortToast(mContext, mContext.getString(R.string.label_level_copy_success));
-            }else if(id == R.id.ll_own_del_root){
-                NewCommentEntity bean = (NewCommentEntity) getItem((Integer) v.getTag());
-                Intent intent = new Intent(mContext, JuBaoActivity.class);
-                intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getFromUserName());
-                intent.putExtra(JuBaoActivity.EXTRA_CONTENT, bean.getContent());
-                intent.putExtra(JuBaoActivity.UUID,bean.getId());
-                intent.putExtra(JuBaoActivity.EXTRA_TYPE,2);
-                intent.putExtra(JuBaoActivity.EXTRA_POSITION,(Integer) v.getTag());
-                intent.putExtra(JuBaoActivity.EXTRA_DOC_ID,mDocBean.getId());
-                intent.putExtra(JuBaoActivity.EXTRA_TARGET, REPORT.DOC_COMMENT.toString());
-                ((NewDocDetailActivity)mContext).startActivityForResult(intent,6666);
-                dismissPopupWindow();
-            }
-        }
-    };
 
     private View.OnClickListener mAvatarListener = new View.OnClickListener() {
 

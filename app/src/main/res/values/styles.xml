@@ -233,8 +233,14 @@
     <style name="Activity_Dialog" parent="AppTheme.Dialog">
 
     </style>
+
     <style name="Neta_EditText" parent="Theme.AppCompat.Light">
         <item name="colorControlNormal">@color/main_cyan</item>
         <item name="colorControlActivated">@color/main_cyan</item>
+    </style>
+
+    <style name="menu_animation">
+        <item name="android:windowEnterAnimation">@anim/menu_appear</item>
+        <item name="android:windowExitAnimation">@anim/menu_disappear</item>
     </style>
 </resources>

@@ -53,9 +53,8 @@ import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.adapter.DocRecyclerViewAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.SelectImgAdapter;
-import com.moemoe.lalala.view.widget.menu.MenuItem;
-import com.moemoe.lalala.view.widget.menu.PopupListMenu;
-import com.moemoe.lalala.view.widget.menu.PopupMenuItems;
+import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
+import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 import com.moemoe.lalala.view.widget.recycler.RecyclerViewPositionHelper;
@@ -87,6 +86,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private final int MENU_GOTO_FLOOR = 105;
     private final int MENU_DELETE = 106;
     private final int TAG_DELETE = 107;
+    private final int EDIT_DOC = 108;
     private final int ICON_NUM_LIMIT = 9;
     private final int REQ_GET_EDIT_VERSION_IMG = 2333;
     private final int REQ_TO_FOLDER = 30003;
@@ -125,7 +125,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private String mShareIcon;
     private DocRecyclerViewAdapter mAdapter;
     private SelectImgAdapter mSelectAdapter;
-    private PopupListMenu mMenu;
+    private BottomMenuFragment bottomMenuFragment;
     private boolean mTargetId;
     private int mCurFloor = 0;
     private int mCurType = 0;//0.对楼主 1.对某楼 2.对标签
@@ -180,7 +180,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mRvComment.setAdapter(mSelectAdapter);
         mRvComment.setVisibility(View.GONE);
         mTvSendComment.setEnabled(false);
-        initPopupMenus();
     }
 
     @Override
@@ -199,7 +198,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mIvMenu.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                mMenu.showMenu(mIvMenu);
+                if(bottomMenuFragment != null) bottomMenuFragment.show(getSupportFragmentManager(),"DocDetailMenu");
             }
         });
         final RecyclerViewPositionHelper recyclerViewHelper = RecyclerViewPositionHelper.createHelper(mList.getRecyclerView());
@@ -385,56 +384,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     @Override
     protected void initData() {
 
-    }
-
-    private void initPopupMenus() {
-        PopupMenuItems items = new PopupMenuItems(this);
-        MenuItem item;
-        item = new MenuItem(MENU_FAVORITE, getString(R.string.label_favorite));
-        items.addMenuItem(item);
-
-        item = new MenuItem(MENU_GOTO_FLOOR, getString(R.string.label_goto_floor));
-        items.addMenuItem(item);
-
-        item = new MenuItem(MENU_SHARE, getString(R.string.label_share));
-        items.addMenuItem(item);
-//        // 举报
-//        item = new MenuItem(MENU_REPORT, getString(R.string.label_jubao));
-//        items.addMenuItem(item);
-
-        mMenu = new PopupListMenu(this, items);
-        mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
-
-            @Override
-            public void OnMenuItemClick(int itemId) {
-                if(itemId == MENU_FAVORITE){
-                    favoriteDoc();
-                }else if(itemId == MENU_GOTO_FLOOR){
-                    if(!mTargetId) {
-                        jumpToFloor();
-                    }else {
-                        showToast("只看楼主时无法跳转楼层");
-                    }
-                }else if (itemId == MENU_REPORT) {
-                    reportDoc();
-                }else if (itemId == MENU_SHARE) {
-                    if (hasLoaded) {
-                        showShare();
-                    }else {
-                        showToast(R.string.label_doc_not_loaded);
-                    }
-                }else if(itemId == MENU_DELETE){
-                    deleteDoc();
-                }else if(itemId == TAG_DELETE){
-                    if(mDocTags != null){
-                        Intent i = new Intent(NewDocDetailActivity.this,TagControlActivity.class);
-                        i.putParcelableArrayListExtra("tags",mDocTags);
-                        i.putExtra(UUID,mDocId);
-                        startActivityForResult(i,REQ_DELETE_TAG);
-                    }
-                }
-            }
-        });
     }
 
     private void deleteDoc(){
@@ -875,6 +824,82 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mAdapter.onCreateLabel(s,name);
     }
 
+    private void initPopupMenus(DocDetailEntity entity) {
+        bottomMenuFragment = new BottomMenuFragment();
+        ArrayList<MenuItem> items = new ArrayList<>();
+        MenuItem item;
+
+        if(entity.getUserId().equals(PreferenceUtils.getUUid())){
+            item = new MenuItem(MENU_GOTO_FLOOR, getString(R.string.label_goto_floor),R.drawable.btn_doc_option_jump);
+            items.add(item);
+
+            item = new MenuItem(TAG_DELETE,getString(R.string.label_tag_ctrl),R.drawable.btn_doc_option_tag);
+            items.add(item);
+
+            item = new MenuItem(EDIT_DOC,getString(R.string.label_update_post),R.drawable.btn_doc_option_edit);
+            items.add(item);
+
+            item = new MenuItem(MENU_DELETE,getString(R.string.label_delete),R.drawable.btn_doc_option_delete);
+            items.add(item);
+
+        }else {
+
+            if(entity.isFavoriteFlag()){
+                item = new MenuItem(MENU_FAVORITE, getString(R.string.label_cancel_favorite),R.drawable.btn_doc_option_collected);
+            }else {
+                item = new MenuItem(MENU_FAVORITE, getString(R.string.label_favorite),R.drawable.btn_doc_option_collect);
+            }
+            items.add(item);
+
+            item = new MenuItem(MENU_GOTO_FLOOR, getString(R.string.label_goto_floor),R.drawable.btn_doc_option_jump);
+            items.add(item);
+
+            item = new MenuItem(MENU_REPORT, getString(R.string.label_jubao),R.drawable.btn_doc_option_report);
+            items.add(item);
+
+        }
+
+        item = new MenuItem(MENU_SHARE, getString(R.string.label_share),R.drawable.btn_doc_option_share);
+        items.add(item);
+
+        bottomMenuFragment.setShowTop(false);
+        bottomMenuFragment.setMenuItems(items);
+        bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_HORIZONTAL);
+        bottomMenuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
+            @Override
+            public void OnMenuItemClick(int itemId) {
+                if(itemId == MENU_FAVORITE){
+                    favoriteDoc();
+                }else if(itemId == MENU_GOTO_FLOOR){
+                    if(!mTargetId) {
+                        jumpToFloor();
+                    }else {
+                        showToast("只看楼主时无法跳转楼层");
+                    }
+                }else if (itemId == MENU_REPORT) {
+                    reportDoc();
+                }else if (itemId == MENU_SHARE) {
+                    if (hasLoaded) {
+                        showShare();
+                    }else {
+                        showToast(R.string.label_doc_not_loaded);
+                    }
+                }else if(itemId == MENU_DELETE){
+                    deleteDoc();
+                }else if(itemId == TAG_DELETE){
+                    if(mDocTags != null){
+                        Intent i = new Intent(NewDocDetailActivity.this,TagControlActivity.class);
+                        i.putParcelableArrayListExtra("tags",mDocTags);
+                        i.putExtra(UUID,mDocId);
+                        startActivityForResult(i,REQ_DELETE_TAG);
+                    }
+                }else if(itemId == EDIT_DOC){
+                    //TODO edit doc
+                }
+            }
+        });
+    }
+
     @Override
     public void onDocLoaded(DocDetailEntity entity) {
         mIsLoading = false;
@@ -887,32 +912,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mShareTitle = entity.getShare().getTitle();
         mShareIcon = entity.getShare().getIcon();
         mDocTags = entity.getTags();
-        if(entity.getUserId().equals(PreferenceUtils.getUUid())){
-            PopupMenuItems menuItems = mMenu.getCurrentMenuItems();
-            MenuItem menuItem = menuItems.findItem(MENU_DELETE);
-            if(menuItem == null){
-                menuItem = new MenuItem(MENU_DELETE,getString(R.string.label_delete));
-                menuItems.addMenuItem(menuItem);
-            }
-            MenuItem tagDelItem = menuItems.findItem(TAG_DELETE);
-            if(tagDelItem == null){
-                menuItem = new MenuItem(TAG_DELETE,getString(R.string.label_tag_ctrl));
-                menuItems.insertMenuItem(menuItem,0);
-            }
-        }else {
-            PopupMenuItems menuItems = mMenu.getCurrentMenuItems();
-            MenuItem menuItem = menuItems.findItem(MENU_REPORT);
-            // 举报
-            if(menuItem == null){
-                menuItem = new MenuItem(MENU_REPORT, getString(R.string.label_jubao));
-                menuItems.addMenuItem(menuItem);
-            }
-        }
-        if(entity.isFavoriteFlag()){
-            mMenu.changeItemTextById(MENU_FAVORITE,getString(R.string.label_cancel_favorite));
-        }else {
-            mMenu.changeItemTextById(MENU_FAVORITE,getString(R.string.label_favorite));
-        }
+        if(bottomMenuFragment == null) initPopupMenus(entity);
         mImages.clear();
         Gson gson = new Gson();
         if(entity.getCoinDetails() != null){
@@ -983,10 +983,10 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     @Override
     public void onFavoriteDoc(boolean favorite) {
         if (favorite){
-            mMenu.changeItemTextById(MENU_FAVORITE,getString(R.string.label_cancel_favorite));
+            bottomMenuFragment.changeItemTextById(MENU_FAVORITE,getString(R.string.label_cancel_favorite),R.drawable.btn_doc_option_collected);
             showToast(R.string.label_favorite_success);
         }else {
-            mMenu.changeItemTextById(MENU_FAVORITE,getString(R.string.label_favorite));
+            bottomMenuFragment.changeItemTextById(MENU_FAVORITE,getString(R.string.label_favorite),R.drawable.btn_doc_option_collect);
             showToast(R.string.label_cancel_favorite_success);
         }
     }

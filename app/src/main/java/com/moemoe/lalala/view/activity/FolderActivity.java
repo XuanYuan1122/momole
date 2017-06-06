@@ -42,9 +42,8 @@ import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.adapter.BagAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
-import com.moemoe.lalala.view.widget.menu.MenuItem;
-import com.moemoe.lalala.view.widget.menu.PopupListMenu;
-import com.moemoe.lalala.view.widget.menu.PopupMenuItems;
+import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
+import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
@@ -102,7 +101,7 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
     @Inject
     BagPresenter mPresenter;
 
-    private PopupListMenu mMenu;
+    private BottomMenuFragment bottomMenuFragment;
     private BagAdapter mAdapter;
     private String mUserId;
     private BagDirEntity mDir;
@@ -158,7 +157,7 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
             mIvMenu.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    mMenu.showMenu(mIvMenu);
+                   if(bottomMenuFragment!=null) bottomMenuFragment.show(getSupportFragmentManager(),"FolderMenu");
                 }
             });
             initPopupMenus();
@@ -455,18 +454,20 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
     }
 
     private void initPopupMenus() {
-        PopupMenuItems items = new PopupMenuItems(this);
+        bottomMenuFragment = new BottomMenuFragment();
         MenuItem item;
+        ArrayList<MenuItem> items = new ArrayList<>();
         if(mUserId.equals(PreferenceUtils.getUUid())){
             item = new MenuItem(0, getString(R.string.label_modify));
-            items.addMenuItem(item);
+            items.add(item);
         }
         item = new MenuItem(1,"选择");
-        items.addMenuItem(item);
+        items.add(item);
 
-        mMenu = new PopupListMenu(this, items);
-        mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
-
+        bottomMenuFragment.setMenuItems(items);
+        bottomMenuFragment.setShowTop(false);
+        bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+        bottomMenuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
             @Override
             public void OnMenuItemClick(int itemId) {
                 if(itemId == 0){

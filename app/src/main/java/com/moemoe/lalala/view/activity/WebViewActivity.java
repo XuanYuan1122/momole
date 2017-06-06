@@ -21,11 +21,11 @@ import com.moemoe.lalala.model.entity.MotaResult;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.view.fragment.WebViewFragment;
-import com.moemoe.lalala.view.widget.menu.MenuItem;
-import com.moemoe.lalala.view.widget.menu.PopupListMenu;
-import com.moemoe.lalala.view.widget.menu.PopupMenuItems;
+import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
+import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.pingplusplus.android.Pingpp;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -62,7 +62,7 @@ public class WebViewActivity extends BaseAppCompatActivity {
     private String mUrl;
     private boolean mShouldTint = false;
     private boolean mHaveShare = false;
-    private PopupListMenu mMenu;
+    private BottomMenuFragment bottomMenuFragment;
 
     @Override
     protected int getLayoutId() {
@@ -103,7 +103,7 @@ public class WebViewActivity extends BaseAppCompatActivity {
         mIvMenu.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                mMenu.showMenu(mIvMenu);
+                if(bottomMenuFragment != null)bottomMenuFragment.show(getSupportFragmentManager(),"WebMenu");
             }
         });
         initPopupMenus();
@@ -203,16 +203,18 @@ public class WebViewActivity extends BaseAppCompatActivity {
     }
 
     private void initPopupMenus() {
-        PopupMenuItems items = new PopupMenuItems(this);
+        bottomMenuFragment = new BottomMenuFragment();
+        ArrayList<MenuItem> items = new ArrayList<>();
         MenuItem item = new MenuItem(MENU_OPEN_OUT, getString(R.string.label_open_out));
-        items.addMenuItem(item);
+        items.add(item);
         if (mHaveShare){
             MenuItem share = new MenuItem(MENU_OPEN_SHARE,getString(R.string.label_share));
-            items.addMenuItem(share);
+            items.add(share);
         }
-        mMenu = new PopupListMenu(this, items);
-        mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
-
+        bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+        bottomMenuFragment.setMenuItems(items);
+        bottomMenuFragment.setShowTop(false);
+        bottomMenuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
             @Override
             public void OnMenuItemClick(int itemId) {
                 if (itemId == MENU_OPEN_OUT) {

@@ -34,9 +34,8 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.adapter.BagAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
-import com.moemoe.lalala.view.widget.menu.MenuItem;
-import com.moemoe.lalala.view.widget.menu.PopupListMenu;
-import com.moemoe.lalala.view.widget.menu.PopupMenuItems;
+import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
+import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
@@ -79,7 +78,8 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
     private View mBack;
     private View mOpenBag;
     private BagAdapter mAdapter;
-    private PopupListMenu mMenu;
+   // private PopupListMenu mMenu;
+    private BottomMenuFragment bottomFragment;
     private String mUserId;
     private boolean mIsLoading = false;
     private String mBg;
@@ -118,29 +118,30 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
     }
 
     private void initPopupMenus() {
-        PopupMenuItems items = new PopupMenuItems(this);
-        MenuItem item;
+        bottomFragment = new BottomMenuFragment();
+        ArrayList<MenuItem> items = new ArrayList<>();
         if(mUserId.equals(PreferenceUtils.getUUid())){
-            item = new MenuItem(0, getString(R.string.label_setting));
-            items.addMenuItem(item);
+            MenuItem item = new MenuItem(0, getString(R.string.label_setting));
+            items.add(item);
 
             item = new MenuItem(1, getString(R.string.label_bag_buy_list));
-            items.addMenuItem(item);
+            items.add(item);
 
             item = new MenuItem(2, getString(R.string.label_bag_follow_list));
-            items.addMenuItem(item);
+            items.add(item);
 
             item = new MenuItem(3, getString(R.string.label_add_space));
-            items.addMenuItem(item);
+            items.add(item);
         }else {
             // 举报
-            item = new MenuItem(4, getString(R.string.label_jubao));
-            items.addMenuItem(item);
+            MenuItem item = new MenuItem(4, getString(R.string.label_jubao));
+            items.add(item);
         }
 
-        mMenu = new PopupListMenu(this, items);
-        mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
-
+        bottomFragment.setShowTop(false);
+        bottomFragment.setMenuItems(items);
+        bottomFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+        bottomFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
             @Override
             public void OnMenuItemClick(int itemId) {
                 if(itemId == 0){
@@ -319,7 +320,8 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_menu_list:
-                mMenu.showMenu(mIvMenu);
+                if (bottomFragment != null)
+                bottomFragment.show(getSupportFragmentManager(),"BagMenu");
                 break;
         }
     }

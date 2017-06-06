@@ -44,9 +44,8 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.adapter.PersonalPagerAdapter;
 import com.moemoe.lalala.view.fragment.PersonalMainFragment;
-import com.moemoe.lalala.view.widget.menu.MenuItem;
-import com.moemoe.lalala.view.widget.menu.PopupListMenu;
-import com.moemoe.lalala.view.widget.menu.PopupMenuItems;
+import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
+import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -109,7 +108,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     private boolean mIsSelf;
     private String mUserId;
     private UserInfo mInfo;
-    private PopupListMenu mMenu;
+    private BottomMenuFragment bottomMenuFragment;
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
 
     @Override
@@ -218,16 +217,18 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     }
 
     private void initPopupMenus() {
-        PopupMenuItems items = new PopupMenuItems(this);
+        bottomMenuFragment = new BottomMenuFragment();
+        ArrayList<MenuItem> items = new ArrayList<>();
         MenuItem item = new MenuItem(1, getString(R.string.label_setting));
-        items.addMenuItem(item);
+        items.add(item);
         item = new MenuItem(2, getString(R.string.label_coin_details));
-        items.addMenuItem(item);
+        items.add(item);
         item = new MenuItem(3, getString(R.string.label_doc_history));
-        items.addMenuItem(item);
-        mMenu = new PopupListMenu(this, items);
-        mMenu.setMenuItemClickListener(new PopupListMenu.MenuItemClickListener() {
-
+        items.add(item);
+        bottomMenuFragment.setMenuItems(items);
+        bottomMenuFragment.setShowTop(false);
+        bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+        bottomMenuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
             @Override
             public void OnMenuItemClick(int itemId) {
                 if (itemId == 1) {
@@ -273,7 +274,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 }
                 break;
             case R.id.iv_menu_list:
-                mMenu.showMenu(v);
+                if(bottomMenuFragment != null) bottomMenuFragment.show(getSupportFragmentManager(),"PersonMenu");
                 break;
             case R.id.iv_avatar:
                 if (mInfo != null){
