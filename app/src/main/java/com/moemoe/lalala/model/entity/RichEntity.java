@@ -10,7 +10,11 @@ import android.os.Parcelable;
 
 public class RichEntity implements Parcelable {
     private CharSequence inputStr;
-    private String imagePath;
+    private Image image;
+
+    public RichEntity(){
+        image = new Image();
+    }
 
     public CharSequence getInputStr() {
         return inputStr;
@@ -20,12 +24,12 @@ public class RichEntity implements Parcelable {
         this.inputStr = inputStr;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public Image getImage() {
+        return image;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     @Override
@@ -39,7 +43,7 @@ public class RichEntity implements Parcelable {
             RichEntity info = new RichEntity();
             Bundle bundle = parcel.readBundle();
             info.inputStr = bundle.getCharSequence("inputStr");
-            info.imagePath = bundle.getString("imagePath");
+            info.image = bundle.getParcelable("image");
             return info;
         }
 
@@ -53,7 +57,7 @@ public class RichEntity implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         Bundle bundle = new Bundle();
         bundle.putCharSequence("inputStr",inputStr);
-        bundle.putString("imagePath",imagePath);
+        bundle.putParcelable("image",image);
         parcel.writeBundle(bundle);
     }
 }

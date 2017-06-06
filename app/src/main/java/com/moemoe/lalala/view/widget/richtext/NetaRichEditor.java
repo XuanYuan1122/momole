@@ -25,7 +25,9 @@ import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.RichImgRemoveEvent;
+import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.DocTagEntity;
+import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.BitmapUtils;
@@ -34,6 +36,7 @@ import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
+import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
@@ -382,10 +385,10 @@ public class NetaRichEditor extends ScrollView {
         //删除文件夹里的图片
         List<RichEntity> dataList = buildEditData();
         RichEntity editData = dataList.get(disappearingImageIndex);
-        if (editData.getImagePath() != null) {
-            if(!FileUtil.isGif(editData.getImagePath())) FileUtil.deleteFile(editData.getImagePath());
+        if (editData.getImage() != null && !TextUtils.isEmpty(editData.getImage().getPath())) {
+            if(!FileUtil.isGif(editData.getImage().getPath())) FileUtil.deleteFile(editData.getImage().getPath());
         }
-        RxBus.getInstance().post(new RichImgRemoveEvent(editData.getImagePath()));
+        RxBus.getInstance().post(new RichImgRemoveEvent(editData.getImage().getPath()));
         allLayout.removeView(view);
     }
 
@@ -420,9 +423,14 @@ public class NetaRichEditor extends ScrollView {
 
     public boolean hasContent(){
         if(allLayout.getChildCount() == 1){
-            EditText v = (EditText) allLayout.getChildAt(0);
-            if(v.getText().length() == 0){
-                return false;
+            View v = allLayout.getChildAt(0);
+            if(v instanceof EditText){
+                EditText editText = (EditText) v;
+                if(editText.getText().length() == 0){
+                    return false;
+                }else {
+                    return true;
+                }
             }else {
                 return true;
             }
@@ -448,9 +456,15 @@ public class NetaRichEditor extends ScrollView {
     public void insertTextInCurSelection(String str,String id){
         SpannableStringBuilder lastEditStr = new SpannableStringBuilder(lastFocusEdit.getText());
         int cursorIndex = lastFocusEdit.getSelectionStart();
-        lastEditStr.insert(cursorIndex,str + " ");
-        CustomUrlSpan span = new CustomUrlSpan(getContext(), null, id);
-        lastEditStr.setSpan(span,cursorIndex,cursorIndex + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        if(cursorIndex < 0){
+            lastEditStr.insert(lastEditStr.length(),str + " ");
+            CustomUrlSpan span = new CustomUrlSpan(getContext(), null, id);
+            lastEditStr.setSpan(span,lastEditStr.length(),lastEditStr.length() + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }else {
+            lastEditStr.insert(cursorIndex,str + " ");
+            CustomUrlSpan span = new CustomUrlSpan(getContext(), null, id);
+            lastEditStr.setSpan(span,cursorIndex,cursorIndex + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
         lastFocusEdit.setText(lastEditStr);
     }
 
@@ -460,24 +474,31 @@ public class NetaRichEditor extends ScrollView {
     public void insertImage(String imagePath) {
         String lastEditStr = lastFocusEdit.getText().toString();
         int cursorIndex = lastFocusEdit.getSelectionStart();
-        String editStr1 = lastEditStr.substring(0, cursorIndex).trim();
         int lastEditIndex = allLayout.indexOfChild(lastFocusEdit);
-
-        if (lastEditStr.length() == 0 || editStr1.length() == 0) {
+        String editStr1 = "";
+        if(cursorIndex < 0){
+            lastEditIndex = allLayout.getChildCount() - 1;
+        }else {
+            editStr1 = lastEditStr.substring(0, cursorIndex);
+        }
+        if (lastEditStr.length() == 0 || editStr1.length() == 0 || cursorIndex < 0) {
             // 如果EditText为空，或者光标已经顶在了editText的最前面，则直接插入图片，并且EditText下移即可
             addImageViewAtIndex(lastEditIndex, imagePath);
         } else {
             // 如果EditText非空且光标不在最顶端，则需要添加新的imageView和EditText
             lastFocusEdit.setText(editStr1);
             addImageViewAtIndex(lastEditIndex + 1, imagePath);
-            String editStr2 = lastEditStr.substring(cursorIndex).trim();
+            String editStr2 = lastEditStr.substring(cursorIndex);
             if (editStr2.length() == 0) {
                 editStr2 = "";
             }
-            if(allLayout.getChildCount() == lastEditIndex + 2) addEditTextAtIndex(lastEditIndex + 2, editStr2);
-
+            if(allLayout.getChildCount() == lastEditIndex + 2) {
+                addEditTextAtIndex(lastEditIndex + 2, editStr2);
+            }else if(!TextUtils.isEmpty(editStr2)){
+                addEditTextAtIndex(lastEditIndex + 2, editStr2);
+            }
             lastFocusEdit.requestFocus();
-            lastFocusEdit.setSelection(editStr1.length(), editStr1.length());//TODO
+            lastFocusEdit.setSelection(editStr1.length(), editStr1.length());
         }
         hideKeyBoard();
     }
@@ -506,15 +527,19 @@ public class NetaRichEditor extends ScrollView {
         allLayout.addView(editText2, index,editParam);
     }
 
-    /**
-     * 在特定位置添加ImageView
-     */
-    public void addImageViewAtIndex(final int index, String imagePath) {
+    public void addImageViewAtIndex(final int index, String imagePath,int w,int h){
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
         LongImageView longImageView = (LongImageView) imageLayout.findViewById(R.id.edit_longImageView);
-        int width = BitmapUtils.getImageSize(imagePath)[0];
-        int height = BitmapUtils.getImageSize(imagePath)[1];
+        int width;
+        int height;
+        if(w == -1 && h == -1){
+            width = BitmapUtils.getImageSize(imagePath)[0];
+            height = BitmapUtils.getImageSize(imagePath)[1];
+        }else {
+            width = w;
+            height = h;
+        }
         final int[] wh = BitmapUtils.getDocIconSize(width * 2, height * 2, DensityUtil.getScreenWidth(getContext()) - DensityUtil.dip2px(getContext(),36));
         if(wh[1] > 2048){
             imageView.setVisibility(GONE);
@@ -530,6 +555,9 @@ public class NetaRichEditor extends ScrollView {
             imageView.setVisibility(VISIBLE);
             longImageView.setVisibility(GONE);
             imageView.setPath(imagePath);
+            if(imagePath.startsWith("image")){
+                imagePath = StringUtils.getUrl(getContext(), ApiService.URL_QINIU + imagePath, wh[0], wh[1], true, true);
+            }
             if(FileUtil.isGif(imagePath)){
                 ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
                 layoutParams.width = wh[0];
@@ -563,6 +591,13 @@ public class NetaRichEditor extends ScrollView {
     }
 
     /**
+     * 在特定位置添加ImageView
+     */
+    public void addImageViewAtIndex(int index, String imagePath) {
+        addImageViewAtIndex(index,imagePath,-1,-1);
+    }
+
+    /**
      * 对外提供的接口, 生成编辑数据上传
      */
     public List<RichEntity> buildEditData() {
@@ -580,16 +615,19 @@ public class NetaRichEditor extends ScrollView {
             } else if (itemView instanceof RelativeLayout) {
                 DataImageView item = (DataImageView) itemView.findViewById(R.id.edit_imageView);
                 LongImageView itemL = (LongImageView) itemView.findViewById(R.id.edit_longImageView);
+                Image image = new Image();
+                image.setW(-1);
+                image.setH(-1);
                 if(!TextUtils.isEmpty(item.getPath())){
-                    itemData.setImagePath(item.getPath());
+                    image.setPath(item.getPath());
+                    itemData.setImage(image);
                 }else {
-                    itemData.setImagePath(itemL.getPath());
+                    image.setPath(itemL.getPath());
+                    itemData.setImage(image);
                 }
                 dataList.add(itemData);
             }
-
         }
-
         return dataList;
     }
 

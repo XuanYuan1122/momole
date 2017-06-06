@@ -40,7 +40,8 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     /**
      * 9张图片上限
      */
-    private final int ICON_NUM_LIMIT = 15;
+    private final int ICON_NUM_LIMIT = 18;
+    private final int REQ_ADD_SEARCH = 1005;
 
     @BindView(R.id.tv_left_menu)
     TextView mTvMenuLeft;
@@ -61,7 +62,6 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     @BindView(R.id.tv_type_info)
     TextView mTvTypeInfo;
 
-    private ArrayList<String> mIconPaths;
     private HashMap<String,String> mPathMap;
     private ArrayList<RichEntity> mHideList;
     private boolean coinComment;//false coin  true comment
@@ -81,7 +81,6 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
         }
         mHideList = i.getParcelableArrayListExtra("hide_list");
         mTypeRoot.setVisibility(View.VISIBLE);
-        mIconPaths = new ArrayList<>();
         mPathMap = new HashMap<>();
         mTvMenuLeft.setVisibility(View.VISIBLE);
         mTvMenuLeft.setText(getString(R.string.label_cancel));
@@ -120,8 +119,8 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                         public void call(RichEntity richEntity) {
                             if(!TextUtils.isEmpty(richEntity.getInputStr())){
                                 mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),richEntity.getInputStr());
-                            }else {
-                                mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImagePath());
+                            }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
+                                mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH());
                             }
                         }
                     });
@@ -137,13 +136,7 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                 .subscribe(new Action1<RichImgRemoveEvent>() {
                     @Override
                     public void call(RichImgRemoveEvent event) {
-                        String value = mPathMap.remove(event.getPath());
-                        for(String s : mIconPaths){
-                            if(s.equals(value)){
-                                mIconPaths.remove(s);
-                                break;
-                            }
-                        }
+                       mPathMap.remove(event.getPath());
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -168,6 +161,9 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                 choosePhoto();
                 break;
             case R.id.iv_alt_user:
+                Intent i3 = new Intent(CreateRichDocHideActivity.this,SearchActivity.class);
+                i3.putExtra("show_type",SearchActivity.SHOW_USER);
+                startActivityForResult(i3,REQ_ADD_SEARCH);
                 break;
             case R.id.tv_menu:
                 done();
@@ -188,18 +184,25 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     }
 
     private void done(){
-        mHideList = (ArrayList<RichEntity>) mRichEt.buildEditData();
-        Intent i = new Intent();
-        i.putParcelableArrayListExtra("hide_list",mHideList);
-        i.putExtra("hide_type",coinComment);
-        setResult(RESULT_OK,i);
+        if(mRichEt.hasContent()){
+            mHideList = (ArrayList<RichEntity>) mRichEt.buildEditData();
+            for (RichEntity entity : mHideList){
+            }
+            Intent i = new Intent();
+            i.putParcelableArrayListExtra("hide_list",mHideList);
+            i.putExtra("hide_type",coinComment);
+            setResult(RESULT_OK,i);
+        }else {
+            setResult(RESULT_OK);
+        }
         finish();
     }
 
     private void choosePhoto() {
-        if (mIconPaths.size() < ICON_NUM_LIMIT) {
+        if (mPathMap.size() < ICON_NUM_LIMIT) {
             try {
-                DialogUtils.createImgChooseDlg(this, null, this, mIconPaths, ICON_NUM_LIMIT).show();
+                ArrayList<String> temp = new ArrayList<>();
+                DialogUtils.createImgChooseDlg(this, null, this, temp, ICON_NUM_LIMIT).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -210,21 +213,20 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQ_ADD_SEARCH && resultCode == RESULT_OK){
+            if(data != null){
+                String userId = data.getStringExtra("user_id");
+                String userName = data.getStringExtra("user_name");
+                mRichEt.insertTextInCurSelection("@" + userName,userId);
+            }
+        }else {
             DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
 
                 @Override
-                public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
-                    final ArrayList<String> tmp = new ArrayList<>();
-                    if (override) {
-                        checkPaths(photoPaths,tmp);
-                        mIconPaths = photoPaths;
-                    } else {
-                        mIconPaths.addAll(photoPaths);
-                        tmp.addAll(photoPaths);
-                    }
+                public void onPhotoGet(final ArrayList<String> photoPaths, boolean override) {
                     final ArrayList<String> res = new ArrayList<>();
                     NetaImgCompress.get(CreateRichDocHideActivity.this)
-                            .load(tmp)
+                            .load(photoPaths)
                             .asPath()
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -243,8 +245,8 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                             .subscribe(new Subscriber<String>() {
                                 @Override
                                 public void onCompleted() {
-                                    for (int i = 0;i < tmp.size();i++){
-                                        mPathMap.put(res.get(i),tmp.get(i));
+                                    for (int i = 0;i < photoPaths.size();i++){
+                                        mPathMap.put(res.get(i),photoPaths.get(i));
                                     }
                                     onGetPhotos(res);
                                 }
@@ -261,18 +263,6 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                             });
                 }
             });
-    }
-
-    private void checkPaths(ArrayList<String> paths,ArrayList<String> list){
-        for(String s : paths){
-            boolean res = true;
-            for (String s1 : mIconPaths){
-                if(s.equals(s1)){
-                    res = false;
-                    break;
-                }
-            }
-            if(res) list.add(s);
         }
     }
 

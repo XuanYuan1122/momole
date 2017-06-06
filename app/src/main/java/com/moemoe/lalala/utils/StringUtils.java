@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -546,5 +547,27 @@ public class StringUtils {
             }
         }
         return map;
+    }
+
+    public static String buildDataAtUser(CharSequence sequence){
+        String res;
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(sequence);
+        CustomUrlSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),CustomUrlSpan.class);
+        if(spen.length > 0){
+            res = stringBuilder.toString();
+            int step = 0;
+            for (CustomUrlSpan span : spen) {
+                int before = res.length();
+                String beginStr = res.substring(0,stringBuilder.getSpanStart(span) + step);
+                String str = res.substring(stringBuilder.getSpanStart(span) + step,stringBuilder.getSpanEnd(span) + step);
+                String endStr = res.substring(stringBuilder.getSpanEnd(span) + step);
+                str = "<at_user user_id="+ span.getmUrl() + ">" + str + "</at_user>";
+                res = beginStr + str + endStr;
+                step = res.length() - before;
+            }
+        }else {
+            res = stringBuilder.toString();
+        }
+        return res;
     }
 }

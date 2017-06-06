@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Selection;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -28,7 +27,6 @@ import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.presenter.CreateRichDocContract;
 import com.moemoe.lalala.presenter.CreateRichDocPresenter;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
-import com.moemoe.lalala.utils.CustomUrlSpan;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
@@ -36,6 +34,7 @@ import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.compress.NetaImgCompress;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
@@ -69,7 +68,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     /**
      * 9张图片上限
      */
-    private final int ICON_NUM_LIMIT = 15;
+    private final int ICON_NUM_LIMIT = 18;
     public static final String TYPE_TAG_NAME_DEFAULT = "tag_default";
     public static final String TYPE_QIU_MING_SHAN = "qiu_ming_shan";
     private final int REQ_GET_FROM_SELECT_MUSIC = 1003;
@@ -105,7 +104,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     @Inject
     CreateRichDocPresenter mPresenter;
 
-    private ArrayList<String> mIconPaths;
     private String mFromSchema;
     private String mFromName;
     private HashMap<String,String> mPathMap;
@@ -144,7 +142,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mViewAddSep.setVisibility(View.VISIBLE);
         mTitleRoot.setVisibility(View.VISIBLE);
 
-        mIconPaths = new ArrayList<>();
         mHideList = new ArrayList<>();
         mPathMap = new HashMap<>();
         mRichEt.setLabelAble();
@@ -241,14 +238,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 .subscribe(new Action1<RichImgRemoveEvent>() {
                     @Override
                     public void call(RichImgRemoveEvent event) {
-                        String value = mPathMap.remove(event.getPath());
-                        for(String s : mIconPaths){
-                            if(s.equals(value)){
-                                mIconPaths.remove(s);
-                                break;
-                            }
-                        }
-
+                        mPathMap.remove(event.getPath());
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -270,6 +260,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         }  else if(mRichEt.getmTags().size() < 1){
             showToast(R.string.msg_need_one_tag);
         }else {
+            finalizeDialog();
             mTvMenuRight.setEnabled(false);
             DocPut mDocEntity = new DocPut();
             mDocEntity.docType = mFromName;
@@ -282,7 +273,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             for (RichEntity entity : mRichEt.buildEditData() ){
                 if(!TextUtils.isEmpty(entity.getInputStr())){
                     DocPut.DocPutText docPutText = new DocPut.DocPutText();
-                    docPutText.text = buildDataAtUser(entity.getInputStr());
+                    docPutText.text = StringUtils.buildDataAtUser(entity.getInputStr());
                     mDocEntity.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(), docPutText));
                 }else {
                     DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
@@ -294,7 +285,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             for (RichEntity entity : mHideList){
                 if(!TextUtils.isEmpty(entity.getInputStr())){
                     DocPut.DocPutText docPutText = new DocPut.DocPutText();
-                    docPutText.text = buildDataAtUser(entity.getInputStr());
+                    docPutText.text = entity.getInputStr().toString();
                     mDocEntity.coin.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(), docPutText));
                 }else {
                     DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
@@ -321,28 +312,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             }
             mPresenter.createDoc(mDocEntity,mDocType);
         }
-    }
-
-    private String buildDataAtUser(CharSequence sequence){
-        String res;
-        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(sequence);
-        CustomUrlSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),CustomUrlSpan.class);
-        if(spen.length > 0){
-            res = stringBuilder.toString();
-            int step = 0;
-            for (CustomUrlSpan span : spen) {
-                int before = res.length();
-                String beginStr = res.substring(0,stringBuilder.getSpanStart(span) + step);
-                String str = res.substring(stringBuilder.getSpanStart(span) + step,stringBuilder.getSpanEnd(span) + step);
-                String endStr = res.substring(stringBuilder.getSpanEnd(span) + step);
-                str = "<at_user user_id="+ span.getmUrl() + ">" + str + "</at_user>";
-                res = beginStr + str + endStr;
-                step = res.length() - before;
-            }
-        }else {
-            res = stringBuilder.toString();
-        }
-        return res;
     }
 
     @OnClick({R.id.iv_add_img,R.id.iv_alt_user,R.id.iv_add_hide_doc,R.id.iv_add_bag,R.id.iv_add_music,R.id.tv_menu})
@@ -378,9 +347,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     }
 
     private void choosePhoto() {
-        if (mIconPaths.size() < ICON_NUM_LIMIT) {
+        if (mPathMap.size() < ICON_NUM_LIMIT) {
             try {
-                DialogUtils.createImgChooseDlg(this, null, this, mIconPaths, ICON_NUM_LIMIT).show();
+                ArrayList<String> temp = new ArrayList<>();
+                DialogUtils.createImgChooseDlg(this, null, this, temp, ICON_NUM_LIMIT).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -425,18 +395,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
 
                 @Override
-                public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
-                    final ArrayList<String> tmp = new ArrayList<>();
-                    if (override) {
-                        checkPaths(photoPaths,tmp);
-                        mIconPaths = photoPaths;
-                    } else {
-                        mIconPaths.addAll(photoPaths);
-                        tmp.addAll(photoPaths);
-                    }
+                public void onPhotoGet(final ArrayList<String> photoPaths, boolean override) {
                     final ArrayList<String> res = new ArrayList<>();
                     NetaImgCompress.get(CreateRichDocActivity.this)
-                            .load(tmp)
+                            .load(photoPaths)
                             .asPath()
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -455,8 +417,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                             .subscribe(new Subscriber<String>() {
                                 @Override
                                 public void onCompleted() {
-                                    for (int i = 0;i < tmp.size();i++){
-                                        mPathMap.put(res.get(i),tmp.get(i));
+                                    for (int i = 0;i < photoPaths.size();i++){
+                                        mPathMap.put(res.get(i),photoPaths.get(i));
                                     }
                                     onGetPhotos(res);
                                 }
@@ -473,19 +435,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                             });
                 }
             });
-        }
-    }
-
-    private void checkPaths(ArrayList<String> paths,ArrayList<String> list){
-        for(String s : paths){
-            boolean res = true;
-            for (String s1 : mIconPaths){
-                if(s.equals(s1)){
-                    res = false;
-                    break;
-                }
-            }
-            if(res) list.add(s);
         }
     }
 
