@@ -42,20 +42,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingTop="@dimen/status_bar_height"
-                        android:layout_marginTop="?attr/actionBarSize">
-
-                        <!--<com.moemoe.lalala.view.MyRoundedImageView-->
-                            <!--android:id="@+id/iv_group_image"-->
-                            <!--android:layout_width="80dp"-->
-                            <!--android:layout_height="80dp"-->
-                            <!--android:layout_marginLeft="29dp"-->
-                            <!--android:layout_marginStart="29dp"-->
-                            <!--android:layout_marginTop="8dp"-->
-                            <!--android:src="@drawable/ic_default_club_l"-->
-                            <!--app:riv_left_bottom_radius="5dp"-->
-                            <!--app:riv_left_top_radius="5dp"-->
-                            <!--app:riv_right_bottom_radius="5dp"-->
-                            <!--app:riv_right_top_radius="5dp"/>-->
+                        android:layout_marginTop="@dimen/neta_toolbar">
 
                         <ImageView
                             android:id="@+id/iv_group_image"
@@ -161,7 +148,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="@dimen/neta_toolbar"
                 app:navigationIcon="@drawable/ic_go_back"
                 android:layout_marginTop="@dimen/status_bar_height"
                 app:layout_collapseMode="pin"
@@ -188,7 +175,7 @@
             <TextView
                 android:id="@+id/tv_toolbar_title"
                 android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="@dimen/neta_toolbar"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:maxLength="16"
@@ -224,15 +211,5 @@
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:src="@drawable/bg_send_post_btn" />
-
-        <ImageView
-            android:id="@+id/iv_send_music_post"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/iv_send_post"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/bg_send_music_post_btn" />
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

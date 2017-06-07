@@ -172,7 +172,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
         mSendPost.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                go2CreateDoc(CreateNormalDocActivity.TYPE_IMG_DOC);
+                go2CreateDoc();
             }
         });
         mListDocs.setLoadMoreEnabled(false);
@@ -299,12 +299,11 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
     /**
      * 前往创建帖子界面
      */
-    private void go2CreateDoc(int type){
+    private void go2CreateDoc(){
         // 检查是否登录，是否关注，然后前面创建帖子界面
         if (DialogUtils.checkLoginAndShowDlg(QiuMingShanActivity.this)){
-            Intent intent = new Intent(QiuMingShanActivity.this, CreateNormalDocActivity.class);
-            intent.putExtra(CreateNormalDocActivity.TYPE_CREATE,type);
-            intent.putExtra(CreateNormalDocActivity.TYPE_QIU_MING_SHAN,1);
+            Intent intent = new Intent(QiuMingShanActivity.this, CreateRichDocActivity.class);
+            intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,1);
             intent.putExtra("from_name","后山");
             intent.putExtra("from_schema","neta://com.moemoe.lalala/qiu_1.0");
             startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
@@ -350,7 +349,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == CreateNormalDocActivity.RESPONSE_CODE){
+        if(resultCode == CreateRichDocActivity.RESPONSE_CODE){
             mListDocs.getRecyclerView().scrollToPosition(0);
             mPresenter.requestDocList(0,"",3);
         }

@@ -77,6 +77,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private final int REQ_ADD_SEARCH = 1005;
     private static final int REQ_SELECT_FOLDER = 5001;
     public static final int RESPONSE_CODE = 10000;
+    public static final int REQUEST_CODE_CREATE_DOC = 11000;
 
     @BindView(R.id.tv_left_menu)
     TextView mTvMenuLeft;
@@ -238,7 +239,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                             @Override
                             public void call(RichEntity richEntity) {
                                 if(!TextUtils.isEmpty(richEntity.getInputStr())){
-                                    mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToLocal(richEntity.getInputStr().toString()));
+                                    mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToEdit(CreateRichDocActivity.this,richEntity.getInputStr().toString()));
                                 }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
                                     mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH());
                                     mPathMap.put(richEntity.getImage().getPath(),richEntity.getImage().getPath());

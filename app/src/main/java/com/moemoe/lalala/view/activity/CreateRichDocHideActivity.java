@@ -119,7 +119,7 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                         @Override
                         public void call(RichEntity richEntity) {
                             if(!TextUtils.isEmpty(richEntity.getInputStr())){
-                                mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToLocal(richEntity.getInputStr().toString()));
+                                mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToEdit(CreateRichDocHideActivity.this,richEntity.getInputStr().toString()));
                             }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
                                 mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH());
                                 mPathMap.put(richEntity.getImage().getPath(),richEntity.getImage().getPath());

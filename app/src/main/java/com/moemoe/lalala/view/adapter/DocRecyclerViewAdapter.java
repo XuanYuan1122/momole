@@ -236,7 +236,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             case TYPE_FOLDER:
                 return new BagFavoriteHolder(mLayoutInflater.inflate(R.layout.item_bag_get,parent,false));
             default:
-                return null;
+                return new EmptyViewHolder(mLayoutInflater.inflate(R.layout.item_empty,parent,false));
         }
     }
 
@@ -648,7 +648,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void createText(final TextHolder holder,int position){
-        holder.mTvText.setText(StringUtils.getUrlClickableText(mContext, (String) getItem(position)));
+        holder.mTvText.setText(StringUtils.getUrlClickableText(mContext, StringUtils.buildAtUserToShow(mContext,(String) getItem(position))));
         holder.mTvText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
@@ -664,7 +664,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void createHideText(final HideTextHolder holder,int position){
-        holder.mTvText.setText(StringUtils.getUrlClickableText(mContext, (String) getItem(position)));
+        holder.mTvText.setText(StringUtils.getUrlClickableText(mContext, StringUtils.buildAtUserToShow(mContext,(String) getItem(position))));
         holder.mTvText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 

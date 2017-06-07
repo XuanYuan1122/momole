@@ -4,6 +4,7 @@ import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -36,6 +37,7 @@ import com.moemoe.lalala.utils.CustomUrlSpan;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.FileUtil;
+import com.moemoe.lalala.utils.NetaColorSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
@@ -474,11 +476,11 @@ public class NetaRichEditor extends ScrollView {
         int cursorIndex = lastFocusEdit.getSelectionStart();
         if(cursorIndex < 0){
             lastEditStr.insert(lastEditStr.length(),str + " ");
-            CustomUrlSpan span = new CustomUrlSpan(getContext(), null, id);
+            NetaColorSpan span = new NetaColorSpan(ContextCompat.getColor(getContext(),R.color.main_cyan), id);
             lastEditStr.setSpan(span,lastEditStr.length(),lastEditStr.length() + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }else {
             lastEditStr.insert(cursorIndex,str + " ");
-            CustomUrlSpan span = new CustomUrlSpan(getContext(), null, id);
+            NetaColorSpan span = new NetaColorSpan(ContextCompat.getColor(getContext(),R.color.main_cyan), id);
             lastEditStr.setSpan(span,cursorIndex,cursorIndex + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         lastFocusEdit.setText(lastEditStr);

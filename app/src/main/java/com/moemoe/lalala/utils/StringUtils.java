@@ -3,6 +3,8 @@ package com.moemoe.lalala.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -16,6 +18,11 @@ import android.widget.ListAdapter;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigInteger;
@@ -26,6 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -243,6 +251,32 @@ public class StringUtils {
                 ss.setSpan(span, start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             return ss;
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
+     * 文本增加网址监听
+     * @param context
+     * @param text
+     * @return
+     */
+    public static SpannableStringBuilder getUrlClickableText(Context context, SpannableStringBuilder text){
+        if(sWebUrlPattern == null){
+            //sWebUrlPattern = Pattern.compile("((https://|http://)([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?)|www.(([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?)");
+            sWebUrlPattern = Pattern.compile("(http|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?");
+        }
+        if(!TextUtils.isEmpty(text)){
+            Matcher m = sWebUrlPattern.matcher(text);
+            while(m.find()){
+                int start = m.start();
+                int end = m.end();
+                CustomUrlSpan span = new CustomUrlSpan(context, null, text.subSequence(start, end).toString());
+                text.setSpan(span, start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            return text;
         } else {
             return null;
         }
@@ -552,11 +586,11 @@ public class StringUtils {
     public static String buildDataAtUser(CharSequence sequence){
         String res;
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(sequence);
-        CustomUrlSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),CustomUrlSpan.class);
+        NetaColorSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),NetaColorSpan.class);
         if(spen.length > 0){
             res = stringBuilder.toString();
             int step = 0;
-            for (CustomUrlSpan span : spen) {
+            for (NetaColorSpan span : spen) {
                 int before = res.length();
                 String beginStr = res.substring(0,stringBuilder.getSpanStart(span) + step);
                 String str = res.substring(stringBuilder.getSpanStart(span) + step,stringBuilder.getSpanEnd(span) + step);
@@ -571,9 +605,63 @@ public class StringUtils {
         return res;
     }
 
-    public static SpannableStringBuilder buildAtUserToLocal(String s){
-        //TODO 解析网上传来的at文本
+    /**
+     * 解析自定协议显示
+     * @param s
+     * @return
+     */
+    public static SpannableStringBuilder buildAtUserToShow(Context context, String s){
+        Document document = Jsoup.parse(s);
+        Elements elements = document.select("at_user");
+        DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
+        for(Element element : elements){
+            String all = element.toString().replace("\"","").replace("\n","");
+            String id = element.attr("id");
+            String text = element.text();
+            String beginStr = s.substring(0,s.indexOf(all));
+            String endStr = s.substring(s.indexOf(all) + all.length());
+            map.put(id,s.indexOf(all),s.indexOf(all) + text.length());
+            s = beginStr + text + endStr;
+        }
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+        for(String id : map.getFirstKeys()){
+            ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(id);
+            for(Integer begin : concurrentHashMap.keySet()){
+                int end = concurrentHashMap.get(begin);
+                CustomUrlSpan span = new CustomUrlSpan(context,null,id);
+                stringBuilder.setSpan(span,begin,end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return stringBuilder;
+    }
+
+    /**
+     * 解析自定协议显示
+     * @param s
+     * @return
+     */
+    public static SpannableStringBuilder buildAtUserToEdit(Context context, String s){
+        Document document = Jsoup.parse(s);
+        Elements elements = document.select("at_user");
+        DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
+        for(Element element : elements){
+            String all = element.toString().replace("\"","").replace("\n","");
+            String id = element.attr("id");
+            String text = element.text();
+            String beginStr = s.substring(0,s.indexOf(all));
+            String endStr = s.substring(s.indexOf(all) + all.length());
+            map.put(id,s.indexOf(all),s.indexOf(all) + text.length());
+            s = beginStr + text + endStr;
+        }
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+        for(String id : map.getFirstKeys()){
+            ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(id);
+            for(Integer begin : concurrentHashMap.keySet()){
+                int end = concurrentHashMap.get(begin);
+                NetaColorSpan span = new NetaColorSpan(ContextCompat.getColor(context,R.color.main_cyan),id);
+                stringBuilder.setSpan(span,begin,end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
         return stringBuilder;
     }
 }

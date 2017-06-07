@@ -70,8 +70,6 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     ImageView mIvClubBackground;
     @BindView(R.id.iv_send_post)
     View mIvSendDoc;
-    @BindView(R.id.iv_send_music_post)
-    View mIvSendMusicDoc;
     @BindView(R.id.list_club_docs)
     PullAndLoadView mListPost;
     @BindView(R.id.rl_group_head)
@@ -144,13 +142,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         mIvSendDoc.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                go2CreateDoc(CreateNormalDocActivity.TYPE_IMG_DOC);
-            }
-        });
-        mIvSendMusicDoc.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                go2CreateDoc(CreateNormalDocActivity.TYPE_MUSIC_DOC);
+                go2CreateDoc();
             }
         });
         mSimpleLabel.setOnClickListener(new View.OnClickListener() {
@@ -239,20 +231,16 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     private void sendBtnIn(){
         ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvSendDoc,"translationY",mIvSendDoc.getHeight()+ DensityUtil.dip2px(this,10),0).setDuration(300);
         sendPostIn.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator sendMusicIn = ObjectAnimator.ofFloat(mIvSendMusicDoc,"translationY",mIvSendMusicDoc.getHeight()+DensityUtil.dip2px(this,10),0).setDuration(300);
-        sendMusicIn.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
-        set.play(sendPostIn).with(sendMusicIn);
+        set.play(sendPostIn);
         set.start();
     }
 
     private void sendBtnOut(){
         ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvSendDoc,"translationY",0,mIvSendDoc.getHeight()+DensityUtil.dip2px(this,10)).setDuration(300);
         sendPostOut.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator sendMusicOut = ObjectAnimator.ofFloat(mIvSendMusicDoc,"translationY",0,mIvSendMusicDoc.getHeight()+DensityUtil.dip2px(this,10)).setDuration(300);
-        sendMusicOut.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
-        set.play(sendPostOut).with(sendMusicOut);
+        set.play(sendPostOut);
         set.start();
     }
 
@@ -316,7 +304,6 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
             mIvClubBackground.setBackgroundResource(R.drawable.bg_netaschool);
         }
         mIvSendDoc.setVisibility(View.VISIBLE);
-        mIvSendMusicDoc.setVisibility(View.VISIBLE);
         mTvTitle.setText(entity.getName());
     }
 
@@ -379,22 +366,21 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     /**
      * 前往创建帖子界面
      */
-    private void go2CreateDoc(int type){
+    private void go2CreateDoc(){
         // 检查是否登录，是否关注，然后前面创建帖子界面
         if (DialogUtils.checkLoginAndShowDlg(this)){
-            Intent intent = new Intent(ClubPostListActivity.this, CreateNormalDocActivity.class);
+            Intent intent = new Intent(ClubPostListActivity.this, CreateRichDocActivity.class);
             intent.putExtra(UUID, mClubUuid);
-            intent.putExtra(CreateNormalDocActivity.TYPE_CREATE,type);
-            intent.putExtra(CreateNormalDocActivity.TYPE_TAG_NAME_DEFAULT,mTagName);
+            intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,mTagName);
             intent.putExtra("from_name",mTagName);
             intent.putExtra("from_schema","neta://com.moemoe.lalala/tag_1.0?" + mClubUuid);
-            startActivityForResult(intent, CreateNormalDocActivity.REQUEST_CODE_CREATE_DOC);
+            startActivityForResult(intent, CreateRichDocActivity.REQUEST_CODE_CREATE_DOC);
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == CreateNormalDocActivity.RESPONSE_CODE){
+        if(resultCode == CreateRichDocActivity.RESPONSE_CODE){
             mListPost.getRecyclerView().scrollToPosition(0);
             mPresenter.requestClubData(mClubUuid);
         }

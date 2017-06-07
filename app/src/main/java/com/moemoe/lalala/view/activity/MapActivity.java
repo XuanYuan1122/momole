@@ -41,7 +41,6 @@ import com.moemoe.lalala.galgame.FileManager;
 import com.moemoe.lalala.galgame.Live2DManager;
 import com.moemoe.lalala.galgame.Live2DView;
 import com.moemoe.lalala.galgame.SoundManager;
-import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.model.entity.BuildEntity;
@@ -61,7 +60,6 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToolTipUtils;
 import com.moemoe.lalala.view.widget.explosionfield.ExplosionField;
@@ -78,7 +76,6 @@ import com.moemoe.lalala.view.widget.map.model.MapImgLayer;
 import com.moemoe.lalala.view.widget.map.model.MapObject;
 import com.moemoe.lalala.view.widget.tooltip.Tooltip;
 import com.moemoe.lalala.view.widget.tooltip.TooltipAnimation;
-import com.tencent.tinker.lib.tinker.TinkerInstaller;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -96,13 +93,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
 
 /**
  * 地图主界面
@@ -208,9 +202,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         if(NetworkUtils.isNetworkAvailable(this) && NetworkUtils.isWifi(this)){
             mPresenter.checkVersion();
-        }
-        if(NetworkUtils.isNetworkAvailable(this)){
-            mPresenter.checkBuild(PreferenceUtils.getBuildVersion(this),AppSetting.VERSION_CODE);
         }
         subscribeSearchChangedEvent();
         mPresenter.getEventList();
@@ -506,39 +497,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     public void checkBuildSuccess(BuildEntity s) {
-        final int version = s.getVersion();
-        String path = s.getPath();
-        if(!TextUtils.isEmpty(path)){
-            RxDownload downloadSub = RxDownload.getInstance()
-                    .maxThread(3)
-                    .maxRetryCount(3)
-                    .defaultSavePath(StorageUtils.getTempRootPath())
-                    .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
-            if(!path.contains("http://") && !path.contains("https://")){
-                path = ApiService.URL_QINIU + path;
-            }
-            final String temp = System.currentTimeMillis() + "_path_"+ version + ".neta";
-            downloadSub.download(path,temp,null)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<DownloadStatus>() {
-                        @Override
-                        public void onCompleted() {
-                            showToast("appBUG已修复，稍后会自动退出，请重新进入app");
-                            TinkerInstaller.onReceiveUpgradePatch(getApplicationContext(),StorageUtils.getTempRootPath() + temp);
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                        }
-
-                        @Override
-                        public void onNext(DownloadStatus downloadStatus) {
-
-                        }
-                    });
-        }
     }
 
     private void initMapListeners(){

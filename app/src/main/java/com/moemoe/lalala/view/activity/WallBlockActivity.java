@@ -102,7 +102,7 @@ public class WallBlockActivity extends BaseAppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == CreateNormalDocActivity.RESPONSE_CODE){
+        if(resultCode == CreateRichDocActivity.RESPONSE_CODE){
             if(classFragment != null){
                 classFragment.onActivityResult(requestCode,resultCode,data);
             }

@@ -19,7 +19,6 @@ package com.moemoe.lalala.utils;
 import android.os.Environment;
 import android.os.StatFs;
 
-import com.tencent.tinker.loader.shareutil.ShareConstants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,21 +58,6 @@ public class Utils {
 
     public static void setBackground(boolean back) {
         background = back;
-    }
-
-    public static int checkForPatchRecover(long roomSize, int maxMemory) {
-        if (Utils.isGooglePlay()) {
-            return Utils.ERROR_PATCH_GOOGLEPLAY_CHANNEL;
-        }
-        if (maxMemory < MIN_MEMORY_HEAP_SIZE) {
-            return Utils.ERROR_PATCH_MEMORY_LIMIT;
-        }
-        //or you can mention user to clean their rom space!
-        if (!checkRomSpaceEnough(roomSize)) {
-            return Utils.ERROR_PATCH_ROM_SPACE;
-        }
-
-        return ShareConstants.ERROR_PATCH_OK;
     }
 
     public static boolean isXposedExists(Throwable thr) {

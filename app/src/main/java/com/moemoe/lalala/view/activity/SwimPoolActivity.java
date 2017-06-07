@@ -65,8 +65,6 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
     PullAndLoadView mListDocs;
     @BindView(R.id.iv_send_post)
     View mSendPost;
-    @BindView(R.id.iv_send_music_post)
-    View mSendMusicPost;
     @BindView(R.id.tv_simple_label)
     TextView mSimpleLabel;
     @Inject
@@ -179,14 +177,7 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
         mSendPost.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                go2CreateDoc(CreateNormalDocActivity.TYPE_IMG_DOC);
-            }
-        });
-        mSendMusicPost.setVisibility(View.VISIBLE);
-        mSendMusicPost.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                go2CreateDoc(CreateNormalDocActivity.TYPE_MUSIC_DOC);
+                go2CreateDoc();
             }
         });
         mSimpleLabel.setOnClickListener(new View.OnClickListener() {
@@ -306,32 +297,26 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
     private void sendBtnIn(){
         ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mSendPost,"translationY",mSendPost.getHeight()+ DensityUtil.dip2px(this,10),0).setDuration(300);
         sendPostIn.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator sendMusicIn = ObjectAnimator.ofFloat(mSendMusicPost,"translationY",mSendMusicPost.getHeight()+DensityUtil.dip2px(this,10),0).setDuration(300);
-        sendMusicIn.setInterpolator(new OvershootInterpolator());
         ObjectAnimator sendrankIn = ObjectAnimator.ofFloat(mBtnView,"translationY",mBtnView.getHeight() + DensityUtil.dip2px(this,10),0).setDuration(300);
-        sendMusicIn.setInterpolator(new OvershootInterpolator());
+        sendrankIn.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
-        set.play(sendPostIn).with(sendMusicIn);
-        set.play(sendMusicIn).with(sendrankIn);
+        set.play(sendPostIn).with(sendrankIn);
         set.start();
     }
 
     private void sendBtnOut(){
         ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mSendPost,"translationY",0,mSendPost.getHeight()+DensityUtil.dip2px(this,10)).setDuration(300);
         sendPostOut.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator sendMusicOut = ObjectAnimator.ofFloat(mSendMusicPost,"translationY",0,mSendMusicPost.getHeight()+DensityUtil.dip2px(this,10)).setDuration(300);
-        sendMusicOut.setInterpolator(new OvershootInterpolator());
         ObjectAnimator sendRankOut = ObjectAnimator.ofFloat(mBtnView,"translationY",0,mBtnView.getHeight()+DensityUtil.dip2px(this,10)).setDuration(300);
-        sendMusicOut.setInterpolator(new OvershootInterpolator());
+        sendRankOut.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
-        set.play(sendPostOut).with(sendMusicOut);
-        set.play(sendMusicOut).with(sendRankOut);
+        set.play(sendPostOut).with(sendRankOut);
         set.start();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == CreateNormalDocActivity.RESPONSE_CODE){
+        if(resultCode == CreateRichDocActivity.RESPONSE_CODE){
             mListDocs.getRecyclerView().scrollToPosition(0);
             mPresenter.requestDocList(0,"",2);
         }
@@ -340,12 +325,11 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
     /**
      * 前往创建帖子界面
      */
-    private void go2CreateDoc(int type){
+    private void go2CreateDoc(){
         // 检查是否登录，是否关注，然后前面创建帖子界面
         if (DialogUtils.checkLoginAndShowDlg(this)){
-            Intent intent = new Intent(this, CreateNormalDocActivity.class);
-            intent.putExtra(CreateNormalDocActivity.TYPE_CREATE,type);
-            intent.putExtra(CreateNormalDocActivity.TYPE_QIU_MING_SHAN,2);
+            Intent intent = new Intent(this, CreateRichDocActivity.class);
+            intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,2);
             intent.putExtra("from_name","温泉");
             intent.putExtra("from_schema","neta://com.moemoe.lalala/swim_1.0");
             startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
