@@ -89,7 +89,9 @@ public class CreateRichDocPresenter implements CreateRichDocContract.Presenter {
                             }
                         }else if(docDetailBooleanMap.data.type.equals(NewDocType.DOC_MUSIC.toString())){
                             temp = FileUtil.getExtensionName(((DocPut.DocPutMusic)docDetailBooleanMap.data.data).url);
+                            path = ((DocPut.DocPutMusic)docDetailBooleanMap.data.data).url;
                             temp2 = FileUtil.getExtensionName(((DocPut.DocPutMusic)docDetailBooleanMap.data.data).cover.getPath());
+                            path2 = ((DocPut.DocPutMusic)docDetailBooleanMap.data.data).cover.getPath();
                         }
                         if(TextUtils.isEmpty(temp2)){
                             return Observable.zip(
