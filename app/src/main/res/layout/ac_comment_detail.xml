@@ -69,7 +69,7 @@
         android:id="@+id/ll_comment_pannel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_f2f2f3"
+        android:background="@color/bg_f6f6f6"
         android:gravity="bottom"
         android:orientation="horizontal"
         android:paddingBottom="7dp"

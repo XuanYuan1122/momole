@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -42,6 +43,7 @@ import com.moemoe.lalala.presenter.DocDetailContract;
 import com.moemoe.lalala.presenter.DocDetailPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.BitmapUtils;
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
@@ -95,15 +97,17 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
-    @BindView(R.id.tv_title)
+    @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
+    @BindView(R.id.tv_left_menu)
+    TextView mTvFrom;
     @BindView(R.id.rv_list)
     PullAndLoadView mList;
     @BindView(R.id.iv_menu_list)
     ImageView mIvMenu;
     @BindView(R.id.rv_img)
     RecyclerView mRvComment;
-    @BindView(R.id.tv_only_host)
+    @BindView(R.id.tv_menu)
     TextView mTvOnlyHost;
     @BindView(R.id.tv_jump_to)
     TextView mTvJumpTo;
@@ -149,6 +153,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvTitle.setText("");
         mDocId = getIntent().getStringExtra(UUID);
         if(TextUtils.isEmpty(mDocId)){
@@ -185,11 +190,22 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-
+        mTvFrom.setVisibility(View.VISIBLE);
+        mTvFrom.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+        String from = getIntent().getStringExtra("from_name");
+        if(!TextUtils.isEmpty(from)) mTvFrom.setText(from);
+        mIvMenu.setVisibility(View.VISIBLE);
+        mTvOnlyHost.setVisibility(View.VISIBLE);
+        mTvOnlyHost.setWidth(DensityUtil.dip2px(this,50));
+        mTvOnlyHost.setHeight(DensityUtil.dip2px(this,20));
+        mTvOnlyHost.setText(getString(R.string.label_only_host));
+        mTvOnlyHost.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+        mTvOnlyHost.setBackgroundResource(R.drawable.btn_only_host_new);
     }
 
     @Override
     protected void initListeners() {
+        mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
@@ -540,11 +556,13 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     if(hasLoaded){
                         mTargetId = true;
                         mTvOnlyHost.setSelected(true);
+                        mTvOnlyHost.setTextColor(ContextCompat.getColor(this,R.color.white));
                         requestCommentsByFloor(1,mTargetId,true,false);
                     }
                 }else {
                     mTargetId = false;
                     mTvOnlyHost.setSelected(false);
+                    mTvOnlyHost.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
                     requestCommentsByFloor(1,mTargetId,true,false);
                 }
                 break;

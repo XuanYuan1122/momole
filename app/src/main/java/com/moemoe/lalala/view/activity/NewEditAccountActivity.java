@@ -26,7 +26,6 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.presenter.EditAccountContract;
 import com.moemoe.lalala.presenter.EditAccountPresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
@@ -37,6 +36,7 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.datetimepicker.date.DatePickerDialog;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
@@ -60,8 +60,8 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
     private final int REQ_GET_FROM_GALLERY = 1002;
     private final int REQ_CROP_AVATAR = 1003;
     private final int REQ_SECRET = 1004;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.tv_menu)
@@ -103,7 +103,6 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerEditAccountComponent.builder()
                 .editAccountModule(new EditAccountModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -111,6 +110,8 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
                 .inject(this);
         mInfo = getIntent().getParcelableExtra("info");
         mTvSave.setVisibility(View.VISIBLE);
+        ViewUtils.setRightMargins(mTvSave,DensityUtil.dip2px(this,18));
+        mTvSave.getPaint().setFakeBoldText(true);
         mTvSave.setText(getString(R.string.label_save_modify));
         mTvTitle.setText(getString(R.string.label_edit_personal_data));
         mDatePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
@@ -366,7 +367,9 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 onBackPressed();

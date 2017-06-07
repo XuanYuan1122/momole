@@ -25,7 +25,6 @@ import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.TrashPut;
 import com.moemoe.lalala.presenter.CreateTrashContract;
 import com.moemoe.lalala.presenter.CreateTrashPresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;

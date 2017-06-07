@@ -35,8 +35,8 @@ import butterknife.BindView;
 
 public class PersonalLevelActivity extends BaseAppCompatActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.iv_avatar)
@@ -67,6 +67,7 @@ public class PersonalLevelActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvTitle.setText(R.string.label_level_introduce);
         mHander = new Handler();
         mProgressBar = (ProgressBar) findViewById(R.id.pgbar_progress);
@@ -87,7 +88,8 @@ public class PersonalLevelActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

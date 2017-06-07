@@ -36,8 +36,8 @@ public class SelectBookActivity extends BaseAppCompatActivity {
 
     @BindView(R.id.list)
     ListView mList;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
     private BookListAdapter mAdapter;
@@ -61,7 +61,9 @@ public class SelectBookActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

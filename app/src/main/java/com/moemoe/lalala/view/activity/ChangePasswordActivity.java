@@ -21,7 +21,6 @@ import com.moemoe.lalala.di.modules.ChangePwdModule;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.presenter.ChangePasswordContract;
 import com.moemoe.lalala.presenter.ChangePasswordPresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_f6f6f6"
+    android:fitsSystemWindows="true">
 
     <include
         android:id="@+id/include_toolbar"
-        layout="@layout/app_toolbar"/>
+        layout="@layout/neta_bar"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -229,7 +231,7 @@
         android:id="@+id/ll_comment_pannel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bg_f2f2f3"
+        android:background="@color/bg_f6f6f6"
         android:gravity="bottom"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,7 +29,6 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.CountryCode;
 import com.moemoe.lalala.utils.CustomUrlSpan;
 import com.moemoe.lalala.utils.EncoderUtils;
@@ -52,8 +52,8 @@ import butterknife.BindView;
 public class PhoneRegisterActivity extends BaseAppCompatActivity implements SimpleContract.View{
 
     private String TAG = "PhoneRegisterActivity";
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.edt_phone_number)
     EditText mEdtAccount;
     @BindView(R.id.edt_password)
@@ -80,7 +80,6 @@ public class PhoneRegisterActivity extends BaseAppCompatActivity implements Simp
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerSimpleComponent.builder()
                 .simpleModule(new SimpleModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -110,7 +109,9 @@ public class PhoneRegisterActivity extends BaseAppCompatActivity implements Simp
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

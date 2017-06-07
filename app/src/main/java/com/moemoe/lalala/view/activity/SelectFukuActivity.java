@@ -22,8 +22,10 @@ import com.moemoe.lalala.model.entity.SnowEntity;
 import com.moemoe.lalala.model.entity.SnowInfo;
 import com.moemoe.lalala.presenter.SnowContract;
 import com.moemoe.lalala.presenter.SnowPresenter;
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import java.util.ArrayList;
 
@@ -40,10 +42,12 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements SnowCon
 
     public static final int RES_OK = 200;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_menu)
     TextView mTvDone;
+    @BindView(R.id.tv_toolbar_title)
+    TextView mTvTitle;
     @BindView(R.id.rv_list)
     RecyclerView mRvList;
 
@@ -83,17 +87,22 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements SnowCon
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-
+        mTvTitle.setText(getString(R.string.label_select_fuku));
     }
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
             }
         });
+        mTvDone.setVisibility(View.VISIBLE);
+        ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));
+        mTvDone.setText(getString(R.string.label_done));
         mTvDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

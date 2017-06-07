@@ -17,7 +17,6 @@ import com.moemoe.lalala.model.entity.DelCommentEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;

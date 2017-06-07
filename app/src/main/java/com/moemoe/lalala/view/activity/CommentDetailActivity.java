@@ -39,7 +39,6 @@ import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.presenter.CommentDetailContract;
 import com.moemoe.lalala.presenter.CommentDetailPresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;

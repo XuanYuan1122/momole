@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -20,8 +22,8 @@ import butterknife.OnClick;
 
 public class ReadTypeSettingActivity extends BaseAppCompatActivity{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.tv_menu)
@@ -45,6 +47,8 @@ public class ReadTypeSettingActivity extends BaseAppCompatActivity{
         }
         mReadType = getIntent().getStringExtra("read_type");
         mTvDone.setVisibility(View.VISIBLE);
+        ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));
+        mTvDone.getPaint().setFakeBoldText(true);
         mTvDone.setText(R.string.label_done);
         initStyleView(R.id.set_normal);
         initStyleView(R.id.set_img);
@@ -131,7 +135,9 @@ public class ReadTypeSettingActivity extends BaseAppCompatActivity{
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

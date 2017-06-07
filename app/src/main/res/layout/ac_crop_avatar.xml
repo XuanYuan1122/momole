@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" 
-    android:background="@color/bg_f2f2f3">
+    android:background="@color/bg_f6f6f6">
 
     <com.moemoe.lalala.view.widget.cropper.CropImageView
         android:id="@+id/crop_iv_avatar"

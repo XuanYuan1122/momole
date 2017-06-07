@@ -28,8 +28,8 @@ import butterknife.OnClick;
 
 public class SecretSettingActivity extends BaseAppCompatActivity implements SettingContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
 
@@ -143,7 +143,9 @@ public class SecretSettingActivity extends BaseAppCompatActivity implements Sett
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 onBackPressed();

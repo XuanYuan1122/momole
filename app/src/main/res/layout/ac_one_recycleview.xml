@@ -5,60 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/neta_toolbar"
-            android:background="@color/main_cyan">
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_go_back"/>
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical|left"
-                android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:maxLines="1"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:layout_toRightOf="@+id/iv_back"
-                android:layout_toLeftOf="@+id/tv_only_host"
-                android:textColor="@color/white"
-                android:layout_centerVertical="true"
-                android:text=""
-                android:ellipsize="marquee"/>
-
-            <TextView
-                android:id="@+id/tv_only_host"
-                android:layout_width="50dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:text="只看楼主"
-                android:textColor="@color/txt_white_cyan"
-                android:textStyle="bold"
-                android:textSize="9dp"
-                android:layout_toLeftOf="@+id/iv_menu_list"
-                android:background="@drawable/btn_only_host"
-                />
-
-            <ImageView
-                android:id="@+id/iv_menu_list"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_menu_loli"
-                android:visibility="visible" />
-
-        </RelativeLayout>
+    <include layout="@layout/neta_bar"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -127,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/bg_f2f2f3"
+        android:background="@color/bg_f6f6f6"
         android:gravity="bottom"
         android:orientation="horizontal"
         android:paddingBottom="7dp"

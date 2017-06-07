@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -49,11 +50,11 @@ public class WebViewActivity extends BaseAppCompatActivity {
     private final int MENU_OPEN_OUT = 102;
     private final int MENU_OPEN_SHARE = 103;
 
-    @BindView(R.id.rl_bar)
+    @BindView(R.id.app_bar)
     View mToolbar;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
-    @BindView(R.id.tv_title)
+    @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.iv_menu_list)
     ImageView mIvMenu;
@@ -72,6 +73,7 @@ public class WebViewActivity extends BaseAppCompatActivity {
     @Override
     protected void initViews(Bundle savedInstanceState) {
         mProgressBar = (ProgressBar) findViewById(R.id.pgbar_progress);
+        mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
@@ -97,6 +99,7 @@ public class WebViewActivity extends BaseAppCompatActivity {
             mToolbar.setVisibility(View.GONE);
         }
         if(!TextUtils.isEmpty(mTitle)){
+            mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
             mTvTitle.setText(mTitle);
         }
         mIvMenu.setVisibility(View.VISIBLE);

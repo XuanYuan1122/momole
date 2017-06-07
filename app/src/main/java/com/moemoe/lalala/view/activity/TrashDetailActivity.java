@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
@@ -29,7 +30,6 @@ import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.model.entity.TrashEntity;
 import com.moemoe.lalala.presenter.TrashContract;
 import com.moemoe.lalala.presenter.TrashPresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -66,8 +66,8 @@ import zlc.season.rxdownload.entity.DownloadStatus;
 
 public class TrashDetailActivity extends BaseAppCompatActivity implements TrashContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.tv_title)
@@ -113,7 +113,6 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
             finish();
             return;
         }
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerTrashComponent.builder()
                 .trashModule(new TrashModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -137,6 +136,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
         docLabelAdapter = new NewDocLabelAdapter(this,false);
         mDocLabelView.setDocLabelAdapter(docLabelAdapter);
         mPresenter.getTrashDetail(mType,mEntity.getDustbinId());
+        mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvTitle.setText("小纸条");
         mTitle.setText(mEntity.getTitle());
         if("text".equals(mType)){
@@ -187,7 +187,8 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

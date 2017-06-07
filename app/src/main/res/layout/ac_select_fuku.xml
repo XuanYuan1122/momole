@@ -1,44 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_f6f6f6"
+    android:fitsSystemWindows="true">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/main_cyan"
-        app:navigationIcon="@drawable/ic_go_back"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
-
-        <TextView
-            android:id="@+id/tv_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textSize="18dp"
-            android:textStyle="bold"
-            android:text="@string/label_select_fuku"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:gravity="center"/>
-
-        <TextView
-            android:id="@+id/tv_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="18dp"
-            android:text="@string/label_done"
-            android:layout_gravity="right"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:paddingRight="5dp"
-            android:visibility="visible"
-            />
-    </android.support.v7.widget.Toolbar>
+    <include layout="@layout/neta_bar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_list"

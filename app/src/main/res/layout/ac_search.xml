@@ -3,22 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/status_bar_height"
-        android:background="@color/white">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/neta_toolbar"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/size_12"
             android:paddingStart="@dimen/size_12"
             android:paddingRight="@dimen/size_16"
-            android:paddingEnd="@dimen/size_16">
+            android:paddingEnd="@dimen/size_16"
+            android:background="@color/white">
 
             <RelativeLayout
                 android:id="@+id/rl_search_root"
@@ -115,17 +111,16 @@
                 android:textSize="@dimen/size_15"
                 android:text="取消"/>
         </LinearLayout>
-    </LinearLayout>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/indicator_search_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@color/main_cyan"
-        app:tabSelectedTextColor="@color/white"
-        app:tabIndicatorColor="@color/white"
-        app:tabTextColor="#50ffffff"
+        android:background="@color/white"
+        app:tabSelectedTextColor="@color/main_cyan"
+        app:tabIndicatorColor="@color/main_cyan"
+        app:tabTextColor="@color/main_cyan_70"
         app:tabTextAppearance="@style/TabLayoutTextStyle">
 
     </android.support.design.widget.TabLayout>

@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_f6f6f6"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include layout="@layout/app_toolbar"/>
+    <include layout="@layout/neta_bar"/>
 
     <ScrollView
         android:layout_width="match_parent"

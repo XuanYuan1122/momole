@@ -36,7 +36,6 @@ import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 import com.moemoe.lalala.model.entity.SendPrivateMsgEntity;
 import com.moemoe.lalala.presenter.ChatContract;
 import com.moemoe.lalala.presenter.ChatPresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.GreenDaoManager;

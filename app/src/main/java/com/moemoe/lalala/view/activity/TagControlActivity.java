@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
@@ -16,9 +17,11 @@ import com.moemoe.lalala.model.entity.DelTagEntity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 
@@ -34,8 +37,8 @@ import butterknife.BindView;
 
 public class TagControlActivity extends BaseAppCompatActivity implements SimpleContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_menu)
     TextView mTvDone;
     @BindView(R.id.rv_list)
@@ -68,6 +71,8 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
             return;
         }
         mTvDone.setVisibility(View.VISIBLE);
+        mTvDone.getPaint().setFakeBoldText(true);
+        ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));
         mTvDone.setText(getString(R.string.label_done));
         mDelId = new ArrayList<>();
         mTvTitle.setText("管理标签");
@@ -95,7 +100,9 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 if(mDelId.size() > 0){

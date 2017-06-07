@@ -22,7 +22,6 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.AtUserEvent;
 import com.moemoe.lalala.event.SearchChangedEvent;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
@@ -81,7 +80,6 @@ public class SearchActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         if(savedInstanceState != null){
             String FRAGMENTS_TAG = "android:support:fragments";
             savedInstanceState.remove(FRAGMENTS_TAG);

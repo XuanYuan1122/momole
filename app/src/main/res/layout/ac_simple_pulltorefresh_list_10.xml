@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/size_10"
     android:paddingStart="@dimen/size_10"
-    android:background="@color/bg_f2f2f3" >
+    android:background="@color/bg_f6f6f6" >
 
     <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
         android:id="@+id/list"

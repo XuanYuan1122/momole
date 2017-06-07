@@ -27,7 +27,6 @@ import com.moemoe.lalala.model.entity.RichDocListEntity;
 import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.presenter.CreateRichDocContract;
 import com.moemoe.lalala.presenter.CreateRichDocPresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;

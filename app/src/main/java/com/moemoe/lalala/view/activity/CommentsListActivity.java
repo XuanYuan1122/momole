@@ -19,7 +19,6 @@ import com.moemoe.lalala.model.entity.CommentListSendEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.presenter.CommentListContract;
 import com.moemoe.lalala.presenter.CommentListPresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;

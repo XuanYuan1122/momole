@@ -11,7 +11,6 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.entity.RichEntity;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
@@ -74,7 +73,6 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         Intent i = getIntent();
         if(i == null){
             finish();

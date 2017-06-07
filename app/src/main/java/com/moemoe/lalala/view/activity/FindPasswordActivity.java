@@ -18,7 +18,6 @@ import com.moemoe.lalala.di.modules.SimpleModule;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.CountryCode;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;

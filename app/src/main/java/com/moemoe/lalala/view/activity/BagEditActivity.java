@@ -35,7 +35,6 @@ import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -146,7 +145,6 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

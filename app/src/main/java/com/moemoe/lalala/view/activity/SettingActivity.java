@@ -54,8 +54,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     public static final int REQUEST_SETTING_LOGIN = 3000;
     public static final int REQUEST_SETTING_LOGOUT = 3100;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     private Handler mHander;
@@ -165,7 +165,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

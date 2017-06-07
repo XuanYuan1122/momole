@@ -3,47 +3,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_f6f6f6"
     android:fitsSystemWindows="true">
 
-    <LinearLayout
-        android:id="@+id/rl_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/main_cyan"
-        android:orientation="horizontal"
-        android:visibility="visible">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_go_back"/>
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:layout_centerInParent="true"
-                android:textSize="18dp"
-                android:text=""
-                android:textStyle="bold"
-                />
-
-            <ImageView
-                android:id="@+id/iv_menu_list"
-                android:layout_height="match_parent"
-                android:layout_width="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_menu_loli"
-                android:visibility="gone" />
-        </RelativeLayout>
-    </LinearLayout>
+   <include layout="@layout/neta_bar"/>
 
     <ProgressBar
         android:id="@+id/pgbar_progress"

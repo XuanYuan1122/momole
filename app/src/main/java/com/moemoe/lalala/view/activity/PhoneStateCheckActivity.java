@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.igexin.sdk.PushManager;
@@ -26,7 +27,6 @@ import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.presenter.PhoneStateContract;
 import com.moemoe.lalala.presenter.PhoneStatePresenter;
-import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -49,8 +49,8 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
     public static final int ACTION_FIND_PASSWORD = 2;
     private static final int MSG_RESEND_COLD_TIME = 1001;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
     @BindView(R.id.tv_send_phone_code)
@@ -93,7 +93,6 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerPhoneStateComponent.builder()
                 .phoneStateModule(new PhoneStateModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -127,7 +126,9 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
