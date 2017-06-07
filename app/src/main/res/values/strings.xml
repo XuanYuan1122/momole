@@ -307,7 +307,7 @@
     <string name="msg_doc_content_cannot_null">还什么都没写呢~</string>
     <string name="msg_doc_img_cannot_null">还没有选图片呢</string>
     <string name="msg_need_one_tag">至少需要一个标签哦~</string>
-    <string name="msg_need_one_music">必须选择一首歌和封面~</string>
+    <string name="msg_need_one_music">歌曲和封面必须同时选择~</string>
     <string name="msg_create_doc_9_jpg">一个帖子最多能只能有15张图</string>
     <string name="msg_select_9_item">一次最多能只能有9个文件</string>
     <string name="msg_can_not_empty">内容不能为空</string>

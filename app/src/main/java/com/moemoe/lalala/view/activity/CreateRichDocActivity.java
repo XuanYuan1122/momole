@@ -23,6 +23,7 @@ import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.entity.DocPut;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewDocType;
+import com.moemoe.lalala.model.entity.RichDocListEntity;
 import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.presenter.CreateRichDocContract;
 import com.moemoe.lalala.presenter.CreateRichDocPresenter;
@@ -113,6 +114,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private MusicLoader.MusicInfo mMusicInfo;
     private String mMusicCover;
     private int mDocType;
+    private RichDocListEntity mDoc;
 
     @Override
     protected int getLayoutId() {
@@ -136,6 +138,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mFromSchema = i.getStringExtra("from_schema");
         mFromName = i.getStringExtra("from_name");
         mDocType = i.getIntExtra(TYPE_QIU_MING_SHAN,0);
+        mDoc = i.getParcelableExtra("doc");
         mIvAddBag.setVisibility(View.VISIBLE);
         mIvAddHide.setVisibility(View.VISIBLE);
         mIvAddMusic.setVisibility(View.VISIBLE);
@@ -226,7 +229,45 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
 
     @Override
     protected void initData() {
-
+        if(mDoc != null){
+            if(mDoc.getList().size() > 0){
+                Observable.from(mDoc.getList())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<RichEntity>() {
+                            @Override
+                            public void call(RichEntity richEntity) {
+                                if(!TextUtils.isEmpty(richEntity.getInputStr())){
+                                    mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToLocal(richEntity.getInputStr().toString()));
+                                }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
+                                    mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH());
+                                    mPathMap.put(richEntity.getImage().getPath(),richEntity.getImage().getPath());
+                                }
+                            }
+                        });
+                if(mHideList.get(mHideList.size() - 1).getImage() != null && !TextUtils.isEmpty(mHideList.get(mHideList.size() - 1).getImage().getPath())){
+                    mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
+                }
+            }
+            if(mDoc.getHideList().size() > 0){
+                mHideList = mDoc.getHideList();
+                mIvAddHide.setSelected(true);
+            }
+            if(!TextUtils.isEmpty(mDoc.getMusicPath())){
+                mMusicInfo = new MusicLoader.MusicInfo();
+                mMusicInfo.setUrl(mDoc.getMusicPath());
+                mMusicInfo.setTitle(mDoc.getMusicTitle());
+                mMusicInfo.setDuration(mDoc.getTime());
+                mMusicCover = mDoc.getCover().getPath();
+                mIvAddMusic.setSelected(true);
+            }
+            if(!TextUtils.isEmpty(mDoc.getFolderId())){
+                mFolderId = mDoc.getFolderId();
+                mIvAddBag.setSelected(true);
+            }
+        }else {
+            mRichEt.createFirstEdit();
+        }
     }
 
     private void subscribeChangedEvent() {
@@ -275,10 +316,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                     DocPut.DocPutText docPutText = new DocPut.DocPutText();
                     docPutText.text = StringUtils.buildDataAtUser(entity.getInputStr());
                     mDocEntity.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(), docPutText));
-                }else {
+                }else if(entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
                     DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
-                    docPutImage.path = entity.getImagePath();
-                    docPutImage.size = new File(entity.getImagePath()).length();
+                    docPutImage.path = entity.getImage().getPath();
+                    docPutImage.size = new File(entity.getImage().getPath()).length();
                     mDocEntity.details.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
                 }
             }
@@ -287,10 +328,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                     DocPut.DocPutText docPutText = new DocPut.DocPutText();
                     docPutText.text = entity.getInputStr().toString();
                     mDocEntity.coin.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(), docPutText));
-                }else {
+                }else if(entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
                     DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
-                    docPutImage.path = entity.getImagePath();
-                    docPutImage.size = new File(entity.getImagePath()).length();
+                    docPutImage.path = entity.getImage().getPath();
+                    docPutImage.size = new File(entity.getImage().getPath()).length();
                     mDocEntity.coin.details.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
                 }
             }
@@ -310,7 +351,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             }else {
                 mDocEntity.coin.coin = 0;
             }
-            mPresenter.createDoc(mDocEntity,mDocType);
+            mPresenter.createDoc(mDocEntity,mDocType,mDoc == null ? "" : mDoc.getDocId());
         }
     }
 
@@ -372,6 +413,9 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 mMusicInfo = data.getParcelableExtra("music_info");
                 mMusicCover = data.getStringExtra("music_cover");
                 mIvAddMusic.setSelected(true);
+            }else {
+                mMusicInfo = null;
+                mIvAddMusic.setSelected(false);
             }
         }else if(requestCode == REQ_ADD_HIDE && resultCode == RESULT_OK){
             if(data != null){
@@ -382,6 +426,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 }else {
                     mIvAddHide.setSelected(false);
                 }
+            }else {
+                mHideList.clear();
+                mHideType = false;
+                mIvAddHide.setSelected(false);
             }
         }else if (requestCode == REQ_SELECT_FOLDER && resultCode == RESULT_OK){
             if (!TextUtils.isEmpty(data.getStringExtra("folderId"))){
@@ -466,6 +514,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             @Override
             public void onError(Throwable e) {
                 finalizeDialog();
+                showToast("图片插入失败");
             }
 
             @Override
@@ -489,12 +538,12 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mTvMenuRight.setEnabled(true);
         for (RichEntity entity : mRichEt.buildEditData() ){
             if(TextUtils.isEmpty(entity.getInputStr())){
-                if(!FileUtil.isGif(entity.getImagePath())) FileUtil.deleteFile(entity.getImagePath());
+                if(!FileUtil.isGif(entity.getImage().getPath())) FileUtil.deleteFile(entity.getImage().getPath());
             }
         }
         for (RichEntity entity : mHideList){
             if(TextUtils.isEmpty(entity.getInputStr())){
-                if(!FileUtil.isGif(entity.getImagePath())) FileUtil.deleteFile(entity.getImagePath());
+                if(!FileUtil.isGif(entity.getImage().getPath())) FileUtil.deleteFile(entity.getImage().getPath());
             }
         }
         finalizeDialog();

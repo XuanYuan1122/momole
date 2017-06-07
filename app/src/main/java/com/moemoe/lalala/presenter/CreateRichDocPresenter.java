@@ -49,7 +49,7 @@ public class CreateRichDocPresenter implements CreateRichDocContract.Presenter {
     }
 
     @Override
-    public void createDoc(final DocPut doc, final int docType) {
+    public void createDoc(final DocPut doc, final int docType, final String docId) {
         ArrayList<DocPut.DocDetail> res = new ArrayList<>();
         res.addAll(doc.details);
         res.addAll(doc.coin.details);
@@ -213,38 +213,55 @@ public class CreateRichDocPresenter implements CreateRichDocContract.Presenter {
                .subscribe(new Subscriber<DocPut.DocDetail>() {
                    @Override
                    public void onCompleted() {
-                       if(docType == 1){
-                           apiService.createQiuMingShanDoc(doc)
-                                   .subscribeOn(Schedulers.io())
-                                   .observeOn(AndroidSchedulers.mainThread())
-                                   .subscribe(new NetSimpleResultSubscriber() {
-                                       @Override
-                                       public void onSuccess() {
-                                           if(view != null) view.onSendSuccess();
-                                       }
+                       if(TextUtils.isEmpty(docId)){
+                           if(docType == 1){
+                               apiService.createQiuMingShanDoc(doc)
+                                       .subscribeOn(Schedulers.io())
+                                       .observeOn(AndroidSchedulers.mainThread())
+                                       .subscribe(new NetSimpleResultSubscriber() {
+                                           @Override
+                                           public void onSuccess() {
+                                               if(view != null) view.onSendSuccess();
+                                           }
 
-                                       @Override
-                                       public void onFail(int code,String msg) {
-                                           if(view != null) view.onFailure(code,msg);
-                                       }
-                                   });
-                       }else if(docType == 0){
-                           apiService.createNormalDoc(doc)
-                                   .subscribeOn(Schedulers.io())
-                                   .observeOn(AndroidSchedulers.mainThread())
-                                   .subscribe(new NetSimpleResultSubscriber() {
-                                       @Override
-                                       public void onSuccess() {
-                                           if(view != null) view.onSendSuccess();
-                                       }
+                                           @Override
+                                           public void onFail(int code,String msg) {
+                                               if(view != null) view.onFailure(code,msg);
+                                           }
+                                       });
+                           }else if(docType == 0){
+                               apiService.createNormalDoc(doc)
+                                       .subscribeOn(Schedulers.io())
+                                       .observeOn(AndroidSchedulers.mainThread())
+                                       .subscribe(new NetSimpleResultSubscriber() {
+                                           @Override
+                                           public void onSuccess() {
+                                               if(view != null) view.onSendSuccess();
+                                           }
 
-                                       @Override
-                                       public void onFail(int code,String msg) {
-                                           if(view != null) view.onFailure(code,msg);
-                                       }
-                                   });
-                       }else if(docType == 2){
-                           apiService.createSwimPoolDoc(doc)
+                                           @Override
+                                           public void onFail(int code,String msg) {
+                                               if(view != null) view.onFailure(code,msg);
+                                           }
+                                       });
+                           }else if(docType == 2){
+                               apiService.createSwimPoolDoc(doc)
+                                       .subscribeOn(Schedulers.io())
+                                       .observeOn(AndroidSchedulers.mainThread())
+                                       .subscribe(new NetSimpleResultSubscriber() {
+                                           @Override
+                                           public void onSuccess() {
+                                               if(view != null) view.onSendSuccess();
+                                           }
+
+                                           @Override
+                                           public void onFail(int code,String msg) {
+                                               if(view != null) view.onFailure(code,msg);
+                                           }
+                                       });
+                           }
+                       }else {
+                           apiService.updateDoc(doc,docId)
                                    .subscribeOn(Schedulers.io())
                                    .observeOn(AndroidSchedulers.mainThread())
                                    .subscribe(new NetSimpleResultSubscriber() {

@@ -297,11 +297,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
-        <activity android:name=".view.activity.CreateNormalDocActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden"  />
         <activity android:name=".view.activity.CreateRichDocActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -376,11 +371,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name=".view.activity.DocHideAddActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden"  />
         <activity android:name=".view.activity.SelectFukuActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"

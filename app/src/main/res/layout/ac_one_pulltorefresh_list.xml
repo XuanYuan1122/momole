@@ -24,17 +24,6 @@
         android:visibility="gone"
         android:src="@drawable/bg_send_post_btn" />
 
-    <ImageView
-        android:id="@+id/iv_send_music_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/iv_send_post"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
-        android:visibility="gone"
-        android:src="@drawable/bg_send_music_post_btn" />
-
     <LinearLayout
         android:id="@+id/rl_bar"
         android:layout_width="match_parent"
@@ -47,7 +36,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="@dimen/neta_toolbar">
 
             <ImageView
                 android:id="@+id/iv_back"

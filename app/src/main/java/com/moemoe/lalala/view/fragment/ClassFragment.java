@@ -27,7 +27,6 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.ToastUtils;
-import com.moemoe.lalala.view.activity.CreateNormalDocActivity;
 import com.moemoe.lalala.view.activity.CreateRichDocActivity;
 import com.moemoe.lalala.view.adapter.ClassAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
@@ -50,8 +49,6 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
     PullAndLoadView mListDocs;
     @BindView(R.id.iv_send_post)
     View mSendPost;
-    @BindView(R.id.iv_send_music_post)
-    View mSendMusicPost;
     @Inject
     DepartPresenter mPresenter;
     private ClassAdapter mListAdapter;
@@ -130,14 +127,7 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
         mSendPost.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                go2CreateDoc(CreateNormalDocActivity.TYPE_IMG_DOC);
-            }
-        });
-        mSendMusicPost.setVisibility(View.VISIBLE);
-        mSendMusicPost.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                go2CreateDoc(CreateNormalDocActivity.TYPE_MUSIC_DOC);
+                go2CreateDoc();
             }
         });
         mListDocs.setPullCallback(new PullCallback() {
@@ -215,26 +205,22 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
     private void sendBtnIn(){
         ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mSendPost,"translationY",mSendPost.getHeight()+ DensityUtil.dip2px(getContext(),10),0).setDuration(300);
         sendPostIn.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator sendMusicIn = ObjectAnimator.ofFloat(mSendMusicPost,"translationY",mSendMusicPost.getHeight()+DensityUtil.dip2px(getContext(),10),0).setDuration(300);
-        sendMusicIn.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
-        set.play(sendPostIn).with(sendMusicIn);
+        set.play(sendPostIn);
         set.start();
     }
 
     private void sendBtnOut(){
         ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mSendPost,"translationY",0,mSendPost.getHeight()+DensityUtil.dip2px(getContext(),10)).setDuration(300);
         sendPostOut.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator sendMusicOut = ObjectAnimator.ofFloat(mSendMusicPost,"translationY",0,mSendMusicPost.getHeight()+DensityUtil.dip2px(getContext(),10)).setDuration(300);
-        sendMusicOut.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
-        set.play(sendPostOut).with(sendMusicOut);
+        set.play(sendPostOut);
         set.start();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == CreateNormalDocActivity.RESPONSE_CODE){
+        if(resultCode == CreateRichDocActivity.RESPONSE_CODE){
             mListDocs.getRecyclerView().scrollToPosition(0);
             mPresenter.requestDocList(0,"",1);
         }
@@ -243,7 +229,7 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
     /**
      * 前往创建帖子界面
      */
-    private void go2CreateDoc(int type){
+    private void go2CreateDoc(){
         // 检查是否登录，是否关注，然后前面创建帖子界面
         if (DialogUtils.checkLoginAndShowDlg(getActivity())){
             Intent intent = new Intent(getActivity(), CreateRichDocActivity.class);

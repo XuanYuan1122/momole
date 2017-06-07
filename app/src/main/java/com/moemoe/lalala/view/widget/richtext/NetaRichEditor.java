@@ -23,6 +23,7 @@ import android.widget.ScrollView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.api.ApiService;
@@ -33,17 +34,26 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.CustomUrlSpan;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
+import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import zlc.season.rxdownload.RxDownload;
+import zlc.season.rxdownload.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/5/11.
@@ -68,6 +78,7 @@ public class NetaRichEditor extends ScrollView {
     private boolean tagFlag;
     private String mTagNameDef;
     private LinearLayout root;
+    private RxDownload downloadSub;
 
     public NetaRichEditor(Context context) {
         this(context,null);
@@ -130,8 +141,6 @@ public class NetaRichEditor extends ScrollView {
             }
         };
         textWatcher = new TextWatcher() {
-
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -150,9 +159,17 @@ public class NetaRichEditor extends ScrollView {
             public void afterTextChanged(Editable s) {
             }
         };
+
+        downloadSub = RxDownload.getInstance()
+                .maxThread(3)
+                .maxRetryCount(3)
+                .defaultSavePath(StorageUtils.getGalleryDirPath())
+                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+    }
+
+    public void createFirstEdit(){
         LinearLayout.LayoutParams firstEditParam = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-
         final EditText firstEdit = createEditText("内容");
         allLayout.addView(firstEdit, firstEditParam);
         allLayout.setOnClickListener(new NoDoubleClickListener() {
@@ -190,7 +207,6 @@ public class NetaRichEditor extends ScrollView {
         mTags = new ArrayList<>();
         View labelRoot = createLabelView();
         docLabelView = (DocLabelView) labelRoot.findViewById(R.id.dv_doc_label_root);
-        //  mKlCommentBoard = (KeyboardListenerLayout) labelRoot.findViewById(R.id.keyboard_root);
         docLabelView.setContentAndNumList(true,mTags);
         docLabelView.setItemClickListener(new DocLabelView.LabelItemClickListener() {
             @Override
@@ -212,7 +228,6 @@ public class NetaRichEditor extends ScrollView {
                 }
             }
         });
-        // allLayout.addView(labelRoot);
         root.addView(labelRoot);
     }
 
@@ -324,6 +339,7 @@ public class NetaRichEditor extends ScrollView {
             DocTag.setName(mTagNameDef);
             DocTag.setLiked(true);
             mTags.add(DocTag);
+            docLabelView.notifyAdapter();
         }
     }
 
@@ -530,7 +546,7 @@ public class NetaRichEditor extends ScrollView {
     public void addImageViewAtIndex(final int index, String imagePath,int w,int h){
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
-        LongImageView longImageView = (LongImageView) imageLayout.findViewById(R.id.edit_longImageView);
+        final LongImageView longImageView = (LongImageView) imageLayout.findViewById(R.id.edit_longImageView);
         int width;
         int height;
         if(w == -1 && h == -1){
@@ -549,12 +565,49 @@ public class NetaRichEditor extends ScrollView {
             layoutParams.height = wh[1];
             longImageView.setLayoutParams(layoutParams);
             longImageView.requestLayout();
-            longImageView.setPath(imagePath);
-            longImageView.setImage(imagePath);
+            Image image = new Image();
+            image.setH(h);
+            image.setW(w);
+            image.setPath(imagePath);
+            longImageView.setImage(image);
+            if(imagePath.startsWith("image")){
+                String temp = EncoderUtils.MD5(ApiService.URL_QINIU + image.getPath()) + ".jpg";
+                final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
+                if(longImage.exists()){
+                    longImageView.setImage(longImage.getAbsolutePath());
+                }else {
+                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Subscriber<DownloadStatus>() {
+                                @Override
+                                public void onCompleted() {
+                                    BitmapUtils.galleryAddPic(getContext(), longImage.getAbsolutePath());
+                                    longImageView.setImage(longImage.getAbsolutePath());
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onNext(DownloadStatus downloadStatus) {
+
+                                }
+                            });
+                }
+            }else {
+                longImageView.setImage(imagePath);
+            }
         }else {
             imageView.setVisibility(VISIBLE);
             longImageView.setVisibility(GONE);
-            imageView.setPath(imagePath);
+            Image image = new Image();
+            image.setH(h);
+            image.setW(w);
+            image.setPath(imagePath);
+            imageView.setImage(image);
             if(imagePath.startsWith("image")){
                 imagePath = StringUtils.getUrl(getContext(), ApiService.URL_QINIU + imagePath, wh[0], wh[1], true, true);
             }
@@ -610,19 +663,23 @@ public class NetaRichEditor extends ScrollView {
                 EditText item = (EditText) itemView;
                 if(!TextUtils.isEmpty(item.getText().toString())) {
                     itemData.setInputStr(item.getText());
-                    dataList.add(itemData);
+                }else {
+                    itemData.setInputStr("");
                 }
+                dataList.add(itemData);
             } else if (itemView instanceof RelativeLayout) {
                 DataImageView item = (DataImageView) itemView.findViewById(R.id.edit_imageView);
                 LongImageView itemL = (LongImageView) itemView.findViewById(R.id.edit_longImageView);
                 Image image = new Image();
-                image.setW(-1);
-                image.setH(-1);
-                if(!TextUtils.isEmpty(item.getPath())){
-                    image.setPath(item.getPath());
+                if(!TextUtils.isEmpty(item.getImage().getPath())){
+                    image.setPath(item.getImage().getPath());
+                    image.setH(item.getImage().getH());
+                    image.setW(item.getImage().getW());
                     itemData.setImage(image);
                 }else {
-                    image.setPath(itemL.getPath());
+                    image.setPath(itemL.getImage().getPath());
+                    image.setH(itemL.getImage().getH());
+                    image.setW(itemL.getImage().getW());
                     itemData.setImage(image);
                 }
                 dataList.add(itemData);

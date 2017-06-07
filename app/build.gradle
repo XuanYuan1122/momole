@@ -221,8 +221,10 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     //rx
-    compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'io.reactivex:rxjava:1.1.6'
+   // compile 'io.reactivex:rxandroid:1.2.1'
+   // compile 'io.reactivex:rxjava:1.1.6'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.0'
     //logger
     compile 'com.orhanobut:logger:1.15'
     //java注解
@@ -253,9 +255,8 @@ dependencies {
     compile 'zlc.season:rxdownload:1.2.8'
     //compile 'com.getui:ext:2.0.3'
     compile 'com.facebook.rebound:rebound:0.3.8'
-    //tinker
-    compile("com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}") { changing = true }
-    provided("com.tencent.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
+    //jsoup
+    compile 'org.jsoup:jsoup:1.9.2'
     testCompile 'junit:junit:4.12'
     compile files('libs/live2d_android.jar')
     compile files('libs/nineoldandroids-library-2.4.0.jar')

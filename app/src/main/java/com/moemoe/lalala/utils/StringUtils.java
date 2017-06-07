@@ -570,4 +570,10 @@ public class StringUtils {
         }
         return res;
     }
+
+    public static SpannableStringBuilder buildAtUserToLocal(String s){
+        //TODO 解析网上传来的at文本
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+        return stringBuilder;
+    }
 }

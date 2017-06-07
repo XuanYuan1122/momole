@@ -2,7 +2,6 @@ package com.moemoe.lalala.di.components;
 
 import com.moemoe.lalala.di.modules.CreateDocModule;
 import com.moemoe.lalala.di.scopes.UserScope;
-import com.moemoe.lalala.view.activity.CreateNormalDocActivity;
 
 import dagger.Component;
 

@@ -12,7 +12,6 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,6 +34,8 @@ import com.moemoe.lalala.model.entity.GiveCoinEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.REPORT;
+import com.moemoe.lalala.model.entity.RichDocListEntity;
+import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.presenter.DocDetailContract;
@@ -502,12 +503,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(mAdapter != null) mAdapter.dismissPopupWindow();
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
     protected void onDestroy() {
         mPresenter.release();
         mAdapter.releaseAdapter();
@@ -894,14 +889,62 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                         startActivityForResult(i,REQ_DELETE_TAG);
                     }
                 }else if(itemId == EDIT_DOC){
-                    //TODO edit doc
+                   gotoEditDoc();
                 }
             }
         });
     }
 
+    private void gotoEditDoc(){
+        Intent i = new Intent(NewDocDetailActivity.this,CreateRichDocActivity.class);
+        i.putExtra("doc",createRichDocFromDoc());
+        i.putExtra(UUID,mDocId);
+        startActivityForResult(i,REQ_DELETE_TAG);
+    }
+
+    private RichDocListEntity createRichDocFromDoc(){
+        RichDocListEntity entity = new RichDocListEntity();
+        entity.setDocId(mDocId);
+        entity.setFolderId(mDoc.getFolderInfo().getFolderId());
+        entity.setTags(mDoc.getTags());
+        if(mDoc.getCoinDetails() != null){
+            for(DocDetailEntity.Detail detail : mDoc.getCoinDetails()){
+                RichEntity richEntity = new RichEntity();
+                if(detail.getType().equals("DOC_TEXT")){
+                    richEntity.setInputStr((String) detail.getTrueData());
+                }else if(detail.getType().equals("DOC_IMAGE")){
+                    Image image = (Image) detail.getTrueData();
+                    richEntity.setImage(image);
+                }else if(detail.getType().equals("DOC_MUSIC")){
+                    DocDetailEntity.DocMusic music = (DocDetailEntity.DocMusic) detail.getTrueData();
+                    entity.setMusicPath(music.getUrl());
+                    entity.setMusicTitle(music.getName());
+                    entity.setTime(music.getTimestamp());
+                    entity.setCover(music.getCover());
+                }
+                entity.getList().add(richEntity);
+            }
+        }
+        if(mDoc.getDetails() != null){
+            for(DocDetailEntity.Detail detail : mDoc.getDetails()){
+                RichEntity richEntity = new RichEntity();
+                if(detail.getType().equals("DOC_TEXT")){
+                    richEntity.setInputStr((String) detail.getTrueData());
+                }else if(detail.getType().equals("DOC_IMAGE")){
+                    Image image = (Image) detail.getTrueData();
+                    richEntity.setImage(image);
+                }
+                entity.getHideList().add(richEntity);
+            }
+        }
+        return entity;
+    }
+
+    private DocDetailEntity mDoc;
+
     @Override
     public void onDocLoaded(DocDetailEntity entity) {
+        mDoc = entity;
         mIsLoading = false;
         mList.setComplete();
         mList.setLoadMoreEnabled(true);

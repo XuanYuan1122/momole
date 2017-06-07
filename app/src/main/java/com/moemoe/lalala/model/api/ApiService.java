@@ -142,6 +142,9 @@ public interface ApiService {
     @POST("api/doc/addV2")
     Observable<ApiResult> createNormalDoc(@Body DocPut doc);
 
+    @POST("api/doc/updateDoc/{docId}")
+    Observable<ApiResult> updateDoc(@Body DocPut doc,@Path("docId")String docId);
+
     @POST("api/doc/addAutumnV2")
     Observable<ApiResult> createQiuMingShanDoc(@Body DocPut doc);
 

@@ -14,6 +14,7 @@ import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.compress.NetaImgCompress;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
@@ -118,12 +119,18 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                         @Override
                         public void call(RichEntity richEntity) {
                             if(!TextUtils.isEmpty(richEntity.getInputStr())){
-                                mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),richEntity.getInputStr());
+                                mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToLocal(richEntity.getInputStr().toString()));
                             }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
                                 mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH());
+                                mPathMap.put(richEntity.getImage().getPath(),richEntity.getImage().getPath());
                             }
                         }
                     });
+            if(mHideList.get(mHideList.size() - 1).getImage() != null && !TextUtils.isEmpty(mHideList.get(mHideList.size() - 1).getImage().getPath())){
+                mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
+            }
+        }else {
+            mRichEt.createFirstEdit();
         }
     }
 
@@ -187,6 +194,12 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
         if(mRichEt.hasContent()){
             mHideList = (ArrayList<RichEntity>) mRichEt.buildEditData();
             for (RichEntity entity : mHideList){
+                if (!TextUtils.isEmpty(entity.getInputStr())) {
+                    int i = mHideList.indexOf(entity);
+                    entity.setInputStr(StringUtils.buildDataAtUser(entity.getInputStr()));
+                    mHideList.remove(i);
+                    mHideList.add(i,entity);
+                }
             }
             Intent i = new Intent();
             i.putParcelableArrayListExtra("hide_list",mHideList);
@@ -288,13 +301,13 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
             @Override
             public void onCompleted() {
                 finalizeDialog();
-              //  mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
                 showToast("图片插入成功");
             }
 
             @Override
             public void onError(Throwable e) {
                 finalizeDialog();
+                showToast("图片插入失败");
             }
 
             @Override

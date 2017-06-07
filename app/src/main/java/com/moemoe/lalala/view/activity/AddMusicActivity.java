@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.StringUtils;
 
 import java.util.ArrayList;
 
@@ -43,6 +45,10 @@ public class AddMusicActivity extends BaseAppCompatActivity {
     ImageView mIvImg;
     @BindView(R.id.tv_select_img)
     TextView mTvImg;
+    @BindView(R.id.music_cancel)
+    ImageView mIvMusicCancel;
+    @BindView(R.id.img_cancel)
+    ImageView mIvImgCancel;
     private ArrayList<String> mIconPaths;
     private MusicLoader.MusicInfo mMusicInfo;
 
@@ -92,20 +98,28 @@ public class AddMusicActivity extends BaseAppCompatActivity {
         if(mMusicInfo != null){
             mTvMusic.setText(mMusicInfo.getTitle());
             mIvMusic.setBackgroundResource(R.drawable.btn_select_music_finish);
+            mIvMusicCancel.setVisibility(View.VISIBLE);
         }
         if(mIconPaths.size() == 1){
             mTvImg.setText(R.string.label_select_img_finish);
+            String path = mIconPaths.get(0);
+            if(path.startsWith("image")){
+                path = StringUtils.getUrl(this, ApiService.URL_QINIU + path, DensityUtil.dip2px(this,115),DensityUtil.dip2px(this,115), false, false);
+            }else {
+                path = "file://" + path;
+            }
             Glide.with(this)
-                    .load( "file://" + mIconPaths.get(0))
+                    .load( path)
                     .override(DensityUtil.dip2px(this,115), DensityUtil.dip2px(this,115))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .centerCrop()
                     .into(mIvImg);
+            mIvImgCancel.setVisibility(View.VISIBLE);
         }
     }
 
-    @OnClick({R.id.ll_select_music,R.id.ll_select_img,R.id.tv_menu})
+    @OnClick({R.id.ll_select_music,R.id.ll_select_img,R.id.tv_menu,R.id.img_cancel,R.id.music_cancel})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.ll_select_music:
@@ -120,6 +134,18 @@ public class AddMusicActivity extends BaseAppCompatActivity {
             case R.id.tv_menu:
                 done();
                 break;
+            case R.id.music_cancel:
+                mMusicInfo = null;
+                mTvMusic.setText(getString(R.string.label_select_music));
+                mIvMusic.setBackgroundResource(R.drawable.btn_select_music);
+                mIvMusicCancel.setVisibility(View.GONE);
+                break;
+            case R.id.img_cancel:
+                mIconPaths.clear();
+                mTvImg.setText(R.string.label_select_img);
+                mIvImg.setImageResource(R.drawable.btn_doc_pic_cancel);
+                mIvImgCancel.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -129,10 +155,13 @@ public class AddMusicActivity extends BaseAppCompatActivity {
             i.putExtra("music_info",mMusicInfo);
             i.putExtra("music_cover",mIconPaths.get(0));
             setResult(RESULT_OK,i);
-            finish();
-        }else {
+        }else if((mMusicInfo != null && mIconPaths.size() == 0) || (mMusicInfo == null && mIconPaths.size() == 1)){
             showToast(R.string.msg_need_one_music);
+            return;
+        }else {
+            setResult(RESULT_OK);
         }
+        finish();
     }
 
     @Override
@@ -152,6 +181,7 @@ public class AddMusicActivity extends BaseAppCompatActivity {
                             .error(R.drawable.bg_default_square)
                             .centerCrop()
                             .into(mIvImg);
+                    mIvImgCancel.setVisibility(View.VISIBLE);
                 }
             }
         } else if (requestCode == REQ_GET_FROM_SELECT_MUSIC && resultCode == Activity.RESULT_OK) {
@@ -159,6 +189,7 @@ public class AddMusicActivity extends BaseAppCompatActivity {
                 mMusicInfo = data.getParcelableExtra(SelectMusicActivity.EXTRA_SELECT_MUSIC);
                 mTvMusic.setText(mMusicInfo.getTitle());
                 mIvMusic.setBackgroundResource(R.drawable.btn_select_music_finish);
+                mIvMusicCancel.setVisibility(View.VISIBLE);
             }
         }
     }

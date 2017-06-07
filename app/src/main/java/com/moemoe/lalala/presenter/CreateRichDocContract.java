@@ -8,7 +8,7 @@ import com.moemoe.lalala.model.entity.DocPut;
 
 public interface CreateRichDocContract {
     interface Presenter extends BasePresenter{
-        void createDoc(DocPut doc, int type);
+        void createDoc(DocPut doc, int type,String docId);
     }
 
     interface View extends BaseView{

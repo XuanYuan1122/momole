@@ -5,13 +5,15 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.moemoe.lalala.model.entity.Image;
+
 /**
  * 可以存放path和bitmap的简单ImageView
  * Created by yi on 2017/5/15.
  */
 
 public class DataImageView extends ImageView {
-    private String path;
+    private Image image;
     private Bitmap bitmap;
 
     public DataImageView(Context context) {
@@ -26,12 +28,12 @@ public class DataImageView extends ImageView {
         super(context, attrs, defStyleAttr);
     }
 
-    public String getPath() {
-        return path;
+    public Image getImage() {
+        return image;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public Bitmap getBitmap() {

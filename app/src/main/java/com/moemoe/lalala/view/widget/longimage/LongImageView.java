@@ -17,9 +17,11 @@ import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.ViewGroup.LayoutParams;
 
+import com.moemoe.lalala.model.entity.Image;
+
 public class LongImageView extends LargeImageView {
 
-	private String path;
+	private Image image;
 	private Bitmap bitmap;
 
 	public LongImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -56,12 +58,12 @@ public class LongImageView extends LargeImageView {
 		setLayoutParams(layoutParams);
 	}
 
-	public String getPath() {
-		return path;
+	public Image getImage() {
+		return image;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setImage(Image image) {
+		this.image = image;
 	}
 
 	public Bitmap getBitmap() {
