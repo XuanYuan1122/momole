@@ -69,8 +69,8 @@ import rx.Subscriber;
 
 public class CommentDetailActivity extends BaseAppCompatActivity implements CommentDetailContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvToolbarTitle;
     @BindView(R.id.ll_doc)
@@ -87,8 +87,6 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
     TextView mTvTime;
     @BindView(R.id.tv_comment)
     TextView mTvContent;
-    @BindView(R.id.iv_club_owner_flag)
-    View mIvOwnerFlag;
     @BindView(R.id.rl_level_bg)
     View mIvLevelColor;
     @BindView(R.id.tv_level)
@@ -138,7 +136,6 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerCommentDetailComponent.builder()
                 .commentDetailModule(new CommentDetailModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -149,6 +146,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
             finish();
             return;
         }
+        mTvToolbarTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvToolbarTitle.setText("回复");
         mCommentId = getIntent().getStringExtra("commentId");
         mDocId = mSchema.substring(mSchema.lastIndexOf("?") + 1);
@@ -175,7 +173,8 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
@@ -454,7 +453,6 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
                 llImg.setVisibility(View.GONE);
             }
         }
-        mIvOwnerFlag.setVisibility(View.GONE);
         mTvLevel.setText(String.valueOf(mCommentEntity.getFromUserLevel()));
         int radius1 = DensityUtil.dip2px(this,5);
         float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};

@@ -27,6 +27,7 @@ import com.moemoe.lalala.presenter.FilesPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +44,8 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
 
     private static final int REQ_SELECT_FOLDER = 5001;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_menu)
     TextView mTvSave;
     @BindView(R.id.gv_select_photos)
@@ -84,6 +85,8 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
         }
         change = false;
         mTvSave.setVisibility(View.VISIBLE);
+        mTvSave.getPaint().setFakeBoldText(true);
+        ViewUtils.setRightMargins(mTvSave,DensityUtil.dip2px(this,18));
         mTvSave.setText("全选");
         mSelectMap = new HashMap<>();
         mSelectorAdapter = new SelectorAdapter();
@@ -92,7 +95,9 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 onBackPressed();

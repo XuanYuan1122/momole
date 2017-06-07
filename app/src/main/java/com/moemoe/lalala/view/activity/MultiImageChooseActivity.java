@@ -22,6 +22,7 @@ import com.moemoe.lalala.utils.AnimationUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import java.util.ArrayList;
 
@@ -39,9 +40,9 @@ public class MultiImageChooseActivity extends BaseAppCompatActivity implements V
     public static final String EXTRA_KEY_MAX_PHOTO = "max_image";
     public static final String EXTRA_KEY_SELETED_PHOTOS = "selected_image";
     private final int PREVIEW_IMAGE_REQ = 4000;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.tv_sava)
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
+    @BindView(R.id.tv_menu)
     TextView mTvSave;
     @BindView(R.id.gv_select_photos)
     GridView mGridImages;
@@ -49,6 +50,8 @@ public class MultiImageChooseActivity extends BaseAppCompatActivity implements V
     TextView mTvPreview;
     @BindView(R.id.tv_album_ar)
     TextView mTvAlbum;
+    @BindView(R.id.tv_toolbar_title)
+    TextView mTvTitle;
     @BindView(R.id.ll_select_album)
     RelativeLayout mRlAlbums;
 
@@ -84,6 +87,9 @@ public class MultiImageChooseActivity extends BaseAppCompatActivity implements V
     @Override
     protected void initViews(Bundle savedInstanceState) {
         mLabelRecent = getResources().getString(R.string.label_recent_photos);
+        mTvTitle.setText(getString(R.string.label_recent_photos));
+        mTvSave.setVisibility(View.VISIBLE);
+        ViewUtils.setRightMargins(mTvSave,DensityUtil.dip2px(this,18));
         mTvSave.setOnClickListener(this);
         mSelected = new ArrayList<>();
         if(getIntent() != null){
@@ -111,7 +117,9 @@ public class MultiImageChooseActivity extends BaseAppCompatActivity implements V
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

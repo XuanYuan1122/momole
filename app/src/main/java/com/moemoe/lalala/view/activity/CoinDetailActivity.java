@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -36,8 +37,8 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
 
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.rv_list)
     PullAndLoadView mListDocs;
 
@@ -64,6 +65,7 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
         mListDocs.getRecyclerView().setHasFixedSize(true);
+        mTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTitle.setText("节操记录");
     }
 
@@ -74,7 +76,8 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

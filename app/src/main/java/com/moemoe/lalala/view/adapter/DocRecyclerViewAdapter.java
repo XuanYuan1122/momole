@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_COIN_IMAGE = 10;
     private static final int TYPE_FLOOR = 11;
     private static final int TYPE_FOLDER = 12;
+    private static final int TYPE_TITLE = 13;
     private static final long LONG_PRESS_TIME = 500;
 
     private static final long UPDATE_PROGRESS_INTERVAL = 1000;
@@ -235,6 +237,8 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 return new FloorHolder((mLayoutInflater.inflate(R.layout.item_new_doc_floor,parent,false)));
             case TYPE_FOLDER:
                 return new BagFavoriteHolder(mLayoutInflater.inflate(R.layout.item_bag_get,parent,false));
+            case TYPE_TITLE:
+                return new TextHolder(mLayoutInflater.inflate(R.layout.item_new_doc_text,parent,false));
             default:
                 return new EmptyViewHolder(mLayoutInflater.inflate(R.layout.item_empty,parent,false));
         }
@@ -267,7 +271,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             createText(textHolder, position);
         }else if(holder instanceof ImageHolder){
             ImageHolder imageHolder = (ImageHolder) holder;
-            createImage(imageHolder, position,20);
+            createImage(imageHolder, position,36);
         }else if(holder instanceof MusicHolder){
             mMusicHolder = (MusicHolder) holder;
             createMusic(position);
@@ -287,16 +291,16 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             HideTextHolder textHolder = (HideTextHolder) holder;
             createHideText(textHolder, position);
             HideTextHolder hideTextHolder = (HideTextHolder) holder;
-            if (position == mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 1){
+            if (position == mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 2){
                 hideTextHolder.mRoot.setBackgroundResource(R.drawable.shape_dash_foot);
             }else {
                 hideTextHolder.mRoot.setBackgroundResource(R.drawable.shape_dash_mid);
             }
         }else if(holder instanceof HideImageHolder){
             HideImageHolder imageHolder = (HideImageHolder) holder;
-            createHideImage(imageHolder, position,40);
+            createHideImage(imageHolder, position,72);
             HideImageHolder hideImageHolder = (HideImageHolder) holder;
-            if (position == mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 1){
+            if (position == mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 2){
                 hideImageHolder.mRoot.setBackgroundResource(R.drawable.shape_dash_foot);
             }else {
                 hideImageHolder.mRoot.setBackgroundResource(R.drawable.shape_dash_mid);
@@ -347,7 +351,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public int getItemCount() {
         int size = 0;
         if(mDocBean != null){
-            size = mDocBean.getDetails().size() + mComments.size() + 3;
+            size = mDocBean.getDetails().size() + mComments.size() + 4;
             if(mDocBean.getCoin() > 0){
                 size += mDocBean.getCoinDetails().size() + 1;
             }
@@ -361,9 +365,11 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public Object getItem(int position){
         if(position == 0){
             return "";
-        }else if(position < mDocBean.getDetails().size() + 1){
-            return  mDocBean.getDetails().get(position - 1).getTrueData();
-        }else if( position ==  mDocBean.getDetails().size() + 1){
+        }else if(position == 1){
+            return mDocBean.getTitle();
+        } else if(position < mDocBean.getDetails().size() + 2){
+            return  mDocBean.getDetails().get(position - 2).getTrueData();
+        }else if( position ==  mDocBean.getDetails().size() + 2){
             if(mDocBean.getCoin() > 0){
                 return "";
             }else if(mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
@@ -371,9 +377,9 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }else {
                 return mDocBean.getTags();
             }
-        }else if(mDocBean.getCoinDetails().size() > 0 && position > mDocBean.getDetails().size() + 1 && position < mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 2){
-            return mDocBean.getCoinDetails().get(position - 2 - mDocBean.getDetails().size()).getTrueData();
-        }else if(mDocBean.getCoin() > 0 && position == mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 2){
+        }else if(mDocBean.getCoinDetails().size() > 0 && position > mDocBean.getDetails().size() + 2 && position < mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 3){
+            return mDocBean.getCoinDetails().get(position - 3 - mDocBean.getDetails().size()).getTrueData();
+        }else if(mDocBean.getCoin() > 0 && position == mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 3){
             if(mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
                 return  mDocBean.getFolderInfo();
             }else {
@@ -385,13 +391,13 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return "";
         }else {
             if(mDocBean.getCoin() > 0 && mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
-                return mComments.get(position - mDocBean.getDetails().size() - 5 - mDocBean.getCoinDetails().size());
+                return mComments.get(position - mDocBean.getDetails().size() - 6 - mDocBean.getCoinDetails().size());
             }else if(mDocBean.getCoin() > 0){
-                return mComments.get(position - mDocBean.getDetails().size() - 4 - mDocBean.getCoinDetails().size());
+                return mComments.get(position - mDocBean.getDetails().size() - 5 - mDocBean.getCoinDetails().size());
             }else if(mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
-                return mComments.get(position - mDocBean.getDetails().size() - 4);
+                return mComments.get(position - mDocBean.getDetails().size() - 5);
             }else {
-                return mComments.get(position - mDocBean.getDetails().size() - 3);
+                return mComments.get(position - mDocBean.getDetails().size() - 4);
             }
         }
     }
@@ -481,10 +487,12 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public int getItemViewType(int position) {
         if (position == 0){
             return TYPE_CREATOR;
-        }else if(position < mDocBean.getDetails().size() + 1){
-            String type = mDocBean.getDetails().get(position - 1).getType();
+        }else if(position == 1){
+            return TYPE_TITLE;
+        }else if(position < mDocBean.getDetails().size() + 2){
+            String type = mDocBean.getDetails().get(position - 2).getType();
             return NewDocType.getType(type);
-        }else if( position ==  mDocBean.getDetails().size() + 1){
+        }else if( position ==  mDocBean.getDetails().size() + 2){
             if(mDocBean.getCoin() > 0){
                 return TYPE_COIN;
             }else if(mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
@@ -492,10 +500,10 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }else {
                 return TYPE_LABEL;
             }
-        }else if(mDocBean.getCoinDetails().size() > 0 && position > mDocBean.getDetails().size() + 1 && position < mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 2){
-            String type = mDocBean.getCoinDetails().get(position - 2 - mDocBean.getDetails().size()).getType();
+        }else if(mDocBean.getCoinDetails().size() > 0 && position > mDocBean.getDetails().size() + 2 && position < mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 3){
+            String type = mDocBean.getCoinDetails().get(position - 3 - mDocBean.getDetails().size()).getType();
             return NewDocType.getType(type) + 8;
-        }else if(mDocBean.getCoin() > 0 && position == mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 2){
+        }else if(mDocBean.getCoin() > 0 && position == mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 3){
             if(mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
                 return TYPE_FOLDER;
             }else {
@@ -534,12 +542,12 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static class CreatorHolder extends RecyclerView.ViewHolder{
 
         ImageView mIvCreator;
-        View mIvClubOwnerFlag;
         TextView mTvCreator;
         View ivLevelColor;
         TextView tvLevel;
         View rlLevelPack;
         TextView mTvTime;
+        TextView mFollow;
         View rlHuiZhang1;
         View rlHuiZhang2;
         View rlHuiZhang3;
@@ -553,13 +561,13 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             super(itemView);
             mIvCreator = (ImageView) itemView.findViewById(R.id.iv_post_creator);
             mTvCreator = (TextView) itemView.findViewById(R.id.tv_post_creator_name);
-            mIvClubOwnerFlag = itemView.findViewById(R.id.iv_post_owner_flag);
             mTvTime = (TextView) itemView.findViewById(R.id.tv_post_update_time);
             ivLevelColor = itemView.findViewById(R.id.rl_level_bg);
             tvLevel = (TextView)itemView.findViewById(R.id.tv_level);
             tvHuiZhang1 = (TextView)itemView.findViewById(R.id.tv_huizhang_1);
             tvHuiZhang2 = (TextView)itemView.findViewById(R.id.tv_huizhang_2);
             tvHuiZhang3 = (TextView)itemView.findViewById(R.id.tv_huizhang_3);
+            mFollow = (TextView) itemView.findViewById(R.id.tv_follow);
             rlLevelPack = itemView.findViewById(R.id.rl_level_pack);
             rlHuiZhang1 = itemView.findViewById(R.id.fl_huizhang_1);
             rlHuiZhang2 = itemView.findViewById(R.id.fl_huizhang_2);
@@ -567,6 +575,11 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             huiZhangRoots = new View[]{rlHuiZhang1,rlHuiZhang2,rlHuiZhang3};
             huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
         }
+    }
+
+    public void followUserSuccess(boolean isFollow){
+        mDocBean.setFollowUser(isFollow);
+        notifyItemChanged(0);
     }
 
     private void createCreator(final CreatorHolder holder){
@@ -577,7 +590,20 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 .error(R.drawable.bg_default_circle)
                 .transform(new GlideCircleTransform(mContext))
                 .into(holder.mIvCreator);
-        holder.mIvClubOwnerFlag.setVisibility(View.GONE);
+
+        if(mDocBean.getUserId().equals(PreferenceUtils.getUUid())){
+            holder.mFollow.setVisibility(View.GONE);
+        }else {
+            holder.mFollow.setVisibility(View.VISIBLE);
+        }
+        holder.mFollow.setSelected(mDocBean.isFollowUser());
+        holder.mFollow.setText(mDocBean.isFollowUser() ? mContext.getString(R.string.label_followed) : mContext.getString(R.string.label_follow));
+        holder.mFollow.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ((NewDocDetailActivity)mContext).followUser(mDocBean.getUserId(),mDocBean.isFollowUser());
+            }
+        });
         holder.mTvCreator.setText(mDocBean.getUserName());
         holder.rlLevelPack.setVisibility(View.VISIBLE);
         holder.tvLevel.setText(String.valueOf(mDocBean.getUserLevel()));
@@ -648,8 +674,18 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void createText(final TextHolder holder,int position){
-        holder.mTvText.setText(StringUtils.getUrlClickableText(mContext, StringUtils.buildAtUserToShow(mContext,(String) getItem(position))));
-        holder.mTvText.setMovementMethod(LinkMovementMethod.getInstance());
+        if(position == 1 && !TextUtils.isEmpty(mDocBean.getTitle())){
+            holder.mTvText.setTextColor(ContextCompat.getColor(mContext,R.color.black_1e1e1e));
+            holder.mTvText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
+            holder.mTvText.getPaint().setFakeBoldText(true);
+            holder.mTvText.setText(mDocBean.getTitle());
+        }else {
+            holder.mTvText.setTextColor(ContextCompat.getColor(mContext,R.color.gray_444444));
+            holder.mTvText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
+            holder.mTvText.getPaint().setFakeBoldText(false);
+            holder.mTvText.setText(StringUtils.getUrlClickableText(mContext, StringUtils.buildAtUserToShow(mContext,(String) getItem(position))));
+            holder.mTvText.setMovementMethod(LinkMovementMethod.getInstance());
+        }
     }
 
     private static class HideTextHolder  extends RecyclerView.ViewHolder{
@@ -1148,6 +1184,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         TextView mTvCoinNum;
         TextView mGoTop;
         TextView mLoadBefore;
+        TextView mCommentNum;
         View lLFloorRoot;
 
 
@@ -1158,6 +1195,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             lLFloorRoot = itemView.findViewById(R.id.ll_floor_jump_root);
             mGoTop = (TextView) itemView.findViewById(R.id.tv_to_top);
             mLoadBefore = (TextView) itemView.findViewById(R.id.tv_load_before);
+            mCommentNum = (TextView) itemView.findViewById(R.id.tv_comment_num);
         }
     }
 
@@ -1174,6 +1212,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ((NewDocDetailActivity)mContext).requestCommentsByFloor(1,mTargetId,true,false);
             }
         });
+        holder.mCommentNum.setText(mContext.getString(R.string.label_comment_num,mComments.size()));
         holder.mLoadBefore.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
@@ -1224,7 +1263,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         TextView mTvCreatorName;
         TextView mTvTime;
         TextView mTvContent;
-        View mIvOwnerFlag;
         View mIvLevelColor;
         TextView mTvLevel;
         TextView mFloor;
@@ -1244,7 +1282,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             mTvCreatorName = (TextView) itemView.findViewById(R.id.tv_comment_creator_name);
             mTvTime = (TextView) itemView.findViewById(R.id.tv_comment_time);
             mTvContent = (TextView) itemView.findViewById(R.id.tv_comment);
-            mIvOwnerFlag = itemView.findViewById(R.id.iv_club_owner_flag);
             mIvLevelColor = itemView.findViewById(R.id.rl_level_bg);
             mTvLevel = (TextView)itemView.findViewById(R.id.tv_level);
             mFloor = (TextView)itemView.findViewById(R.id.tv_floor);
@@ -1265,8 +1302,8 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private void createComment(final CommentHolder holder, final int position){
         final NewCommentEntity bean = (NewCommentEntity)getItem(position);
         Glide.with(mContext)
-                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + bean.getFromUserIcon().getPath(), DensityUtil.dip2px(mContext,35), DensityUtil.dip2px(mContext,35), false, false))
-                .override(DensityUtil.dip2px(mContext,35), DensityUtil.dip2px(mContext,35))
+                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + bean.getFromUserIcon().getPath(), DensityUtil.dip2px(mContext,36), DensityUtil.dip2px(mContext,36), false, false))
+                .override(DensityUtil.dip2px(mContext,36), DensityUtil.dip2px(mContext,36))
                 .placeholder(R.drawable.bg_default_circle)
                 .error(R.drawable.bg_default_circle)
                 .transform(new GlideCircleTransform(mContext))
@@ -1331,7 +1368,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 holder.llImg.setVisibility(View.GONE);
             }
         }
-        holder.mIvOwnerFlag.setVisibility(View.GONE);
         holder.mTvLevel.setText(String.valueOf(bean.getFromUserLevel()));
         int radius1 = DensityUtil.dip2px(mContext,5);
         float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
@@ -1490,7 +1526,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void setGif(Image image, ImageView gifImageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,66));
+        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(mContext)
@@ -1503,7 +1539,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void setImage(Image image, final ImageView imageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,66));
+        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(mContext)

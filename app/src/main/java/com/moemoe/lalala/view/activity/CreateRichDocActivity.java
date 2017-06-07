@@ -124,7 +124,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerCreateRichDocComponent.builder()
                 .createRichDocModule(new CreateRichDocModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

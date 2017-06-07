@@ -29,8 +29,8 @@ import butterknife.OnClick;
 
 public class ChatSettingActivity extends BaseAppCompatActivity implements SettingContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.tv_delete)
@@ -150,7 +150,9 @@ public class ChatSettingActivity extends BaseAppCompatActivity implements Settin
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 onBackPressed();

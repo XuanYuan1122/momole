@@ -8,11 +8,11 @@
         android:id="@+id/tv_doc_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:lineSpacingExtra="5dp"
-        android:textColor="@color/dark_gray"
+        android:layout_marginLeft="@dimen/size_18"
+        android:layout_marginRight="@dimen/size_18"
+        android:layout_marginTop="@dimen/size_28"
+        android:lineSpacingExtra="9dp"
+        android:textColor="@color/gray_444444"
         android:textSize="@dimen/size_15"
-        android:text="巴拉巴拉巴拉"/>
+        android:text=""/>
 </FrameLayout>

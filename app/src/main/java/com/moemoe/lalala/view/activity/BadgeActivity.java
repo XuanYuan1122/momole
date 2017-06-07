@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
@@ -15,8 +16,10 @@ import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.presenter.BadgeContract;
 import com.moemoe.lalala.presenter.BadgePresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -35,8 +38,8 @@ import butterknife.BindView;
 
 public class BadgeActivity extends BaseAppCompatActivity implements BadgeContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_menu)
     TextView mTvDone;
     @BindView(R.id.rv_list)
@@ -66,6 +69,8 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
                 .build()
                 .inject(this);
         mTvTitle.setText("我的徽章");
+        mTvDone.getPaint().setFakeBoldText(true);
+        ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));
         mTvDone.setText("保存");
         mTvDone.setVisibility(View.VISIBLE);
         mTvAll.setVisibility(View.VISIBLE);
@@ -98,7 +103,9 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 if(mCurType == 0){

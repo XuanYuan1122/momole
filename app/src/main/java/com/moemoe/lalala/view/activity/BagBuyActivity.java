@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
@@ -14,7 +15,9 @@ import com.moemoe.lalala.di.modules.BagFavoriteModule;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.presenter.BagFavoriteContract;
 import com.moemoe.lalala.presenter.BagFavoritePresenter;
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -33,8 +36,8 @@ import butterknife.BindView;
 
 public class BagBuyActivity extends BaseAppCompatActivity implements BagFavoriteContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
     @BindView(R.id.tv_menu)
@@ -64,6 +67,8 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
                 .inject(this);
         mTitle.setText("书包购买");
         mTvSelect.setVisibility(View.VISIBLE);
+        mTvSelect.getPaint().setFakeBoldText(true);
+        ViewUtils.setRightMargins(mTvSelect, DensityUtil.dip2px(this,18));
         mTvSelect.setText("选择");
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new PersonListAdapter(this,7);
@@ -82,7 +87,9 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 if(isSelect){

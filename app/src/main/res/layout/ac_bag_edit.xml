@@ -3,11 +3,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_f2f2f3">
+    android:fitsSystemWindows="true"
+    android:background="@color/bg_f6f6f6">
 
     <include
         android:id="@+id/app_toolbar"
-        layout="@layout/app_toolbar"/>
+        layout="@layout/neta_bar"/>
 
     <ScrollView
         android:layout_width="match_parent"

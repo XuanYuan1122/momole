@@ -12,10 +12,8 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="#929292"/>
+            android:layout_marginTop="@dimen/size_28"
+            android:background="@color/gray_e8e8e8"/>
 
         <include layout="@layout/item_new_doc_label_root"/>
     </LinearLayout>

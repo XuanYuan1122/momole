@@ -26,6 +26,7 @@ public interface DocDetailContract {
         void getCoinContent(String id);
         void giveCoin(GiveCoinEntity entity);
         void shareDoc();
+        void followUser(String id,boolean isFollow);
     }
 
     interface View extends BaseView{
@@ -39,5 +40,6 @@ public interface DocDetailContract {
         void onCreateLabel(String s,String name);
         void onGetCoinContent();
         void onGiveCoin();
+        void onFollowSuccess(boolean isFollow);
     }
 }

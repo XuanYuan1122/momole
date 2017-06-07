@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -49,9 +50,9 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
     private final String EXTRA_NAME = "name";
 
     @BindView(R.id.app_bar)
-    AppBarLayout mAppBar;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    View mAppBar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
     @BindView(R.id.rv_list)
@@ -85,6 +86,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
                 mTitle.setVisibility(View.GONE);
             }
         }
+        mTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         DaggerDepartComponent.builder()
                 .departModule(new DepartModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -107,7 +109,8 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
@@ -200,7 +203,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     public void toolBarAlpha(int curY) {
         int startOffset = 0;
-        int endOffset = mToolbar.getHeight();
+        int endOffset = mAppBar.getHeight();
         if (Math.abs(curY) <= startOffset) {
             mAppBar.getBackground().mutate().setAlpha(0);
             mTitle.setTextColor(Color.argb(0, 255, 255, 255));

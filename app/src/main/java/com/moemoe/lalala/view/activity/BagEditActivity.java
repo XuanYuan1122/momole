@@ -45,6 +45,7 @@ import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.SelectItemAdapter;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
@@ -77,8 +78,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     private final int LIMIT_NICK_NAME = 10;
     private final int ICON_NUM_LIMIT = 9;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.tv_menu)
@@ -165,6 +166,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             return;
         }
         mTvSave.setVisibility(View.VISIBLE);
+        mTvSave.getPaint().setFakeBoldText(true);
+        ViewUtils.setRightMargins(mTvSave,DensityUtil.dip2px(this,18));
         mTvSave.setText(getString(R.string.label_done));
         if(mType != TYPE_DIR_ITEM_ADD){
             initNameRoot();
@@ -348,7 +351,9 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 onBackPressed();

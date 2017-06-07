@@ -797,6 +797,15 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mAdapter.onGiveCoin();
     }
 
+    public void followUser(String userId,boolean follow){
+        mPresenter.followUser(userId,follow);
+    }
+
+    @Override
+    public void onFollowSuccess(boolean isFollow) {
+        mAdapter.followUserSuccess(isFollow);
+    }
+
     public void getCoinContent(){
         mPresenter.getCoinContent(mDocId);
     }

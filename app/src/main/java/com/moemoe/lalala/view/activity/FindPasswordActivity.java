@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
@@ -37,8 +38,8 @@ import butterknife.OnClick;
 
 public class FindPasswordActivity extends BaseAppCompatActivity implements SimpleContract.View{
     private final String TAG = "ForgetPasswordActivity";
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
     @BindView(R.id.tv_tab_phone)
@@ -70,7 +71,6 @@ public class FindPasswordActivity extends BaseAppCompatActivity implements Simpl
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerSimpleComponent.builder()
                 .simpleModule(new SimpleModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -89,7 +89,9 @@ public class FindPasswordActivity extends BaseAppCompatActivity implements Simpl
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

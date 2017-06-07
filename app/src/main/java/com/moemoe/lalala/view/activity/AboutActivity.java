@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.activity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
@@ -15,8 +16,9 @@ import butterknife.BindView;
  */
 
 public class AboutActivity extends BaseAppCompatActivity {
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
 
@@ -37,7 +39,9 @@ public class AboutActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

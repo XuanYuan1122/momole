@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
@@ -39,8 +40,8 @@ import butterknife.BindView;
 
 public class ChangePasswordActivity extends BaseAppCompatActivity implements ChangePasswordContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
     @BindView(R.id.edt_password_1)
@@ -70,7 +71,6 @@ public class ChangePasswordActivity extends BaseAppCompatActivity implements Cha
             finish();
             return;
         }
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerChangePwdComponent.builder()
                 .changePwdModule(new ChangePwdModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -95,7 +95,9 @@ public class ChangePasswordActivity extends BaseAppCompatActivity implements Cha
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

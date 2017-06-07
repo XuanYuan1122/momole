@@ -8,8 +8,7 @@
         android:id="@+id/rl_coin_root"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="@dimen/size_12"
         android:background="@color/white">
 
         <ImageView
@@ -88,8 +87,8 @@
         android:layout_width="match_parent"
         android:layout_height="38dp"
         android:orientation="horizontal"
-        android:background="@color/white"
-        android:layout_marginBottom="10dp">
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/tv_to_top"
@@ -120,4 +119,34 @@
             android:text="@string/label_load_before_floor"/>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/white">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/size_18"
+            android:layout_marginStart="@dimen/size_18"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_doc_comments"/>
+
+        <TextView
+            android:id="@+id/tv_comment_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/size_8"
+            android:layout_marginLeft="@dimen/size_8"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/green_6fc93a"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:background="@color/gray_e8e8e8"/>
 </LinearLayout>

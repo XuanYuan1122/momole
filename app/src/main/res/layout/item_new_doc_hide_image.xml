@@ -9,10 +9,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginEnd="@dimen/size_18"
+        android:layout_marginRight="@dimen/size_18"
+        android:layout_marginLeft="@dimen/size_18"
+        android:layout_marginStart="@dimen/size_18"
         android:gravity="center_horizontal"
         android:background="@drawable/shape_dash_mid">
 
@@ -21,12 +21,13 @@
             android:id="@+id/iv_doc_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="@dimen/size_18"
+            android:layout_marginStart="@dimen/size_18"
             android:layout_centerHorizontal="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginRight="@dimen/size_18"
+            android:layout_marginEnd="@dimen/size_18"
+            android:layout_marginTop="@dimen/size_10"
+            android:layout_marginBottom="@dimen/size_18"
             android:scaleType="fitXY">
         </ImageView>
 
@@ -34,12 +35,13 @@
             android:id="@+id/iv_doc_long_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="@dimen/size_18"
+            android:layout_marginStart="@dimen/size_18"
             android:layout_centerHorizontal="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginRight="@dimen/size_18"
+            android:layout_marginEnd="@dimen/size_18"
+            android:layout_marginTop="@dimen/size_10"
+            android:layout_marginBottom="@dimen/size_18"
             android:visibility="gone"/>
     </LinearLayout>
 </FrameLayout>

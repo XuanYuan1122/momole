@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +24,7 @@ import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.GridItemDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.BagAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -40,8 +42,8 @@ import butterknife.BindView;
 
 public class FolderSelectActivity extends BaseAppCompatActivity implements BagContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
     @BindView(R.id.tv_menu)
@@ -70,6 +72,8 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
                 .inject(this);
         mFolderId = getIntent().getStringExtra("folderId");
         mTvDone.setVisibility(View.VISIBLE);
+        mTvDone.getPaint().setFakeBoldText(true);
+        ViewUtils.setRightMargins(mTvDone,DensityUtil.dip2px(this,18));
         mTvDone.setText(getString(R.string.label_done));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new BagAdapter(this,false,0);
@@ -96,7 +100,9 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

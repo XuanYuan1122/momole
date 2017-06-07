@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -35,8 +36,8 @@ import butterknife.BindView;
 
 public class DocHistoryActivity extends BaseAppCompatActivity implements PersonalListContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTitle;
     @BindView(R.id.rv_list)
@@ -59,6 +60,7 @@ public class DocHistoryActivity extends BaseAppCompatActivity implements Persona
                 .build()
                 .inject(this);
         final String id = getIntent().getStringExtra("uuid");
+        mTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTitle.setText(getString(R.string.label_doc_history));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new PersonListAdapter(this,0);
@@ -118,7 +120,8 @@ public class DocHistoryActivity extends BaseAppCompatActivity implements Persona
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

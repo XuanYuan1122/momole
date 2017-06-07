@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
+    android:layout_height="68dp"
     android:background="@color/white">
 
     <ImageView
         android:id="@+id/iv_post_creator"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:layout_marginLeft="@dimen/size_10"
-        android:layout_marginStart="@dimen/size_10"
+        android:layout_marginLeft="@dimen/size_18"
+        android:layout_marginStart="@dimen/size_18"
         android:layout_marginTop="12dp"
         android:background="@drawable/raw_bg_circle_white_border_gray"
         android:src="@drawable/bg_default_circle" />
@@ -22,8 +22,8 @@
         android:layout_alignBottom="@+id/iv_post_creator"
         android:layout_alignLeft="@+id/iv_post_creator"
         android:layout_alignStart="@+id/iv_post_creator"
-        android:layout_marginLeft="25dp"
-        android:layout_marginStart="25dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
         android:padding="@dimen/size_1"
         android:background="@drawable/shape_white_5">
 
@@ -62,33 +62,16 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/iv_post_owner_flag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/iv_post_creator"
-        android:layout_alignLeft="@+id/iv_post_creator"
-        android:layout_alignStart="@+id/iv_post_creator"
-        android:layout_alignRight="@+id/iv_post_creator"
-        android:layout_alignEnd="@+id/iv_post_creator"
-        android:layout_alignTop="@+id/iv_post_creator"
-        android:layout_marginBottom="-8dp"
-        android:layout_marginLeft="-5dp"
-        android:layout_marginRight="-5dp"
-        android:layout_marginTop="-2dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/sign_owner_avatar_big"
-        android:visibility="gone" />
-
     <TextView
         android:id="@+id/tv_post_creator_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="11dp"
         android:layout_marginStart="11dp"
-        android:layout_marginTop="15dp"
         android:layout_toRightOf="@+id/iv_post_creator"
         android:layout_toEndOf="@+id/iv_post_creator"
+        android:layout_alignTop="@+id/iv_post_creator"
+        android:layout_marginTop="@dimen/size_3"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/dark_gray"
@@ -188,4 +171,26 @@
             android:paddingEnd="@dimen/size_4"
             android:paddingRight="@dimen/size_4"/>
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_follow"
+        android:layout_width="@dimen/size_50"
+        android:layout_height="@dimen/size_26"
+        android:background="@drawable/btn_rect_corner_cyan_6"
+        android:text="@string/label_follow"
+        android:textColor="@color/txt_white_cyan"
+        android:textSize="@dimen/size_15"
+        android:layout_marginEnd="@dimen/size_18"
+        android:layout_marginRight="@dimen/size_18"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:visibility="gone"/>
+
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray_e8e8e8"/>
 </RelativeLayout>

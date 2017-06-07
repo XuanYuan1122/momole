@@ -123,6 +123,42 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                 });
     }
 
+
+    @Override
+    public void followUser(String id,boolean isFollow) {
+        if (!isFollow){
+            apiService.followUser(id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetSimpleResultSubscriber() {
+                        @Override
+                        public void onSuccess() {
+                            if(view != null) view.onFollowSuccess(true);
+                        }
+
+                        @Override
+                        public void onFail(int code,String msg) {
+                            if(view != null) view.onFailure(code,msg);
+                        }
+                    });
+        }else {
+            apiService.cancelfollowUser(id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetSimpleResultSubscriber() {
+                        @Override
+                        public void onSuccess() {
+                            if(view != null) view.onFollowSuccess(false);
+                        }
+
+                        @Override
+                        public void onFail(int code,String msg) {
+                            if(view != null) view.onFailure(code,msg);
+                        }
+                    });
+        }
+    }
+
     @Override
     public void favoriteDoc(String id) {
         if(favoriteFlag){

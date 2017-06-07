@@ -10,15 +10,14 @@
             android:id="@+id/dv_doc_label_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:paddingTop="@dimen/size_18"
+            android:paddingBottom="@dimen/size_18"
+            android:layout_marginLeft="@dimen/size_18"
+            android:layout_marginRight="@dimen/size_18"
             app:child_view_height="24dp"
             app:child_view_width="wrap_content"
             app:child_view_min_width="10dp"
             app:line_spacing="7dp"
-            app:label_spacing="7dp"
-            >
+            app:label_spacing="7dp">
         </com.moemoe.lalala.view.widget.view.DocLabelView>
 </LinearLayout>

@@ -366,7 +366,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 commentHolder.tvContent.setText(StringUtils.getUrlClickableText(context, comm));
                 commentHolder.tvContent.setMovementMethod(LinkMovementMethod.getInstance());
             }
-            commentHolder.ivOwnerFlag.setVisibility(View.GONE);
             commentHolder.tvLevel.setText(String.valueOf(commentEntity.getFromUserLevel()));
             int radius1 = DensityUtil.dip2px(context,5);
             float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
@@ -747,7 +746,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tvCreatorName;
         TextView tvTime;
         TextView tvContent;
-        View ivOwnerFlag;
         View ivLevelColor;
         TextView tvLevel;
         View rlHuiZhang1;
@@ -765,7 +763,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tvCreatorName = (TextView) itemView.findViewById(R.id.tv_comment_creator_name);
             tvTime = (TextView) itemView.findViewById(R.id.tv_comment_time);
             tvContent = (TextView) itemView.findViewById(R.id.tv_comment);
-            ivOwnerFlag = itemView.findViewById(R.id.iv_club_owner_flag);
             ivLevelColor = itemView.findViewById(R.id.rl_level_bg);
             tvLevel = (TextView)itemView.findViewById(R.id.tv_level);
             tvHuiZhang1 = (TextView)itemView.findViewById(R.id.tv_huizhang_1);

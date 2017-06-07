@@ -33,6 +33,7 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
@@ -60,8 +61,8 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
      */
     private final int CONTENT_LIMIT = 3000;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.tv_menu)
@@ -104,7 +105,6 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
             finish();
             return;
         }
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerCreateTrashComponent.builder()
                 .createTrashModule(new CreateTrashModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -124,6 +124,8 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
         mTags = new ArrayList<>();
         mTvTitle.setText(R.string.label_create_trash);
         mTvSend.setVisibility(View.VISIBLE);
+        mTvSend.getPaint().setFakeBoldText(true);
+        ViewUtils.setRightMargins(mTvSend,DensityUtil.dip2px(this,18));
         mTvSend.setText(R.string.label_done);
         mDocLabel.setContentAndNumList(true,mTags);
         mContentRemain = CONTENT_LIMIT;
@@ -137,7 +139,9 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setImageResource(R.drawable.btn_back_black_normal);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

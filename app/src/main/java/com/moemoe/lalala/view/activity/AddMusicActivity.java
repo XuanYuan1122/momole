@@ -16,6 +16,7 @@ import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import java.util.ArrayList;
 
@@ -69,11 +70,15 @@ public class AddMusicActivity extends BaseAppCompatActivity {
         mIconPaths = new ArrayList<>();
         if(!TextUtils.isEmpty(path)) mIconPaths.add(path);
         mTvMenuLeft.setVisibility(View.VISIBLE);
+        ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
         mTvMenuLeft.setText(getString(R.string.label_cancel));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setText(getString(R.string.label_hide_area));
         mTvMenuRight.setVisibility(View.VISIBLE);
+        mTvMenuRight.getPaint().setFakeBoldText(true);
+        mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+        ViewUtils.setLeftMargins(mTvMenuRight,DensityUtil.dip2px(this,18));
         mTvMenuRight.setText(getString(R.string.label_done));
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
     }

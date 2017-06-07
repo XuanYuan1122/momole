@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -72,8 +73,8 @@ import rx.schedulers.Schedulers;
 
 public class ChatActivity extends BaseAppCompatActivity implements ChatContract.View{
     private final int REQ_SECRET = 1004;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.list)
@@ -82,8 +83,6 @@ public class ChatActivity extends BaseAppCompatActivity implements ChatContract.
     ImageView mIvSet;
     @BindView(R.id.tv_pingbi)
     View mPingBi;
-    @BindView(R.id.iv_to_last)
-    ImageView mIvToLast;
     @BindView(R.id.edt_comment_input)
     EditText mEdtCommentInput;
     @BindView(R.id.ll_comment_pannel)
@@ -106,7 +105,6 @@ public class ChatActivity extends BaseAppCompatActivity implements ChatContract.
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerChatComponent.builder()
                 .chatModule(new ChatModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -114,7 +112,7 @@ public class ChatActivity extends BaseAppCompatActivity implements ChatContract.
                 .inject(this);
         initBase();
         mKlCommentBoard.setVisibility(View.VISIBLE);
-        mIvSet.setImageResource(R.drawable.privately_setup);
+        mIvSet.setImageResource(R.drawable.privately_setup_blue);
         mIvSet.setVisibility(View.VISIBLE);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListDocs.getSwipeRefreshLayout().setEnabled(false);
@@ -158,6 +156,7 @@ public class ChatActivity extends BaseAppCompatActivity implements ChatContract.
         AppSetting.sCurChatId = mTalkId;
         String title = getIntent().getStringExtra("title");
         RxBus.getInstance().post(new PrivateMessageEvent(false,mTalkId,false));
+        mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvTitle.setText(title);
     }
 
@@ -269,7 +268,8 @@ public class ChatActivity extends BaseAppCompatActivity implements ChatContract.
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();

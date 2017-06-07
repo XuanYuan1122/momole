@@ -60,6 +60,10 @@ public class DocDetailEntity {
     private BagDirEntity folderInfo;
     @SerializedName("badgeList")
     private ArrayList<BadgeEntity> badgeList;
+    @SerializedName("coinComment")
+    private boolean coinComment;
+    @SerializedName("followUser")
+    private boolean followUser;
 
     public class Detail<T>{
         @SerializedName("type")
@@ -442,5 +446,21 @@ public class DocDetailEntity {
 
     public void setBadgeList(ArrayList<BadgeEntity> badgeList) {
         this.badgeList = badgeList;
+    }
+
+    public boolean isCoinComment() {
+        return coinComment;
+    }
+
+    public void setCoinComment(boolean coinComment) {
+        this.coinComment = coinComment;
+    }
+
+    public boolean isFollowUser() {
+        return followUser;
+    }
+
+    public void setFollowUser(boolean followUser) {
+        this.followUser = followUser;
     }
 }

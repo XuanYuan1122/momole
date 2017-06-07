@@ -3,9 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <include layout="@layout/app_toolbar"/>
+    <include layout="@layout/neta_bar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

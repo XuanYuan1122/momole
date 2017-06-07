@@ -7,6 +7,7 @@
     <!--new color-->
     <color name="gray_444444">#444444</color>
     <color name="black_1e1e1e">#1e1e1e</color>
+    <color name="bg_f6f6f6">#f6f6f6</color>
 
     <color name="alph_30">#30000000</color>
     <color name="alph_60">#60000000</color>
@@ -42,9 +43,9 @@
     <color name="gray_4b5052">#4b5052</color>
     <color name="gray_bcbcbc">#bcbcbc</color>
     <color name="gray_e8e8e8">#e8e8e8</color>
-    <color name="bg_f2f2f3">#f2f2f3</color>
     <color name="green_93d856">#93D856</color>
     <color name="green_7ebf40">#7EBF40</color>
+    <color name="green_6fc93a">#6fc93a</color>
     <color name="orange_cc6e2f">#CC6E2F</color>
     <color name="orange_ed853e">#ED853E</color>
     <color name="orange_f6d27b">#F6D27B</color>

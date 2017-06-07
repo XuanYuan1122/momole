@@ -188,7 +188,6 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
             TextView tvCreatorName = (TextView) v.findViewById(R.id.tv_comment_creator_name);
             TextView tvTime = (TextView) v.findViewById(R.id.tv_comment_time);
             TextView tvContent = (TextView) v.findViewById(R.id.tv_comment);
-            View ivOwnerFlag = v.findViewById(R.id.iv_club_owner_flag);
             View ivLevelColor = v.findViewById(R.id.rl_level_bg);
             TextView tvLevel = (TextView)v.findViewById(R.id.tv_level);
             TextView tvHuiZhang1 = (TextView)v.findViewById(R.id.tv_huizhang_1);
@@ -222,7 +221,6 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                 tvContent.setText(StringUtils.getUrlClickableText(getContext(), comm));
                 tvContent.setMovementMethod(LinkMovementMethod.getInstance());
             }
-            ivOwnerFlag.setVisibility(View.GONE);
             tvLevel.setText(String.valueOf(commentEntity.getFromUserLevel()));
 
             int radius1 = DensityUtil.dip2px(getContext(),5);

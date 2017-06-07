@@ -96,7 +96,6 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ShareSDK.initSDK(this);
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerLoginComponent.builder()
                 .loginModule(new LoginModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

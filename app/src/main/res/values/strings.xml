@@ -269,6 +269,7 @@
     <string name="label_report_watch_info">别人可通过回复来查看隐藏区</string>
     <string name="label_coin_watch_info">别人可通过消费1节操来查看隐藏区</string>
     <string name="label_change_type">切换</string>
+    <string name="label_comment_num" formatted="false">%d条评论</string>
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>

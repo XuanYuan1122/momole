@@ -43,8 +43,8 @@ import butterknife.BindView;
 
 public class CommentsListActivity extends BaseAppCompatActivity  implements CommentListContract.View{
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @BindView(R.id.list)
@@ -70,7 +70,6 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        AndroidBug5497Workaround.assistActivity(this);
         DaggerCommentListComponent.builder()
                 .commentListModule(new CommentListModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -79,6 +78,7 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
         uuid = getIntent().getStringExtra(UUID);
         mKlCommentBoard.setVisibility(View.VISIBLE);
         mTvTitle.setVisibility(View.VISIBLE);
+        mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvTitle.setText(getString(R.string.label_liuyan,0));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new PersonListAdapter(this,4);
@@ -97,7 +97,8 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
