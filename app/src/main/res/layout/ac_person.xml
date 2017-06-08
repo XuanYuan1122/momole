@@ -43,8 +43,8 @@
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="230dp"
-            android:background="@color/main_cyan"
-            app:contentScrim="@color/main_cyan"
+            android:background="@color/white"
+            app:contentScrim="@color/white"
             app:title=""
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
@@ -286,8 +286,10 @@
 
                 <ImageView
                     android:id="@+id/iv_menu_list"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_width="wrap_content"
+                    android:paddingRight="@dimen/size_18"
+                    android:paddingLeft="@dimen/size_18"
                     android:layout_gravity="end"
                     android:src="@drawable/btn_menu_white_normal" />
 

@@ -260,7 +260,7 @@
         <activity android:name=".view.activity.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/DefaultColorTranslucentTheme"
+            android:theme="@style/ImageTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".view.activity.PhoneRegisterActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"

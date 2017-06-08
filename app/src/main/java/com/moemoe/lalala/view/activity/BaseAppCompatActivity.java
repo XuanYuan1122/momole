@@ -15,6 +15,7 @@ import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
 import com.moemoe.lalala.app.AppStatusManager;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
@@ -38,6 +39,9 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         this.getWindow().setBackgroundDrawable(null);//移除默认背景，避免overdraw
+        if(!ViewUtils.MIUISetStatusBarLightMode(getWindow(),true)){
+            ViewUtils.FlymeSetStatusBarLightMode(getWindow(),true);
+        }
         switch (AppStatusManager.getInstance().getAppStatus()) {
             case AppStatusConstant.STATUS_FORCE_KILLED:
                 restartApp();

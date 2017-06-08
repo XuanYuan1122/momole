@@ -115,11 +115,11 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
                     }else if(position == 1){
                         i.putExtra("tab","system");//官方通知
                         PreferenceUtils.setMessageDot(getContext(),"neta",false);
-                        mAdapter.notifyItemChanged(1);
-                    }else {
-                        i.putExtra("tab","at_user");//官方通知
-                        PreferenceUtils.setMessageDot(getContext(),"at_user",false);
                         mAdapter.notifyItemChanged(2);
+                    }else {
+                        i.putExtra("tab","at_user");//@通知
+                        PreferenceUtils.setMessageDot(getContext(),"at_user",false);
+                        mAdapter.notifyItemChanged(1);
                     }
                     startActivity(i);
                 }
@@ -189,11 +189,11 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
                     @Override
                     public void call(SystemMessageEvent event) {
                         if(event.getType().equals("neta")){
-                            mAdapter.notifyItemChanged(1);
+                            mAdapter.notifyItemChanged(2);
                         }else if(event.getType().equals("system")){
                             mAdapter.notifyItemChanged(0);
                         }else if(event.getType().equals("at_user")){
-                            mAdapter.notifyItemChanged(2);
+                            mAdapter.notifyItemChanged(1);
                         }
                     }
                 }, new Action1<Throwable>() {

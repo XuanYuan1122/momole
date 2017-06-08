@@ -26,7 +26,11 @@ import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -137,12 +141,12 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
             @Override
             public void onNoDoubleClick(View v) {
                 HashMap<Integer,BadgeEntity> hashMap = mAdapter.getCurSelectNum();
+                ArrayList<Map.Entry<Integer,BadgeEntity>> list = new ArrayList<>(hashMap.entrySet());
+                Collections.sort(list,mapComparator);
                 ArrayList<String> ids = new ArrayList<>();
-                for(int i = 1;i <= hashMap.size();i++){
-                    BadgeEntity set = hashMap.get(i);
-                    ids.add(set.getId());
+                for(Map.Entry<Integer,BadgeEntity> entry : list){
+                    ids.add(entry.getValue().getId());
                 }
-                hashMap.values();
                 mPresenter.saveBadge(ids);
             }
         });
@@ -202,6 +206,14 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
         mPresenter.requestMyBadge(0);
     }
 
+    Comparator<Map.Entry<Integer,BadgeEntity>> mapComparator = new Comparator<Map.Entry<Integer,BadgeEntity>>() {
+
+        @Override
+        public int compare(Map.Entry<Integer, BadgeEntity> o1, Map.Entry<Integer, BadgeEntity> o2) {
+            return o1.getKey() - o2.getKey();
+        }
+    };
+
     @Override
     protected void initData() {
 
@@ -251,12 +263,10 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
         Intent i = new Intent();
         ArrayList<BadgeEntity> entities = new ArrayList<>();
         HashMap<Integer,BadgeEntity> hashMap = mAdapter.getCurSelectNum();
-//        for (BadgeEntity set : hashMap.keySet()){
-//           // BadgeEntity entity = (BadgeEntity) mAdapter.getItem(set);
-//            entities.add(set);
-//        }
-        for(int n = 1;n <= hashMap.size();n++){
-            entities.add(hashMap.get(n));
+        ArrayList<Map.Entry<Integer,BadgeEntity>> list = new ArrayList<>(hashMap.entrySet());
+        Collections.sort(list,mapComparator);
+        for(Map.Entry<Integer,BadgeEntity> entry : list){
+            entities.add(entry.getValue());
         }
         i.putParcelableArrayListExtra("list",entities);
         setResult(RESULT_OK,i);

@@ -47,6 +47,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by yi on 2016/12/15.
@@ -76,7 +78,15 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
     View mMoreBadge;
 
 
-
+    private TextView tvHuiZhang1;
+    private TextView tvHuiZhang2;
+    private TextView tvHuiZhang3;
+    private ImageView ivHuiZhang1;
+    private ImageView ivHuiZhang2;
+    private ImageView ivHuiZhang3;
+    private View rlHuiZhang1;
+    private View rlHuiZhang2;
+    private View rlHuiZhang3;
     private PersonalMainEntity entity;
     private String uuid;
 
@@ -264,16 +274,47 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
             });
             mLlRoot.addView(v);
         }
-        int[] imgIds = {R.id.iv_huizhang_1,R.id.iv_huizhang_2,R.id.iv_huizhang_3};
-        int[] tvIds = {R.id.tv_huizhang_1,R.id.tv_huizhang_2,R.id.tv_huizhang_3};
-        int[] flIds = {R.id.fl_huizhang_1,R.id.fl_huizhang_2,R.id.fl_huizhang_3};
+        rlHuiZhang1 = rootView.findViewById(R.id.fl_huizhang_1);
+        rlHuiZhang2 = rootView.findViewById(R.id.fl_huizhang_2);
+        rlHuiZhang3 = rootView.findViewById(R.id.fl_huizhang_3);
+        tvHuiZhang1 = (TextView) rootView.findViewById(R.id.tv_huizhang_1);
+        tvHuiZhang2 = (TextView) rootView.findViewById(R.id.tv_huizhang_2);
+        tvHuiZhang3 = (TextView) rootView.findViewById(R.id.tv_huizhang_3);
+        ivHuiZhang1 = (ImageView) rootView.findViewById(R.id.iv_huizhang_1);
+        ivHuiZhang2 = (ImageView) rootView.findViewById(R.id.iv_huizhang_2);
+        ivHuiZhang3 = (ImageView) rootView.findViewById(R.id.iv_huizhang_3);
+        final View[] huiZhangRoots = new View[]{rlHuiZhang1,rlHuiZhang2,rlHuiZhang3};
+        final TextView[] huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
+        final ImageView[] huiZhangImgs = new ImageView[]{ivHuiZhang1,ivHuiZhang2,ivHuiZhang3};
+        Observable.range(0,3)
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer i) {
+                        huiZhangTexts[i].setVisibility(View.INVISIBLE);
+                        huiZhangRoots[i].setVisibility(View.INVISIBLE);
+                        huiZhangImgs[i].setVisibility(View.INVISIBLE);
+                    }
+                });
         int len = 3;
         if(entity.getBadgeList().size() < 3){
             len = entity.getBadgeList().size();
         }
         for (int i = 0;i < len;i++){
+            huiZhangTexts[i].setVisibility(View.VISIBLE);
+            huiZhangRoots[i].setVisibility(View.VISIBLE);
+            huiZhangImgs[i].setVisibility(View.VISIBLE);
             BadgeEntity badgeEntity = entity.getBadgeList().get(i);
-            TextView tv = (TextView)rootView.findViewById(tvIds[i]);
+            TextView tv = huiZhangTexts[i];
             tv.setText(badgeEntity.getTitle());
             tv.setBackgroundResource(R.drawable.bg_badge_cover);
             int px = DensityUtil.dip2px(getContext(),4);
@@ -285,13 +326,13 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
             shapeDrawable2.setShape(roundRectShape2);
             shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
             shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(badgeEntity.getColor(), ContextCompat.getColor(getContext(), R.color.main_cyan)));
-            rootView.findViewById(flIds[i]).setBackgroundDrawable(shapeDrawable2);
+            huiZhangRoots[i].setBackgroundDrawable(shapeDrawable2);
             Glide.with(getActivity())
                     .load(StringUtils.getUrl(getContext(), ApiService.URL_QINIU + badgeEntity.getImg(), DensityUtil.dip2px(getContext(),45), DensityUtil.dip2px(getContext(),45), false, false))
                     .override(DensityUtil.dip2px(getContext(),45), DensityUtil.dip2px(getContext(),45))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
-                    .into((ImageView) rootView.findViewById(imgIds[i]));
+                    .into(huiZhangImgs[i]);
         }
     }
 
@@ -303,12 +344,34 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
             if(entities.size() < 3){
                 len = entities.size();
             }
-            int[] imgIds = {R.id.iv_huizhang_1,R.id.iv_huizhang_2,R.id.iv_huizhang_3};
-            int[] tvIds = {R.id.tv_huizhang_1,R.id.tv_huizhang_2,R.id.tv_huizhang_3};
-            int[] flIds = {R.id.fl_huizhang_1,R.id.fl_huizhang_2,R.id.fl_huizhang_3};
+            final View[] huiZhangRoots = new View[]{rlHuiZhang1,rlHuiZhang2,rlHuiZhang3};
+            final TextView[] huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
+            final ImageView[] huiZhangImgs = new ImageView[]{ivHuiZhang1,ivHuiZhang2,ivHuiZhang3};
+            Observable.range(0,3)
+                    .subscribe(new Subscriber<Integer>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Integer i) {
+                            huiZhangTexts[i].setVisibility(View.INVISIBLE);
+                            huiZhangRoots[i].setVisibility(View.INVISIBLE);
+                            huiZhangImgs[i].setVisibility(View.INVISIBLE);
+                        }
+                    });
             for (int i = 0;i < len;i++){
+                huiZhangTexts[i].setVisibility(View.VISIBLE);
+                huiZhangRoots[i].setVisibility(View.VISIBLE);
+                huiZhangImgs[i].setVisibility(View.VISIBLE);
                 BadgeEntity badgeEntity = entities.get(i);
-                TextView tv = (TextView)rootView.findViewById(tvIds[i]);
+                TextView tv = huiZhangTexts[i];
                 tv.setText(badgeEntity.getTitle());
                 tv.setBackgroundResource(R.drawable.bg_badge_cover);
                 int px = DensityUtil.dip2px(getContext(),4);
@@ -320,13 +383,13 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                 shapeDrawable2.setShape(roundRectShape2);
                 shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
                 shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(badgeEntity.getColor(), ContextCompat.getColor(getContext(), R.color.main_cyan)));
-                rootView.findViewById(flIds[i]).setBackgroundDrawable(shapeDrawable2);
+                huiZhangRoots[i].setBackgroundDrawable(shapeDrawable2);
                 Glide.with(getActivity())
                         .load(StringUtils.getUrl(getContext(), ApiService.URL_QINIU + badgeEntity.getImg(), DensityUtil.dip2px(getContext(),45), DensityUtil.dip2px(getContext(),45), false, false))
                         .override(DensityUtil.dip2px(getContext(),45), DensityUtil.dip2px(getContext(),45))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
-                        .into((ImageView) rootView.findViewById(imgIds[i]));
+                        .into(huiZhangImgs[i]);
             }
         }
     }

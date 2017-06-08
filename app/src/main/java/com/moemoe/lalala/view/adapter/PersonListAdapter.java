@@ -307,14 +307,14 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                 }else if(position == 1){
                     Glide.with(context)
-                            .load(R.drawable.ic_inform_official)
+                            .load(R.drawable.ic_inform_at)
                             .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
                             .transform(new GlideCircleTransform(context))
                             .into(viewHolder.ivImg);
-                    viewHolder.tvName.setText("Neta官方");
-                    if(PreferenceUtils.getMessageDot(context,"neta")){
+                    viewHolder.tvName.setText("@我的");
+                    if(PreferenceUtils.getMessageDot(context,"at_user")){
                         viewHolder.ivRed.setVisibility(View.VISIBLE);
                     }else {
                         viewHolder.ivRed.setVisibility(View.GONE);
@@ -328,7 +328,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             .transform(new GlideCircleTransform(context))
                             .into(viewHolder.ivImg);
                     viewHolder.tvName.setText("Neta官方");
-                    if(PreferenceUtils.getMessageDot(context,"at_user")){
+                    if(PreferenceUtils.getMessageDot(context,"neta")){
                         viewHolder.ivRed.setVisibility(View.VISIBLE);
                     }else {
                         viewHolder.ivRed.setVisibility(View.GONE);
@@ -523,45 +523,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 msgHolder.watch.setVisibility(View.INVISIBLE);
             }
             msgHolder.time.setText(StringUtils.timeFormate(entity.getCreateTime()));
-        }
-//        else if(mType == 10){
-//            final PersonDocEntity entity = (PersonDocEntity) getItem(position);
-//            SearchDocViewHolder searchDocViewHolder = (SearchDocViewHolder) holder;
-//            Glide.with(context)
-//                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getImage(), DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80),false,true))
-//                    .override(DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80))
-//                    .error(R.drawable.bg_default_square)
-//                    .placeholder(R.drawable.bg_default_square)
-//                    .into(searchDocViewHolder.img);
-//            searchDocViewHolder.title.setText(entity.getTitle());
-//            searchDocViewHolder.content.setText(entity.getDesc());
-//            searchDocViewHolder.time.setText(entity.getCreateTime());
-//            // 点赞/评论
-//            searchDocViewHolder.commentNum.setText(StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
-//            searchDocViewHolder.likeNum.setText(StringUtils.getNumberInLengthLimit(entity.getLikes(), 3));
-//            searchDocViewHolder.name.setText(entity.getCreateUserName());
-//            searchDocViewHolder.name.setOnClickListener(new NoDoubleClickListener() {
-//                @Override
-//                public void onNoDoubleClick(View v) {
-//                    if(!entity.getCreateUserId().equals(PreferenceUtils.getUUid())){
-//                        Intent i = new Intent(context, NewPersonalActivity.class);
-//                        i.putExtra("uuid",entity.getCreateUserId());
-//                        context.startActivity(i);
-//                    }
-//                }
-//            });
-//            searchDocViewHolder.address.setText(entity.getDocType());
-//            searchDocViewHolder.address.setOnClickListener(new NoDoubleClickListener() {
-//                @Override
-//                public void onNoDoubleClick(View v) {
-//                    if (!TextUtils.isEmpty(entity.getDocTypeSchema())) {
-//                        Uri uri = Uri.parse(entity.getDocTypeSchema());
-//                        IntentUtils.toActivityFromUri(context, uri,v);
-//                    }
-//                }
-//            });
-//        }
-        else if(mType == 11){
+        } else if(mType == 11){
             BagItemViewHolder viewHolder = (BagItemViewHolder) holder;
             final BagDirEntity entity = (BagDirEntity) getItem(position);
             String path ;
@@ -654,7 +616,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
         if(mType == 2){
-            return list.size() + 2;
+            return list.size() + 3;
         }else {
             return list.size();
         }

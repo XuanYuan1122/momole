@@ -375,13 +375,6 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     protected void onResume() {
         super.onResume();
         mAppBarLayout.addOnOffsetChangedListener(this);
-//        if(mTabLayout.getTabCount() == 7){
-//            if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
-//                mTabLayout.showDot(6);
-//            }else {
-//                mTabLayout.hideMsg(6);
-//            }
-//        }
     }
 
     @Override
