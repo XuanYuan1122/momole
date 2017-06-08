@@ -130,7 +130,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemViewType(int position) {
         if (mType == 2){
-            if(position == 0 || position == 1){
+            if(position == 0 || position == 1 || position == 2){
                 return 1;
             }else {
                 return 0;
@@ -148,7 +148,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
          }else if(mType == 2){//msg
              if(viewType == 0){
                  return new MsgViewHolder(LayoutInflater.from(context).inflate(R.layout.item_message_new,parent,false));
-             }else {
+             }else{
                  return new RedMsgViewHolder(LayoutInflater.from(context).inflate(R.layout.item_msg_offical,parent,false));
              }
          }else if(mType == 3){
@@ -305,7 +305,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }else {
                         viewHolder.ivRed.setVisibility(View.GONE);
                     }
-                }else {
+                }else if(position == 1){
                     Glide.with(context)
                             .load(R.drawable.ic_inform_official)
                             .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
@@ -315,6 +315,20 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             .into(viewHolder.ivImg);
                     viewHolder.tvName.setText("Neta官方");
                     if(PreferenceUtils.getMessageDot(context,"neta")){
+                        viewHolder.ivRed.setVisibility(View.VISIBLE);
+                    }else {
+                        viewHolder.ivRed.setVisibility(View.GONE);
+                    }
+                }else {
+                    Glide.with(context)
+                            .load(R.drawable.ic_inform_official)
+                            .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
+                            .placeholder(R.drawable.bg_default_circle)
+                            .error(R.drawable.bg_default_circle)
+                            .transform(new GlideCircleTransform(context))
+                            .into(viewHolder.ivImg);
+                    viewHolder.tvName.setText("Neta官方");
+                    if(PreferenceUtils.getMessageDot(context,"at_user")){
                         viewHolder.ivRed.setVisibility(View.VISIBLE);
                     }else {
                         viewHolder.ivRed.setVisibility(View.GONE);

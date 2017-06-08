@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -37,8 +38,8 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
 
     @BindView(R.id.rv_list)
     PullAndLoadView mListDocs;
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.iv_back)
+    View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
 
@@ -65,10 +66,13 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
             finish();
             return;
         }
+        mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         if(mType.equals("user")){
             mTvTitle.setText("系统通知");
         }else if(mType.equals("system")){
             mTvTitle.setText("Neta官方");
+        }else if(mType.equals("at_user")){
+            mTvTitle.setText("@我的");
         }
     }
 
@@ -85,7 +89,8 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
 
     @Override
     protected void initListeners() {
-        mToolbar.setNavigationOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setVisibility(View.VISIBLE);
+        mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 finish();
@@ -115,13 +120,13 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
             @Override
             public void onLoadMore() {
                 isLoading = true;
-                mPresenter.doRequest(mType.equals("user")?"sys" : "neta",mAdapter.getItemCount(),6);
+                mPresenter.doRequest(mType,mAdapter.getItemCount(),6);
             }
 
             @Override
             public void onRefresh() {
                 isLoading = true;
-                mPresenter.doRequest(mType.equals("user")?"sys" : "neta",0,6);
+                mPresenter.doRequest(mType,0,6);
             }
 
             @Override
@@ -134,7 +139,7 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
                 return false;
             }
         });
-        mPresenter.doRequest(mType.equals("user")?"sys" : "neta",0,6);
+        mPresenter.doRequest(mType,0,6);
     }
 
     @Override

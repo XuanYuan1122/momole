@@ -181,7 +181,7 @@ public class PushReceiver extends BroadcastReceiver {
         mBuilder.setAutoCancel(true);
         Intent resultIntent = null;
         if (AppSetting.isRunning) {
-            if(!AppSetting.sCurChatId.equals(talkId)) {
+            if(!AppSetting.sCurChatId.equals(talkId) || TextUtils.isEmpty(talkId)) {
                 resultIntent = IntentUtils.getIntentFromUri(context, Uri.parse(info.schema));
             }
         } else {

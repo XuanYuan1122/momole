@@ -470,6 +470,9 @@ public interface ApiService {
     @GET("api/user/getNetaMsg")
     Observable<ApiResult<ArrayList<NetaMsgEntity>>> getNetaMsg(@Query("index")int index,@Query("size")int size);
 
+    @GET("api/user/getAtMsg")
+    Observable<ApiResult<ArrayList<NetaMsgEntity>>> getAtMsg(@Query("index")int index,@Query("size")int size);
+
     @POST("api/search/searchDoc")
     Observable<ApiResult<ArrayList<PersonDocEntity>>> getSearchDoc(@Body SearchEntity entity);
 

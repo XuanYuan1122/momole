@@ -125,7 +125,7 @@ public class PersonaListPresenter implements PersonalListContract.Presenter {
                         }
                     });
         }else if(type == 6){
-            if(id.equals("sys")){
+            if(id.equals("user")){
                 apiService.getSystemMsg(index,ApiService.LENGHT)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -140,8 +140,23 @@ public class PersonaListPresenter implements PersonalListContract.Presenter {
                                 if(view != null) view.onFailure(code,msg);
                             }
                         });
-            }else if(id.equals("neta")){
+            }else if(id.equals("system")){
                 apiService.getNetaMsg(index,ApiService.LENGHT)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new NetResultSubscriber<ArrayList<NetaMsgEntity>>() {
+                            @Override
+                            public void onSuccess(ArrayList<NetaMsgEntity> netaMsgEntities) {
+                                if(view != null) view.onSuccess(netaMsgEntities,index == 0);
+                            }
+
+                            @Override
+                            public void onFail(int code, String msg) {
+                                if(view != null) view.onFailure(code,msg);
+                            }
+                        });
+            }else if(id.equals("at_user")){
+                apiService.getAtMsg(index,ApiService.LENGHT)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new NetResultSubscriber<ArrayList<NetaMsgEntity>>() {

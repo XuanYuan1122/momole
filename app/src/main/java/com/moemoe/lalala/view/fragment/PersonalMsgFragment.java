@@ -87,7 +87,7 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
             @Override
             public void onItemClick(View view, int position) {
                 if(position > 1){
-                    Object object = mAdapter.getItem(position - 2);
+                    Object object = mAdapter.getItem(position - 3);
                     if (object != null) {
                         if (object instanceof ReplyEntity) {
                             ReplyEntity bean = (ReplyEntity) object;
@@ -112,10 +112,14 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
                         i.putExtra("tab","user");//系统通知
                         PreferenceUtils.setMessageDot(getContext(),"system",false);
                         mAdapter.notifyItemChanged(0);
-                    }else {
+                    }else if(position == 1){
                         i.putExtra("tab","system");//官方通知
                         PreferenceUtils.setMessageDot(getContext(),"neta",false);
                         mAdapter.notifyItemChanged(1);
+                    }else {
+                        i.putExtra("tab","at_user");//官方通知
+                        PreferenceUtils.setMessageDot(getContext(),"at_user",false);
+                        mAdapter.notifyItemChanged(2);
                     }
                     startActivity(i);
                 }
@@ -188,6 +192,8 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
                             mAdapter.notifyItemChanged(1);
                         }else if(event.getType().equals("system")){
                             mAdapter.notifyItemChanged(0);
+                        }else if(event.getType().equals("at_user")){
+                            mAdapter.notifyItemChanged(2);
                         }
                     }
                 }, new Action1<Throwable>() {
