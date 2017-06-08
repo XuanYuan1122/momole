@@ -60,7 +60,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return list.size();
     }
 
     private class HorizontalViewHolder extends RecyclerView.ViewHolder{

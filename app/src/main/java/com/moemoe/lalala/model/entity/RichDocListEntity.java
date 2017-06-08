@@ -37,7 +37,7 @@ public class RichDocListEntity implements Parcelable{
         @Override
         public RichDocListEntity createFromParcel(Parcel parcel) {
             RichDocListEntity info = new RichDocListEntity();
-            Bundle bundle = parcel.readBundle();
+            Bundle bundle = parcel.readBundle(getClass().getClassLoader());
             info.list = bundle.getParcelableArrayList("list");
             info.hideList = bundle.getParcelableArrayList("hideList");
             info.tags = bundle.getParcelableArrayList("tags");

@@ -17,6 +17,7 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerColumnComponent;
 import com.moemoe.lalala.di.modules.ColumnModule;
 import com.moemoe.lalala.model.entity.CalendarDayItemEntity;
+import com.moemoe.lalala.model.entity.CoinDetailEntity;
 import com.moemoe.lalala.presenter.ColumnContract;
 import com.moemoe.lalala.presenter.ColumnPresenter;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
@@ -125,6 +126,11 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
                     id = doc.getSchema();
                 }
                 if (!TextUtils.isEmpty(id)) {
+                    if(id.contains(getString(R.string.label_doc_path)) && !id.contains("uuid")){
+                        String begin = id.substring(0,id.indexOf("?") + 1);
+                        String uuid = id.substring(id.indexOf("?") + 1);
+                        id = begin + "uuid=" + uuid + "&from_name=" + mTvTitle.getText().toString();
+                    }
                     Uri uri = Uri.parse(id);
                     IntentUtils.toActivityFromUri(ColumnDetailActivity.this, uri,view);
                 }
@@ -167,6 +173,11 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
                     id = doc.getSchema();
                 }
                 if (!TextUtils.isEmpty(id)) {
+                    if(id.contains(getString(R.string.label_doc_path)) && !id.contains("uuid")){
+                        String begin = id.substring(0,id.indexOf("?") + 1);
+                        String uuid = id.substring(id.indexOf("?") + 1);
+                        id = begin + "uuid=" + uuid + "&from_name=" + mTvTitle.getText().toString();
+                    }
                     Uri uri = Uri.parse(id);
                     IntentUtils.toActivityFromUri(ColumnDetailActivity.this, uri,view);
                 }

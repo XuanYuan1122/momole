@@ -99,7 +99,6 @@ public class WebViewFragment extends BaseFragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         mWebView.loadUrl("about:blank");
         mWebView.stopLoading();
         mWebView.setWebChromeClient(null);
@@ -107,6 +106,7 @@ public class WebViewFragment extends BaseFragment {
         mWebView.setVisibility(View.GONE);
         mWebView.destroy();
         mWebView = null;
+        super.onDestroyView();
     }
 
     public void setUrl(String url){

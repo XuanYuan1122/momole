@@ -37,7 +37,6 @@ import com.moemoe.lalala.utils.CustomUrlSpan;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.NetaColorSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
@@ -69,6 +68,7 @@ public class NetaRichEditor extends ScrollView {
     private OnKeyListener keyListener; // 所有EditText的软键盘监听器
     private OnClickListener btnListener; // 图片右上角红叉按钮监听器
     private OnFocusChangeListener focusListener; // 所有EditText的焦点监听listener
+    private OnClickListener editClickListener;
     private EditText lastFocusEdit; // 最近被聚焦的EditText
     private LayoutTransition mTransitioner; // 只在图片View添加或remove时，触发transition动画
     private int editNormalPadding = 0; //
@@ -99,8 +99,7 @@ public class NetaRichEditor extends ScrollView {
         root.setBackgroundColor(Color.WHITE);
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
-        root.setPadding(DensityUtil.dip2px(context,18), DensityUtil.dip2px(context,18), DensityUtil.dip2px(context,18), DensityUtil.dip2px(context,56));//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
-       // addView(allLayout, layoutParams);
+        root.setPadding(DensityUtil.dip2px(context,18), DensityUtil.dip2px(context,18), DensityUtil.dip2px(context,18), 0);//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
         addView(root, layoutParams);
 
         allLayout = new LinearLayout(context);
@@ -121,6 +120,18 @@ public class NetaRichEditor extends ScrollView {
                     onBackspacePress(edit);
                 }
                 return false;
+            }
+        };
+        editClickListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editText = (EditText) v;
+                if(TextUtils.isEmpty(editText.getText())){
+                    editText.setSelection(0);
+                }else {
+                    int sep = checkClickAt(editText.getText(),editText.getSelectionStart());
+                    editText.setSelection(editText.getSelectionStart() + sep);
+                }
             }
         };
         // 3. 图片叉掉处理
@@ -149,11 +160,17 @@ public class NetaRichEditor extends ScrollView {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                CharSequence temp = checkDeleteAt(s,start);
-                if(temp != null){
+                if(checkClickAt(s,start) != 0){
                     lastFocusEdit.removeTextChangedListener(this);
-                    lastFocusEdit.setText(temp);
+                    lastFocusEdit.setText(s);
                     lastFocusEdit.addTextChangedListener(textWatcher);
+                }else {
+                    CharSequence temp = checkDeleteAt(s,start);
+                    if(temp != null){
+                        lastFocusEdit.removeTextChangedListener(this);
+                        lastFocusEdit.setText(temp);
+                        lastFocusEdit.addTextChangedListener(textWatcher);
+                    }
                 }
             }
 
@@ -205,6 +222,17 @@ public class NetaRichEditor extends ScrollView {
         }
     }
 
+    private int checkClickAt(CharSequence sequence,int position){
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(sequence);
+        CustomUrlSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),CustomUrlSpan.class);
+        for(CustomUrlSpan span : spen){
+            if(position < stringBuilder.getSpanEnd(span) && position > stringBuilder.getSpanStart(span)){
+                return stringBuilder.getSpanEnd(span) - position;
+            }
+        }
+        return 0;
+    }
+
     public void setLabelAble(){
         mTags = new ArrayList<>();
         View labelRoot = createLabelView();
@@ -230,6 +258,11 @@ public class NetaRichEditor extends ScrollView {
                 }
             }
         });
+        View view = new View(getContext());
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,1);
+        view.setLayoutParams(layoutParams);
+        view.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.gray_e8e8e8));
+        root.addView(view);
         root.addView(labelRoot);
     }
 
@@ -426,6 +459,7 @@ public class NetaRichEditor extends ScrollView {
         editText.setHint(hint);
         editText.addTextChangedListener(textWatcher);
         editText.setOnFocusChangeListener(focusListener);
+        editText.setOnClickListener(editClickListener);
         editText.setMovementMethod(LinkMovementMethod.getInstance());
         return editText;
     }
@@ -476,11 +510,11 @@ public class NetaRichEditor extends ScrollView {
         int cursorIndex = lastFocusEdit.getSelectionStart();
         if(cursorIndex < 0){
             lastEditStr.insert(lastEditStr.length(),str + " ");
-            NetaColorSpan span = new NetaColorSpan(ContextCompat.getColor(getContext(),R.color.main_cyan), id);
-            lastEditStr.setSpan(span,lastEditStr.length(),lastEditStr.length() + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            CustomUrlSpan span = new CustomUrlSpan(getContext(),"", id);
+            lastEditStr.setSpan(span,lastFocusEdit.getText().length(),lastFocusEdit.getText().length() + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }else {
             lastEditStr.insert(cursorIndex,str + " ");
-            NetaColorSpan span = new NetaColorSpan(ContextCompat.getColor(getContext(),R.color.main_cyan), id);
+            CustomUrlSpan span = new CustomUrlSpan(getContext(),"", id);
             lastEditStr.setSpan(span,cursorIndex,cursorIndex + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         lastFocusEdit.setText(lastEditStr);
@@ -493,22 +527,35 @@ public class NetaRichEditor extends ScrollView {
         String lastEditStr = lastFocusEdit.getText().toString();
         int cursorIndex = lastFocusEdit.getSelectionStart();
         int lastEditIndex = allLayout.indexOfChild(lastFocusEdit);
-        String editStr1 = "";
+      //  String editStr1 = "";
+        SpannableStringBuilder editStr = new SpannableStringBuilder(lastFocusEdit.getText());
+        SpannableStringBuilder editStr1 = new SpannableStringBuilder();
         if(cursorIndex < 0){
             lastEditIndex = allLayout.getChildCount() - 1;
         }else {
-            editStr1 = lastEditStr.substring(0, cursorIndex);
+            editStr1 = (SpannableStringBuilder) editStr.subSequence(0, cursorIndex);
+
         }
         if (lastEditStr.length() == 0 || editStr1.length() == 0 || cursorIndex < 0) {
             // 如果EditText为空，或者光标已经顶在了editText的最前面，则直接插入图片，并且EditText下移即可
-            addImageViewAtIndex(lastEditIndex, imagePath);
+            if(!TextUtils.isEmpty(lastEditStr)){
+                addImageViewAtIndex(lastEditIndex + 1, imagePath);
+                if(allLayout.getChildCount() == lastEditIndex + 2){
+                    addEditTextAtIndex(lastEditIndex + 2, "");
+                }
+            }else {
+                addImageViewAtIndex(lastEditIndex, imagePath);
+            }
+
         } else {
             // 如果EditText非空且光标不在最顶端，则需要添加新的imageView和EditText
             lastFocusEdit.setText(editStr1);
             addImageViewAtIndex(lastEditIndex + 1, imagePath);
-            String editStr2 = lastEditStr.substring(cursorIndex);
+            //String editStr2 = lastEditStr.substring(cursorIndex);
+            SpannableStringBuilder editStr2;
+            editStr2 = (SpannableStringBuilder) editStr.subSequence(cursorIndex,editStr.length());
             if (editStr2.length() == 0) {
-                editStr2 = "";
+                editStr2 = new SpannableStringBuilder();
             }
             if(allLayout.getChildCount() == lastEditIndex + 2) {
                 addEditTextAtIndex(lastEditIndex + 2, editStr2);

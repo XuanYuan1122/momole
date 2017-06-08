@@ -80,15 +80,15 @@
                         android:layout_height="28dp"
                         android:background="@null"
                         android:imeOptions="actionSearch"
-                        android:textColor="@color/white"
+                        android:textColor="@color/black_1e1e1e"
                         android:singleLine="true"
                         android:layout_marginLeft="@dimen/size_8"
                         android:layout_marginStart="@dimen/size_8"
                         android:layout_marginEnd="@dimen/size_8"
                         android:layout_marginRight="@dimen/size_8"
-                        android:hint="搜索你感性趣的"
+                        android:hint="搜索你感兴趣的"
                         android:textSize="@dimen/size_14"
-                        android:textColorHint="@color/white_50"
+                        android:textColorHint="@color/white"
                         android:textCursorDrawable="@null"
                         android:text="" />
 

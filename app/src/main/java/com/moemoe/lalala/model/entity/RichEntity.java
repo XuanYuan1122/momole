@@ -41,7 +41,7 @@ public class RichEntity implements Parcelable {
         @Override
         public RichEntity createFromParcel(Parcel parcel) {
             RichEntity info = new RichEntity();
-            Bundle bundle = parcel.readBundle();
+            Bundle bundle = parcel.readBundle(getClass().getClassLoader());
             info.inputStr = bundle.getCharSequence("inputStr");
             info.image = bundle.getParcelable("image");
             return info;

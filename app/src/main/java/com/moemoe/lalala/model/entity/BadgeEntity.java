@@ -122,7 +122,7 @@ public class BadgeEntity implements Parcelable{
         public BadgeEntity createFromParcel(Parcel in) {
             BadgeEntity entity = new BadgeEntity();
             Bundle bundle;
-            bundle = in.readBundle();
+            bundle = in.readBundle(getClass().getClassLoader());
             entity.buy = bundle.getBoolean("buy");
             entity.coin = bundle.getInt("coin");
             entity.color = bundle.getString("color");

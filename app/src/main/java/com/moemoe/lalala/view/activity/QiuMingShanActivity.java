@@ -116,7 +116,13 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
                     if(o instanceof DocListEntity){
                         DocListEntity entity = (DocListEntity) o;
                         if (!TextUtils.isEmpty(entity.getDesc().getSchema())) {
-                            Uri uri = Uri.parse(entity.getDesc().getSchema());
+                            String mSchema = entity.getDesc().getSchema();
+                            if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                                String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                                String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                                mSchema = begin + "uuid=" + uuid + "&from_name=后山";
+                            }
+                            Uri uri = Uri.parse(mSchema);
                             IntentUtils.toActivityFromUri(QiuMingShanActivity.this, uri, view);
                         }
                     }
@@ -258,7 +264,13 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
                     if (object instanceof DocListEntity) {
                         DocListEntity bean = (DocListEntity) object;
                         if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                            Uri uri = Uri.parse(bean.getDesc().getSchema());
+                            String mSchema = bean.getDesc().getSchema();
+                            if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                                String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                                String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                                mSchema = begin + "uuid=" + uuid + "&from_name=后山";
+                            }
+                            Uri uri = Uri.parse(mSchema);
                             IntentUtils.toActivityFromUri(QiuMingShanActivity.this, uri,view);
                         }
                     }
@@ -304,6 +316,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
         if (DialogUtils.checkLoginAndShowDlg(QiuMingShanActivity.this)){
             Intent intent = new Intent(QiuMingShanActivity.this, CreateRichDocActivity.class);
             intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,1);
+            intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"后山");
             intent.putExtra("from_name","后山");
             intent.putExtra("from_schema","neta://com.moemoe.lalala/qiu_1.0");
             startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
@@ -329,7 +342,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
     private boolean isChanged = false;
 
     public void toolBarAlpha(int curY) {
-        int startOffset = 0;
+        int startOffset = 5;
         int endOffset = mRlRoot.getHeight();
         if (Math.abs(curY) <= startOffset) {
             mRlRoot.getBackground().mutate().setAlpha(0);
@@ -339,7 +352,7 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
                 mIvBack.setImageResource(R.drawable.btn_back_cover_normal);
                 isChanged = false;
             }
-            mIvBack.setImageAlpha(0);
+            mIvBack.setImageAlpha(255);
         } else if (Math.abs(curY) > startOffset && Math.abs(curY) < endOffset) {
             float percent = (float) (Math.abs(curY) - startOffset) / endOffset;
             int alpha = Math.round(percent * 255);

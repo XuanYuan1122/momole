@@ -191,7 +191,7 @@ public class UserInfo implements Parcelable{
         @Override
         public UserInfo createFromParcel(Parcel parcel) {
             UserInfo info = new UserInfo();
-            Bundle bundle = parcel.readBundle();
+            Bundle bundle = parcel.readBundle(getClass().getClassLoader());
             info.background = bundle.getString("background");
             info.birthday = bundle.getString("birthday");
             info.coin = bundle.getInt("coin");

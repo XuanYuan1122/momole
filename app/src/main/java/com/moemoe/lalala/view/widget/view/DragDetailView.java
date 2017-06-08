@@ -90,7 +90,8 @@ public class DragDetailView extends FrameLayout {
             int w = getLayoutParams().width;
             int h = getLayoutParams().height;
             Glide.with(mContext)
-                    .load(StringUtils.getUrl(mContext, ApiService.URL_QINIU + imgPath, w,h,false,false))
+                   // .load(StringUtils.getUrl(mContext, ApiService.URL_QINIU + imgPath, w,h,false,false))
+                    .load(ApiService.URL_QINIU + imgPath)
                     .override(w, h)
                     .into(new SimpleTarget<GlideDrawable>() {
                         @Override

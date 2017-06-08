@@ -130,7 +130,13 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
                     if (object instanceof DocListEntity) {
                         DocListEntity bean = (DocListEntity) object;
                         if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                            Uri uri = Uri.parse(bean.getDesc().getSchema());
+                            String mSchema = bean.getDesc().getSchema();
+                            if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                                String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                                String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                                mSchema = begin + "uuid=" + uuid + "&from_name=温泉";
+                            }
+                            Uri uri = Uri.parse(mSchema);
                             IntentUtils.toActivityFromUri(SwimPoolActivity.this, uri,view);
                         }
                     }
@@ -223,7 +229,7 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
     private boolean isChanged = false;
 
     public void toolBarAlpha(int curY) {
-        int startOffset = 0;
+        int startOffset = 5;
         int endOffset = mRlRoot.getHeight();
         if (Math.abs(curY) <= startOffset) {
             mRlRoot.getBackground().mutate().setAlpha(0);
@@ -233,7 +239,7 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
                 mIvBack.setImageResource(R.drawable.btn_back_cover_normal);
                 isChanged = false;
             }
-            mIvBack.setImageAlpha(0);
+            mIvBack.setImageAlpha(255);
         } else if (Math.abs(curY) > startOffset && Math.abs(curY) < endOffset) {
             float percent = (float) (Math.abs(curY) - startOffset) / endOffset;
             int alpha = Math.round(percent * 255);
@@ -284,7 +290,13 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
                     if (object instanceof DocListEntity) {
                         DocListEntity bean = (DocListEntity) object;
                         if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                            Uri uri = Uri.parse(bean.getDesc().getSchema());
+                            String mSchema = bean.getDesc().getSchema();
+                            if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                                String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                                String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                                mSchema = begin + "uuid=" + uuid + "&from_name=温泉";
+                            }
+                            Uri uri = Uri.parse(mSchema);
                             IntentUtils.toActivityFromUri(SwimPoolActivity.this, uri,view);
                         }
                     }
@@ -342,6 +354,7 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
         if (DialogUtils.checkLoginAndShowDlg(this)){
             Intent intent = new Intent(this, CreateRichDocActivity.class);
             intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,2);
+            intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"温泉");
             intent.putExtra("from_name","温泉");
             intent.putExtra("from_schema","neta://com.moemoe.lalala/swim_1.0");
             startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);

@@ -74,11 +74,11 @@ public class AddMusicActivity extends BaseAppCompatActivity {
         mTvMenuLeft.setText(getString(R.string.label_cancel));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvTitle.setVisibility(View.VISIBLE);
-        mTvTitle.setText(getString(R.string.label_hide_area));
+        mTvTitle.setText("添加音乐");
         mTvMenuRight.setVisibility(View.VISIBLE);
         mTvMenuRight.getPaint().setFakeBoldText(true);
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-        ViewUtils.setLeftMargins(mTvMenuRight,DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvMenuRight,DensityUtil.dip2px(this,18));
         mTvMenuRight.setText(getString(R.string.label_done));
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
     }

@@ -89,7 +89,13 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
                 Object item = mAdapter.getItem(position);
                 if(item instanceof CoinDetailEntity){
                     if(!TextUtils.isEmpty(((CoinDetailEntity) item).getSchema())){
-                        Uri uri = Uri.parse(((CoinDetailEntity) item).getSchema());
+                        String schema = ((CoinDetailEntity) item).getSchema();
+                        if(schema.contains(getString(R.string.label_doc_path)) && !schema.contains("uuid")){
+                            String begin = schema.substring(0,schema.indexOf("?") + 1);
+                            String id = schema.substring(schema.indexOf("?") + 1);
+                            schema = begin + "uuid=" + id + "&from_name=节操记录";
+                        }
+                        Uri uri = Uri.parse(schema);
                         IntentUtils.toActivityFromUri(CoinDetailActivity.this, uri, view);
                     }
                 }

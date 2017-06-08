@@ -93,7 +93,13 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
                             ReplyEntity bean = (ReplyEntity) object;
                             if(TextUtils.isEmpty(bean.getCommentId())){
                                 if (!TextUtils.isEmpty(bean.getSchema())) {
-                                    Uri uri = Uri.parse(bean.getSchema());
+                                    String mSchema = bean.getSchema();
+                                    if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                                        String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                                        String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                                        mSchema = begin + "uuid=" + uuid + "&from_name=个人中心-消息";
+                                    }
+                                    Uri uri = Uri.parse(mSchema);
                                     IntentUtils.toActivityFromUri(getActivity(), uri,view);
                                 }
                             }else {

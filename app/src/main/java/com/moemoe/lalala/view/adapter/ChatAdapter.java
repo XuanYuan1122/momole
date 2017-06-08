@@ -83,7 +83,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             Glide.with(context)
                     .load(StringUtils.getUrl(context, path, DensityUtil.dip2px(context,40),DensityUtil.dip2px(context,40),false,true))
-                    .override(DensityUtil.dip2px(context,40),DensityUtil.dip2px(context,40))
                     .transform(new GlideCircleTransform(context))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)

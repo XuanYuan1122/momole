@@ -172,7 +172,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                     @Override
                     public void call(SystemMessageEvent event) {
                         if(mTabLayout.getTabCount() == 7){
-                            if(PreferenceUtils.getMessageDot(NewPersonalActivity.this,"neta") || PreferenceUtils.getMessageDot(NewPersonalActivity.this,"system")){
+                            if(PreferenceUtils.getMessageDot(NewPersonalActivity.this,"neta") || PreferenceUtils.getMessageDot(NewPersonalActivity.this,"system") || PreferenceUtils.getMessageDot(NewPersonalActivity.this,"at_user")){
                                 mTabLayout.showDot(6);
                             }else {
                                 mTabLayout.hideMsg(6);
@@ -494,7 +494,22 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 }
             }
         }
-        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
+        PrivateMessageItemEntityDao dao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
+        List<PrivateMessageItemEntity> list = dao.queryBuilder().list();
+        boolean showDot = false;
+        for(PrivateMessageItemEntity entity : list){
+            if(entity.getDot() > 0){
+                showDot = true;
+                break;
+            }
+        }
+        if(showDot){
+            mTabLayout.showDot(5);
+        }else {
+            mTabLayout.hideMsg(5);
+        }
+
+        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user")){
             mTabLayout.showDot(6);
         }else {
             mTabLayout.hideMsg(6);

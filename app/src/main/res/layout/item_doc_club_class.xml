@@ -275,6 +275,7 @@
             android:layout_marginLeft="12dp"
             android:layout_marginTop="8dp"
             android:text="做一份让工作"
+            android:textStyle="bold"
             android:textColor="@color/dark_gray"
             android:textSize="18dp"
             android:visibility="gone" />
@@ -288,7 +289,7 @@
             android:layout_marginRight="12dp"
             android:layout_marginTop="4dp"
             android:ellipsize="end"
-            android:maxLines="8"
+            android:maxLines="3"
             android:text="芳文社旗下发型的越看漫画扎实xxxxxxx01年飞机额发型单片做平"
             android:textColor="@color/dark_gray"
             android:textSize="@dimen/size_15" />
@@ -463,8 +464,7 @@
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginTop="11dp"
-            android:background="#d7d7d8"
-            />
+            android:background="@color/gray_e8e8e8" />
 
         <com.moemoe.lalala.view.widget.view.DocLabelView
             android:layout_below="@+id/view_doc_sep"

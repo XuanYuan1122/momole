@@ -218,7 +218,7 @@ public class MultiImageChooseActivity extends BaseAppCompatActivity implements V
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.tv_sava) {
+        if (id == R.id.tv_menu) {
             finishSelect();
         } else if (id == R.id.tv_preview_ar) {
             showPriview(mSelected, 0);

@@ -11,14 +11,17 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.entity.RichEntity;
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.compress.NetaImgCompress;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -79,14 +82,26 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
             return;
         }
         mHideList = i.getParcelableArrayListExtra("hide_list");
+        coinComment = i.getBooleanExtra("hide_type",false);
+        if(coinComment){
+            mTvCoin.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
+            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+            mTvTypeInfo.setText(getString(R.string.label_report_watch_info));
+        }else {
+            mTvCoin.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
+            mTvTypeInfo.setText(getString(R.string.label_coin_watch_info));
+        }
         mTypeRoot.setVisibility(View.VISIBLE);
         mPathMap = new HashMap<>();
         mTvMenuLeft.setVisibility(View.VISIBLE);
+        ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
         mTvMenuLeft.setText(getString(R.string.label_cancel));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setText(getString(R.string.label_hide_area));
         mTvMenuRight.setVisibility(View.VISIBLE);
+        ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(this,18));
         mTvMenuRight.setText(getString(R.string.label_done));
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         subscribeChangedEvent();
@@ -110,6 +125,10 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     @Override
     protected void initData() {
         if(mHideList.size() > 0){
+            RichEntity entity = mHideList.get(0);
+            if(TextUtils.isEmpty(entity.getInputStr())){
+                mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
+            }
             Observable.from(mHideList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -124,7 +143,8 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                             }
                         }
                     });
-            if(mHideList.get(mHideList.size() - 1).getImage() != null && !TextUtils.isEmpty(mHideList.get(mHideList.size() - 1).getImage().getPath())){
+            RichEntity entity1 = mHideList.get(mHideList.size() - 1);
+            if(TextUtils.isEmpty(entity1.getInputStr())){
                 mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
             }
         }else {
@@ -193,10 +213,7 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
             mHideList = (ArrayList<RichEntity>) mRichEt.buildEditData();
             for (RichEntity entity : mHideList){
                 if (!TextUtils.isEmpty(entity.getInputStr())) {
-                    int i = mHideList.indexOf(entity);
                     entity.setInputStr(StringUtils.buildDataAtUser(entity.getInputStr()));
-                    mHideList.remove(i);
-                    mHideList.add(i,entity);
                 }
             }
             Intent i = new Intent();
@@ -236,6 +253,8 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                 @Override
                 public void onPhotoGet(final ArrayList<String> photoPaths, boolean override) {
                     final ArrayList<String> res = new ArrayList<>();
+                    Collections.reverse(photoPaths);
+                    createDialog("图片插入中...");
                     NetaImgCompress.get(CreateRichDocHideActivity.this)
                             .load(photoPaths)
                             .asPath()
@@ -278,7 +297,6 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     }
 
     private void onGetPhotos(final ArrayList<String> paths) {
-        createDialog("图片插入中...");
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {

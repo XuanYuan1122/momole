@@ -108,7 +108,13 @@ public class NewCalendarActivity extends BaseAppCompatActivity implements Calend
                 if(o instanceof CalendarDayEntity.Items){
                     CalendarDayEntity.Items item = (CalendarDayEntity.Items) o;
                     if (!TextUtils.isEmpty(item.getSchema())) {
-                        Uri uri = Uri.parse(item.getSchema());
+                        String mSchema = item.getSchema();
+                        if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                            String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                            String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                            mSchema = begin + "uuid=" + uuid + "&from_name=板报";
+                        }
+                        Uri uri = Uri.parse(mSchema);
                         IntentUtils.toActivityFromUri(NewCalendarActivity.this, uri, view);
                     }
                 }

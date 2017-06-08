@@ -210,6 +210,12 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 finish();
             }
         });
+        mTvFrom.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                finish();
+            }
+        });
         mIvMenu.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
@@ -930,10 +936,11 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private RichDocListEntity createRichDocFromDoc(){
         RichDocListEntity entity = new RichDocListEntity();
         entity.setDocId(mDocId);
-        entity.setFolderId(mDoc.getFolderInfo().getFolderId());
+
+        entity.setFolderId(mDoc.getFolderInfo() == null ? "" : mDoc.getFolderInfo().getFolderId());
         entity.setTags(mDoc.getTags());
         if(mDoc.getCoinDetails() != null){
-            for(DocDetailEntity.Detail detail : mDoc.getCoinDetails()){
+            for(DocDetailEntity.Detail detail : mDoc.getDetails()){
                 RichEntity richEntity = new RichEntity();
                 if(detail.getType().equals("DOC_TEXT")){
                     richEntity.setInputStr((String) detail.getTrueData());
@@ -951,7 +958,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             }
         }
         if(mDoc.getDetails() != null){
-            for(DocDetailEntity.Detail detail : mDoc.getDetails()){
+            for(DocDetailEntity.Detail detail : mDoc.getCoinDetails()){
                 RichEntity richEntity = new RichEntity();
                 if(detail.getType().equals("DOC_TEXT")){
                     richEntity.setInputStr((String) detail.getTrueData());
@@ -1021,6 +1028,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         requestCommentsByFloor(1,mTargetId,false,false);
     }
 
+    private boolean isFirst = true;
+
     @Override
     public void onCommentsLoaded(ArrayList<NewCommentEntity> entities,boolean pull,boolean isJump,boolean clear,boolean addBefore) {
         finalizeDialog();
@@ -1035,6 +1044,11 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             if(isJump) {
                 mList.getRecyclerView().scrollToPosition(mAdapter.getTagsPosition() + 2);
             }
+        }else {
+            if(!isFirst){
+                showToast("没有更多评论了");
+            }
+            isFirst = false;
         }
         if(entities.size() == 0 && isJump){
             mAdapter.setComment(entities,mTargetId);

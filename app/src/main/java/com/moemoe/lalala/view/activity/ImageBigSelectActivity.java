@@ -264,6 +264,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
             if(fb.getH() > 2048){
                 View viewTemp = View.inflate(ImageBigSelectActivity.this,R.layout.item_longimage,null);
                 final LongImageView imageView = (LongImageView) viewTemp.findViewById(R.id.imageView);
+                imageView.setOnClickListener(clickListener);
                 String temp = EncoderUtils.MD5(ApiService.URL_QINIU + fb.getPath()) + ".jpg";
                 final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
                 if(longImage.exists()){

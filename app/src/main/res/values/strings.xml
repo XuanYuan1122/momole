@@ -91,7 +91,7 @@
     <string name="label_delete">删除</string>
     <string name="label_tag_ctrl">标签管理</string>
     <string name="label_create_post">发表帖子</string>
-    <string name="label_update_post">发表帖子</string>
+    <string name="label_update_post">编辑帖子</string>
     <string name="label_create_trash">丢个纸条</string>
     <string name="label_menu_publish_doc">发布</string>
     <string name="label_content_tag_del">如删除该标签，当前标签贴组将不能看到该帖</string>

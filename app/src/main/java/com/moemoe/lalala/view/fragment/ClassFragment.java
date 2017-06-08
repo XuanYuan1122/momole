@@ -81,7 +81,13 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
                     if (object instanceof DocListEntity) {
                         DocListEntity bean = (DocListEntity) object;
                         if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                            Uri uri = Uri.parse(bean.getDesc().getSchema());
+                            String mSchema = bean.getDesc().getSchema();
+                            if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                                String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                                String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                                mSchema = begin + "uuid=" + uuid + "&from_name=广场";
+                            }
+                            Uri uri = Uri.parse(mSchema);
                             IntentUtils.toActivityFromUri(getActivity(), uri,view);
                         }
                     }
@@ -180,7 +186,13 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
                     if (object instanceof DocListEntity) {
                         DocListEntity bean = (DocListEntity) object;
                         if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                            Uri uri = Uri.parse(bean.getDesc().getSchema());
+                            String mSchema = bean.getDesc().getSchema();
+                            if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                                String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                                String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                                mSchema = begin + "uuid=" + uuid + "&from_name=广场";
+                            }
+                            Uri uri = Uri.parse(mSchema);
                             IntentUtils.toActivityFromUri(getActivity(), uri,view);
                         }
                     }
@@ -233,6 +245,7 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
         // 检查是否登录，是否关注，然后前面创建帖子界面
         if (DialogUtils.checkLoginAndShowDlg(getActivity())){
             Intent intent = new Intent(getActivity(), CreateRichDocActivity.class);
+            intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,getString(R.string.label_square));
             intent.putExtra("from_name",getString(R.string.label_square));
             intent.putExtra("from_schema","neta://com.moemoe.lalala/room_1.0");
             startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);

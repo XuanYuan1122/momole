@@ -492,8 +492,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             BagDirEntity entity = (BagDirEntity) getItem(position);
             BagFavoriteHolder bagFavoriteHolder = (BagFavoriteHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getCover(), DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,20), DensityUtil.dip2px(context,120), false, true))
-                    .override(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,20), DensityUtil.dip2px(context,120))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getCover(), DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,36), DensityUtil.dip2px(context,120), false, true))
+                    .override(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,36), DensityUtil.dip2px(context,120))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .transform(new GlideRoundTransform(context,5))
@@ -801,7 +801,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
             ViewGroup.LayoutParams layoutParams = ivBg.getLayoutParams();
             layoutParams.height = DensityUtil.dip2px(context,120);
-            layoutParams.width = DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,20);
+            layoutParams.width = DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,36);
             ivBg.setLayoutParams(layoutParams);
         }
     }

@@ -115,6 +115,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        mTagName = "";
         mHeadRoot.setVisibility(View.INVISIBLE);
         mDocNum.setText(getString(R.string.label_doc_num, 0));
         mLikesNum.setText(getString(R.string.label_like_num, 0));
@@ -189,7 +190,13 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
                 DocListEntity bean = mDocAdapter.getItem(position);
                 if (bean != null ) {
                     if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                        Uri uri = Uri.parse(bean.getDesc().getSchema());
+                        String schema = bean.getDesc().getSchema();
+                        if(schema.contains(getString(R.string.label_doc_path)) && !schema.contains("uuid")){
+                            String begin = schema.substring(0,schema.indexOf("?") + 1);
+                            String id = schema.substring(schema.indexOf("?") + 1);
+                            schema = begin + "uuid=" + id + "&from_name=" + mTagName;
+                        }
+                        Uri uri = Uri.parse(schema);
                         IntentUtils.toActivityFromUri(ClubPostListActivity.this, uri,view);
                     }
                 }
@@ -344,7 +351,13 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
                     DocListEntity bean = mDocAdapter.getItem(position);
                     if (bean != null ) {
                         if (!TextUtils.isEmpty(bean.getDesc().getSchema())) {
-                            Uri uri = Uri.parse(bean.getDesc().getSchema());
+                            String schema = bean.getDesc().getSchema();
+                            if(schema.contains(getString(R.string.label_doc_path)) && !schema.contains("uuid")){
+                                String begin = schema.substring(0,schema.indexOf("?") + 1);
+                                String id = schema.substring(schema.indexOf("?") + 1);
+                                schema = begin + "uuid=" + id + "&from_name=" + mTagName;
+                            }
+                            Uri uri = Uri.parse(schema);
                             IntentUtils.toActivityFromUri(ClubPostListActivity.this, uri,view);
                         }
                     }

@@ -37,10 +37,13 @@ import com.moemoe.lalala.di.components.DaggerMapComponent;
 import com.moemoe.lalala.di.modules.MapModule;
 import com.moemoe.lalala.dialog.SignDialog;
 import com.moemoe.lalala.event.BackSchoolEvent;
+import com.moemoe.lalala.event.PrivateMessageEvent;
+import com.moemoe.lalala.event.SystemMessageEvent;
 import com.moemoe.lalala.galgame.FileManager;
 import com.moemoe.lalala.galgame.Live2DManager;
 import com.moemoe.lalala.galgame.Live2DView;
 import com.moemoe.lalala.galgame.SoundManager;
+import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.model.entity.BuildEntity;
@@ -49,6 +52,7 @@ import com.moemoe.lalala.model.entity.MapMarkContainer;
 import com.moemoe.lalala.model.entity.MapMarkEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
+import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.model.entity.SnowShowEntity;
 import com.moemoe.lalala.presenter.MapContract;
@@ -57,6 +61,7 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -203,7 +208,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         if(NetworkUtils.isNetworkAvailable(this) && NetworkUtils.isWifi(this)){
             mPresenter.checkVersion();
         }
-        subscribeSearchChangedEvent();
         mPresenter.getEventList();
     }
 
@@ -236,6 +240,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     @Override
     protected void onPause() {
         super.onPause();
+        RxBus.getInstance().unSubscribe(this);
         hideBtn();
     }
 
@@ -246,10 +251,53 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
     }
 
+    private void subscribeEvent() {
+        Subscription subscription = RxBus.getInstance()
+                .toObservable(PrivateMessageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Action1<PrivateMessageEvent>() {
+                    @Override
+                    public void call(PrivateMessageEvent event) {
+                        if(event.isShow()){
+                            mCardDot.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        Subscription sysSubscription = RxBus.getInstance()
+                .toObservable(SystemMessageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Action1<SystemMessageEvent>() {
+                    @Override
+                    public void call(SystemMessageEvent event) {
+                        if(PreferenceUtils.getMessageDot(MapActivity.this,"neta") || PreferenceUtils.getMessageDot(MapActivity.this,"system") || PreferenceUtils.getMessageDot(MapActivity.this,"at_user")){
+                            mCardDot.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+        RxBus.getInstance().addSubscription(this, subscription);
+        RxBus.getInstance().addSubscription(this, sysSubscription);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         showBtn();
+        subscribeEvent();
+        subscribeSearchChangedEvent();
         if(StringUtils.isyoru()){
             if(StringUtils.isBackSchool()){
                 if(mMapState != MAP_SCHOOL_BACK){
@@ -296,8 +344,16 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             }
 
         }
-        //showSnowman();
-        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system")){
+        PrivateMessageItemEntityDao dao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
+        List<PrivateMessageItemEntity> list = dao.queryBuilder().list();
+        boolean showDot = false;
+        for(PrivateMessageItemEntity entity : list){
+            if(entity.getDot() > 0){
+                showDot = true;
+                break;
+            }
+        }
+        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") || showDot){
             mCardDot.setVisibility(View.VISIBLE);
         }else {
             mCardDot.setVisibility(View.GONE);
@@ -447,36 +503,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
                     }
                 });
-        RxBus.getInstance().unSubscribe(this);
         RxBus.getInstance().addSubscription(this, subscription);
-    }
-
-    private void showSnowman(){
-        long lastTime = PreferenceUtils.getLastSnowTime(this);
-        Calendar today = Calendar.getInstance();
-        Calendar last = Calendar.getInstance();
-        last.setTimeInMillis(lastTime);
-        int year = today.get(Calendar.YEAR);
-        int mon = today.get(Calendar.MONTH) + 1;
-        int day = today.get(Calendar.DAY_OF_MONTH);
-        if ((year == 2016 && mon == 12 && day >= 24) || (year == 2017 && mon == 1 && day <=2)){
-            if (today.get(Calendar.YEAR) == last.get(Calendar.YEAR) && today.get(Calendar.MONTH) == last.get(Calendar.MONTH)
-                    && today.get(Calendar.DAY_OF_MONTH) == last.get(Calendar.DAY_OF_MONTH) && today.get(Calendar.HOUR_OF_DAY) > last.get(Calendar.HOUR_OF_DAY)) {
-                //同一天
-                SnowShowEntity.clearCache();
-                mPresenter.addSnowman(this,mapWidget);
-                PreferenceUtils.setLastSnowTime(this,today.getTimeInMillis());
-            }else if(today.get(Calendar.YEAR) > last.get(Calendar.YEAR) || today.get(Calendar.MONTH) > last.get(Calendar.MONTH)
-                    || today.get(Calendar.DAY_OF_MONTH) > last.get(Calendar.DAY_OF_MONTH)){
-                SnowShowEntity.clearCache();
-                mPresenter.addSnowman(this,mapWidget);
-                PreferenceUtils.setLastSnowTime(this,today.getTimeInMillis());
-            }else if(today.get(Calendar.YEAR) == last.get(Calendar.YEAR) && today.get(Calendar.MONTH) == last.get(Calendar.MONTH)
-                    && today.get(Calendar.DAY_OF_MONTH) == last.get(Calendar.DAY_OF_MONTH) && today.get(Calendar.HOUR_OF_DAY) == last.get(Calendar.HOUR_OF_DAY)){
-                MapImgLayer layer = (MapImgLayer) mapWidget.getLayerById(233);
-                if(layer == null) mPresenter.addCacheSnowman(this,mapWidget);
-            }
-        }
     }
 
     @Override

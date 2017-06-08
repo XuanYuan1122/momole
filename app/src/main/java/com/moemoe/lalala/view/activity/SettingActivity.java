@@ -336,7 +336,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             if(isThirdParty(PreferenceUtils.getAuthorInfo().getPlatform())){
                 Platform p = ShareSDK.getPlatform(PreferenceUtils.getAuthorInfo().getPlatform());
                 if(p.isAuthValid()){
-                    p.removeAccount();
+                    p.removeAccount(true);
                 }
             }
             PreferenceUtils.clearAuthorInfo();

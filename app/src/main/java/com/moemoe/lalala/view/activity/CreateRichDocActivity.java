@@ -27,6 +27,7 @@ import com.moemoe.lalala.model.entity.RichDocListEntity;
 import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.presenter.CreateRichDocContract;
 import com.moemoe.lalala.presenter.CreateRichDocPresenter;
+import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
@@ -35,12 +36,14 @@ import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.compress.NetaImgCompress;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -145,16 +148,22 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mTitleRoot.setVisibility(View.VISIBLE);
 
         mHideList = new ArrayList<>();
-        mPathMap = new HashMap<>();
-        mRichEt.setLabelAble();
-        mRichEt.setmTagNameDef(mTagNameDef);
-        mRichEt.setmKlCommentBoard(mKlCommentBoard);
         mTvMenuLeft.setVisibility(View.VISIBLE);
-        mTvMenuLeft.setText(getString(R.string.label_give_up));
+        ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
+        mTvMenuLeft.setText(getString(R.string.label_give_up));
         mTvTitle.setVisibility(View.VISIBLE);
-        mTvTitle.setText(getString(R.string.label_create_post));
+        if(mDoc != null){
+            mTvTitle.setText(getString(R.string.label_update_post));
+        }else {
+            mTvTitle.setText(getString(R.string.label_create_post));
+            mPathMap = new HashMap<>();
+            mRichEt.setLabelAble();
+            mRichEt.setmTagNameDef(mTagNameDef);
+            mRichEt.setmKlCommentBoard(mKlCommentBoard);
+        }
         mTvMenuRight.setVisibility(View.VISIBLE);
+        ViewUtils.setRightMargins(mTvMenuRight,DensityUtil.dip2px(this,18));
         mTvMenuRight.setText(getString(R.string.label_menu_publish_doc));
         mTvMenuRight.setTextColor(Color.WHITE);
         mTvMenuRight.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
@@ -230,6 +239,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     protected void initData() {
         if(mDoc != null){
             if(mDoc.getList().size() > 0){
+                RichEntity entity = mDoc.getList().get(0);
+                if(TextUtils.isEmpty(entity.getInputStr())){
+                    mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
+                }
                 Observable.from(mDoc.getList())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -244,7 +257,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                                 }
                             }
                         });
-                if(mHideList.get(mHideList.size() - 1).getImage() != null && !TextUtils.isEmpty(mHideList.get(mHideList.size() - 1).getImage().getPath())){
+                RichEntity entity1 = mDoc.getList().get(mDoc.getList().size() - 1);
+                if(TextUtils.isEmpty(entity1.getInputStr())){
                     mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
                 }
             }
@@ -366,9 +380,31 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 startActivityForResult(i3,REQ_ADD_SEARCH);
                 break;
             case R.id.iv_add_hide_doc:
-                Intent i = new Intent(CreateRichDocActivity.this,CreateRichDocHideActivity.class);
-                i.putParcelableArrayListExtra("hide_list",mHideList);
-                startActivityForResult(i,REQ_ADD_HIDE);
+                if(mHideList.size() > 0){
+                    Intent i = new Intent(CreateRichDocActivity.this,CreateRichDocHideActivity.class);
+                    i.putParcelableArrayListExtra("hide_list",mHideList);
+                    i.putExtra("hide_type",mHideType);
+                    startActivityForResult(i,REQ_ADD_HIDE);
+                }else {
+                    final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+                    alertDialogUtil.createNormalDialog(CreateRichDocActivity.this,"添加隐藏区\n需要消耗1节操");
+                    alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                        @Override
+                        public void CancelOnClick() {
+                            alertDialogUtil.dismissDialog();
+                        }
+
+                        @Override
+                        public void ConfirmOnClick() {
+                            Intent i = new Intent(CreateRichDocActivity.this,CreateRichDocHideActivity.class);
+                            i.putParcelableArrayListExtra("hide_list",mHideList);
+                            i.putExtra("hide_type",mHideType);
+                            startActivityForResult(i,REQ_ADD_HIDE);
+                            alertDialogUtil.dismissDialog();
+                        }
+                    });
+                    alertDialogUtil.showDialog();
+                }
                 break;
             case R.id.iv_add_bag:
                 Intent i1 = new Intent(CreateRichDocActivity.this,FolderSelectActivity.class);
@@ -444,6 +480,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 @Override
                 public void onPhotoGet(final ArrayList<String> photoPaths, boolean override) {
                     final ArrayList<String> res = new ArrayList<>();
+                    Collections.reverse(photoPaths);
+                    createDialog("图片插入中...");
                     NetaImgCompress.get(CreateRichDocActivity.this)
                             .load(photoPaths)
                             .asPath()
@@ -486,7 +524,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     }
 
     private void onGetPhotos(final ArrayList<String> paths) {
-        createDialog("图片插入中...");
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -536,12 +573,14 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     public void onSendSuccess() {
         mTvMenuRight.setEnabled(true);
         for (RichEntity entity : mRichEt.buildEditData() ){
-            if(TextUtils.isEmpty(entity.getInputStr())){
-                if(!FileUtil.isGif(entity.getImage().getPath())) FileUtil.deleteFile(entity.getImage().getPath());
+            if(TextUtils.isEmpty(entity.getInputStr()) && entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
+                if(!FileUtil.isGif(entity.getImage().getPath())){
+                    FileUtil.deleteFile(entity.getImage().getPath());
+                }
             }
         }
         for (RichEntity entity : mHideList){
-            if(TextUtils.isEmpty(entity.getInputStr())){
+            if(TextUtils.isEmpty(entity.getInputStr()) && entity.getImage() != null  && !TextUtils.isEmpty(entity.getImage().getPath())){
                 if(!FileUtil.isGif(entity.getImage().getPath())) FileUtil.deleteFile(entity.getImage().getPath());
             }
         }

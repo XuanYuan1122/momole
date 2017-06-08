@@ -106,7 +106,13 @@ public class NewsDetailActivity extends BaseAppCompatActivity implements Persona
             public void onItemClick(View view, int position) {
                 NetaMsgEntity entity = (NetaMsgEntity) mAdapter.getItem(position);
                 if(entity != null && !TextUtils.isEmpty(entity.getSchema())){
-                    Uri uri = Uri.parse(entity.getSchema());
+                    String mSchema = entity.getSchema();
+                    if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
+                        String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
+                        String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
+                        mSchema = begin + "uuid=" + uuid + "&from_name=" + mTvTitle.getText().toString();
+                    }
+                    Uri uri = Uri.parse(mSchema);
                     IntentUtils.toActivityFromUri(NewsDetailActivity.this, uri,view);
                 }
             }

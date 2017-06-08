@@ -586,11 +586,11 @@ public class StringUtils {
     public static String buildDataAtUser(CharSequence sequence){
         String res;
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(sequence);
-        NetaColorSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),NetaColorSpan.class);
+        CustomUrlSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),CustomUrlSpan.class);
         if(spen.length > 0){
             res = stringBuilder.toString();
             int step = 0;
-            for (NetaColorSpan span : spen) {
+            for (CustomUrlSpan span : spen) {
                 int before = res.length();
                 String beginStr = res.substring(0,stringBuilder.getSpanStart(span) + step);
                 String str = res.substring(stringBuilder.getSpanStart(span) + step,stringBuilder.getSpanEnd(span) + step);
@@ -615,9 +615,9 @@ public class StringUtils {
         Elements elements = document.select("at_user");
         DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
         for(Element element : elements){
-            String all = element.toString().replace("\"","").replace("\n","");
-            String id = element.attr("id");
             String text = element.text();
+            String all = element.toString().replace("\"","").replace("\n","").replace(" " + text,text);
+            String id = element.attr("user_id");
             String beginStr = s.substring(0,s.indexOf(all));
             String endStr = s.substring(s.indexOf(all) + all.length());
             map.put(id,s.indexOf(all),s.indexOf(all) + text.length());
@@ -645,20 +645,20 @@ public class StringUtils {
         Elements elements = document.select("at_user");
         DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
         for(Element element : elements){
-            String all = element.toString().replace("\"","").replace("\n","");
-            String id = element.attr("id");
             String text = element.text();
+            String all = element.toString().replace("\"","").replace("\n","").replace(" " + text,text);
+            String id = element.attr("user_id");
             String beginStr = s.substring(0,s.indexOf(all));
             String endStr = s.substring(s.indexOf(all) + all.length());
             map.put(id,s.indexOf(all),s.indexOf(all) + text.length());
             s = beginStr + text + endStr;
         }
-        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(s);
         for(String id : map.getFirstKeys()){
             ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(id);
             for(Integer begin : concurrentHashMap.keySet()){
                 int end = concurrentHashMap.get(begin);
-                NetaColorSpan span = new NetaColorSpan(ContextCompat.getColor(context,R.color.main_cyan),id);
+                CustomUrlSpan span = new CustomUrlSpan(context,"",id);
                 stringBuilder.setSpan(span,begin,end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }

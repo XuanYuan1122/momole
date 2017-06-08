@@ -71,7 +71,7 @@ public class CardItemView extends FrameLayout {
             inflate(context, R.layout.item_trash_img_card, this);
             imageView = (ImageView) findViewById(R.id.iv_img);
         }else {
-            inflate(context, R.layout.item_trash_text_card, this);
+            inflate(context, R.layout.item_trash_text_card_new, this);
             content = (TextView) findViewById(R.id.tv_content);
         }
 
