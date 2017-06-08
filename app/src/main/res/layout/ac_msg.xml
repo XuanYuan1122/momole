@@ -16,7 +16,9 @@
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/size_18"
+            android:paddingRight="@dimen/size_18"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_back_blue_normal"/>
 
@@ -37,8 +39,8 @@
             android:layout_width="50dp"
             android:layout_height="20dp"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/size_10"
-            android:layout_marginEnd="@dimen/size_10"
+            android:layout_marginRight="@dimen/size_18"
+            android:layout_marginEnd="@dimen/size_18"
             android:gravity="center"
             android:text="标签精简"
             android:textColor="@color/txt_cyan_white"

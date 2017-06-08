@@ -278,8 +278,8 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/ic_go_back"
+                android:layout_height="@dimen/neta_toolbar"
+                app:navigationIcon="@drawable/btn_back_white_normal"
                 app:layout_collapseMode="pin"
                 android:layout_marginTop="@dimen/status_bar_height"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
@@ -289,14 +289,14 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_gravity="end"
-                    android:src="@drawable/ic_menu_loli" />
+                    android:src="@drawable/btn_menu_white_normal" />
 
             </android.support.v7.widget.Toolbar>
 
             <TextView
                 android:id="@+id/tv_toolbar_title"
                 android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="@dimen/neta_toolbar"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:maxLength="16"
@@ -304,7 +304,7 @@
                 android:textStyle="bold"
                 android:text=""
                 android:layout_gravity="center_horizontal|bottom"
-                android:textColor="@color/white"
+                android:textColor="@color/main_cyan"
                 android:gravity="center"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>

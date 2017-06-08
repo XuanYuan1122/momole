@@ -91,7 +91,7 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
         mRlRoot.getBackground().mutate().setAlpha(0);
         mSimpleLabel.setAlpha(0);
         mTitle.setText("温泉");
-        mTitle.setTextColor(Color.argb(0, 255, 255, 255));
+        mTitle.setAlpha(0);
         mSimpleLabel.setVisibility(View.VISIBLE);
         mSimpleLabel.setSelected(AppSetting.SUB_TAG);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
@@ -220,24 +220,36 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
         mPresenter.requestDocList(0,"",2);
     }
 
+    private boolean isChanged = false;
+
     public void toolBarAlpha(int curY) {
         int startOffset = 0;
         int endOffset = mRlRoot.getHeight();
-        //curY -= CommonUtils.getStatusHeight(this);
         if (Math.abs(curY) <= startOffset) {
             mRlRoot.getBackground().mutate().setAlpha(0);
             mSimpleLabel.setAlpha(0);
-            mTitle.setTextColor(Color.argb(0, 255, 255, 255));
+            mTitle.setAlpha(0);
+            if(isChanged){
+                mIvBack.setImageResource(R.drawable.btn_back_cover_normal);
+                isChanged = false;
+            }
+            mIvBack.setImageAlpha(0);
         } else if (Math.abs(curY) > startOffset && Math.abs(curY) < endOffset) {
-            float precent = (float) (Math.abs(curY) - startOffset) / endOffset;
-            int alpha = Math.round(precent * 255);
+            float percent = (float) (Math.abs(curY) - startOffset) / endOffset;
+            int alpha = Math.round(percent * 255);
             mRlRoot.getBackground().mutate().setAlpha(alpha);
-            mSimpleLabel.setAlpha(precent);
-            mTitle.setTextColor(Color.argb(alpha, 255, 255, 255));
+            mSimpleLabel.setAlpha(percent);
+            mTitle.setAlpha(percent);
+            if(!isChanged){
+                mIvBack.setImageResource(R.drawable.btn_back_blue_normal);
+                isChanged = true;
+            }
+            mIvBack.setImageAlpha(alpha);
         } else if (Math.abs(curY) >= endOffset) {
             mRlRoot.getBackground().mutate().setAlpha(255);
+            mIvBack.setImageAlpha(255);
             mSimpleLabel.setAlpha(1.0f);
-            mTitle.setTextColor(Color.argb(255, 255, 255, 255));
+            mTitle.setAlpha(1.0f);
         }
     }
 

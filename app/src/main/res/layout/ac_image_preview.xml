@@ -77,7 +77,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/neta_toolbar"
         android:background="@color/main_cyan"
         app:navigationIcon="@drawable/ic_go_back"
         app:popupTheme="@style/AppTheme.PopupOverlay"
@@ -120,7 +120,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="@dimen/neta_toolbar">
 
             <ImageView
                 android:id="@+id/iv_back"

@@ -24,7 +24,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="@dimen/neta_toolbar">
 
             <ImageView
                 android:id="@+id/iv_back"

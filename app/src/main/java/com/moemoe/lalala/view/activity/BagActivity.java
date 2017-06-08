@@ -3,7 +3,9 @@ package com.moemoe.lalala.view.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -50,12 +52,15 @@ import butterknife.OnClick;
  * Created by yi on 2017/1/17.
  */
 
-public class BagActivity extends BaseAppCompatActivity implements BagContract.View{
+public class BagActivity extends BaseAppCompatActivity implements BagContract.View,AppBarLayout.OnOffsetChangedListener{
 
     private static final int REQ_GET_BAG = 30001;
     private static final int REQ_CREATE_FOLDER = 30002;
     private static final int REQ_TO_FOLDER = 30003;
     private static final int REQ_MODIFY_BAG = 30004;
+
+    @BindView(R.id.appbar)
+    AppBarLayout mAppBarLayout;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.stub_open_bag)
@@ -78,7 +83,6 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
     private View mBack;
     private View mOpenBag;
     private BagAdapter mAdapter;
-   // private PopupListMenu mMenu;
     private BottomMenuFragment bottomFragment;
     private String mUserId;
     private boolean mIsLoading = false;
@@ -98,6 +102,8 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
                 .build()
                 .inject(this);
         mUserId = getIntent().getStringExtra(UUID);
+        mTitleView.setCollapsedTitleTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+        mTitleView.setExpandedTitleColor(ContextCompat.getColor(this,R.color.white));
         if(mUserId.equals(PreferenceUtils.getUUid())){
             if(PreferenceUtils.getAuthorInfo().isOpenBag()){
                 mTvSpaceNum.setText("");
@@ -241,6 +247,20 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
         });
         mPresenter.getBagInfo(mUserId);
         mPresenter.getFolderList(mUserId,0);
+    }
+
+    @Override
+    protected void onResume() {
+        Glide.with(this).resumeRequests();
+        super.onResume();
+        mAppBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        Glide.with(this).pauseRequests();
+        super.onPause();
+        mAppBarLayout.removeOnOffsetChangedListener(this);
     }
 
     @Override
@@ -430,5 +450,32 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
     protected void onDestroy() {
         mPresenter.release();
         super.onDestroy();
+    }
+
+    private boolean isChanged = false;
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+        int temp = (int) (DensityUtil.dip2px(this,146) - getResources().getDimension(R.dimen.status_bar_height));
+        float percent = (float)Math.abs(verticalOffset) / temp;
+
+        if(percent > 0.4){
+            if(!isChanged){
+                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);
+                mIvMenu.setImageResource(R.drawable.btn_menu_normal);
+                isChanged = true;
+            }
+            mToolbar.setAlpha(percent);
+            mIvMenu.setAlpha(percent);
+        }else {
+            if(isChanged){
+                mToolbar.setNavigationIcon(R.drawable.btn_back_white_normal);
+                mIvMenu.setImageResource(R.drawable.btn_menu_white_normal);
+                isChanged = false;
+            }
+            mToolbar.setAlpha(1 - percent);
+            mIvMenu.setAlpha(1 - percent);
+        }
     }
 }

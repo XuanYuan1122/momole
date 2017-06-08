@@ -623,7 +623,7 @@ public class StringUtils {
             map.put(id,s.indexOf(all),s.indexOf(all) + text.length());
             s = beginStr + text + endStr;
         }
-        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(s);
         for(String id : map.getFirstKeys()){
             ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(id);
             for(Integer begin : concurrentHashMap.keySet()){

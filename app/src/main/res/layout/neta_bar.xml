@@ -51,10 +51,10 @@
         <TextView
             android:id="@+id/tv_menu"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:textSize="18dp"
-            android:text=""
-            android:layout_gravity="end"
+            android:text="aaaaaaa"
+            android:layout_gravity="center_vertical"
             android:textColor="@color/main_cyan"
             android:gravity="center"
             android:visibility="gone" />

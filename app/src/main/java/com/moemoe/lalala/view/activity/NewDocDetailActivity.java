@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -97,8 +98,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
-    @BindView(R.id.tv_toolbar_title)
-    TextView mTvTitle;
     @BindView(R.id.tv_left_menu)
     TextView mTvFrom;
     @BindView(R.id.rv_list)
@@ -153,8 +152,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-        mTvTitle.setText("");
         mDocId = getIntent().getStringExtra(UUID);
         if(TextUtils.isEmpty(mDocId)){
             finish();
@@ -198,8 +195,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mTvOnlyHost.setVisibility(View.VISIBLE);
         mTvOnlyHost.setWidth(DensityUtil.dip2px(this,50));
         mTvOnlyHost.setHeight(DensityUtil.dip2px(this,20));
-        mTvOnlyHost.setText(getString(R.string.label_only_host));
+        mTvOnlyHost.setTextSize(TypedValue.COMPLEX_UNIT_DIP,9);
         mTvOnlyHost.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+        mTvOnlyHost.setText(getString(R.string.label_only_host));
         mTvOnlyHost.setBackgroundResource(R.drawable.btn_only_host_new);
     }
 
@@ -538,7 +536,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         super.onResume();
     }
 
-    @OnClick({R.id.iv_comment_send,R.id.iv_add_img,R.id.tv_only_host,R.id.iv_cancel_jump,R.id.tv_jump_to})
+    @OnClick({R.id.iv_comment_send,R.id.iv_add_img,R.id.tv_menu,R.id.iv_cancel_jump,R.id.tv_jump_to})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.iv_comment_send:
@@ -551,7 +549,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             case R.id.iv_add_img:
                 choosePhoto();
                 break;
-            case R.id.tv_only_host:
+            case R.id.tv_menu:
                 if(!mTargetId){
                     if(hasLoaded){
                         mTargetId = true;
@@ -1019,7 +1017,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 }
             }
         }
-        mTvTitle.setText(entity.getTitle());
         mAdapter.setData(entity);
         requestCommentsByFloor(1,mTargetId,false,false);
     }

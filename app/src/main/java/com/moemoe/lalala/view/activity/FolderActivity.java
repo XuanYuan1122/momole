@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -64,13 +65,15 @@ import zlc.season.rxdownload.entity.DownloadStatus;
  * Created by yi on 2017/1/19.
  */
 
-public class FolderActivity extends BaseAppCompatActivity implements BagContract.View{
+public class FolderActivity extends BaseAppCompatActivity implements BagContract.View,AppBarLayout.OnOffsetChangedListener{
 
     private static final int REQ_ADD_ITEM = 40000;
     private static final int REQ_MODIFY_DIE = 40001;
     private static final int REQ_MODIFY_FILES = 40002;
     private static final int REQ_DETAIL_FILES = 40003;
 
+    @BindView(R.id.appbar)
+    AppBarLayout mAppBarLayout;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fl_add_item_root)
@@ -707,5 +710,45 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
         mIsLoading = false;
         mRv.setComplete();
         ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
+    }
+
+    @Override
+    protected void onResume() {
+        Glide.with(this).resumeRequests();
+        super.onResume();
+        mAppBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        Glide.with(this).pauseRequests();
+        super.onPause();
+        mAppBarLayout.removeOnOffsetChangedListener(this);
+    }
+
+    private boolean isChanged = false;
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int temp = (int) (DensityUtil.dip2px(this,146) - getResources().getDimension(R.dimen.status_bar_height));
+        float percent = (float)Math.abs(verticalOffset) / temp;
+
+        if(percent > 0.4){
+            if(!isChanged){
+                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);
+                mIvMenu.setImageResource(R.drawable.btn_menu_normal);
+                isChanged = true;
+            }
+            mToolbar.setAlpha(percent);
+            mIvMenu.setAlpha(percent);
+        }else {
+            if(isChanged){
+                mToolbar.setNavigationIcon(R.drawable.btn_back_white_normal);
+                mIvMenu.setImageResource(R.drawable.btn_menu_white_normal);
+                isChanged = false;
+            }
+            mToolbar.setAlpha(1 - percent);
+            mIvMenu.setAlpha(1 - percent);
+        }
     }
 }

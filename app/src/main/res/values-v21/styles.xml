@@ -6,22 +6,16 @@
     <style name="MainColorTranslucentTheme" parent="AppTheme.NoActionBar">
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@color/white</item>
-        <item name="colorControlNormal">@color/main_cyan</item>
-        <item name="colorControlActivated">@color/main_cyan</item>
     </style>
 
     <style name="DefaultColorTranslucentTheme" parent="AppTheme.NoActionBar">
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@color/black</item>
-        <item name="colorControlNormal">@color/main_cyan</item>
-        <item name="colorControlActivated">@color/main_cyan</item>
     </style>
 
     <style name="ImageTranslucentTheme" parent="AppTheme.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="colorControlNormal">@color/main_cyan</item>
-        <item name="colorControlActivated">@color/main_cyan</item>
     </style>
 
     <style name="Activity_Dialog" parent="AppTheme.Dialog">

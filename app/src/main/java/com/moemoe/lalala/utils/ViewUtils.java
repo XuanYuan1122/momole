@@ -17,6 +17,14 @@ public class ViewUtils {
         }
     }
 
+    public static void setTopMargins (View v, int l) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.topMargin = l;
+            v.requestLayout();
+        }
+    }
+
     public static void setLeftMargins (View v, int l) {
         if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();

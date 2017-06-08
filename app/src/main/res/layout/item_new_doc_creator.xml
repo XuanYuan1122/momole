@@ -188,9 +188,4 @@
         android:gravity="center"
         android:visibility="gone"/>
 
-    <view
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/size_1_px"
-        android:layout_alignParentBottom="true"
-        android:background="@color/gray_e8e8e8"/>
 </RelativeLayout>

@@ -28,8 +28,7 @@
         android:id="@+id/rl_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/main_cyan"
-        android:fitsSystemWindows="true"
+        android:background="@drawable/bg_shadow_up"
         android:paddingTop="@dimen/status_bar_height"
         android:orientation="horizontal"
         android:visibility="gone">
@@ -41,20 +40,21 @@
             <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/size_18"
+                android:paddingRight="@dimen/size_18"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_go_back"/>
+                android:src="@drawable/btn_back_cover_normal"/>
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
+                android:textColor="@color/main_cyan"
                 android:layout_centerInParent="true"
                 android:textSize="18dp"
-                android:text="班级"
-                android:textStyle="bold"
-                />
+                android:text=""
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_simple_label"
@@ -65,14 +65,13 @@
                 android:layout_marginEnd="@dimen/size_10"
                 android:gravity="center"
                 android:text="标签精简"
-                android:textColor="@color/txt_white_cyan"
+                android:textColor="@color/txt_cyan_white"
                 android:textStyle="bold"
                 android:textSize="9dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:background="@drawable/btn_only_host"
-                android:visibility="gone"
-                />
+                android:background="@drawable/btn_only_host_new"
+                android:visibility="gone"/>
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -3,8 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
@@ -202,6 +202,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@style/Activity_Fade</item>
+        <item name="colorControlNormal">@color/main_cyan</item>
+        <item name="colorControlActivated">@color/main_cyan</item>
     </style>
 
     <style name="Activity_Fade">
@@ -212,18 +214,15 @@
     </style>
 
     <style name="MainColorTranslucentTheme" parent="AppTheme.NoActionBar">
-        <item name="colorControlNormal">@color/main_cyan</item>
-        <item name="colorControlActivated">@color/main_cyan</item>
+
     </style>
 
     <style name="DefaultColorTranslucentTheme" parent="AppTheme.NoActionBar">
-        <item name="colorControlNormal">@color/main_cyan</item>
-        <item name="colorControlActivated">@color/main_cyan</item>
+
     </style>
 
     <style name="ImageTranslucentTheme" parent="AppTheme.NoActionBar">
-        <item name="colorControlNormal">@color/main_cyan</item>
-        <item name="colorControlActivated">@color/main_cyan</item>
+
     </style>
     <style name="AppTheme.Dialog" parent="AppTheme.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -124,6 +125,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         mListPost.getRecyclerView().setAdapter(mDocAdapter);
         mSimpleLabel.setVisibility(View.VISIBLE);
         mSimpleLabel.setSelected(AppSetting.SUB_TAG);
+        mTvTitle.setAlpha(0);
     }
 
     @Override
@@ -393,22 +395,32 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         ErrorCodeUtils.showErrorMsgByCode(ClubPostListActivity.this,code,msg);
     }
 
+    private boolean isChanged = false;
+
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         if(verticalOffset == 0 ){
             mListPost.setEnabled(true);
-        }else if(verticalOffset < - DensityUtil.dip2px(this,127)){
-
-        } else {
+        }else {
             mListPost.setEnabled(false);
         }
-        int newAlpha;
-        if (verticalOffset != 0){
-            newAlpha = Math.min(255,Math.abs(verticalOffset));
+        int temp = (int) (DensityUtil.dip2px(this,146) - getResources().getDimension(R.dimen.status_bar_height));
+        float percent = (float)Math.abs(verticalOffset) / temp;
+
+        if(percent > 0.4){
+            if(!isChanged){
+                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);
+                isChanged = true;
+            }
+            mToolbar.setAlpha(percent);
         }else {
-            newAlpha = 0;
+            if(isChanged){
+                mToolbar.setNavigationIcon(R.drawable.btn_back_white_normal);
+                isChanged = false;
+            }
+            mToolbar.setAlpha(1 - percent);
         }
-        mSimpleLabel.setAlpha((float) newAlpha/255);
-        mTvTitle.setTextColor(Color.argb(newAlpha, 255, 255, 255));
+        mSimpleLabel.setAlpha(percent);
+        mTvTitle.setAlpha(percent);
     }
 }

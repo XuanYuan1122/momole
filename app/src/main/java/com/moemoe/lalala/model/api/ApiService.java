@@ -227,7 +227,7 @@ public interface ApiService {
     @GET("api/cal/blackboard/{day}")
     Observable<ApiResult<CalendarDayEntity>> requestCalDayList(@Path("day")String day);
 
-    @GET("api/doc/load/{docId}")
+    @GET("api/doc/loadV2/{docId}")
     Observable<ApiResult<DocDetailEntity>> requestNewDocContent(@Path("docId") String id);
 
     @GET("api/doc/{docId}/comments")

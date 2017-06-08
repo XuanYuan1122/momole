@@ -56,6 +56,7 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.activity.JuBaoActivity;
@@ -412,13 +413,13 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.mDocBean = docBean;
         if(mDocBean != null){
             if(mDocBean.getCoin() > 0 && mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
-                mTagsPosition = mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 3;
+                mTagsPosition = mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 4;
             }else if(mDocBean.getCoin() > 0){
-                mTagsPosition = mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 2;
+                mTagsPosition = mDocBean.getDetails().size() + mDocBean.getCoinDetails().size() + 3;
             }else if(mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
-                mTagsPosition = mDocBean.getDetails().size() + 2;
+                mTagsPosition = mDocBean.getDetails().size() + 3;
             }else {
-                mTagsPosition = mDocBean.getDetails().size() + 1;
+                mTagsPosition = mDocBean.getDetails().size() + 2;
             }
         }
         notifyDataSetChanged();
@@ -674,17 +675,20 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void createText(final TextHolder holder,int position){
-        if(position == 1 && !TextUtils.isEmpty(mDocBean.getTitle())){
+        String content = (String) getItem(position);
+        if(position == 1 && !TextUtils.isEmpty(content)){
             holder.mTvText.setTextColor(ContextCompat.getColor(mContext,R.color.black_1e1e1e));
             holder.mTvText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,20);
             holder.mTvText.getPaint().setFakeBoldText(true);
             holder.mTvText.setText(mDocBean.getTitle());
-        }else {
+        }else if(!TextUtils.isEmpty(content)){
             holder.mTvText.setTextColor(ContextCompat.getColor(mContext,R.color.gray_444444));
             holder.mTvText.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
             holder.mTvText.getPaint().setFakeBoldText(false);
             holder.mTvText.setText(StringUtils.getUrlClickableText(mContext, StringUtils.buildAtUserToShow(mContext,(String) getItem(position))));
             holder.mTvText.setMovementMethod(LinkMovementMethod.getInstance());
+        }else {
+            ViewUtils.setTopMargins(holder.mTvText,0);
         }
     }
 

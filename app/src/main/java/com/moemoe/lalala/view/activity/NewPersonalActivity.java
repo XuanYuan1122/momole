@@ -100,7 +100,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     @BindView(R.id.iv_bag)
     ImageView mIvBag;
     @BindView(R.id.iv_menu_list)
-    View mMenuList;
+    ImageView mMenuList;
 
     @Inject
     PersonalPresenter mPresenter;
@@ -520,14 +520,30 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         mFollow.setText(isFollow ? getString(R.string.label_followed) : getString(R.string.label_follow));
     }
 
+    private boolean isChanged = false;
+
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        int newAlpha;
-        if (verticalOffset != 0){
-            newAlpha = Math.min(255,Math.abs(verticalOffset));
+        int temp = (int) (DensityUtil.dip2px(this,146) - getResources().getDimension(R.dimen.status_bar_height));
+        float percent = (float)Math.abs(verticalOffset) / temp;
+
+        if(percent > 0.4){
+            if(!isChanged){
+                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);
+                mMenuList.setImageResource(R.drawable.btn_menu_normal);
+                isChanged = true;
+            }
+            mToolbar.setAlpha(percent);
+            mMenuList.setAlpha(percent);
         }else {
-            newAlpha = 0;
+            if(isChanged){
+                mToolbar.setNavigationIcon(R.drawable.btn_back_white_normal);
+                mMenuList.setImageResource(R.drawable.btn_menu_white_normal);
+                isChanged = false;
+            }
+            mToolbar.setAlpha(1 - percent);
+            mMenuList.setAlpha(1 - percent);
         }
-        mTvTitle.setTextColor(Color.argb(newAlpha, 255, 255, 255));
+        mTvTitle.setAlpha(percent);
     }
 }
