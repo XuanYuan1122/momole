@@ -38,7 +38,7 @@ public class MoeMoeApplication extends Application {
         UnCaughtException caughtException = UnCaughtException.getInstance();
         caughtException.init(this);
         //初始化Leak内存泄露检测工具
-        LeakCanary.install(this);
+        //LeakCanary.install(this);
     }
 
     private void initLogger(){

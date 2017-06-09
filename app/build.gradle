@@ -26,8 +26,8 @@ android {
         applicationId "com.moemoe.lalala"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 4420
-        versionName "4.4.2"
+        versionCode 4500
+        versionName "4.5.0"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "moemoe",
                                 GETUI_APP_ID : "yJYiw8VtVO9wuMk0DgV6p4",
                                 GETUI_APP_KEY : "WaKYr5EG2c7DIAib45aPy3",
@@ -186,7 +186,7 @@ android {
 //        ad_lim {}
 //        ad_acgdoge {}
 //        ad_dilidili {}
-        ad_dilidilijj {}
+//        ad_dilidilijj {}
 
         productFlavors.all { flavor ->
             flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]

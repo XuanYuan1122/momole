@@ -46,6 +46,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by yi on 2016/12/15.
@@ -390,7 +391,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
                     .load(StringUtils.getUrl(this,ApiService.URL_QINIU + path,DensityUtil.dip2px(this,50), DensityUtil.dip2px(this,50),false,true))
                     .override(DensityUtil.dip2px(this,50), DensityUtil.dip2px(this,50))
                     .placeholder(R.drawable.bg_default_circle)
-                    .transform(new GlideCircleTransform(this))
+                    .bitmapTransform(new CropCircleTransformation(this))
                     .error(R.drawable.bg_default_circle)
                     .into(mIvAvatar);
             mUploadPath = path;
@@ -473,7 +474,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
         Glide.with(this)
                 .load(StringUtils.getUrl(this,mInfo.getHeadPath(), DensityUtil.dip2px(this,50),DensityUtil.dip2px(this,50),false,true))
                 .override(DensityUtil.dip2px(this,50),DensityUtil.dip2px(this,50))
-                .transform(new GlideCircleTransform(this))
+                .bitmapTransform(new CropCircleTransformation(this))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
                 .into(mIvAvatar);

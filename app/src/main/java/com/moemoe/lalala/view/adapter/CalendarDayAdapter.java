@@ -24,6 +24,8 @@ import com.moemoe.lalala.view.activity.NewPersonalActivity;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 /**
  * Created by yi on 2016/12/1.
  */
@@ -191,7 +193,7 @@ public class CalendarDayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .override(DensityUtil.dip2px(mContext,35), DensityUtil.dip2px(mContext,35))
                 .placeholder(R.drawable.bg_default_circle)
                 .error(R.drawable.bg_default_circle)
-                .transform(new GlideCircleTransform(mContext))
+                .bitmapTransform(new CropCircleTransformation(mContext))
                 .into(holder.ivCreator);
         holder.ivCreator.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,7 +247,7 @@ public class CalendarDayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 .override(DensityUtil.dip2px(mContext,35), DensityUtil.dip2px(mContext,35))
                 .placeholder(R.drawable.bg_default_circle)
                 .error(R.drawable.bg_default_circle)
-                .transform(new GlideCircleTransform(mContext))
+                .bitmapTransform(new CropCircleTransformation(mContext))
                 .into(holder.ivCreator);
         holder.tvName.setText(item.getUserName());
         holder.tvUiName.setText(item.getUiName());

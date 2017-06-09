@@ -53,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -370,7 +371,7 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             .override(DensityUtil.dip2px(context,44), DensityUtil.dip2px(context,44))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
-                            .transform(new GlideCircleTransform(context))
+                            .bitmapTransform(new CropCircleTransformation(context))
                             .into(holder.ivCreatorAvatar);
                     holder.ivCreatorAvatar.setTag(R.id.id_creator_uuid, post.getUserId());
                 }

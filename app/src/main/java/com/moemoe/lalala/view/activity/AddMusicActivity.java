@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -51,6 +53,7 @@ public class AddMusicActivity extends BaseAppCompatActivity {
     @BindView(R.id.img_cancel)
     ImageView mIvImgCancel;
     private ArrayList<String> mIconPaths;
+    private Image cover;
     private MusicLoader.MusicInfo mMusicInfo;
 
     @Override
@@ -66,9 +69,13 @@ public class AddMusicActivity extends BaseAppCompatActivity {
             return;
         }
         mMusicInfo = i.getParcelableExtra("music_info");
-        String path = i.getStringExtra("music_cover");
+        cover = i.getParcelableExtra("music_cover");
         mIconPaths = new ArrayList<>();
-        if(!TextUtils.isEmpty(path)) mIconPaths.add(path);
+        if(cover != null) {
+            mIconPaths.add(cover.getPath());
+        }else {
+            cover = new Image();
+        }
         mTvMenuLeft.setVisibility(View.VISIBLE);
         ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
         mTvMenuLeft.setText(getString(R.string.label_cancel));
@@ -148,7 +155,7 @@ public class AddMusicActivity extends BaseAppCompatActivity {
             case R.id.img_cancel:
                 mIconPaths.clear();
                 mTvImg.setText(R.string.label_select_img);
-                mIvImg.setImageResource(R.drawable.btn_doc_pic_cancel);
+                mIvImg.setImageResource(R.drawable.btn_select_img);
                 mIvImgCancel.setVisibility(View.GONE);
                 break;
         }
@@ -158,7 +165,8 @@ public class AddMusicActivity extends BaseAppCompatActivity {
         if(mMusicInfo != null && mIconPaths.size() == 1){
             Intent i = new Intent();
             i.putExtra("music_info",mMusicInfo);
-            i.putExtra("music_cover",mIconPaths.get(0));
+            cover.setPath(mIconPaths.get(0));
+            i.putExtra("music_cover",cover);
             setResult(RESULT_OK,i);
         }else if((mMusicInfo != null && mIconPaths.size() == 0) || (mMusicInfo == null && mIconPaths.size() == 1)){
             showToast(R.string.msg_need_one_music);

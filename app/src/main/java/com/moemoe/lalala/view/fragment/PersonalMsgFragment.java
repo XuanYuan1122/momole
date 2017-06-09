@@ -86,7 +86,7 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if(position > 1){
+                if(position > 2){
                     Object object = mAdapter.getItem(position - 3);
                     if (object != null) {
                         if (object instanceof ReplyEntity) {
@@ -118,7 +118,7 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
                         i.putExtra("tab","user");//系统通知
                         PreferenceUtils.setMessageDot(getContext(),"system",false);
                         mAdapter.notifyItemChanged(0);
-                    }else if(position == 1){
+                    }else if(position == 2){
                         i.putExtra("tab","system");//官方通知
                         PreferenceUtils.setMessageDot(getContext(),"neta",false);
                         mAdapter.notifyItemChanged(2);

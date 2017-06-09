@@ -28,6 +28,7 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.fragment.WebViewFragment;
 
 import butterknife.BindView;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by yi on 2016/12/1.
@@ -126,7 +127,7 @@ public class PersonalLevelActivity extends BaseAppCompatActivity {
                             .override(DensityUtil.dip2px(PersonalLevelActivity.this,80), DensityUtil.dip2px(PersonalLevelActivity.this,80))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
-                            .transform(new GlideCircleTransform(PersonalLevelActivity.this))
+                            .bitmapTransform(new CropCircleTransformation(PersonalLevelActivity.this))
                             .into(ivAvatar);
                 }
                 tvLevelName.setText(levelName);

@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">neta</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">4.4.2_20170428</string>
+    <string name="app_version">4.5.0_20170608</string>
     <string name="app_version_code">4420</string>
 
     <string name="label_scheme">neta</string>
@@ -271,6 +271,8 @@
     <string name="label_change_type">切换</string>
     <string name="label_comment_num" formatted="false">%d条评论</string>
     <string name="label_only_host">只看楼主</string>
+    <string name="label_pay_show">点击查看</string>
+    <string name="label_reply_show">回复可见</string>
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>
@@ -305,6 +307,7 @@
     <string name="msg_doc_comment_not_empty">什么都没写发什么呀~</string>
     <string name="msg_need_one_cover">必须选择一个封面~</string>
     <string name="msg_create_doc_success">发布帖子成功！</string>
+    <string name="msg_update_doc_success">编辑帖子成功！</string>
     <string name="msg_create_trash_success">扔纸条成功！</string>
     <string name="msg_doc_content_cannot_null">还什么都没写呢~</string>
     <string name="msg_doc_img_cannot_null">还没有选图片呢</string>

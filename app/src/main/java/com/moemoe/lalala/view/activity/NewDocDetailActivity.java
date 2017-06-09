@@ -605,7 +605,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 6666){
+        if(requestCode == CreateRichDocActivity.REQUEST_CODE_UPDATE_DOC && resultCode == CreateRichDocActivity.RESPONSE_CODE){
+            autoSendComment();
+        }else if(requestCode == 6666){
             if(resultCode == RESULT_OK && data != null){
                 int position = data.getIntExtra(JuBaoActivity.EXTRA_POSITION,-1);
                 if(position != -1 && mAdapter != null){
@@ -753,6 +755,12 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mToUserId = bean.getFromUserId();
         mEdtCommentInput.setText("");
         mEdtCommentInput.setHint("回复 " + bean.getFromUserName() + ": ");
+        mEdtCommentInput.requestFocus();
+        SoftKeyboardUtils.showSoftKeyboard(this, mEdtCommentInput);
+    }
+
+    public void replyNormal(){
+        mEdtCommentInput.setText("");
         mEdtCommentInput.requestFocus();
         SoftKeyboardUtils.showSoftKeyboard(this, mEdtCommentInput);
     }
@@ -930,15 +938,16 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         Intent i = new Intent(NewDocDetailActivity.this,CreateRichDocActivity.class);
         i.putExtra("doc",createRichDocFromDoc());
         i.putExtra(UUID,mDocId);
-        startActivityForResult(i,REQ_DELETE_TAG);
+        startActivityForResult(i,CreateRichDocActivity.REQUEST_CODE_UPDATE_DOC);
     }
 
     private RichDocListEntity createRichDocFromDoc(){
         RichDocListEntity entity = new RichDocListEntity();
         entity.setDocId(mDocId);
-
+        entity.setTitle(mDoc.getTitle());
         entity.setFolderId(mDoc.getFolderInfo() == null ? "" : mDoc.getFolderInfo().getFolderId());
         entity.setTags(mDoc.getTags());
+        entity.setHidType(mDoc.isCoinComment());
         if(mDoc.getCoinDetails() != null){
             for(DocDetailEntity.Detail detail : mDoc.getDetails()){
                 RichEntity richEntity = new RichEntity();
@@ -979,6 +988,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mDoc = entity;
         mIsLoading = false;
         mList.setComplete();
+        isReplyShow = entity.isCoinComment() && entity.getCoinDetails() != null && entity.getCoinDetails().size() <= 0;
         mList.setLoadMoreEnabled(true);
         mCommentNum = entity.getComments();
         hasLoaded = true;
@@ -1028,8 +1038,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         requestCommentsByFloor(1,mTargetId,false,false);
     }
 
-    private boolean isFirst = true;
-
     @Override
     public void onCommentsLoaded(ArrayList<NewCommentEntity> entities,boolean pull,boolean isJump,boolean clear,boolean addBefore) {
         finalizeDialog();
@@ -1045,10 +1053,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 mList.getRecyclerView().scrollToPosition(mAdapter.getTagsPosition() + 2);
             }
         }else {
-            if(!isFirst){
+            if(!pull){
                 showToast("没有更多评论了");
             }
-            isFirst = false;
         }
         if(entities.size() == 0 && isJump){
             mAdapter.setComment(entities,mTargetId);
@@ -1072,6 +1079,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         }
     }
 
+    private boolean isReplyShow = false;
+
     @Override
     public void onSendComment() {
         finalizeDialog();
@@ -1080,5 +1089,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mSelectAdapter.notifyDataSetChanged();
         mRvComment.setVisibility(View.GONE);
         showToast(R.string.msg_send_comment_success);
+        if(isReplyShow){
+            autoSendComment();
+        }
     }
 }

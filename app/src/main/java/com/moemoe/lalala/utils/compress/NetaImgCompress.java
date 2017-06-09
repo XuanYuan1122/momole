@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.FileUtil;
@@ -86,7 +87,7 @@ public class NetaImgCompress {
                                    if(FileUtil.isGif(s)){
                                        subscriber.onNext(s);
                                    }else {
-                                       subscriber.onNext(thirdCompress(new File(s)));
+                                       subscriber.onNext(firstCompress(new File(s)));
                                    }
                                    subscriber.onCompleted();
                                }catch (Exception e){
@@ -96,6 +97,47 @@ public class NetaImgCompress {
                        });
                    }
                });
+    }
+
+    private String firstCompress(@NonNull File file) {
+        int minSize = 60;
+        int longSide = 720;
+        int shortSide = 1280;
+
+        String filePath = file.getAbsolutePath();
+        String thumbFilePath = mCacheDir.getAbsolutePath() + File.separator + System.currentTimeMillis() + ".jpg";
+
+        long size = 0;
+        long maxSize = file.length() / 5;
+
+        int angle = getImageSpinAngle(filePath);
+        int[] imgSize = BitmapUtils.getImageSize(filePath);
+        int width = 0, height = 0;
+        if (imgSize[0] <= imgSize[1]) {
+            double scale = (double) imgSize[0] / (double) imgSize[1];
+            if (scale <= 1.0 && scale > 0.5625) {
+                width = imgSize[0] > shortSide ? shortSide : imgSize[0];
+                height = width * imgSize[1] / imgSize[0];
+                size = minSize;
+            } else if (scale <= 0.5625) {
+                height = imgSize[1] > longSide ? longSide : imgSize[1];
+                width = height * imgSize[0] / imgSize[1];
+                size = maxSize;
+            }
+        } else {
+            double scale = (double) imgSize[1] / (double) imgSize[0];
+            if (scale <= 1.0 && scale > 0.5625) {
+                height = imgSize[1] > shortSide ? shortSide : imgSize[1];
+                width = height * imgSize[0] / imgSize[1];
+                size = minSize;
+            } else if (scale <= 0.5625) {
+                width = imgSize[0] > longSide ? longSide : imgSize[0];
+                height = width * imgSize[1] / imgSize[0];
+                size = maxSize;
+            }
+        }
+
+        return compress(filePath, thumbFilePath, width, height, angle, size).getAbsolutePath();
     }
 
     private String thirdCompress(@NonNull File file){

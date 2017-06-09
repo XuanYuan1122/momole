@@ -222,7 +222,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_comment"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
+        android:gravity="left"
         android:layout_alignLeft="@+id/tv_comment_creator_name"
         android:layout_alignStart="@+id/tv_comment_creator_name"
         android:layout_marginEnd="@dimen/size_18"

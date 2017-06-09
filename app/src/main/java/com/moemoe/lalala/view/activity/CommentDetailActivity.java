@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -395,7 +396,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
                 .override(DensityUtil.dip2px(this,35), DensityUtil.dip2px(this,35))
                 .placeholder(R.drawable.bg_default_circle)
                 .error(R.drawable.bg_default_circle)
-                .transform(new GlideCircleTransform(this))
+                .bitmapTransform(new CropCircleTransformation(this))
                 .into(mIvCreator);
         mTvCreatorName.setText(mCommentEntity.getFromUserName());
         mTvTime.setText(StringUtils.timeFormate(mCommentEntity.getCreateTime()));

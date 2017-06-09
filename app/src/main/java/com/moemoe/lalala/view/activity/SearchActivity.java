@@ -24,6 +24,7 @@ import com.moemoe.lalala.event.AtUserEvent;
 import com.moemoe.lalala.event.SearchChangedEvent;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
 import com.moemoe.lalala.view.fragment.SearchBagFragment;
 import com.moemoe.lalala.view.fragment.SearchDocFragment;
@@ -132,6 +133,7 @@ public class SearchActivity extends BaseAppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    SoftKeyboardUtils.dismissSoftKeyboard(SearchActivity.this);
                     String curKey = mEtSearch.getText().toString();
                     if(TextUtils.isEmpty(mKeyWord) || (!TextUtils.isEmpty(curKey) && !mKeyWord.equals(mEtSearch.getText().toString()))){
                         mKeyWord = mEtSearch.getText().toString();

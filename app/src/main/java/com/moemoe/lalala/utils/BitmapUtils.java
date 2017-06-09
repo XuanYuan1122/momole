@@ -387,31 +387,41 @@ public class BitmapUtils {
 
     public static ArrayList<Image> handleUploadImage(ArrayList<String> paths){
         ArrayList<Image> fbs = new ArrayList<>();
-        for(int i = 0; i < paths.size(); i++){
-            if (FileUtil.isGif(paths.get(i))) {
-                Image fb = new Image();
-                fb.setPath(paths.get(i));
-                fbs.add(fb);
-            }else {
-                File f = StorageUtils.getTempFile(System.currentTimeMillis() + ".jpg");
-                if(f != null && !f.exists()){
-                    Bitmap bm = BitmapUtils.getSmallBitmap(paths.get(i));
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(f);
-                        bm.compress(Bitmap.CompressFormat.JPEG, 40, fos);
-                        fos.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Image fb = new Image();
-                fb.setPath(f.getAbsolutePath());
-                fbs.add(fb);
-            }
+        for (String s : paths){
+            Image fb = new Image();
+            fb.setPath(s);
+            fbs.add(fb);
         }
         return fbs;
     }
+
+//    public static ArrayList<Image> handleUploadImage(ArrayList<String> paths){
+//        ArrayList<Image> fbs = new ArrayList<>();
+//        for(int i = 0; i < paths.size(); i++){
+//            if (FileUtil.isGif(paths.get(i))) {
+//                Image fb = new Image();
+//                fb.setPath(paths.get(i));
+//                fbs.add(fb);
+//            }else {
+//                File f = StorageUtils.getTempFile(System.currentTimeMillis() + ".jpg");
+//                if(f != null && !f.exists()){
+//                    Bitmap bm = BitmapUtils.getSmallBitmap(paths.get(i));
+//                    FileOutputStream fos = null;
+//                    try {
+//                        fos = new FileOutputStream(f);
+//                        bm.compress(Bitmap.CompressFormat.JPEG, 40, fos);
+//                        fos.close();
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                Image fb = new Image();
+//                fb.setPath(f.getAbsolutePath());
+//                fbs.add(fb);
+//            }
+//        }
+//        return fbs;
+//    }
 }

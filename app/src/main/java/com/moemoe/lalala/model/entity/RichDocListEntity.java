@@ -15,12 +15,14 @@ public class RichDocListEntity implements Parcelable{
     private ArrayList<RichEntity> list;
     private ArrayList<RichEntity> hideList;
     private ArrayList<DocTagEntity> tags;
+    private String title;
     private String docId;
     private String musicPath;
     private String musicTitle;
     private String folderId;
     private Image cover;
     private int time;
+    private boolean hidType;
 
     public RichDocListEntity(){
         list = new ArrayList<>();
@@ -41,12 +43,14 @@ public class RichDocListEntity implements Parcelable{
             info.list = bundle.getParcelableArrayList("list");
             info.hideList = bundle.getParcelableArrayList("hideList");
             info.tags = bundle.getParcelableArrayList("tags");
+            info.title = bundle.getString("title");
             info.docId = bundle.getString("docId");
             info.musicPath = bundle.getString("musicPath");
             info.musicTitle = bundle.getString("musicTitle");
             info.folderId = bundle.getString("folderId");
             info.time = bundle.getInt("time");
             info.cover = bundle.getParcelable("cover");
+            info.hidType = bundle.getBoolean("hidType");
             return info;
         }
 
@@ -62,12 +66,14 @@ public class RichDocListEntity implements Parcelable{
         bundle.putParcelableArrayList("list",list);
         bundle.putParcelableArrayList("hideList",hideList);
         bundle.putParcelableArrayList("tags",tags);
+        bundle.putString("title",title);
         bundle.putString("docId",docId);
         bundle.putString("musicPath",musicPath);
         bundle.putString("musicTitle",musicTitle);
         bundle.putString("folderId",folderId);
         bundle.putInt("time",time);
         bundle.putParcelable("cover",cover);
+        bundle.putBoolean("hidType",hidType);
         dest.writeBundle(bundle);
     }
 
@@ -141,5 +147,21 @@ public class RichDocListEntity implements Parcelable{
 
     public void setTags(ArrayList<DocTagEntity> tags) {
         this.tags = tags;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public boolean isHidType() {
+        return hidType;
+    }
+
+    public void setHidType(boolean hidType) {
+        this.hidType = hidType;
     }
 }

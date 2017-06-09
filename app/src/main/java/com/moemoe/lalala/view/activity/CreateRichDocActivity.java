@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Selection;
@@ -80,6 +81,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private static final int REQ_SELECT_FOLDER = 5001;
     public static final int RESPONSE_CODE = 10000;
     public static final int REQUEST_CODE_CREATE_DOC = 11000;
+    public static final int REQUEST_CODE_UPDATE_DOC = 12000;
 
     @BindView(R.id.tv_left_menu)
     TextView mTvMenuLeft;
@@ -111,11 +113,12 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private String mFromSchema;
     private String mFromName;
     private HashMap<String,String> mPathMap;
+    private int mImageSize;
     private ArrayList<RichEntity> mHideList;
     private String mFolderId;
     private boolean mHideType;
     private MusicLoader.MusicInfo mMusicInfo;
-    private String mMusicCover;
+    private Image mMusicCover;
     private int mDocType;
     private RichDocListEntity mDoc;
 
@@ -153,11 +156,12 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvMenuLeft.setText(getString(R.string.label_give_up));
         mTvTitle.setVisibility(View.VISIBLE);
+        mPathMap = new HashMap<>();
+        mImageSize = 0;
         if(mDoc != null){
             mTvTitle.setText(getString(R.string.label_update_post));
         }else {
             mTvTitle.setText(getString(R.string.label_create_post));
-            mPathMap = new HashMap<>();
             mRichEt.setLabelAble();
             mRichEt.setmTagNameDef(mTagNameDef);
             mRichEt.setmKlCommentBoard(mKlCommentBoard);
@@ -238,6 +242,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     @Override
     protected void initData() {
         if(mDoc != null){
+            mHideType = mDoc.isHidType();
+            if(!TextUtils.isEmpty(mDoc.getTitle())){
+                mEtTitle.setText(mDoc.getTitle());
+            }
             if(mDoc.getList().size() > 0){
                 RichEntity entity = mDoc.getList().get(0);
                 if(TextUtils.isEmpty(entity.getInputStr())){
@@ -246,21 +254,31 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 Observable.from(mDoc.getList())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<RichEntity>() {
+                        .subscribe(new Subscriber<RichEntity>() {
                             @Override
-                            public void call(RichEntity richEntity) {
-                                if(!TextUtils.isEmpty(richEntity.getInputStr())){
-                                    mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToEdit(CreateRichDocActivity.this,richEntity.getInputStr().toString()));
-                                }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
-                                    mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH());
-                                    mPathMap.put(richEntity.getImage().getPath(),richEntity.getImage().getPath());
+                            public void onCompleted() {
+                                RichEntity entity1 = mDoc.getList().get(mDoc.getList().size() - 1);
+                                if(TextUtils.isEmpty(entity1.getInputStr())){
+                                    mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
                                 }
                             }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(RichEntity richEntity) {
+                                    if(!TextUtils.isEmpty(richEntity.getInputStr())){
+                                        mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToEdit(CreateRichDocActivity.this,richEntity.getInputStr().toString()));
+                                    }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
+                                        mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH(),richEntity.getImage().getSize());
+                                        mPathMap.put(richEntity.getImage().getPath(),richEntity.getImage().getPath());
+                                        mImageSize++;
+                                    }
+                            }
                         });
-                RichEntity entity1 = mDoc.getList().get(mDoc.getList().size() - 1);
-                if(TextUtils.isEmpty(entity1.getInputStr())){
-                    mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
-                }
             }
             if(mDoc.getHideList().size() > 0){
                 mHideList = mDoc.getHideList();
@@ -271,7 +289,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 mMusicInfo.setUrl(mDoc.getMusicPath());
                 mMusicInfo.setTitle(mDoc.getMusicTitle());
                 mMusicInfo.setDuration(mDoc.getTime());
-                mMusicCover = mDoc.getCover().getPath();
+                mMusicCover = mDoc.getCover();
                 mIvAddMusic.setSelected(true);
             }
             if(!TextUtils.isEmpty(mDoc.getFolderId())){
@@ -293,6 +311,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                     @Override
                     public void call(RichImgRemoveEvent event) {
                         mPathMap.remove(event.getPath());
+                        mImageSize--;
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -311,18 +330,20 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         }
         if (!mRichEt.hasContent()) {
             showToast(R.string.msg_doc_content_cannot_null);
-        }  else if(mRichEt.getmTags().size() < 1){
+        } else if(mRichEt.getmTags() != null && mRichEt.getmTags().size() < 1){
             showToast(R.string.msg_need_one_tag);
         }else {
-            finalizeDialog();
+            createDialog();
             mTvMenuRight.setEnabled(false);
             DocPut mDocEntity = new DocPut();
             mDocEntity.docType = mFromName;
             mDocEntity.docTypeSchema = mFromSchema;
             mDocEntity.bagFolderId = mFolderId;
             mDocEntity.title = mEtTitle.getText().toString();
-            for (int i = 0;i < mRichEt.getmTags().size();i++){
-                mDocEntity.tags.add(mRichEt.getmTags().get(i).getName());
+            if(mRichEt.getmTags() != null){
+                for (int i = 0;i < mRichEt.getmTags().size();i++){
+                    mDocEntity.tags.add(mRichEt.getmTags().get(i).getName());
+                }
             }
             for (RichEntity entity : mRichEt.buildEditData() ){
                 if(!TextUtils.isEmpty(entity.getInputStr())){
@@ -332,7 +353,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 }else if(entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
                     DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
                     docPutImage.path = entity.getImage().getPath();
-                    docPutImage.size = new File(entity.getImage().getPath()).length();
+                    docPutImage.h = entity.getImage().getH();
+                    docPutImage.w = entity.getImage().getW();
+                    docPutImage.size = entity.getImage().getSize();
+                    //docPutImage.size = new File(entity.getImage().getPath()).length();
                     mDocEntity.details.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
                 }
             }
@@ -344,7 +368,10 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 }else if(entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
                     DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
                     docPutImage.path = entity.getImage().getPath();
-                    docPutImage.size = new File(entity.getImage().getPath()).length();
+                    docPutImage.h = entity.getImage().getH();
+                    docPutImage.w = entity.getImage().getW();
+                 //   docPutImage.size = new File(entity.getImage().getPath()).length();
+                    docPutImage.size = entity.getImage().getSize();
                     mDocEntity.coin.details.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
                 }
             }
@@ -354,9 +381,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 docPutMusic.name = mMusicInfo.getTitle();
                 docPutMusic.timestamp = mMusicInfo.getDuration();
                 docPutMusic.url = mMusicInfo.getUrl();
-                Image image = new Image();
-                image.setPath(mMusicCover);
-                docPutMusic.cover = image;
+                docPutMusic.cover = mMusicCover;
                 mDocEntity.details.add(new DocPut.DocDetail(NewDocType.DOC_MUSIC.toString(),docPutMusic));
             }
             if(mHideList.size() > 0){
@@ -413,7 +438,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             case R.id.iv_add_music:
                 Intent i2 = new Intent(CreateRichDocActivity.this,AddMusicActivity.class);
                 i2.putExtra("music_info",mMusicInfo);
-                i2.putExtra("music_cover",mMusicCover);
+                i2.putExtra("music_cover", mMusicCover);
                 startActivityForResult(i2,REQ_GET_FROM_SELECT_MUSIC);
                 break;
             case R.id.tv_menu:
@@ -423,7 +448,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     }
 
     private void choosePhoto() {
-        if (mPathMap.size() < ICON_NUM_LIMIT) {
+      //  if (mPathMap.size() < ICON_NUM_LIMIT) {
+        if (mImageSize < ICON_NUM_LIMIT) {
             try {
                 ArrayList<String> temp = new ArrayList<>();
                 DialogUtils.createImgChooseDlg(this, null, this, temp, ICON_NUM_LIMIT).show();
@@ -446,7 +472,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         }else if(requestCode == REQ_GET_FROM_SELECT_MUSIC && resultCode == RESULT_OK){
             if(data != null){
                 mMusicInfo = data.getParcelableExtra("music_info");
-                mMusicCover = data.getStringExtra("music_cover");
+                mMusicCover = data.getParcelableExtra("music_cover");
                 mIvAddMusic.setSelected(true);
             }else {
                 mMusicInfo = null;
@@ -479,45 +505,46 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
 
                 @Override
                 public void onPhotoGet(final ArrayList<String> photoPaths, boolean override) {
-                    final ArrayList<String> res = new ArrayList<>();
+                 //   final ArrayList<String> res = new ArrayList<>();
                     Collections.reverse(photoPaths);
                     createDialog("图片插入中...");
-                    NetaImgCompress.get(CreateRichDocActivity.this)
-                            .load(photoPaths)
-                            .asPath()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnError(new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    throwable.printStackTrace();
-                                }
-                            })
-                            .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
-                                @Override
-                                public Observable<? extends String> call(Throwable throwable) {
-                                    return Observable.empty();
-                                }
-                            })
-                            .subscribe(new Subscriber<String>() {
-                                @Override
-                                public void onCompleted() {
-                                    for (int i = 0;i < photoPaths.size();i++){
-                                        mPathMap.put(res.get(i),photoPaths.get(i));
-                                    }
-                                    onGetPhotos(res);
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onNext(String s) {
-                                    res.add(s);
-                                }
-                            });
+                    onGetPhotos(photoPaths);
+//                    NetaImgCompress.get(CreateRichDocActivity.this)
+//                            .load(photoPaths)
+//                            .asPath()
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .doOnError(new Action1<Throwable>() {
+//                                @Override
+//                                public void call(Throwable throwable) {
+//                                    throwable.printStackTrace();
+//                                }
+//                            })
+//                            .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
+//                                @Override
+//                                public Observable<? extends String> call(Throwable throwable) {
+//                                    return Observable.empty();
+//                                }
+//                            })
+//                            .subscribe(new Subscriber<String>() {
+//                                @Override
+//                                public void onCompleted() {
+//                                    for (int i = 0;i < photoPaths.size();i++){
+//                                        mPathMap.put(res.get(i),photoPaths.get(i));
+//                                    }
+//                                    onGetPhotos(res);
+//                                }
+//
+//                                @Override
+//                                public void onError(Throwable e) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onNext(String s) {
+//                                    res.add(s);
+//                                }
+//                            });
                 }
             });
         }
@@ -556,6 +583,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             @Override
             public void onNext(String s) {
                 mRichEt.insertImage(s);
+                mImageSize++;
             }
         });
     }
@@ -572,23 +600,26 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     @Override
     public void onSendSuccess() {
         mTvMenuRight.setEnabled(true);
-        for (RichEntity entity : mRichEt.buildEditData() ){
-            if(TextUtils.isEmpty(entity.getInputStr()) && entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
-                if(!FileUtil.isGif(entity.getImage().getPath())){
-                    FileUtil.deleteFile(entity.getImage().getPath());
-                }
-            }
-        }
-        for (RichEntity entity : mHideList){
-            if(TextUtils.isEmpty(entity.getInputStr()) && entity.getImage() != null  && !TextUtils.isEmpty(entity.getImage().getPath())){
-                if(!FileUtil.isGif(entity.getImage().getPath())) FileUtil.deleteFile(entity.getImage().getPath());
-            }
-        }
+//        for (RichEntity entity : mRichEt.buildEditData() ){
+//            if(TextUtils.isEmpty(entity.getInputStr()) && entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
+//                if(!FileUtil.isGif(entity.getImage().getPath())){
+//                    FileUtil.deleteFile(entity.getImage().getPath());
+//                }
+//            }
+//        }
+//        for (RichEntity entity : mHideList){
+//            if(TextUtils.isEmpty(entity.getInputStr()) && entity.getImage() != null  && !TextUtils.isEmpty(entity.getImage().getPath())){
+//                if(!FileUtil.isGif(entity.getImage().getPath())) FileUtil.deleteFile(entity.getImage().getPath());
+//            }
+//        }
         finalizeDialog();
-        showToast(R.string.msg_create_doc_success);
+        if(mDoc != null){
+            showToast(R.string.msg_update_doc_success);
+        }else {
+            showToast(R.string.msg_create_doc_success);
+        }
         Intent i = new Intent();
         setResult(RESPONSE_CODE, i);
-
         finish();
     }
 

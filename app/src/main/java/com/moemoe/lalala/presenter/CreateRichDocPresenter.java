@@ -70,7 +70,25 @@ public class CreateRichDocPresenter implements CreateRichDocContract.Presenter {
                 .filter(new Func1<UpMap, Boolean>() {
                     @Override
                     public Boolean call(UpMap upMap) {
-                        return upMap.data.type.equals(NewDocType.DOC_IMAGE.toString()) ||  upMap.data.type.equals(NewDocType.DOC_MUSIC.toString());
+                        if(upMap.data.type.equals(NewDocType.DOC_IMAGE.toString()) ||  upMap.data.type.equals(NewDocType.DOC_MUSIC.toString())){
+                            if(upMap.data.type.equals(NewDocType.DOC_IMAGE.toString())){
+                                DocPut.DocPutImage image = (DocPut.DocPutImage) upMap.data.data;
+                                if(image.path.startsWith("image")){
+                                    return false;
+                                }else {
+                                    return true;
+                                }
+                            }else {
+                                DocPut.DocPutMusic music = (DocPut.DocPutMusic) upMap.data.data;
+                                if(music.url.startsWith("http") && music.cover.getPath().startsWith("image")){
+                                    return false;
+                                }else {
+                                    return true;
+                                }
+                            }
+                        }else {
+                            return false;
+                        }
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -102,6 +120,7 @@ public class CreateRichDocPresenter implements CreateRichDocContract.Presenter {
                                         @Override
                                         public LinkedHashMap<UploadEntity,UpMap> call(ApiResult<UploadEntity> uploadEntityApiResult, String s,UpMap i) {
                                             uploadEntityApiResult.getData().setLocalPath(s);
+                                            uploadEntityApiResult.getData().setImg(true);
                                             LinkedHashMap<UploadEntity,UpMap> map = new LinkedHashMap<>();
                                             map.put(uploadEntityApiResult.getData(),i);
                                             return map;
@@ -118,13 +137,17 @@ public class CreateRichDocPresenter implements CreateRichDocContract.Presenter {
                                     new Func5<ApiResult<UploadEntity>, ApiResult<UploadEntity>, String, String, UpMap, LinkedHashMap<UploadEntity,UpMap>>() {
                                         @Override
                                         public LinkedHashMap<UploadEntity,UpMap> call(ApiResult<UploadEntity> uploadEntityApiResult, ApiResult<UploadEntity> uploadEntityApiResult2, String s, String s2, UpMap i) {
-                                            uploadEntityApiResult.getData().setLocalPath(s);
-                                            uploadEntityApiResult.getData().setImg(false);
-                                            uploadEntityApiResult2.getData().setLocalPath(s2);
-                                            uploadEntityApiResult2.getData().setImg(true);
                                             LinkedHashMap<UploadEntity,UpMap> map = new LinkedHashMap<>();
-                                            map.put(uploadEntityApiResult.getData(),i);
-                                            map.put(uploadEntityApiResult2.getData(),i);
+                                            if(!s.startsWith("http")){
+                                                uploadEntityApiResult.getData().setLocalPath(s);
+                                                uploadEntityApiResult.getData().setImg(false);
+                                                map.put(uploadEntityApiResult.getData(),i);
+                                            }
+                                            if(!s2.startsWith("image")){
+                                                uploadEntityApiResult2.getData().setLocalPath(s2);
+                                                uploadEntityApiResult2.getData().setImg(true);
+                                                map.put(uploadEntityApiResult2.getData(),i);
+                                            }
                                             return map;
                                         }
                                     }

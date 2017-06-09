@@ -339,7 +339,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
                     p.removeAccount(true);
                 }
             }
-            PreferenceUtils.clearAuthorInfo();
             PrivateMessageItemEntityDao privateMessageItemEntityDao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
             privateMessageItemEntityDao.deleteAll();
             ChatContentDbEntityDao chatContentDbEntityDao = GreenDaoManager.getInstance().getSession().getChatContentDbEntityDao();
@@ -351,6 +350,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         }catch (Exception e){
             e.printStackTrace();
         }finally {
+            PreferenceUtils.clearAuthorInfo();
             setResult(REQUEST_SETTING_LOGOUT);
             finish();
         }

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Created by yi on 2016/11/29.
  */
 
-public class Image implements Parcelable,Serializable {
+public class Image implements Parcelable {
     private final static String KEY_REAL_PATH = "real_path";
     private final static String KEY_LOCAL_PATH = "local_path";
     private final static String KEY_PATH = "path";

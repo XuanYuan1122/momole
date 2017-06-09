@@ -43,6 +43,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  * Created by yi on 2016/11/29.
@@ -231,7 +232,7 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         .override(DensityUtil.dip2px(mContext,44), DensityUtil.dip2px(mContext,44))
                         .placeholder(R.drawable.bg_default_circle)
                         .error(R.drawable.bg_default_circle)
-                        .transform(new GlideCircleTransform(mContext))
+                        .bitmapTransform(new CropCircleTransformation(mContext))
                         .into(holder.ivCreatorAvatar);
                 holder.ivCreatorAvatar.setTag(R.id.id_creator_uuid, post.getUserId());
             }

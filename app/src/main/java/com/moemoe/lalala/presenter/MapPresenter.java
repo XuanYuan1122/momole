@@ -214,50 +214,50 @@ public class MapPresenter implements MapContract.Presenter {
                 });
     }
 
-    public void addCacheSnowman(Context context, MapWidget map){
-        Layer layer = map.getLayerById(233);
-        if(layer != null){
-            map.removeLayer(233);
-        }
-        MapImgLayer imgLayer = map.createImgLayer(233);
-        if(SnowShowEntity.getPositionCache() != null && SnowShowEntity.getPositionCache().size() > 0){
-            for (int i = 0;i < SnowShowEntity.getPositionCache().size();i++){
-                SnowShowEntity.PositionInfo info = SnowShowEntity.getCachePosition(i);
-                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
-                MapImage mapImage = new MapImage(context,100 + i,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
-                mapImage.setImageDrawable(drawable);
-                imgLayer.addMapObject(mapImage);
-            }
-        }
-        map.invalidate();
-    }
+//    public void addCacheSnowman(Context context, MapWidget map){
+//        Layer layer = map.getLayerById(233);
+//        if(layer != null){
+//            map.removeLayer(233);
+//        }
+//        MapImgLayer imgLayer = map.createImgLayer(233);
+//        if(SnowShowEntity.getPositionCache() != null && SnowShowEntity.getPositionCache().size() > 0){
+//            for (int i = 0;i < SnowShowEntity.getPositionCache().size();i++){
+//                SnowShowEntity.PositionInfo info = SnowShowEntity.getCachePosition(i);
+//                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
+//                MapImage mapImage = new MapImage(context,100 + i,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
+//                mapImage.setImageDrawable(drawable);
+//                imgLayer.addMapObject(mapImage);
+//            }
+//        }
+//        map.invalidate();
+//    }
 
     @Override
     public void addSnowman(Context context, MapWidget map){
-        Layer layer = map.getLayerById(233);
-        if(layer != null){
-            map.removeLayer(233);
-        }
-        MapImgLayer imgLayer = map.createImgLayer(233);
-
-        SnowShowEntity.PositionInfo info = SnowShowEntity.getOnePosition();
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
-        MapImage mapImage = new MapImage(context,100,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
-        mapImage.setImageDrawable(drawable);
-        imgLayer.addMapObject(mapImage);
-
-        info = SnowShowEntity.getOnePosition();
-        drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
-        mapImage = new MapImage(context,101,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
-        mapImage.setImageDrawable(drawable);
-        imgLayer.addMapObject(mapImage);
-
-        info = SnowShowEntity.getOnePosition();
-        drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
-        mapImage = new MapImage(context,102,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
-        mapImage.setImageDrawable(drawable);
-        imgLayer.addMapObject(mapImage);
-        map.invalidate();
+//        Layer layer = map.getLayerById(233);
+//        if(layer != null){
+//            map.removeLayer(233);
+//        }
+//        MapImgLayer imgLayer = map.createImgLayer(233);
+//
+//        SnowShowEntity.PositionInfo info = SnowShowEntity.getOnePosition();
+//        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
+//        MapImage mapImage = new MapImage(context,100,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
+//        mapImage.setImageDrawable(drawable);
+//        imgLayer.addMapObject(mapImage);
+//
+//        info = SnowShowEntity.getOnePosition();
+//        drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
+//        mapImage = new MapImage(context,101,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
+//        mapImage.setImageDrawable(drawable);
+//        imgLayer.addMapObject(mapImage);
+//
+//        info = SnowShowEntity.getOnePosition();
+//        drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
+//        mapImage = new MapImage(context,102,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
+//        mapImage.setImageDrawable(drawable);
+//        imgLayer.addMapObject(mapImage);
+//        map.invalidate();
     }
 
     @Override

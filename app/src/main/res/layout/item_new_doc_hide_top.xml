@@ -37,6 +37,7 @@
         android:layout_marginStart="@dimen/size_18"
         android:layout_marginEnd="@dimen/size_18"
         android:layout_marginRight="@dimen/size_18"
+        android:paddingBottom="@dimen/size_10"
         android:gravity="center_horizontal"
         android:visibility="visible"
         android:background="@drawable/shape_dash_mian_blue">
@@ -51,20 +52,20 @@
 
 
         <TextView
+            android:id="@+id/tv_hide_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="@dimen/size_16"
             android:textColor="@color/main_cyan"
-            android:text="点击查看"/>
+            android:text="@string/label_pay_show"/>
 
         <LinearLayout
+            android:id="@+id/ll_pay_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
-
 
             <TextView
                 android:layout_width="wrap_content"

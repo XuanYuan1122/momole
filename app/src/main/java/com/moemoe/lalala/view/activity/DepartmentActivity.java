@@ -49,8 +49,8 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     private final String EXTRA_NAME = "name";
 
-    @BindView(R.id.app_bar)
-    View mAppBar;
+//    @BindView(R.id.app_bar)
+//    View mAppBar;
     @BindView(R.id.iv_back)
     View mIvBack;
     @BindView(R.id.tv_toolbar_title)
@@ -92,7 +92,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        mAppBar.getBackground().mutate().setAlpha(0);
+        //mAppBar.getBackground().mutate().setAlpha(0);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListAdapter = new DepartmentListAdapter(this);
         mListDocs.getRecyclerView().setAdapter(mListAdapter);
@@ -159,7 +159,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
             }
         });
         mListDocs.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int curY = 0;
+           // int curY = 0;
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -173,8 +173,8 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                curY += dy;
-                toolBarAlpha(curY);
+               // curY += dy;
+               // toolBarAlpha(curY);
             }
         });
         mListDocs.setPullCallback(new PullCallback() {
@@ -207,22 +207,22 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
         mPresenter.requestDocList(0,mRoomId,0);
     }
 
-    public void toolBarAlpha(int curY) {
-        int startOffset = 0;
-        int endOffset = mAppBar.getHeight();
-        if (Math.abs(curY) <= startOffset) {
-            mAppBar.getBackground().mutate().setAlpha(0);
-            mTitle.setTextColor(Color.argb(0, 255, 255, 255));
-        } else if (Math.abs(curY) > startOffset && Math.abs(curY) < endOffset) {
-            float precent = (float) (Math.abs(curY) - startOffset) / endOffset;
-            int alpha = Math.round(precent * 255);
-            mAppBar.getBackground().mutate().setAlpha(alpha);
-            mTitle.setTextColor(Color.argb(alpha, 255, 255, 255));
-        } else if (Math.abs(curY) >= endOffset) {
-            mAppBar.getBackground().mutate().setAlpha(255);
-            mTitle.setTextColor(Color.argb(255, 255, 255, 255));
-        }
-    }
+//    public void toolBarAlpha(int curY) {
+//        int startOffset = 0;
+//        int endOffset = mAppBar.getHeight();
+//        if (Math.abs(curY) <= startOffset) {
+//            mAppBar.getBackground().mutate().setAlpha(0);
+//            mTitle.setTextColor(Color.argb(0, 255, 255, 255));
+//        } else if (Math.abs(curY) > startOffset && Math.abs(curY) < endOffset) {
+//            float precent = (float) (Math.abs(curY) - startOffset) / endOffset;
+//            int alpha = Math.round(precent * 255);
+//            mAppBar.getBackground().mutate().setAlpha(alpha);
+//            mTitle.setTextColor(Color.argb(alpha, 255, 255, 255));
+//        } else if (Math.abs(curY) >= endOffset) {
+//            mAppBar.getBackground().mutate().setAlpha(255);
+//            mTitle.setTextColor(Color.argb(255, 255, 255, 255));
+//        }
+//    }
 
     @Override
     protected void initData() {

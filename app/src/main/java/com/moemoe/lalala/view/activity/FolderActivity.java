@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -196,7 +197,7 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
                     .override(DensityUtil.dip2px(this,40),DensityUtil.dip2px(this,40))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
-                    .transform(new GlideCircleTransform(this))
+                    .bitmapTransform(new CropCircleTransformation(this))
                     .into(mIvAvatar);
             mIvAvatar.setOnClickListener(new NoDoubleClickListener() {
                 @Override

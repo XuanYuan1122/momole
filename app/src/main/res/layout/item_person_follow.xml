@@ -12,6 +12,12 @@
         android:layout_marginStart="@dimen/size_10"
         android:layout_marginLeft="@dimen/size_10"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray_e8e8e8"/>
+
     <RelativeLayout
         android:id="@+id/rl_level_pack"
         android:layout_width="26dp"
@@ -164,6 +170,5 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:layout_alignLeft="@+id/tv_name"
-        android:layout_alignStart="@+id/tv_name"
-        />
+        android:layout_alignStart="@+id/tv_name" />
 </RelativeLayout>

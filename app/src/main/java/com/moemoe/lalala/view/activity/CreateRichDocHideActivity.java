@@ -66,6 +66,7 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     TextView mTvTypeInfo;
 
     private HashMap<String,String> mPathMap;
+    private int mImageSize;
     private ArrayList<RichEntity> mHideList;
     private boolean coinComment;//false coin  true comment
 
@@ -94,6 +95,7 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
         }
         mTypeRoot.setVisibility(View.VISIBLE);
         mPathMap = new HashMap<>();
+        mImageSize = 0;
         mTvMenuLeft.setVisibility(View.VISIBLE);
         ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
         mTvMenuLeft.setText(getString(R.string.label_cancel));
@@ -132,21 +134,31 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
             Observable.from(mHideList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<RichEntity>() {
+                    .subscribe(new Subscriber<RichEntity>() {
                         @Override
-                        public void call(RichEntity richEntity) {
+                        public void onCompleted() {
+                            RichEntity entity1 = mHideList.get(mHideList.size() - 1);
+                            if(TextUtils.isEmpty(entity1.getInputStr())){
+                                mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(RichEntity richEntity) {
                             if(!TextUtils.isEmpty(richEntity.getInputStr())){
                                 mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToEdit(CreateRichDocHideActivity.this,richEntity.getInputStr().toString()));
                             }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
-                                mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH());
+                                mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH(),richEntity.getImage().getSize());
                                 mPathMap.put(richEntity.getImage().getPath(),richEntity.getImage().getPath());
+                                mImageSize++;
                             }
                         }
                     });
-            RichEntity entity1 = mHideList.get(mHideList.size() - 1);
-            if(TextUtils.isEmpty(entity1.getInputStr())){
-                mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
-            }
         }else {
             mRichEt.createFirstEdit();
         }
@@ -161,7 +173,8 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                 .subscribe(new Action1<RichImgRemoveEvent>() {
                     @Override
                     public void call(RichImgRemoveEvent event) {
-                       mPathMap.remove(event.getPath());
+                        mPathMap.remove(event.getPath());
+                        mImageSize--;
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -227,7 +240,8 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     }
 
     private void choosePhoto() {
-        if (mPathMap.size() < ICON_NUM_LIMIT) {
+      //  if (mPathMap.size() < ICON_NUM_LIMIT) {
+        if (mImageSize < ICON_NUM_LIMIT) {
             try {
                 ArrayList<String> temp = new ArrayList<>();
                 DialogUtils.createImgChooseDlg(this, null, this, temp, ICON_NUM_LIMIT).show();
@@ -252,45 +266,46 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
 
                 @Override
                 public void onPhotoGet(final ArrayList<String> photoPaths, boolean override) {
-                    final ArrayList<String> res = new ArrayList<>();
+                   // final ArrayList<String> res = new ArrayList<>();
                     Collections.reverse(photoPaths);
                     createDialog("图片插入中...");
-                    NetaImgCompress.get(CreateRichDocHideActivity.this)
-                            .load(photoPaths)
-                            .asPath()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnError(new Action1<Throwable>() {
-                                @Override
-                                public void call(Throwable throwable) {
-                                    throwable.printStackTrace();
-                                }
-                            })
-                            .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
-                                @Override
-                                public Observable<? extends String> call(Throwable throwable) {
-                                    return Observable.empty();
-                                }
-                            })
-                            .subscribe(new Subscriber<String>() {
-                                @Override
-                                public void onCompleted() {
-                                    for (int i = 0;i < photoPaths.size();i++){
-                                        mPathMap.put(res.get(i),photoPaths.get(i));
-                                    }
-                                    onGetPhotos(res);
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onNext(String s) {
-                                    res.add(s);
-                                }
-                            });
+                    onGetPhotos(photoPaths);
+//                    NetaImgCompress.get(CreateRichDocHideActivity.this)
+//                            .load(photoPaths)
+//                            .asPath()
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .doOnError(new Action1<Throwable>() {
+//                                @Override
+//                                public void call(Throwable throwable) {
+//                                    throwable.printStackTrace();
+//                                }
+//                            })
+//                            .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
+//                                @Override
+//                                public Observable<? extends String> call(Throwable throwable) {
+//                                    return Observable.empty();
+//                                }
+//                            })
+//                            .subscribe(new Subscriber<String>() {
+//                                @Override
+//                                public void onCompleted() {
+//                                    for (int i = 0;i < photoPaths.size();i++){
+//                                        mPathMap.put(res.get(i),photoPaths.get(i));
+//                                    }
+//                                    onGetPhotos(res);
+//                                }
+//
+//                                @Override
+//                                public void onError(Throwable e) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onNext(String s) {
+//                                    res.add(s);
+//                                }
+//                            });
                 }
             });
         }
@@ -329,6 +344,7 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
             @Override
             public void onNext(String s) {
                 mRichEt.insertImage(s);
+                mImageSize++;
             }
         });
     }

@@ -20,6 +20,8 @@ import com.moemoe.lalala.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
 /**
  * Created by yi on 2017/3/13.
  */
@@ -83,7 +85,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             Glide.with(context)
                     .load(StringUtils.getUrl(context, path, DensityUtil.dip2px(context,40),DensityUtil.dip2px(context,40),false,true))
-                    .transform(new GlideCircleTransform(context))
+                    .bitmapTransform(new CropCircleTransformation(context))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .into(chatViewHolder.ivAvatar);

@@ -47,6 +47,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -214,7 +215,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                     .override(DensityUtil.dip2px(getContext(),35), DensityUtil.dip2px(getContext(),35))
                     .placeholder(R.drawable.bg_default_circle)
                     .error(R.drawable.bg_default_circle)
-                    .transform(new GlideCircleTransform(getContext()))
+                    .bitmapTransform(new CropCircleTransformation(getContext()))
                     .into(ivCreator);
             tvCreatorName.setText(commentEntity.getFromUserName());
             tvTime.setText(StringUtils.timeFormate(commentEntity.getCreateTime()));

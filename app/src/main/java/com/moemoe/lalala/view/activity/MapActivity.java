@@ -976,7 +976,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null) mPresenter.release();
         SnowShowEntity.onDestroy(this);
         if(isGisterReciver){
             unregisterReceiver(mReceiver);

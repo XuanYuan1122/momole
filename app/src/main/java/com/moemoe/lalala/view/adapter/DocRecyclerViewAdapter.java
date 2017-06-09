@@ -72,6 +72,7 @@ import com.moemoe.lalala.view.widget.view.DocLabelView;
 import java.io.File;
 import java.util.ArrayList;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -314,25 +315,36 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }else {
                 hideViewHolder.llHide.setVisibility(View.VISIBLE);
                 hideViewHolder.llTop.setVisibility(View.GONE);
+                if(!mDocBean.isCoinComment()){
+                    hideViewHolder.payRoot.setVisibility(View.VISIBLE);
+                    hideViewHolder.hideText.setText(mContext.getString(R.string.label_pay_show));
+                }else {
+                    hideViewHolder.payRoot.setVisibility(View.GONE);
+                    hideViewHolder.hideText.setText(mContext.getString(R.string.label_reply_show));
+                }
             }
             hideViewHolder.llHide.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-                    alertDialogUtil.createNormalDialog(mContext,null);
-                    alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
-                        @Override
-                        public void CancelOnClick() {
-                            alertDialogUtil.dismissDialog();
-                        }
+                    if(!mDocBean.isCoinComment()){
+                        final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+                        alertDialogUtil.createNormalDialog(mContext,null);
+                        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                            @Override
+                            public void CancelOnClick() {
+                                alertDialogUtil.dismissDialog();
+                            }
 
-                        @Override
-                        public void ConfirmOnClick() {
-                            getCoinContent();
-                            alertDialogUtil.dismissDialog();
-                        }
-                    });
-                    alertDialogUtil.showDialog();
+                            @Override
+                            public void ConfirmOnClick() {
+                                getCoinContent();
+                                alertDialogUtil.dismissDialog();
+                            }
+                        });
+                        alertDialogUtil.showDialog();
+                    }else {
+                        ((NewDocDetailActivity)mContext).replyNormal();
+                    }
                 }
             });
         }else if(holder instanceof FloorHolder){
@@ -589,7 +601,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 .override(DensityUtil.dip2px(mContext,44), DensityUtil.dip2px(mContext,44))
                 .placeholder(R.drawable.bg_default_circle)
                 .error(R.drawable.bg_default_circle)
-                .transform(new GlideCircleTransform(mContext))
+                .bitmapTransform(new CropCircleTransformation(mContext))
                 .into(holder.mIvCreator);
 
         if(mDocBean.getUserId().equals(PreferenceUtils.getUUid())){
@@ -735,7 +747,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 layoutParams.width = wh[0];
                 layoutParams.height = wh[1];
                 holder.mIvLongImage.setLayoutParams(layoutParams);
-                holder.mIvLongImage.requestLayout();
                 if(longImage.exists()){
                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                 }else {
@@ -769,7 +780,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     layoutParams.width = wh[0];
                     layoutParams.height = wh[1];
                     holder.mIvImage.setLayoutParams(layoutParams);
-                    holder.mIvImage.requestLayout();
                     Glide.with(mContext)
                             .load(ApiService.URL_QINIU + image.getPath())
                             .asGif()
@@ -783,7 +793,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     layoutParams.width = wh[0];
                     layoutParams.height = wh[1];
                     holder.mIvImage.setLayoutParams(layoutParams);
-                    holder.mIvImage.requestLayout();
                     Glide.with(mContext)
                             .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + image.getPath(), wh[0], wh[1], true, true))
                             .override(wh[0], wh[1])
@@ -825,7 +834,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 layoutParams.width = wh[0];
                 layoutParams.height = wh[1];
                 holder.mIvLongImage.setLayoutParams(layoutParams);
-                holder.mIvLongImage.requestLayout();
                 if(longImage.exists()){
                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                 }else {
@@ -857,7 +865,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     layoutParams.width = wh[0];
                     layoutParams.height = wh[1];
                     holder.mIvImage.setLayoutParams(layoutParams);
-                    holder.mIvImage.requestLayout();
                     Glide.with(mContext)
                             .load(ApiService.URL_QINIU + image.getPath())
                             .asGif()
@@ -871,7 +878,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     layoutParams.width = wh[0];
                     layoutParams.height = wh[1];
                     holder.mIvImage.setLayoutParams(layoutParams);
-                    holder.mIvImage.requestLayout();
                     Glide.with(mContext)
                             .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + image.getPath(), wh[0], wh[1], true, true))
                             .override(wh[0], wh[1])
@@ -955,7 +961,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     layoutParams.width = wh[0];
                     layoutParams.height = wh[1];
                     mMusicHolder.mIvLongImage.setLayoutParams(layoutParams);
-                    mMusicHolder.mIvLongImage.requestLayout();
                     if(longImage.exists()){
                         mMusicHolder.mIvLongImage.setImage(longImage.getAbsolutePath());
                     }else {
@@ -987,7 +992,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         layoutParams.width = wh[0];
                         layoutParams.height = wh[1];
                         mMusicHolder.mIvImage.setLayoutParams(layoutParams);
-                        mMusicHolder.mIvImage.requestLayout();
                         Glide.with(mContext)
                                 .load(ApiService.URL_QINIU + image.getPath())
                                 .asGif()
@@ -1000,7 +1004,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         layoutParams.width = wh[0];
                         layoutParams.height = wh[1];
                         mMusicHolder.mIvImage.setLayoutParams(layoutParams);
-                        mMusicHolder.mIvImage.requestLayout();
                         Glide.with(mContext)
                                 .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + image.getPath(), wh[0], wh[1], true, true))
                                 .override(wh[0], wh[1])
@@ -1324,7 +1327,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + bean.getFromUserIcon().getPath(), DensityUtil.dip2px(mContext,36), DensityUtil.dip2px(mContext,36), false, false))
                 .placeholder(R.drawable.bg_default_circle)
                 .error(R.drawable.bg_default_circle)
-                .transform(new GlideCircleTransform(mContext))
+                .bitmapTransform(new CropCircleTransformation(mContext))
                 .into(holder.mIvCreator);
         holder.mTvCreatorName.setText(bean.getFromUserName());
         holder.mTvTime.setText(StringUtils.timeFormate(bean.getCreateTime()));
@@ -1536,15 +1539,20 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
          View llTop;
          View llHide;
+         TextView hideText;
+         View payRoot;
+
          CoinHideViewHolder(View itemView) {
-            super(itemView);
-            llTop = itemView.findViewById(R.id.ll_hide_top);
-            llHide = itemView.findViewById(R.id.ll_hide);
+             super(itemView);
+             llTop = itemView.findViewById(R.id.ll_hide_top);
+             llHide = itemView.findViewById(R.id.ll_hide);
+             hideText = (TextView) itemView.findViewById(R.id.tv_hide_text);
+             payRoot = itemView.findViewById(R.id.ll_pay_root);
         }
     }
 
     private void setGif(Image image, ImageView gifImageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
+        final int[] wh = BitmapUtils.getDocIconSize(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(mContext)
@@ -1557,7 +1565,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void setImage(Image image, final ImageView imageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
+        final int[] wh = BitmapUtils.getDocIconSize(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(mContext)

@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -181,8 +182,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             Glide.with(context)
                     .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getImage(), DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80),false,true))
                     .override(DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80))
-                    .error(R.drawable.bg_default_square)
-                    .placeholder(R.drawable.bg_default_square)
+                    .error(R.drawable.bg_cardbg_nopic)
+                    .placeholder(R.drawable.bg_cardbg_nopic)
                     .into(searchDocViewHolder.img);
             searchDocViewHolder.title.setText(entity.getTitle());
             searchDocViewHolder.content.setText(entity.getDesc());
@@ -217,7 +218,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             Glide.with(context)
                     .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getUserIcon(), DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50),false,true))
                     .override(DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50))
-                    .transform(new GlideCircleTransform(context))
+                    .bitmapTransform(new CropCircleTransformation(context))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .into(followViewHolder.img);
@@ -277,14 +278,13 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             followViewHolder.content.setText(entity.getSignature());
         }else if(mType == 2){
             if(holder instanceof MsgViewHolder){
-                ReplyEntity bean = (ReplyEntity) getItem(position - 2);
+                ReplyEntity bean = (ReplyEntity) getItem(position - 3);
                 MsgViewHolder msgViewHolder = (MsgViewHolder) holder;
                 Glide.with(context)
                         .load(StringUtils.getUrl(context, ApiService.URL_QINIU + bean.getFromIcon().getPath(), DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50),false,false))
-                        .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
                         .placeholder(R.drawable.bg_default_circle)
                         .error(R.drawable.bg_default_circle)
-                        .transform(new GlideCircleTransform(context))
+                        .bitmapTransform(new CropCircleTransformation(context))
                         .into(msgViewHolder.ivAvatar);
                 msgViewHolder.tvName.setText(bean.getFromName());
                 msgViewHolder.tvDate.setText(StringUtils.timeFormate(bean.getCreateTime()));
@@ -297,7 +297,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
-                            .transform(new GlideCircleTransform(context))
                             .into(viewHolder.ivImg);
                     viewHolder.tvName.setText("系统通知");
                     if(PreferenceUtils.getMessageDot(context,"system")){
@@ -311,7 +310,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
-                            .transform(new GlideCircleTransform(context))
                             .into(viewHolder.ivImg);
                     viewHolder.tvName.setText("@我的");
                     if(PreferenceUtils.getMessageDot(context,"at_user")){
@@ -325,7 +323,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
-                            .transform(new GlideCircleTransform(context))
                             .into(viewHolder.ivImg);
                     viewHolder.tvName.setText("Neta官方");
                     if(PreferenceUtils.getMessageDot(context,"neta")){
@@ -363,7 +360,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .override(DensityUtil.dip2px(context,35), DensityUtil.dip2px(context,35))
                     .placeholder(R.drawable.bg_default_circle)
                     .error(R.drawable.bg_default_circle)
-                    .transform(new GlideCircleTransform(context))
+                    .bitmapTransform(new CropCircleTransformation(context))
                     .into(commentHolder.ivCreator);
             commentHolder.tvCreatorName.setText(commentEntity.getFromUserName());
             commentHolder.tvTime.setText(StringUtils.timeFormate(commentEntity.getCreateTime()));
@@ -586,7 +583,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
                     .placeholder(R.drawable.bg_default_circle)
                     .error(R.drawable.bg_default_circle)
-                    .transform(new GlideCircleTransform(context))
+                    .bitmapTransform(new CropCircleTransformation(context))
                     .into(msgViewHolder.ivAvatar);
             msgViewHolder.tvName.setText(bean.getName());
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());

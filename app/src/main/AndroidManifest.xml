@@ -435,7 +435,7 @@
         <activity android:name=".view.activity.ImageBigSelectActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme"/>
+            android:theme="@style/AppTheme.NoActionBar.FullScreen"/>
         <activity android:name=".view.activity.FileDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -128,6 +129,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
         mTvRaw.setVisibility(View.GONE);
         mTvCount.setVisibility(View.GONE);
         mBarRoot.setVisibility(View.VISIBLE);
+        mBarRoot.setBackgroundColor(ContextCompat.getColor(this,R.color.alph_80));
         mBottomBarRoot.setVisibility(View.VISIBLE);
         mItems = getIntent().getParcelableArrayListExtra("list");
         mFolderId = getIntent().getStringExtra("folderId");

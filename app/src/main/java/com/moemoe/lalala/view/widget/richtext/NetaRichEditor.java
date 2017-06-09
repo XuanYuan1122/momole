@@ -436,9 +436,9 @@ public class NetaRichEditor extends ScrollView {
         //删除文件夹里的图片
         List<RichEntity> dataList = buildEditData();
         RichEntity editData = dataList.get(disappearingImageIndex);
-        if (editData.getImage() != null && !TextUtils.isEmpty(editData.getImage().getPath())) {
-            if(!FileUtil.isGif(editData.getImage().getPath())) FileUtil.deleteFile(editData.getImage().getPath());
-        }
+//        if (editData.getImage() != null && !TextUtils.isEmpty(editData.getImage().getPath())) {
+//            if(!FileUtil.isGif(editData.getImage().getPath())) FileUtil.deleteFile(editData.getImage().getPath());
+//        }
         RxBus.getInstance().post(new RichImgRemoveEvent(editData.getImage().getPath()));
         allLayout.removeView(view);
     }
@@ -592,15 +592,16 @@ public class NetaRichEditor extends ScrollView {
         allLayout.addView(editText2, index,editParam);
     }
 
-    public void addImageViewAtIndex(final int index, String imagePath,int w,int h){
+    public void addImageViewAtIndex(final int index, String imagePath,int w,int h,long size){
         final RelativeLayout imageLayout = createImageLayout();
         DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
         final LongImageView longImageView = (LongImageView) imageLayout.findViewById(R.id.edit_longImageView);
         int width;
         int height;
-        if(w == -1 && h == -1){
+        if(w == 0 && h == 0){
             width = BitmapUtils.getImageSize(imagePath)[0];
             height = BitmapUtils.getImageSize(imagePath)[1];
+            size = new File(imagePath).length();
         }else {
             width = w;
             height = h;
@@ -615,9 +616,10 @@ public class NetaRichEditor extends ScrollView {
             longImageView.setLayoutParams(layoutParams);
             longImageView.requestLayout();
             Image image = new Image();
-            image.setH(h);
-            image.setW(w);
+            image.setH(height);
+            image.setW(width);
             image.setPath(imagePath);
+            image.setSize(size);
             longImageView.setImage(image);
             if(imagePath.startsWith("image")){
                 String temp = EncoderUtils.MD5(ApiService.URL_QINIU + image.getPath()) + ".jpg";
@@ -653,8 +655,9 @@ public class NetaRichEditor extends ScrollView {
             imageView.setVisibility(VISIBLE);
             longImageView.setVisibility(GONE);
             Image image = new Image();
-            image.setH(h);
-            image.setW(w);
+            image.setH(height);
+            image.setW(width);
+            image.setSize(size);
             image.setPath(imagePath);
             imageView.setImage(image);
             if(imagePath.startsWith("image")){
@@ -696,7 +699,7 @@ public class NetaRichEditor extends ScrollView {
      * 在特定位置添加ImageView
      */
     public void addImageViewAtIndex(int index, String imagePath) {
-        addImageViewAtIndex(index,imagePath,-1,-1);
+        addImageViewAtIndex(index,imagePath,0,0,0);
     }
 
     /**
@@ -720,15 +723,17 @@ public class NetaRichEditor extends ScrollView {
                 DataImageView item = (DataImageView) itemView.findViewById(R.id.edit_imageView);
                 LongImageView itemL = (LongImageView) itemView.findViewById(R.id.edit_longImageView);
                 Image image = new Image();
-                if(!TextUtils.isEmpty(item.getImage().getPath())){
+                if(item.getImage() != null){
                     image.setPath(item.getImage().getPath());
                     image.setH(item.getImage().getH());
                     image.setW(item.getImage().getW());
+                    image.setSize(item.getImage().getSize());
                     itemData.setImage(image);
                 }else {
                     image.setPath(itemL.getImage().getPath());
                     image.setH(itemL.getImage().getH());
                     image.setW(itemL.getImage().getW());
+                    image.setSize(itemL.getImage().getSize());
                     itemData.setImage(image);
                 }
                 dataList.add(itemData);

@@ -418,7 +418,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 .override(DensityUtil.dip2px(this,90),DensityUtil.dip2px(this,90))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
-                .transform(new GlideCircleTransform(this,DensityUtil.dip2px(this,3)))
+                .bitmapTransform(new GlideCircleTransform(this,DensityUtil.dip2px(this,3)))
                 .into(mIvAvatar);
         mTvName.setText(info.getUserName());
         if("F".equals(info.getSex())){
