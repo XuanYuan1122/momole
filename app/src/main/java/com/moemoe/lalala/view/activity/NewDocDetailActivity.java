@@ -988,7 +988,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mDoc = entity;
         mIsLoading = false;
         mList.setComplete();
-        isReplyShow = entity.isCoinComment() && entity.getCoinDetails() != null && entity.getCoinDetails().size() <= 0;
+        isReplyShow = entity.isCoinComment() && (entity.getCoinDetails() == null || (entity.getCoinDetails() != null && entity.getCoinDetails().size() <= 0));
         mList.setLoadMoreEnabled(true);
         mCommentNum = entity.getComments();
         hasLoaded = true;
