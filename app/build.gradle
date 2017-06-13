@@ -83,9 +83,9 @@ android {
             }
         }
         debug{
-          //  buildConfigField("String","BASE_URL","\"http://192.168.1.62:8088/\"")
+            buildConfigField("String","BASE_URL","\"http://192.168.1.37:8088/\"")
            // buildConfigField("String","BASE_URL","\"http://123.58.136.98:8088/\"")
-            buildConfigField("String","BASE_URL","\"http://2333.moemoe.la/\"")
+          //  buildConfigField("String","BASE_URL","\"http://2333.moemoe.la/\"")
             buildConfigField("String", "NOT_FOUND_PAGE", "\"http://s.moemoe.la/404.html\"")
             //混淆
             minifyEnabled false

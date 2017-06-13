@@ -597,7 +597,7 @@ public class StringUtils {
                 String endStr = res.substring(stringBuilder.getSpanEnd(span) + step);
                 str = "<at_user user_id="+ span.getmUrl() + ">" + str + "</at_user>";
                 res = beginStr + str + endStr;
-                step = res.length() - before;
+                step += res.length() - before;
             }
         }else {
             res = stringBuilder.toString();
