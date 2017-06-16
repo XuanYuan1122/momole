@@ -32,7 +32,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -603,6 +605,16 @@ public class StringUtils {
             res = stringBuilder.toString();
         }
         return res;
+    }
+
+    public static Set<String> getAtUserIds(CharSequence sequence){
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(sequence);
+        CustomUrlSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),CustomUrlSpan.class);
+        Set<String> ids = new HashSet<>();
+        for (CustomUrlSpan span : spen) {
+            ids.add(span.getmUrl());
+        }
+        return ids;
     }
 
     /**

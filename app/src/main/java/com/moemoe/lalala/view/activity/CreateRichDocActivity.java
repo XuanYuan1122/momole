@@ -121,6 +121,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private Image mMusicCover;
     private int mDocType;
     private RichDocListEntity mDoc;
+    private ArrayList<String> mUserIds;
 
     @Override
     protected int getLayoutId() {
@@ -151,6 +152,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mTitleRoot.setVisibility(View.VISIBLE);
 
         mHideList = new ArrayList<>();
+        mUserIds = new ArrayList<>();
         mTvMenuLeft.setVisibility(View.VISIBLE);
         ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
@@ -350,6 +352,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                     DocPut.DocPutText docPutText = new DocPut.DocPutText();
                     docPutText.text = StringUtils.buildDataAtUser(entity.getInputStr());
                     mDocEntity.details.add(new DocPut.DocDetail(NewDocType.DOC_TEXT.toString(), docPutText));
+                    mDocEntity.userIds.addAll(StringUtils.getAtUserIds(entity.getInputStr()));
                 }else if(entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
                     DocPut.DocPutImage docPutImage = new DocPut.DocPutImage();
                     docPutImage.path = entity.getImage().getPath();
@@ -375,6 +378,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                     mDocEntity.coin.details.add(new DocPut.DocDetail(NewDocType.DOC_IMAGE.toString(), docPutImage));
                 }
             }
+            mDocEntity.userIds.addAll(mUserIds);
             mDocEntity.coinComment = mHideType;
             if(mMusicInfo != null){
                 DocPut.DocPutMusic docPutMusic = new DocPut.DocPutMusic();
@@ -482,6 +486,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             if(data != null){
                 mHideList = data.getParcelableArrayListExtra("hide_list");
                 mHideType = data.getBooleanExtra("hide_type",false);
+                mUserIds = data.getStringArrayListExtra("at_user");
                 if(mHideList.size() > 0){
                     mIvAddHide.setSelected(true);
                 }else {

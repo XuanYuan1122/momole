@@ -1,6 +1,8 @@
 package com.moemoe.lalala.model.entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Haru on 2016/7/11 0011.
@@ -14,11 +16,13 @@ public class DocPut {
     public String docType;
     public String docTypeSchema;
     public boolean coinComment;
+    public Set<String> userIds;
 
     public DocPut(){
         tags = new ArrayList<>();
         details = new ArrayList<>();
         coin = new DocPutCoin();
+        userIds = new HashSet<>();
     }
 
     public class DocPutCoin{

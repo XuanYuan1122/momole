@@ -23,6 +23,8 @@ import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -224,14 +226,17 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     private void done(){
         if(mRichEt.hasContent()){
             mHideList = (ArrayList<RichEntity>) mRichEt.buildEditData();
+            ArrayList<String> ids = new ArrayList<>();
             for (RichEntity entity : mHideList){
                 if (!TextUtils.isEmpty(entity.getInputStr())) {
                     entity.setInputStr(StringUtils.buildDataAtUser(entity.getInputStr()));
+                    ids.addAll(StringUtils.getAtUserIds(entity.getInputStr()));
                 }
             }
             Intent i = new Intent();
             i.putParcelableArrayListExtra("hide_list",mHideList);
             i.putExtra("hide_type",coinComment);
+            i.putStringArrayListExtra("at_user",ids);
             setResult(RESULT_OK,i);
         }else {
             setResult(RESULT_OK);
