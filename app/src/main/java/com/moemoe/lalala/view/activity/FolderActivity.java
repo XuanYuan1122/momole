@@ -27,7 +27,7 @@ import com.moemoe.lalala.event.DirBuyEvent;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
-import com.moemoe.lalala.model.entity.BookEntity;
+import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
@@ -35,7 +35,6 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.GridItemDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -532,13 +531,13 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
 
     private void goToRead(FileEntity entity){
         Intent i = new Intent(this,ReadActivity.class);
-        ArrayList<BookEntity> bookList = new ArrayList<>();
+        ArrayList<BookInfo> bookList = new ArrayList<>();
         int position = mCurList.indexOf(entity);
         for (FileEntity entity1 : mCurList){
             if(mCurList.indexOf(entity1) <= position)
                 continue;
             if(entity1.getType().equals("txt")){
-                BookEntity book = new BookEntity();
+                BookInfo book = new BookInfo();
                 book.setTitle(entity1.getFileName());
                 book.setFromSD(true);
                 book.setId(entity1.getFileId());
@@ -546,7 +545,7 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
                 bookList.add(book);
             }
         }
-        BookEntity mBook = new BookEntity();
+        BookInfo mBook = new BookInfo();
         mBook.setTitle(entity.getFileName());
         mBook.setFromSD(true);
         mBook.setId(entity.getFileId());

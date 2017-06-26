@@ -15,6 +15,8 @@ import com.moemoe.lalala.event.SearchChangedEvent;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.presenter.PersonaListPresenter;
 import com.moemoe.lalala.presenter.PersonalListContract;
+import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.GridItemDecoration;
 import com.moemoe.lalala.view.activity.FolderActivity;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
@@ -51,7 +53,7 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_simple_pulltorefresh_list_10;
+        return R.layout.ac_simple_pulltorefresh_list;
     }
 
     public static SearchBagFragment newInstance(){
@@ -78,6 +80,7 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(),2);
         mListDocs.setLayoutManager(layoutManager);
+        mListDocs.getRecyclerView().addItemDecoration(new GridItemDecoration(DensityUtil.dip2px(getContext(),10)));
         mListDocs.setLoadMoreEnabled(false);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override

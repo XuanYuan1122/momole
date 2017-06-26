@@ -5,7 +5,7 @@ import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
-import com.moemoe.lalala.model.entity.BagFolderEntity;
+import com.moemoe.lalala.model.entity.BagFolderInfo;
 import com.moemoe.lalala.model.entity.BagModifyEntity;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.BuildEntity;
@@ -408,7 +408,7 @@ public interface ApiService {
     Observable<ApiResult<ArrayList<UploadResultEntity>>> checkMd5(@Body ArrayList<NewUploadEntity> uploadentities);
 
     @POST("api/bag/folder/add")
-    Observable<ApiResult> createFolder(@Body BagFolderEntity entity);
+    Observable<ApiResult> createFolder(@Body BagFolderInfo entity);
 
     @POST("api/bag/folder/{folderId}/upload")
     Observable<ApiResult> uploadFolder(@Path("folderId")String folderId,@Body ArrayList<UploadResultEntity> files);
@@ -444,7 +444,7 @@ public interface ApiService {
     Observable<ApiResult> deleteFolders(@Body ArrayList<String> folderIds);
 
     @POST("api/bag/folder/{folderId}/update")
-    Observable<ApiResult> modifyFolder(@Path("folderId")String folderId,@Body BagFolderEntity.FolderInfo userBagFolder);
+    Observable<ApiResult> modifyFolder(@Path("folderId")String folderId,@Body BagFolderInfo.FolderInfo userBagFolder);
 
     @POST("api/bag/folder/{folderId}/file/delete")
     Observable<ApiResult> deleteFiles(@Path("folderId")String folderId,@Body ArrayList<String> fileIds);

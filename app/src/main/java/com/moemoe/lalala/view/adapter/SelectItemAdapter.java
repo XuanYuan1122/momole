@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.model.entity.BookEntity;
+import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 
@@ -72,13 +72,13 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
                         .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
                         .into(holder.mIvImg);
                 holder.mTvTitle.setText(((MusicLoader.MusicInfo) path).getTitle());
-            }else if(path instanceof BookEntity){
+            }else if(path instanceof BookInfo){
                 Glide.with(mContext)
                         .load(R.drawable.ic_word_choice)
                         .centerCrop()
                         .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
                         .into(holder.mIvImg);
-                holder.mTvTitle.setText(((BookEntity) path).getTitle());
+                holder.mTvTitle.setText(((BookInfo) path).getTitle());
             }else {
                 Glide.with(mContext)
                         .load(path)

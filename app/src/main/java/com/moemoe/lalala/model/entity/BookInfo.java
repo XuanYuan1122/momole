@@ -8,7 +8,7 @@ import android.os.Parcelable;
  * Created by yi on 2017/3/27.
  */
 
-public class BookEntity implements Parcelable {
+public class BookInfo implements Parcelable {
 
     private String id;
     private String author;
@@ -83,10 +83,10 @@ public class BookEntity implements Parcelable {
         this.lastChapter = lastChapter;
     }
 
-    public static final Creator<BookEntity> CREATOR = new Creator<BookEntity>() {
+    public static final Creator<BookInfo> CREATOR = new Creator<BookInfo>() {
         @Override
-        public BookEntity createFromParcel(Parcel in) {
-            BookEntity entity = new BookEntity();
+        public BookInfo createFromParcel(Parcel in) {
+            BookInfo entity = new BookInfo();
             Bundle bundle = in.readBundle(getClass().getClassLoader());
             entity.id = bundle.getString("id");
             entity.author = bundle.getString("author");
@@ -100,8 +100,8 @@ public class BookEntity implements Parcelable {
         }
 
         @Override
-        public BookEntity[] newArray(int size) {
-            return new BookEntity[size];
+        public BookInfo[] newArray(int size) {
+            return new BookInfo[size];
         }
     };
 

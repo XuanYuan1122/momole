@@ -273,6 +273,15 @@
     <string name="label_only_host">只看楼主</string>
     <string name="label_pay_show">点击查看</string>
     <string name="label_reply_show">回复可见</string>
+    <string name="label_coin_shop">节操商城</string>
+    <string name="label_order_state">订单状态:</string>
+    <string name="label_order_num">订单号:</string>
+    <string name="label_order_phone">手机号:</string>
+    <string name="label_order_address">收货信息</string>
+    <string name="label_order_address_goto">前往填写</string>
+    <string name="label_order_mark">备注:</string>
+    <string name="label_order_cancel">取消订单</string>
+    <string name="label_order_done">提交订单</string>
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>
@@ -347,6 +356,8 @@
     <string name="a_hint_input_content">请输入内容</string>
     <string name="a_hint_input_comment">输入评论...</string>
     <string name="a_hint_input_comment_report">补充...</string>
+    <string name="a_hint_input_order_phone">需要充值的手机号码</string>
+    <string name="a_hint_input_order_mark">其他要求说明</string>
 
     <string name="day_picker_description" msgid="3968620852217927702">"按月份划分的日期网格"</string>
     <string name="year_picker_description" msgid="6963340404644587098">"年份列表"</string>

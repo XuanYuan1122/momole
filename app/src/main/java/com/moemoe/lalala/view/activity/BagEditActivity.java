@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -29,7 +28,7 @@ import com.moemoe.lalala.di.modules.BagModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
-import com.moemoe.lalala.model.entity.BookEntity;
+import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.presenter.BagContract;
@@ -487,8 +486,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                     size += new File(((Image) o).getPath()).length();
                 }else if(o instanceof MusicLoader.MusicInfo){
                     size += new File(((MusicLoader.MusicInfo) o).getUrl()).length();
-                }else if(o instanceof BookEntity){
-                    size += new File(((BookEntity) o).getPath()).length();
+                }else if(o instanceof BookInfo){
+                    size += new File(((BookInfo) o).getPath()).length();
                 }
             }
             mPresenter.checkSize(size);
@@ -633,7 +632,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             }
         }else if(requestCode == REQ_GET_FROM_SELECT_BOOK && resultCode == RESULT_OK){
             if(data != null){
-                BookEntity entity = data.getParcelableExtra(SelectBookActivity.EXTRA_SELECT_BOOK);
+                BookInfo entity = data.getParcelableExtra(SelectBookActivity.EXTRA_SELECT_BOOK);
                 if(!checkInfo(entity.getPath())){
                     mItemPaths.add(entity);
                 }
@@ -695,8 +694,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                 if(info.getUrl().equals(path)){
                     return true;
                 }
-            }else if(o instanceof BookEntity){
-                BookEntity entity = (BookEntity) o;
+            }else if(o instanceof BookInfo){
+                BookInfo entity = (BookInfo) o;
                 if(entity.getPath().equals(path)){
                     return true;
                 }

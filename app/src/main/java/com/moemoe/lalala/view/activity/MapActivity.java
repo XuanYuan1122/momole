@@ -124,6 +124,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     ImageView mIvBag;
     @BindView(R.id.iv_search)
     ImageView mIvSearch;
+    @BindView(R.id.iv_shop)
+    ImageView mIvShop;
     @BindView(R.id.iv_cal)
     ImageView mIvCal;
     @BindView(R.id.iv_card)
@@ -848,6 +850,9 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 Intent i6 = new Intent(MapActivity.this,SearchActivity.class);
                 startActivity(i6);
                 break;
+            case R.id.iv_shop:
+
+                break;
         }
     }
 
@@ -878,6 +883,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         bagAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",-mIvSearch.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
         searchAnimator.setInterpolator(new OvershootInterpolator());
+        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",-mIvShop.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
+        shopAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator calAnimator = ObjectAnimator.ofFloat(mIvCal,"translationY",mIvCal.getHeight()+DensityUtil.dip2px(this,5),0).setDuration(300);
         calAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvSquare,"translationY",mIvSquare.getHeight()+DensityUtil.dip2px(this,5),0).setDuration(300);
@@ -889,7 +896,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
         set.play(bagAnimator).with(searchAnimator);
-        set.play(searchAnimator).with(squareAnimator);
+        set.play(searchAnimator).with(shopAnimator);
+        set.play(shopAnimator).with(squareAnimator);
         set.play(squareAnimator).with(calAnimator);
         set.play(calAnimator).with(galAnimator);
         set.play(galAnimator).with(signAnimator);
@@ -903,6 +911,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         bagAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",0,-mIvSearch.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
         searchAnimator.setInterpolator(new OvershootInterpolator());
+        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",0,-mIvShop.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
+        shopAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator calAnimator = ObjectAnimator.ofFloat(mIvCal,"translationY",0,mIvCal.getHeight()+DensityUtil.dip2px(this,5)).setDuration(300);
         calAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvSquare,"translationY",0,mIvSquare.getHeight()+DensityUtil.dip2px(this,5)).setDuration(300);
@@ -914,7 +924,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
         set.play(bagAnimator).with(searchAnimator);
-        set.play(searchAnimator).with(calAnimator);
+        set.play(searchAnimator).with(shopAnimator);
+        set.play(shopAnimator).with(calAnimator);
         set.play(calAnimator).with(squareAnimator);
         set.play(squareAnimator).with(galAnimator);
         set.play(galAnimator).with(signAnimator);
@@ -925,6 +936,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mCardRoot.setVisibility(View.VISIBLE);
         mIvBag.setVisibility(View.VISIBLE);
         mIvSearch.setVisibility(View.VISIBLE);
+        mIvShop.setVisibility(View.VISIBLE);
         mIvCal.setVisibility(View.VISIBLE);
         mIvSquare.setVisibility(View.VISIBLE);
         mIvGal.setVisibility(View.VISIBLE);
@@ -935,6 +947,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mCardRoot.setVisibility(View.INVISIBLE);
         mIvBag.setVisibility(View.INVISIBLE);
         mIvSearch.setVisibility(View.INVISIBLE);
+        mIvShop.setVisibility(View.INVISIBLE);
         mIvCal.setVisibility(View.INVISIBLE);
         mIvSquare.setVisibility(View.INVISIBLE);
         mIvGal.setVisibility(View.INVISIBLE);

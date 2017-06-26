@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by yi on 2017/1/19.
  */
 
-public class BagFolderEntity {
+public class BagFolderInfo {
 
     public ArrayList<UploadResultEntity> files;
     public FolderInfo folderInfo;

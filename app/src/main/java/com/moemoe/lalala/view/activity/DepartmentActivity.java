@@ -1,14 +1,11 @@
 package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -66,7 +63,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_bag_favorite;
+        return R.layout.ac_bar_list;
     }
 
     @Override

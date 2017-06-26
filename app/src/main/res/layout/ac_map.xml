@@ -82,6 +82,18 @@
         android:layout_marginEnd="@dimen/size_8"
         android:src="@drawable/btn_map_search"/>
 
+    <ImageView
+        android:id="@+id/iv_shop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/iv_search"
+        android:layout_toStartOf="@+id/iv_search"
+        android:layout_marginTop="14dp"
+        android:paddingTop="@dimen/status_bar_height"
+        android:layout_marginRight="@dimen/size_8"
+        android:layout_marginEnd="@dimen/size_8"
+        android:src="@drawable/btn_map_shop"/>
+
 
     <ImageView
         android:id="@+id/iv_live2d"

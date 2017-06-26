@@ -3,7 +3,6 @@ package com.moemoe.lalala.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,7 +54,7 @@ public class BagFollowActivity extends BaseAppCompatActivity implements BagFollo
 
     @Override
     protected int getLayoutId() {
-        return R.layout.ac_bag_favorite;
+        return R.layout.ac_bar_list;
     }
 
     @Override

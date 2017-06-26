@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.model.entity.BookEntity;
+import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.StorageUtils;
 
@@ -106,7 +105,7 @@ public class SelectBookActivity extends BaseAppCompatActivity {
             int idindex = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID);
             int dataindex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
             int sizeindex = cursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE);
-            List<BookEntity> list = new ArrayList<>();
+            List<BookInfo> list = new ArrayList<>();
 
 
             do {
@@ -117,7 +116,7 @@ public class SelectBookActivity extends BaseAppCompatActivity {
                 if (name.lastIndexOf(".") > 0)
                     name = name.substring(0, name.lastIndexOf("."));
 
-                BookEntity book = new BookEntity();
+                BookInfo book = new BookInfo();
                 book.setId(name);
                 book.setPath(path);
                 book.setTitle(name);
@@ -141,14 +140,14 @@ public class SelectBookActivity extends BaseAppCompatActivity {
 
     private class BookListAdapter extends BaseAdapter {
 
-        private List<BookEntity> list = new ArrayList<>();
+        private List<BookInfo> list = new ArrayList<>();
         @Override
         public int getCount() {
             return list.size();
         }
 
         @Override
-        public BookEntity getItem(int position) {
+        public BookInfo getItem(int position) {
             return list.get(position);
         }
 
@@ -169,13 +168,13 @@ public class SelectBookActivity extends BaseAppCompatActivity {
             }else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            BookEntity entity = getItem(position);
+            BookInfo entity = getItem(position);
             viewHolder.cover.setImageResource(R.drawable.icon_file_word);
             viewHolder.title.setText(entity.getTitle());
             return convertView;
         }
 
-        public void setData(List<BookEntity> list) {
+        public void setData(List<BookInfo> list) {
             this.list = list;
             notifyDataSetChanged();
         }

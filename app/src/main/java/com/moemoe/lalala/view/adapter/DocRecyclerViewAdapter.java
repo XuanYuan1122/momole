@@ -132,7 +132,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private int mCurFirstFloor = 0;
     private boolean mTargetId;
     private OnItemClickListener onItemClickListener;
-    private int[] ids = new int[] { R.id.tv_comment_delete, R.id.ll_own_del_root,R.id.tv_comment_report , R.id.tv_comment_reply, R.id.tv_comment_copy};
     private BottomMenuFragment fragment;
     private Handler mHandler = new Handler();
     private Runnable mProgressCallback = new Runnable() {

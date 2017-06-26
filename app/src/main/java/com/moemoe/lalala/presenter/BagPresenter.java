@@ -6,9 +6,9 @@ import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
-import com.moemoe.lalala.model.entity.BagFolderEntity;
+import com.moemoe.lalala.model.entity.BagFolderInfo;
 import com.moemoe.lalala.model.entity.BagModifyEntity;
-import com.moemoe.lalala.model.entity.BookEntity;
+import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
@@ -178,7 +178,7 @@ public class BagPresenter implements BagContract.Presenter {
         final ArrayList<NewUploadEntity> entities = new ArrayList<>();
         final ArrayList<Integer> range = new ArrayList<>();
         final ArrayList<UploadResultEntity> resList = new ArrayList<>();
-        final BagFolderEntity resFolder = new BagFolderEntity();
+        final BagFolderInfo resFolder = new BagFolderInfo();
         entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(cover.getPath())),FileUtil.getExtensionName(cover.getPath())));
         range.add(0);
         for(Object o : items){
@@ -187,8 +187,8 @@ public class BagPresenter implements BagContract.Presenter {
             }else if(o instanceof MusicLoader.MusicInfo){
                 MusicLoader.MusicInfo info = (MusicLoader.MusicInfo) o;
                 entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(info.getUrl())),FileUtil.getExtensionName(info.getUrl())));
-            }else if(o instanceof BookEntity){
-                BookEntity entity = (BookEntity) o;
+            }else if(o instanceof BookInfo){
+                BookInfo entity = (BookInfo) o;
                 entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
             }
             range.add(range.size());
@@ -217,8 +217,8 @@ public class BagPresenter implements BagContract.Presenter {
                                                 uploadResultEntity.setFilePath(((MusicLoader.MusicInfo) o).getUrl());
                                                 uploadResultEntity.setType("music");
                                                 uploadResultEntity.setMusicTime(((MusicLoader.MusicInfo) o).getDuration());
-                                            }else if(o instanceof BookEntity){
-                                                uploadResultEntity.setFilePath(((BookEntity) o).getPath());
+                                            }else if(o instanceof BookInfo){
+                                                uploadResultEntity.setFilePath(((BookInfo) o).getPath());
                                                 uploadResultEntity.setType("txt");
                                             }
                                         }
@@ -318,7 +318,7 @@ public class BagPresenter implements BagContract.Presenter {
                     @Override
                     public void onNext(UploadResultEntity uploadResultEntity) {
                         if(uploadResultEntity.getType().equals("cover")){
-                            resFolder.setFolderInfo(new BagFolderEntity.FolderInfo(coin,uploadResultEntity.getPath(),folderName,uploadResultEntity.getSize(),readType));
+                            resFolder.setFolderInfo(new BagFolderInfo.FolderInfo(coin,uploadResultEntity.getPath(),folderName,uploadResultEntity.getSize(),readType));
                         }else {
                             resList.add(uploadResultEntity);
                         }
@@ -329,7 +329,7 @@ public class BagPresenter implements BagContract.Presenter {
     @Override
     public void modifyFolder(final String folderId, final String folderName, final int coin, final Image cover, long size, final String readType) {
         if(!cover.getPath().startsWith("/")){
-            BagFolderEntity.FolderInfo info = new BagFolderEntity.FolderInfo();
+            BagFolderInfo.FolderInfo info = new BagFolderInfo.FolderInfo();
             info.size = size;
             info.coin = coin;
             info.cover = cover.getPath();
@@ -352,7 +352,7 @@ public class BagPresenter implements BagContract.Presenter {
         }else {
             final ArrayList<NewUploadEntity> entities = new ArrayList<>();
             entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(cover.getPath())),FileUtil.getExtensionName(cover.getPath())));
-            final BagFolderEntity.FolderInfo info = new BagFolderEntity.FolderInfo();
+            final BagFolderInfo.FolderInfo info = new BagFolderInfo.FolderInfo();
             apiService.checkMd5(entities)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
@@ -450,8 +450,8 @@ public class BagPresenter implements BagContract.Presenter {
             }else if(o instanceof MusicLoader.MusicInfo){
                 MusicLoader.MusicInfo info = (MusicLoader.MusicInfo) o;
                 entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(info.getUrl())),FileUtil.getExtensionName(info.getUrl())));
-            }else if(o instanceof BookEntity){
-                BookEntity entity = (BookEntity) o;
+            }else if(o instanceof BookInfo){
+                BookInfo entity = (BookInfo) o;
                 entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
             }
         }
@@ -474,8 +474,8 @@ public class BagPresenter implements BagContract.Presenter {
                                             uploadResultEntity.setFilePath(((MusicLoader.MusicInfo) o).getUrl());
                                             uploadResultEntity.setType("music");
                                             uploadResultEntity.setMusicTime(((MusicLoader.MusicInfo) o).getDuration());
-                                        }else if(o instanceof BookEntity){
-                                            uploadResultEntity.setFilePath(((BookEntity) o).getPath());
+                                        }else if(o instanceof BookInfo){
+                                            uploadResultEntity.setFilePath(((BookInfo) o).getPath());
                                             uploadResultEntity.setType("txt");
                                         }
                                         return uploadResultEntity;
