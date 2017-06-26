@@ -191,7 +191,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         RxBus.getInstance().unSubscribe(this);
         super.onDestroy();
     }

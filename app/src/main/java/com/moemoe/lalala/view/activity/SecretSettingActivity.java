@@ -122,7 +122,7 @@ public class SecretSettingActivity extends BaseAppCompatActivity implements Sett
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

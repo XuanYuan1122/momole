@@ -140,7 +140,7 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null) mPresenter.release();
         super.onDestroy();
     }
 

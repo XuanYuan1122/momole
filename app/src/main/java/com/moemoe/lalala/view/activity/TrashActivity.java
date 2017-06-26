@@ -493,8 +493,8 @@ public class TrashActivity extends BaseAppCompatActivity implements TrashContrac
 
     @Override
     protected void onDestroy() {
-        mPresenter.sendOperationTrash();
-        mPresenter.release();
+        if(mPresenter != null) mPresenter.sendOperationTrash();
+        if(mPresenter != null) mPresenter.release();
         if(mCurTime != 0) PreferenceUtils.setLastTrashTime(this,mCurTime,"text");
         super.onDestroy();
     }

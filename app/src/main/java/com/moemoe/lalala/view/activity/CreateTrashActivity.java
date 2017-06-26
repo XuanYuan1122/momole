@@ -402,7 +402,7 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

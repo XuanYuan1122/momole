@@ -524,8 +524,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
-        mAdapter.releaseAdapter();
+        if(mPresenter != null)mPresenter.release();
+        if(mAdapter != null) mAdapter.releaseAdapter();
         PreferenceUtils.saveDocCurFloor(this,mDocId,mCurFloor);
         super.onDestroy();
     }

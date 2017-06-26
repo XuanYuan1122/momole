@@ -94,7 +94,7 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

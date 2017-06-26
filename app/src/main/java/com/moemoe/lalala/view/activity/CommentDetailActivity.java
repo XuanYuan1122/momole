@@ -590,7 +590,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 }

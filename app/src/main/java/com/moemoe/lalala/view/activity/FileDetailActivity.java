@@ -492,7 +492,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         mPlayer.pause();
         mPlayer.unregisterCallback(this);
         super.onDestroy();

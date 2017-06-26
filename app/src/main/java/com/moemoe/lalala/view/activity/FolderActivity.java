@@ -515,7 +515,7 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

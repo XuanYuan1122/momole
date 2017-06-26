@@ -448,7 +448,7 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

@@ -188,7 +188,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null) mPresenter.release();
         super.onDestroy();
     }
 

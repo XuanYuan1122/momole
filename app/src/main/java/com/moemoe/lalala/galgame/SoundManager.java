@@ -42,8 +42,8 @@ public class SoundManager {
     }
 
     static public void release() {
-        soundList.clear();
-        soundPool.release();
+        if(soundList != null)soundList.clear();
+        if(soundPool != null)soundPool.release();
         context = null;
     }
 }

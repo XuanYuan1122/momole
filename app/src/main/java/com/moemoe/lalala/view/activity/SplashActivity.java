@@ -262,7 +262,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 }

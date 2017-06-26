@@ -130,7 +130,7 @@ public class ChatSettingActivity extends BaseAppCompatActivity implements Settin
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

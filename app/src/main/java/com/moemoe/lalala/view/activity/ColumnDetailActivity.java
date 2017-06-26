@@ -259,7 +259,7 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

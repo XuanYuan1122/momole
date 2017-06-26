@@ -844,7 +844,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 }

@@ -164,7 +164,7 @@ public class DocHistoryActivity extends BaseAppCompatActivity implements Persona
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 }

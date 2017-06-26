@@ -421,7 +421,7 @@ public class ChatActivity extends BaseAppCompatActivity implements ChatContract.
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         AppSetting.sCurChatId = "";
         RxBus.getInstance().unSubscribe(this);
         PrivateMessageItemEntityDao messageItemEntityDao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();

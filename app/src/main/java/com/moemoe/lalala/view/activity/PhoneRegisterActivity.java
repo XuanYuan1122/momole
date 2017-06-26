@@ -103,7 +103,7 @@ public class PhoneRegisterActivity extends BaseAppCompatActivity implements Simp
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

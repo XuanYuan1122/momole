@@ -207,7 +207,7 @@ public class BagFollowActivity extends BaseAppCompatActivity implements BagFollo
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 }

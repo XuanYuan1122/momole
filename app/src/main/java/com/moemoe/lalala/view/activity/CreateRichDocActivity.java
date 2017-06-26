@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
@@ -192,7 +193,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

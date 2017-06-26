@@ -81,7 +81,7 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements SnowCon
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null) mPresenter.release();
         super.onDestroy();
     }
 

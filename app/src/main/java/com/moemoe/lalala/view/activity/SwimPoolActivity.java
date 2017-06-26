@@ -313,7 +313,7 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         if(mListAdapter !=null )mListAdapter.onDestroy();
         super.onDestroy();
     }

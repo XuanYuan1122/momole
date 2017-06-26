@@ -94,7 +94,7 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         super.onDestroy();
     }
 

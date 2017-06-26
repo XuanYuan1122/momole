@@ -476,7 +476,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
 
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.release();
         try {
             unregisterReceiver(receiver);
         } catch (Exception e) {

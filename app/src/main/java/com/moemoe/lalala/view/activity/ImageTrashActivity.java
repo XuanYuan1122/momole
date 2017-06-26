@@ -587,8 +587,8 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
 
     @Override
     protected void onDestroy() {
-        mPresenter.sendOperationTrash();
-        mPresenter.release();
+        if(mPresenter != null)mPresenter.sendOperationTrash();
+        if(mPresenter != null) mPresenter.release();
         historyEntities.clear();
         if(mCurTime != 0) PreferenceUtils.setLastTrashTime(this,mCurTime,"image");
         super.onDestroy();

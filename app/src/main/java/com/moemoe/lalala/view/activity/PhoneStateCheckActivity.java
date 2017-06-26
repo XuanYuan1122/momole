@@ -184,7 +184,7 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
     }
     @Override
     protected void onDestroy() {
-        mPresenter.release();
+        if(mPresenter != null) mPresenter.release();
         mHandler.removeMessages(MSG_RESEND_COLD_TIME);
         super.onDestroy();
     }
