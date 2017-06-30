@@ -212,6 +212,21 @@ public class SimplePresenter implements SimpleContract.Presenter {
                             if(view != null) view.onFailure(code,msg);
                         }
                     });
+        }else if(type == 9){
+            apiService.saveLive2d((String) data)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetSimpleResultSubscriber() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+
+                        }
+                    });
         }
     }
 

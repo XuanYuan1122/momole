@@ -153,6 +153,9 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         AppSetting.SUB_TAG = PreferenceUtils.getSimpleLabel(this);
         if(NetworkUtils.isNetworkAvailable(this)){
             mPresenter.doRequest(PushManager.getInstance().getClientid(this) + "@and",4);
+            if(PreferenceUtils.getHaveGameFuku(this)){
+                mPresenter.doRequest("bh3rd",9);
+            }
         }
         if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
             Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/iv_commodity"
+        android:layout_width="@dimen/size_75"
+        android:layout_height="@dimen/size_75"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginStart="@dimen/size_12"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/black_1e1e1e"
+        android:textSize="@dimen/size_18"
+        android:textStyle="bold"
+        android:layout_toRightOf="@+id/iv_commodity"
+        android:layout_toEndOf="@+id/iv_commodity"
+        android:paddingLeft="@dimen/size_12"
+        android:paddingRight="@dimen/size_12"
+        android:layout_marginTop="@dimen/size_22"/>
+
+    <TextView
+        android:id="@+id/tv_order_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/size_15"
+        android:layout_below="@+id/tv_title"
+        android:layout_toRightOf="@+id/iv_commodity"
+        android:layout_toEndOf="@+id/iv_commodity"
+        android:layout_marginTop="@dimen/size_12"
+        android:layout_marginLeft="@dimen/size_12"
+        android:layout_marginStart="@dimen/size_12"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray_e8e8e8"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/size_18"
+        android:textSize="@dimen/size_12"
+        android:textColor="@color/gray_929292"
+        android:layout_alignLeft="@+id/tv_order_state"/>
+
+</RelativeLayout>

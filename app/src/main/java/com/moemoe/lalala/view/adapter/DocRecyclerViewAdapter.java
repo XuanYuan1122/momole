@@ -1179,11 +1179,11 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         });
     }
 
-    private void giveCoin(){
+    private void giveCoin(int count){
         if (!NetworkUtils.checkNetworkAndShowError(mContext)){
             return;
         }
-        ((NewDocDetailActivity)mContext).giveCoin();
+        ((NewDocDetailActivity)mContext).giveCoin(count);
     }
 
     public void onGiveCoin(){
@@ -1258,7 +1258,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 @Override
                 public void onNoDoubleClick(View v) {
                     final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-                    alertDialogUtil.createNormalDialog(mContext,null);
+                    alertDialogUtil.createEditDialog(mContext, PreferenceUtils.getAuthorInfo().getCoin(),0);
                     alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
                         @Override
                         public void CancelOnClick() {
@@ -1267,8 +1267,15 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                         @Override
                         public void ConfirmOnClick() {
-                            giveCoin();
-                            alertDialogUtil.dismissDialog();
+                            if(DialogUtils.checkLoginAndShowDlg(mContext)){
+                                String content = alertDialogUtil.getEditTextContent();
+                                if(!TextUtils.isEmpty(content) || Integer.valueOf(content) <= 0){
+                                    giveCoin(Integer.valueOf(content));
+                                    alertDialogUtil.dismissDialog();
+                                }else {
+                                    ToastUtils.showShortToast(mContext,R.string.msg_input_err_coin);
+                                }
+                            }
                         }
                     });
                     alertDialogUtil.showDialog();

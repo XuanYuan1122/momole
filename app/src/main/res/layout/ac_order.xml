@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_1e1e1e"
                 android:textSize="@dimen/size_15"
-                android:text="@string/label_order_phone"/>
+                android:text="@string/label_order_phone_num"/>
 
             <EditText
                 android:id="@+id/et_order_phone"

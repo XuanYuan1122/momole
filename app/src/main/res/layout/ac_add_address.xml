@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/bg_f6f6f6">
+
+    <include layout="@layout/neta_bar"/>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_45"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_15"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black_1e1e1e"
+            android:layout_marginLeft="@dimen/size_18"
+            android:layout_marginStart="@dimen/size_18"
+            android:text="@string/label_order_user"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="96dp"
+            android:layout_marginStart="96dp"
+            android:textColorHint="@color/gray_e8e8e8"
+            android:layout_marginRight="@dimen/size_18"
+            android:layout_marginEnd="@dimen/size_18"
+            android:maxLines="1"
+            android:hint="@string/a_hint_name"
+            android:background="@null"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_1_px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_e8e8e8"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_45"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_15"
+            android:layout_centerVertical="true"
+            android:textColor="@color/black_1e1e1e"
+            android:layout_marginLeft="@dimen/size_18"
+            android:layout_marginStart="@dimen/size_18"
+            android:text="@string/label_order_phone"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="96dp"
+            android:layout_marginStart="96dp"
+            android:textColorHint="@color/gray_e8e8e8"
+            android:layout_marginRight="@dimen/size_18"
+            android:layout_marginEnd="@dimen/size_18"
+            android:maxLines="1"
+            android:hint="@string/a_hint_input_order_contact"
+            android:background="@null"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_1_px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_e8e8e8"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_90"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_15"
+            android:layout_marginTop="@dimen/size_15"
+            android:textColor="@color/black_1e1e1e"
+            android:layout_marginLeft="@dimen/size_18"
+            android:layout_marginStart="@dimen/size_18"
+            android:text="@string/label_order_address_2"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_15"
+            android:layout_marginLeft="96dp"
+            android:layout_marginStart="96dp"
+            android:textColorHint="@color/gray_e8e8e8"
+            android:layout_marginRight="@dimen/size_18"
+            android:layout_marginEnd="@dimen/size_18"
+            android:maxLines="3"
+            android:hint="@string/a_hint_input_order_address"
+            android:background="@null"/>
+    </RelativeLayout>
+</LinearLayout>

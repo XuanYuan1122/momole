@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/iv_fuku"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
@@ -46,9 +46,9 @@
             android:layout_marginLeft="5dp"
             android:textColor="@color/main_red"
             android:textSize="@dimen/size_12"
-            android:textStyle="bold"
-            android:text="@string/label_fuku_req"
-            android:visibility="gone"/>
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tv_fuku_info"

@@ -31,6 +31,7 @@ import com.moemoe.lalala.model.entity.DonationInfoEntity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.model.entity.GiveCoinEntity;
+import com.moemoe.lalala.model.entity.Live2dModelEntity;
 import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.model.entity.ModifyEntity;
@@ -508,4 +509,10 @@ public interface ApiService {
 
     @GET("api/user/getBrowseDoc")
     Observable<ApiResult<ArrayList<PersonDocEntity>>> getDocHistory(@Query("index")int index,@Query("size")int size);
+
+    @GET("api/user/list/live2d")
+    Observable<ApiResult<ArrayList<Live2dModelEntity>>> getFukuList();
+
+    @POST("api/user/saveLive2d/{type}")
+    Observable<ApiResult> saveLive2d(@Path("type")String type);
 }

@@ -1,7 +1,5 @@
 package com.moemoe.lalala.view.activity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,11 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.utils.DensityUtil;
-import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
-import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.adapter.CoinShopAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;

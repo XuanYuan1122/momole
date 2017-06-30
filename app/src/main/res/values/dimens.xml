@@ -36,6 +36,7 @@
     <dimen name="size_64">64dp</dimen>
     <dimen name="size_75">75dp</dimen>
     <dimen name="size_80">80dp</dimen>
+    <dimen name="size_90">90dp</dimen>
     <dimen name="size_110">110dp</dimen>
     <dimen name="size_112">112dp</dimen>
     <dimen name="size_115">115dp</dimen>

@@ -816,8 +816,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mAdapter.deleteCommentSuccess(entity,position);
     }
 
-    public void giveCoin(){
-        GiveCoinEntity bean = new GiveCoinEntity(1,mDocId);
+    public void giveCoin(int count){
+        GiveCoinEntity bean = new GiveCoinEntity(count,mDocId);
         mPresenter.giveCoin(bean);
     }
 

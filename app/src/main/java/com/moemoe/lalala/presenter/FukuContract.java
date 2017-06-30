@@ -1,20 +1,21 @@
 package com.moemoe.lalala.presenter;
 
+import com.moemoe.lalala.model.entity.Live2dModelEntity;
 import com.moemoe.lalala.model.entity.SnowEntity;
 import com.moemoe.lalala.model.entity.SnowInfo;
+
+import java.util.ArrayList;
 
 /**
  * Created by yi on 2016/11/29.
  */
 
-public interface SnowContract {
+public interface FukuContract {
     interface Presenter extends BasePresenter{
-        void requestSnowInfo();
-        void requestSnowRankInfo(int index);
+        void getFukuList();
     }
 
     interface View extends BaseView{
-        void updateSnowView(SnowEntity entity);
-        void updateSnowList(SnowInfo entity, boolean pull);
+        void getFukuListSuccess(ArrayList<Live2dModelEntity> list);
     }
 }

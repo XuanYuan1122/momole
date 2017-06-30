@@ -214,50 +214,8 @@ public class MapPresenter implements MapContract.Presenter {
                 });
     }
 
-//    public void addCacheSnowman(Context context, MapWidget map){
-//        Layer layer = map.getLayerById(233);
-//        if(layer != null){
-//            map.removeLayer(233);
-//        }
-//        MapImgLayer imgLayer = map.createImgLayer(233);
-//        if(SnowShowEntity.getPositionCache() != null && SnowShowEntity.getPositionCache().size() > 0){
-//            for (int i = 0;i < SnowShowEntity.getPositionCache().size();i++){
-//                SnowShowEntity.PositionInfo info = SnowShowEntity.getCachePosition(i);
-//                Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
-//                MapImage mapImage = new MapImage(context,100 + i,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
-//                mapImage.setImageDrawable(drawable);
-//                imgLayer.addMapObject(mapImage);
-//            }
-//        }
-//        map.invalidate();
-//    }
-
     @Override
     public void addSnowman(Context context, MapWidget map){
-//        Layer layer = map.getLayerById(233);
-//        if(layer != null){
-//            map.removeLayer(233);
-//        }
-//        MapImgLayer imgLayer = map.createImgLayer(233);
-//
-//        SnowShowEntity.PositionInfo info = SnowShowEntity.getOnePosition();
-//        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
-//        MapImage mapImage = new MapImage(context,100,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
-//        mapImage.setImageDrawable(drawable);
-//        imgLayer.addMapObject(mapImage);
-//
-//        info = SnowShowEntity.getOnePosition();
-//        drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
-//        mapImage = new MapImage(context,101,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
-//        mapImage.setImageDrawable(drawable);
-//        imgLayer.addMapObject(mapImage);
-//
-//        info = SnowShowEntity.getOnePosition();
-//        drawable = ContextCompat.getDrawable(context, R.drawable.ic_map_snowboy);
-//        mapImage = new MapImage(context,102,info.x,info.y,info.x - drawable.getIntrinsicWidth() /2,info.y - drawable.getIntrinsicHeight() / 2,0,0,true,false);
-//        mapImage.setImageDrawable(drawable);
-//        imgLayer.addMapObject(mapImage);
-//        map.invalidate();
     }
 
     @Override
@@ -322,7 +280,7 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("茶话部",713,836,"neta://com.moemoe.lalala/department_1.0?uuid=cfda0aa2-5f7f-11e6-b844-d0a637eac7d7&name=女性部",R.drawable.btn_map_nvxing_normal);
+        entity = new MapMarkEntity("茶话部",713,836,"neta://com.moemoe.lalala/department_1.0?uuid=cfda0aa2-5f7f-11e6-b844-d0a637eac7d7&name=茶话部",R.drawable.btn_map_nvxing_normal);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 

@@ -178,8 +178,8 @@ public class AlertDialogUtil {
             tv2.setText("楼");
         }else {
             tv.setText(context.getString(R.string.label_total_coin,total));
-            tv1.setText("我要捐");
-            tv2.setText("节操");
+            tv1.setText("献上");
+            tv2.setText("枚节操");
         }
         editText = (EditText) contentView.findViewById(R.id.et_floor);
         dialog.setCancelable(false);
