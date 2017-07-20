@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagFavoriteComponent;
@@ -35,6 +36,8 @@ import butterknife.BindView;
 
 public class BagBuyActivity extends BaseAppCompatActivity implements BagFavoriteContract.View{
 
+    @BindView(R.id.include_toolbar)
+    View mToolbar;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
@@ -64,6 +67,10 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mTitle.setText("书包购买");
         mTvSelect.setVisibility(View.VISIBLE);
         mTvSelect.getPaint().setFakeBoldText(true);

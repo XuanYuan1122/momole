@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -81,6 +82,10 @@ public class SwimPoolActivity extends BaseAppCompatActivity implements DepartCon
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mRoomId = "SWIM_POOL";
         DaggerDepartComponent.builder()
                 .departModule(new DepartModule(this))

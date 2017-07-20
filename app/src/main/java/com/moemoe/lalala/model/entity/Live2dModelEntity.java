@@ -73,6 +73,14 @@ public class Live2dModelEntity {
         this.resourcePath = resourcePath;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getLocalPath(){
         return "live2d/len/model_" + type + ".json";
     }

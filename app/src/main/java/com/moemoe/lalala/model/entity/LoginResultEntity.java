@@ -23,6 +23,8 @@ public class LoginResultEntity {
     private int level;
     @SerializedName("openBag")
     private boolean openBag;
+    @SerializedName("inspector")
+    private boolean inspector;
 
     public boolean isNew() {
         return isNew;
@@ -86,5 +88,13 @@ public class LoginResultEntity {
 
     public void setOpenBag(boolean openBag) {
         this.openBag = openBag;
+    }
+
+    public boolean isInspector() {
+        return inspector;
+    }
+
+    public void setInspector(boolean inspector) {
+        this.inspector = inspector;
     }
 }

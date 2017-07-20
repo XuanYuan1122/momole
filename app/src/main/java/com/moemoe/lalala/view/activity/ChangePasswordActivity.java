@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerChangePwdComponent;
@@ -75,6 +76,10 @@ public class ChangePasswordActivity extends BaseAppCompatActivity implements Cha
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mAction = i.getIntExtra(PhoneStateCheckActivity.EXTRA_ACTION,PhoneStateCheckActivity.ACTION_CHAGE_PASSWORD);
         if(mAction == PhoneStateCheckActivity.ACTION_CHAGE_PASSWORD){
             mTitle.setText(R.string.label_change_password);

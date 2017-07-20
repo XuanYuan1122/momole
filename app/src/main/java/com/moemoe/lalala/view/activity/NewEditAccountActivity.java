@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerEditAccountComponent;
@@ -104,6 +105,11 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .keyboardEnable(true)
+                .init();
         DaggerEditAccountComponent.builder()
                 .editAccountModule(new EditAccountModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

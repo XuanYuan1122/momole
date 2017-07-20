@@ -3,15 +3,27 @@
     android:id="@+id/rl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:background="@color/bg_f6f6f6">
 
-    <include
-        android:id="@+id/layout_bar"
-        layout="@layout/neta_bar"/>
+    <LinearLayout
+        android:id="@+id/top_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/top_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"/>
+
+        <include
+            android:id="@+id/include_toolbar"
+            layout="@layout/neta_bar"/>
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fl_top_root"
-        android:layout_below="@+id/layout_bar"
+        android:layout_below="@+id/top_root"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:background="@color/white"

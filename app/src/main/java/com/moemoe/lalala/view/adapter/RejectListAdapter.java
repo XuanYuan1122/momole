@@ -1,0 +1,68 @@
+package com.moemoe.lalala.view.adapter;
+
+import android.content.Context;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.moemoe.lalala.R;
+import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.entity.CoinShopEntity;
+import com.moemoe.lalala.model.entity.RejectEntity;
+import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.view.activity.UserRejectListActivity;
+import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
+import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
+
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
+
+/**
+ *
+ * Created by yi on 2017/6/26.
+ */
+
+public class RejectListAdapter extends BaseRecyclerViewAdapter<RejectEntity,RejectListAdapter.RejectViewHolder> {
+
+    public RejectListAdapter() {
+        super(R.layout.item_reject_list);
+    }
+
+
+    @Override
+    protected void convert(RejectViewHolder helper, final RejectEntity item) {
+        Glide.with(context)
+                .load(StringUtils.getUrl(context, ApiService.URL_QINIU + item.getHeadPath(), DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50),false,true))
+                .override(DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50))
+                .bitmapTransform(new CropCircleTransformation(context))
+                .error(R.drawable.bg_default_circle)
+                .placeholder(R.drawable.bg_default_circle)
+                .into(helper.ivAvatar);
+        helper.tvName.setText(item.getUserName());
+        helper.tvRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((UserRejectListActivity)context).removeBlack(item);
+            }
+        });
+    }
+
+    @Override
+    public int getItemType(int position) {
+        return 0;
+    }
+
+    class RejectViewHolder extends ClickableViewHolder{
+
+        ImageView ivAvatar;
+        TextView tvName,tvRemove;
+
+        public RejectViewHolder(View itemView) {
+            super(itemView);
+            ivAvatar = $(R.id.iv_avatar);
+            tvName = $(R.id.tv_name);
+            tvRemove = $(R.id.tv_remove);
+        }
+    }
+}

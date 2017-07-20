@@ -4,7 +4,14 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.greendao.gen.ChatContentDbEntityDao;
+import com.moemoe.lalala.greendao.gen.ChatUserEntityDao;
+import com.moemoe.lalala.greendao.gen.GroupUserEntityDao;
+import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
+
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
 
 /**
  * Created by yi on 2016/11/28.
@@ -25,6 +32,31 @@ public class ErrorCodeUtils {
                 ToastUtils.showShortToast(context, res);
                 if(errorCode == 4003 || errorCode == 4024){
                     ((BaseAppCompatActivity)context).finish();
+                }
+                if (errorCode == 999){
+                    //清除数据库相关私信信息
+                    //私信列表
+                    try {
+                        if(StringUtils.isThirdParty(PreferenceUtils.getAuthorInfo().getPlatform())){
+                            Platform p = ShareSDK.getPlatform(PreferenceUtils.getAuthorInfo().getPlatform());
+                            if(p.isAuthValid()){
+                                p.removeAccount(true);
+                            }
+                        }
+                        PrivateMessageItemEntityDao privateMessageItemEntityDao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
+                        privateMessageItemEntityDao.deleteAll();
+                        ChatContentDbEntityDao chatContentDbEntityDao = GreenDaoManager.getInstance().getSession().getChatContentDbEntityDao();
+                        chatContentDbEntityDao.deleteAll();
+                        GroupUserEntityDao groupUserEntityDao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
+                        groupUserEntityDao.deleteAll();
+                        ChatUserEntityDao chatUserEntityDao = GreenDaoManager.getInstance().getSession().getChatUserEntityDao();
+                        chatUserEntityDao.deleteAll();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }finally {
+                        PreferenceUtils.clearAuthorInfo();
+                        DialogUtils.checkLoginAndShowDlg(context);
+                    }
                 }
                 resb = true;
             }

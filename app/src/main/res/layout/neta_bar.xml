@@ -3,7 +3,6 @@
     android:id="@+id/app_bar"
     android:layout_width="match_parent"
     android:layout_height="@dimen/neta_toolbar"
-    android:fitsSystemWindows="true"
     android:background="@drawable/bg_shadow_up">
 
     <ImageView

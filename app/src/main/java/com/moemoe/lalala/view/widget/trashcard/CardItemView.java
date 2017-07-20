@@ -27,7 +27,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.ImageTrashActivity;
 import com.moemoe.lalala.view.activity.TrashActivity;
-import com.moemoe.lalala.view.widget.adapter.NewDocLabelAdapter;
+import com.moemoe.lalala.view.widget.view.NewDocLabelAdapter;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 
 /**

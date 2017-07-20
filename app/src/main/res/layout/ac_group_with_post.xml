@@ -149,7 +149,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/neta_toolbar"
                 app:navigationIcon="@drawable/btn_back_white_normal"
-                android:layout_marginTop="@dimen/status_bar_height"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
 

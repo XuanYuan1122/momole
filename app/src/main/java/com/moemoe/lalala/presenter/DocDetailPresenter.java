@@ -160,6 +160,59 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
     }
 
     @Override
+    public void checkEgg(String docId) {
+        apiService.checkEgg(docId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        view.checkEggSuccess(aBoolean);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void postOrCancelEgg(String docId, boolean isPost) {
+        if(isPost){
+            apiService.removeEgg(docId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetSimpleResultSubscriber() {
+                        @Override
+                        public void onSuccess() {
+                            view.postOrCancelEggSuccess(false);
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+                            view.onFailure(code, msg);
+                        }
+                    });
+        }else {
+            apiService.postEgg(docId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetSimpleResultSubscriber() {
+                        @Override
+                        public void onSuccess() {
+                            view.postOrCancelEggSuccess(true);
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+                            view.onFailure(code, msg);
+                        }
+                    });
+        }
+    }
+
+    @Override
     public void favoriteDoc(String id) {
         if(favoriteFlag){
             apiService.cancelFavoriteDoc(id)

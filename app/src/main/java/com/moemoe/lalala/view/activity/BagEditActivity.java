@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagComponent;
@@ -149,6 +150,11 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .keyboardEnable(true)
+                .init();
         mType = getIntent().getIntExtra(EXTRA_TYPE,-1);
         mBgPath = getIntent().getStringExtra("bg");
         mName = getIntent().getStringExtra("name");

@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.MotaResult;
 import com.moemoe.lalala.utils.NetworkUtils;
@@ -50,7 +51,7 @@ public class WebViewActivity extends BaseAppCompatActivity {
     private final int MENU_OPEN_OUT = 102;
     private final int MENU_OPEN_SHARE = 103;
 
-    @BindView(R.id.app_bar)
+    @BindView(R.id.include_toolbar)
     View mToolbar;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
@@ -72,6 +73,11 @@ public class WebViewActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .keyboardEnable(true)
+                .init();
         mProgressBar = (ProgressBar) findViewById(R.id.pgbar_progress);
         mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {

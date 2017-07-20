@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.utils.MusicLoader;
 
@@ -43,6 +44,10 @@ public class SelectMusicActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mMusicList = new ArrayList<>();
         mTitle.setText(R.string.label_select_music);
         MusicLoader musicLoader = MusicLoader.instance(getContentResolver());
@@ -120,5 +125,10 @@ public class SelectMusicActivity extends BaseAppCompatActivity {
             ImageView imageView;
             TextView textView;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

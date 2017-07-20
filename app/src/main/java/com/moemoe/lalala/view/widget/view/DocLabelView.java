@@ -14,7 +14,6 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.DocDetailEntity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.utils.StringUtils;
-import com.moemoe.lalala.view.widget.adapter.NewDocLabelAdapter;
 
 import java.util.ArrayList;
 

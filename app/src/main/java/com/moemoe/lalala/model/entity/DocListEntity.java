@@ -32,6 +32,8 @@ public class DocListEntity {
     private String updateTime;
     @SerializedName("badgeList")
     private ArrayList<BadgeEntity> badgeList;
+    @SerializedName("eggs")
+    private int eggs;
 
     public class DocDetail{
         @SerializedName("comments")
@@ -245,5 +247,13 @@ public class DocListEntity {
 
     public void setBadgeList(ArrayList<BadgeEntity> badgeList) {
         this.badgeList = badgeList;
+    }
+
+    public int getEggs() {
+        return eggs;
+    }
+
+    public void setEggs(int eggs) {
+        this.eggs = eggs;
     }
 }

@@ -27,6 +27,8 @@ public interface DocDetailContract {
         void giveCoin(GiveCoinEntity entity);
         void shareDoc();
         void followUser(String id,boolean isFollow);
+        void checkEgg(String docId);
+        void postOrCancelEgg(String docId, boolean isPost);
     }
 
     interface View extends BaseView{
@@ -41,5 +43,7 @@ public interface DocDetailContract {
         void onGetCoinContent();
         void onGiveCoin();
         void onFollowSuccess(boolean isFollow);
+        void checkEggSuccess(boolean isThrow);
+        void postOrCancelEggSuccess(boolean isPost);
     }
 }

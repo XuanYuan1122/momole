@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
@@ -118,6 +119,10 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .titleBar(mToolbar)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         DaggerPersonalComponent.builder()
                 .personalModule(new PersonalModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -131,12 +136,9 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         mIsSelf = mUserId.equals(PreferenceUtils.getUUid());
         mIvBag.setVisibility(View.GONE);
         mPresenter.requestUserInfo(mUserId);
-        initPopupMenus();
+        mMenuList.setVisibility(View.VISIBLE);
         if(mIsSelf) {
-            mMenuList.setVisibility(View.VISIBLE);
             subscribeEvent();
-        }else {
-            mMenuList.setVisibility(View.GONE);
         }
     }
 
@@ -219,12 +221,24 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     private void initPopupMenus() {
         bottomMenuFragment = new BottomMenuFragment();
         ArrayList<MenuItem> items = new ArrayList<>();
-        MenuItem item = new MenuItem(1, getString(R.string.label_setting));
-        items.add(item);
-        item = new MenuItem(2, getString(R.string.label_coin_details));
-        items.add(item);
-        item = new MenuItem(3, getString(R.string.label_doc_history));
-        items.add(item);
+        if(mIsSelf){
+            MenuItem item = new MenuItem(1, getString(R.string.label_setting));
+            items.add(item);
+            item = new MenuItem(2, getString(R.string.label_coin_details));
+            items.add(item);
+            item = new MenuItem(3, getString(R.string.label_doc_history));
+            items.add(item);
+            item = new MenuItem(5, getString(R.string.label_user_reject_list));
+            items.add(item);
+        }else {
+            if(mInfo.isBlack()){
+                MenuItem item = new MenuItem(4, getString(R.string.label_user_cancel_reject));
+                items.add(item);
+            }else {
+                MenuItem item = new MenuItem(4, getString(R.string.label_user_reject));
+                items.add(item);
+            }
+        }
         bottomMenuFragment.setMenuItems(items);
         bottomMenuFragment.setShowTop(false);
         bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
@@ -242,6 +256,15 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 if(itemId == 3){
                     Intent i = new Intent(NewPersonalActivity.this,DocHistoryActivity.class);
                     i.putExtra(UUID,mUserId);
+                    startActivity(i);
+                }
+                if(itemId == 4){
+                    if(mInfo != null){
+                        mPresenter.saveOrCancelBlackUser(mUserId,mInfo.isBlack());
+                    }
+                }
+                if(itemId == 5){
+                    Intent i = new Intent(NewPersonalActivity.this,UserRejectListActivity.class);
                     startActivity(i);
                 }
             }
@@ -372,6 +395,13 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     }
 
     @Override
+    public void onSaveOrCancelBlackSuccess(boolean isSave) {
+        mInfo.setBlack(isSave);
+        bottomMenuFragment.changeItemTextById(4,isSave?getString(R.string.label_user_cancel_reject) : getString(R.string.label_user_reject),0);
+        showToast("拉黑用户成功");
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         mAppBarLayout.addOnOffsetChangedListener(this);
@@ -406,6 +436,9 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
             mIvBag.setVisibility(View.GONE);
         }
         mInfo = info;
+        if(bottomMenuFragment == null){
+            initPopupMenus();
+        }
         mTvTitle.setText(info.getUserName());
         Glide.with(this)
                 .load(StringUtils.getUrl(this,ApiService.URL_QINIU + info.getBackground(), DensityUtil.getScreenWidth(this),DensityUtil.dip2px(this,230),false,true))

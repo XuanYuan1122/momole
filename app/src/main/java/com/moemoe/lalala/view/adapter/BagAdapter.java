@@ -283,8 +283,6 @@ public class BagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ViewGroup.MarginLayoutParams layoutParams1 = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
             layoutParams1.height = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
             layoutParams1.width = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;
-//            layoutParams1.topMargin = DensityUtil.dip2px(mContext,10);
-//            layoutParams1.rightMargin = DensityUtil.dip2px(mContext,10);
             root.setLayoutParams(layoutParams1);
             ViewGroup.LayoutParams layoutParams = ivBg.getLayoutParams();
             layoutParams.height = (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,30))/2;

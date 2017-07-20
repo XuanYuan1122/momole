@@ -5,9 +5,22 @@
     android:layout_height="match_parent"
     android:background="@color/bg_f6f6f6">
 
-    <include
-        android:id="@+id/include_toolbar"
-        layout="@layout/neta_bar"/>
+    <LinearLayout
+        android:id="@+id/top_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/top_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"/>
+
+        <include
+            android:id="@+id/include_toolbar"
+            layout="@layout/neta_bar"/>
+    </LinearLayout>
+
 
     <EditText
         android:id="@+id/edt_title"
@@ -16,7 +29,7 @@
         android:layout_height="50dp"
         android:background="@drawable/bg_normal_white_btn"
         android:ellipsize="end"
-        android:layout_below="@+id/include_toolbar"
+        android:layout_below="@+id/top_root"
         android:layout_marginTop="10dp"
         android:hint="@string/a_hint_input_title"
         android:minLines="1"

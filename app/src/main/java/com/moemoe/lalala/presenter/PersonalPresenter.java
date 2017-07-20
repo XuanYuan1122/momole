@@ -97,6 +97,41 @@ public class PersonalPresenter implements PersonalContract.Presenter {
                 });
     }
 
+    @Override
+    public void saveOrCancelBlackUser(String userId, boolean isSave) {
+        if(isSave){
+            apiService.removeBlackUser(userId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetSimpleResultSubscriber() {
+                        @Override
+                        public void onSuccess() {
+                            view.onSaveOrCancelBlackSuccess(false);
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+                            view.onFailure(code, msg);
+                        }
+                    });
+        }else {
+            apiService.saveBlackUser(userId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetSimpleResultSubscriber() {
+                        @Override
+                        public void onSuccess() {
+                            view.onSaveOrCancelBlackSuccess(true);
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+                            view.onFailure(code, msg);
+                        }
+                    });
+        }
+    }
+
 
     @Override
     public void release() {

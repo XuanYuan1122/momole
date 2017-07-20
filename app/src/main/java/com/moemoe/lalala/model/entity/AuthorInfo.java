@@ -3,6 +3,7 @@ package com.moemoe.lalala.model.entity;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 /**
@@ -24,6 +25,8 @@ public class AuthorInfo {
     private String userName;
     private int level;
     private boolean openBag;
+    @Transient
+    private boolean inspector;
 
     public AuthorInfo(){
         headPath = "";
@@ -155,5 +158,13 @@ public class AuthorInfo {
 
     public boolean getOpenBag() {
         return this.openBag;
+    }
+
+    public boolean isInspector() {
+        return inspector;
+    }
+
+    public void setInspector(boolean inspector) {
+        this.inspector = inspector;
     }
 }

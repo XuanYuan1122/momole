@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagComponent;
@@ -64,6 +65,10 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

@@ -285,6 +285,7 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
         authorInfo.setUserName(entity.getUserName());
         authorInfo.setLevel(entity.getLevel());
         authorInfo.setOpenBag(entity.isOpenBag());
+        authorInfo.setInspector(entity.isInspector());
         authorInfo.setPlatform("neta");
         finalizeDialog();
         PreferenceUtils.setAuthorInfo(authorInfo);

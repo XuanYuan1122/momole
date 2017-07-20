@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.Image;
@@ -34,6 +35,8 @@ public class AddMusicActivity extends BaseAppCompatActivity {
     private final int REQ_GET_FROM_GALLERY = 1002;
     private final int REQ_GET_FROM_SELECT_MUSIC = 1003;
 
+    @BindView(R.id.include_toolbar)
+    View mToolbar;
     @BindView(R.id.tv_left_menu)
     TextView mTvMenuLeft;
     @BindView(R.id.tv_toolbar_title)
@@ -63,6 +66,10 @@ public class AddMusicActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         Intent i = getIntent();
         if(i == null){
             finish();
@@ -205,5 +212,10 @@ public class AddMusicActivity extends BaseAppCompatActivity {
                 mIvMusicCancel.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

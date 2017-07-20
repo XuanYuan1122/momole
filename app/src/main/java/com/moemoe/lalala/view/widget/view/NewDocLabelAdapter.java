@@ -1,4 +1,4 @@
-package com.moemoe.lalala.view.widget.adapter;
+package com.moemoe.lalala.view.widget.view;
 
 import android.app.Activity;
 import android.content.Context;

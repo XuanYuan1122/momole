@@ -44,6 +44,8 @@ public class UserInfo implements Parcelable{
     private long size;
     @SerializedName("openBag")
     private boolean openBag;
+    @SerializedName("black")
+    private boolean black;
 
 
     public String getBackground() {
@@ -182,6 +184,14 @@ public class UserInfo implements Parcelable{
         this.openBag = openBag;
     }
 
+    public boolean isBlack() {
+        return black;
+    }
+
+    public void setBlack(boolean black) {
+        this.black = black;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -209,6 +219,7 @@ public class UserInfo implements Parcelable{
             info.userName = bundle.getString("userName");
             info.signature = bundle.getString("signature");
             info.size = bundle.getLong("size");
+            info.black = bundle.getBoolean("black");
             return info;
         }
 
@@ -238,6 +249,7 @@ public class UserInfo implements Parcelable{
         bundle.putString("userName",userName);
         bundle.putString("signature",signature);
         bundle.putLong("size",size);
+        bundle.putBoolean("black",black);
         parcel.writeBundle(bundle);
     }
 }

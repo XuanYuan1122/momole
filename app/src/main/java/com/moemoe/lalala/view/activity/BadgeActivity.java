@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBadgeComponent;
@@ -42,6 +43,8 @@ import butterknife.BindView;
 
 public class BadgeActivity extends BaseAppCompatActivity implements BadgeContract.View{
 
+    @BindView(R.id.include_toolbar)
+    View mToolbar;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
     @BindView(R.id.tv_menu)
@@ -72,6 +75,10 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mTvTitle.setText("我的徽章");
         mTvDone.getPaint().setFakeBoldText(true);
         ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));

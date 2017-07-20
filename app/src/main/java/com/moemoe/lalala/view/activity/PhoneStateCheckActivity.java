@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.igexin.sdk.PushManager;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -93,6 +94,10 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         DaggerPhoneStateComponent.builder()
                 .phoneStateModule(new PhoneStateModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -221,6 +226,7 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
         info.setUserName(entity.getUserName());
         info.setCoin(0);
         info.setOpenBag(entity.isOpenBag());
+        info.setInspector(entity.isInspector());
         if(!entity.getHeadPath().startsWith("http")){
             info.setHeadPath(ApiService.URL_QINIU + entity.getHeadPath());
         }else {

@@ -35,7 +35,7 @@
         android:layout_below="@+id/tv_title"
         android:layout_toRightOf="@+id/iv_commodity"
         android:layout_toEndOf="@+id/iv_commodity"
-        android:layout_marginTop="@dimen/size_12"
+        android:textColor="@color/txt_green_red"
         android:layout_marginLeft="@dimen/size_12"
         android:layout_marginStart="@dimen/size_12"/>
 

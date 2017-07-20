@@ -17,6 +17,7 @@ import android.widget.ListAdapter;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
+import com.moemoe.lalala.model.api.ApiService;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,6 +39,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.wechat.friends.Wechat;
 
 /**
  * Created by yi on 2016/11/28.
@@ -434,7 +438,12 @@ public class StringUtils {
     }
 
     public static String getUrl(Context context,String path,int width,int height,boolean isDocDetail,boolean isDoc){
-        String res = path;
+        String res;
+        if(path.startsWith("http") || path.startsWith("https")){
+            res = path;
+        }else {
+            res = ApiService.URL_QINIU + path;
+        }
         boolean isLow = !NetworkUtils.isWifi(context) && !AppSetting.IS_DOWNLOAD_LOW_IN_3G;
         if(width > 0){
             if(isLow){
@@ -675,5 +684,28 @@ public class StringUtils {
             }
         }
         return stringBuilder;
+    }
+
+
+    public static boolean isThirdParty(String platform){
+        return platform != null && (cn.sharesdk.tencent.qq.QQ.NAME.equals(platform)
+                || Wechat.NAME.equals(platform)
+                || SinaWeibo.NAME.equals(platform)
+                || Contant.THIRD_LOGIN_QQ.equals(platform)
+                || Contant.THIRD_LOGIN_SINA.equals(platform)
+                || Contant.THIRD_LOGIN_WECHAT.equals(platform));
+    }
+
+    public static String convertPlatform(String platform){
+        if(cn.sharesdk.tencent.qq.QQ.NAME.equals(platform)){
+            return Contant.THIRD_LOGIN_QQ;
+        }
+        if(Wechat.NAME.equals(platform)){
+            return Contant.THIRD_LOGIN_WECHAT;
+        }
+        if(SinaWeibo.NAME.equals(platform)){
+            return Contant.THIRD_LOGIN_SINA;
+        }
+        return platform;
     }
 }

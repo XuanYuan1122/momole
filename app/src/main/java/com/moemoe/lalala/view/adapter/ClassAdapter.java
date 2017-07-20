@@ -34,19 +34,20 @@ import com.moemoe.lalala.model.entity.DocListEntity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.GlideRoundTransform;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
-import com.moemoe.lalala.view.widget.adapter.NewDocLabelAdapter;
+import com.moemoe.lalala.view.widget.view.NewDocLabelAdapter;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -299,7 +300,6 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if(holder.docLabel != null && post.getTags() != null){
                     holder.docLabel.setDocLabelAdapter(holder.docLabelAdapter);
                     holder.docLabelAdapter.setData(post.getTags(),false);
-                   // holder.docLabelAdapter.setData(post.getTags());
                     if(post.getTags().size()>0) {
                         holder.docLabel.setVisibility(View.VISIBLE);
                         holder.vDocSep.setVisibility(View.VISIBLE);
@@ -490,8 +490,34 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         }
                     }
                 });
+
+                for (int i = 1;i < holder.mainRoot.getChildCount();i++){
+                    holder.mainRoot.removeViewAt(i);
+                }
+                for (int i = 0; i < post.getEggs(); i++){
+                    int[] local;
+                    if(holder.itemView.getWidth() > 0 && holder.itemView.getHeight() > 0){
+                        local = getEggPosition(holder.itemView.getWidth() - DensityUtil.dip2px(context, 100), holder.itemView.getHeight() - DensityUtil.dip2px(context, 100));
+                    }else {
+                        local = getEggPosition(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context, 100),  DensityUtil.dip2px(context, 50));
+                    }
+                    ImageView iv = new ImageView(context);
+                    ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(DensityUtil.dip2px(context, 100), DensityUtil.dip2px(context, 100));
+                    layoutParams.topMargin = local[0];
+                    layoutParams.leftMargin = local[1];
+                    iv.setLayoutParams(layoutParams);
+                    iv.setImageResource(R.drawable.ic_doclist_egg);
+                    holder.mainRoot.addView(iv);
+                }
             }
         }
+    }
+
+    private int[] getEggPosition(int r, int b){
+        Random rand = new Random();
+        int x = rand.nextInt(r + 1);
+        int y = rand.nextInt(b + 1);
+        return new int[]{x, y};
     }
 
     public Object getItem(int position){
@@ -607,6 +633,8 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     class DocViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.rl_post_root)
+        RelativeLayout mainRoot;
         @BindView(R.id.iv_post_creator)
         ImageView ivCreatorAvatar;
         @BindView(R.id.tv_post_creator_name)

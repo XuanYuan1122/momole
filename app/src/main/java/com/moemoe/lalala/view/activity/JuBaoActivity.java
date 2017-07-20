@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
@@ -70,6 +71,11 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .keyboardEnable(true)
+                .init();
         DaggerSimpleComponent.builder()
                 .simpleModule(new SimpleModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -31,6 +32,7 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.StartActivityConstant;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.adapter.ClassAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
@@ -75,6 +77,10 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         DaggerDepartComponent.builder()
                 .departModule(new DepartModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -120,10 +126,10 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
                             if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
                                 String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
                                 String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
-                                mSchema = begin + "uuid=" + uuid + "&from_name=后山";
+                                mSchema = begin + "uuid=" + uuid + "&from_name=后山&position=" + position;
                             }
                             Uri uri = Uri.parse(mSchema);
-                            IntentUtils.toActivityFromUri(QiuMingShanActivity.this, uri, view);
+                            IntentUtils.toActivityForResultFromUri(QiuMingShanActivity.this, uri,view, StartActivityConstant.REQ_DOC_DETAIL_ACTIVITY);
                         }
                     }
                 }
@@ -377,6 +383,24 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
         if(resultCode == CreateRichDocActivity.RESPONSE_CODE){
             mListDocs.getRecyclerView().scrollToPosition(0);
             mPresenter.requestDocList(0,"",3);
+        }else if(requestCode == StartActivityConstant.REQ_DOC_DETAIL_ACTIVITY && resultCode == RESULT_OK){
+            String type = data.getStringExtra("type");
+            int position = data.getIntExtra("position", -1);
+            if(position < 2){
+                return;
+            }
+            if("delete".equals(type)){
+                mDocAdapter.getDocList().remove(position - 2);
+            }else if("egg".equals(type)){
+                DocListEntity entity = (DocListEntity) mDocAdapter.getItem(position);
+                int eggs = entity.getEggs();
+                if(eggs < 10){
+                    ((DocListEntity) mDocAdapter.getItem(position)).setEggs(eggs + 1);
+                    mDocAdapter.notifyItemChanged(position);
+                }
+            }else if("finish".equals(type)){
+
+            }
         }
     }
 }

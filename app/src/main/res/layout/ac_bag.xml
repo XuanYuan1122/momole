@@ -100,7 +100,6 @@
                 android:layout_height="@dimen/neta_toolbar"
                 app:navigationIcon="@drawable/btn_back_white_normal"
                 app:layout_collapseMode="pin"
-                android:layout_marginTop="@dimen/status_bar_height"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
 
                 <TextView

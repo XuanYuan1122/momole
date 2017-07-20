@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -50,6 +51,10 @@ public class WallBlockActivity extends BaseAppCompatActivity {
             String FRAGMENTS_TAG = "android:support:fragments";
             savedInstanceState.remove(FRAGMENTS_TAG);
         }
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         classFragment = new ClassFragment();
         WallBlockFragment wallBlockFragment = new WallBlockFragment();
         List<Fragment> fragmentList = new ArrayList<>();

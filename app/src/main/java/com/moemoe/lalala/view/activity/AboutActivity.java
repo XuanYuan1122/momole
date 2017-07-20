@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 
@@ -17,6 +18,8 @@ import butterknife.BindView;
 
 public class AboutActivity extends BaseAppCompatActivity {
 
+    @BindView(R.id.include_toolbar)
+    View mToolbar;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
@@ -29,6 +32,10 @@ public class AboutActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true, 0.2f)
+                .init();
         mTvTitle.setText(R.string.label_about_neta);
     }
 
@@ -52,5 +59,10 @@ public class AboutActivity extends BaseAppCompatActivity {
     @Override
     protected void initData() {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

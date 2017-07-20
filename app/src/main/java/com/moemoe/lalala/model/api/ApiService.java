@@ -1,5 +1,6 @@
 package com.moemoe.lalala.model.api;
 
+import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.BadgeEntity;
@@ -14,10 +15,12 @@ import com.moemoe.lalala.model.entity.CalendarDayItemEntity;
 import com.moemoe.lalala.model.entity.ChatContentEntity;
 import com.moemoe.lalala.model.entity.CodeEntity;
 import com.moemoe.lalala.model.entity.CoinDetailEntity;
+import com.moemoe.lalala.model.entity.CoinShopEntity;
 import com.moemoe.lalala.model.entity.CommentDetailEntity;
 import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
 import com.moemoe.lalala.model.entity.CommentListSendEntity;
 import com.moemoe.lalala.model.entity.CommentSendEntity;
+import com.moemoe.lalala.model.entity.CreateOrderEntity;
 import com.moemoe.lalala.model.entity.CreatePrivateMsgEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
 import com.moemoe.lalala.model.entity.DelCommentEntity;
@@ -41,10 +44,14 @@ import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
 import com.moemoe.lalala.model.entity.OldSimpleResult;
+import com.moemoe.lalala.model.entity.OrderEntity;
+import com.moemoe.lalala.model.entity.PayReqEntity;
+import com.moemoe.lalala.model.entity.PayResEntity;
 import com.moemoe.lalala.model.entity.PersonDocEntity;
 import com.moemoe.lalala.model.entity.PersonFollowEntity;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.RegisterEntity;
+import com.moemoe.lalala.model.entity.RejectEntity;
 import com.moemoe.lalala.model.entity.ReplyEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.model.entity.SearchEntity;
@@ -67,6 +74,7 @@ import com.moemoe.lalala.model.entity.WallBlock;
 import java.util.ArrayList;
 import java.util.Date;
 
+import butterknife.BindView;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -515,4 +523,43 @@ public interface ApiService {
 
     @POST("api/user/saveLive2d/{type}")
     Observable<ApiResult> saveLive2d(@Path("type")String type);
+
+    @POST("api/user/save/black/{userId}")
+    Observable<ApiResult> saveBlackUser(@Path("userId") String userId);
+
+    @POST("api/user/remove/black/{userId}")
+    Observable<ApiResult> removeBlackUser(@Path("userId") String userId);
+
+    @GET("api/user/list/black")
+    Observable<ApiResult<ArrayList<RejectEntity>>> getBlackList(@Query("index") int index, @Query("size") int size);
+
+    @POST("api/doc/check/{docId}/egg")
+    Observable<ApiResult<Boolean>> checkEgg(@Path("docId") String docId);
+
+    @POST("api/doc/post/{docId}/egg")
+    Observable<ApiResult> postEgg(@Path("docId") String docId);
+
+    @POST("api/doc/remove/{docId}/egg")
+    Observable<ApiResult> removeEgg(@Path("docId") String docId);
+
+    @GET("api/shop/list")
+    Observable<ApiResult<ArrayList<CoinShopEntity>>> loadShopList(@Query("index")int index, @Query("size")int size);
+
+    @POST("api/shop/order/{id}")
+    Observable<ApiResult<CreateOrderEntity>> createOrder(@Path("id")String id);
+
+    @POST("api/user/save/address")
+    Observable<ApiResult> saveUserAddress(@Body AddressEntity entity);
+
+    @GET("api/user/find/address")
+    Observable<ApiResult<AddressEntity>> loadUserAddress();
+
+    @GET("api/shop/my/order")
+    Observable<ApiResult<ArrayList<OrderEntity>>> loadOrderList(@Query("index")int index, @Query("size")int size);
+
+    @POST("api/shop/cancel/{orderId}")
+    Observable<ApiResult> cancelOrder(@Path("orderId")String orderId);
+
+    @POST("api/shop/pay")
+    Observable<ApiResult<PayResEntity>> payOrder(@Body PayReqEntity entity);
 }

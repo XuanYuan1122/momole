@@ -12,6 +12,7 @@ public interface PersonalContract {
         void requestUserInfo(String id);
         void followUser(String id,boolean isFollow);
         void createPrivateMsg(String userId);
+        void saveOrCancelBlackUser(String userId, boolean isSave);
     }
 
     interface View extends BaseView{
@@ -19,5 +20,6 @@ public interface PersonalContract {
         void onFollowSuccess(boolean isFollow);
         void onLoadUserInfoFail();
         void onCreatePrivateMsgSuccess(CreatePrivateMsgEntity entity);
+        void onSaveOrCancelBlackSuccess(boolean isSave);
     }
 }

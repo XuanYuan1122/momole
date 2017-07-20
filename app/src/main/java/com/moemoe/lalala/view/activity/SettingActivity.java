@@ -13,6 +13,7 @@ import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -71,6 +72,10 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mHander = new Handler();
         DaggerSettingComponent.builder()
                 .settingModule(new SettingModule(this))
@@ -112,6 +117,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     private void initPersonSetting(View parent){
         initStyleView(parent, R.id.set_change_psw);
+        initStyleView(parent, R.id.set_change_address);
     }
 
     private void initSyetemSetting(View parent){
@@ -148,6 +154,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             initClearCacheDetailTv(funDetailTv);
         } else if(id == R.id.set_about){
             funNameTv.setText(R.string.label_about);
+        } else if(id == R.id.set_change_address){
+            funNameTv.setText(R.string.label_order_address);
         }
     }
 
@@ -204,7 +212,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         } else if(id == R.id.set_clear_cache){
             clearCache();
         } else if(id == R.id.set_about){
-            Intent intent = new Intent(this,  AboutActivity.class);
+            Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
         } else if(id == R.id.set_log_out){
             if(mIsLogin){
@@ -214,6 +222,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
                 i.putExtra(LoginActivity.EXTRA_KEY_SETTING,false);
                 startActivityForResult(i, REQUEST_SETTING_LOGIN);
             }
+        } else if(id == R.id.set_change_address){
+            Intent i = new Intent(this, AddAddressActivity.class);
+            startActivity(i);
         }
     }
 

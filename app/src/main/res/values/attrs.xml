@@ -47,17 +47,4 @@
     <declare-styleable name="CardItemView">
         <attr name="show_type" format="integer"/>
     </declare-styleable>
-    <declare-styleable name="MyRoundedImageView">
-        <attr name="riv_left_top_radius" format="dimension"/>
-        <attr name="riv_right_top_radius" format="dimension"/>
-        <attr name="riv_left_bottom_radius" format="dimension"/>
-        <attr name="riv_right_bottom_radius" format="dimension"/>
-        <attr name="rect_type" format="enum">
-            <enum name="circle" value="0"/>
-            <enum name="round" value="1"/>
-        </attr>
-        <attr name="riv_border_thickness" format="dimension" />
-        <attr name="riv_border_inside_color" format="color" />
-        <attr name="riv_border_outside_color" format="color" />
-    </declare-styleable>
 </resources>

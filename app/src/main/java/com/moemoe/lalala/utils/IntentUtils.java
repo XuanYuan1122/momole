@@ -1,5 +1,6 @@
 package com.moemoe.lalala.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -74,7 +75,7 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         }
     }
 
-    public static void toActivityFromUri(Context context, Uri uri, View v){
+    public static void toActivityForResultFromUri(Context context, Uri uri, View v, int requestCode){
         if(sSupportSchame.size() <= 0) init(context);
         try{
             Intent i = new Intent();
@@ -114,9 +115,17 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
                     }
                     if(path.equals(context.getResources().getString(R.string.label_plot_action))){
                         ActivityOptionsCompat options = ActivityOptionsCompat.makeScaleUpAnimation(v,0,0,0,0);
-                        ActivityCompat.startActivity(context,i,options.toBundle());
+                        if(requestCode == -1){
+                            ActivityCompat.startActivity(context,i,options.toBundle());
+                        }else {
+                            ActivityCompat.startActivityForResult((Activity) context,i,requestCode,options.toBundle());
+                        }
                     }else {
-                        context.startActivity(i);
+                        if(requestCode == -1){
+                            context.startActivity(i);
+                        }else {
+                            ((Activity) context).startActivityForResult(i, requestCode);
+                        }
                     }
                 }
             }else {
@@ -125,6 +134,10 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         }catch (Exception e){
             WebViewActivity.startActivity(context, BuildConfig.NOT_FOUND_PAGE);
         }
+    }
+
+    public static void toActivityFromUri(Context context, Uri uri, View v){
+        toActivityForResultFromUri(context,uri,v,-1);
     }
 
     public static Intent getIntentFromUri(Context context,Uri uri){

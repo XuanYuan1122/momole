@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.webkit.WebChromeClient;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
@@ -38,10 +40,8 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             savedInstanceState.putParcelable("android:support:fragments", null);
         }
         super.onCreate(savedInstanceState);
+        ImmersionBar.with(this).init();
         this.getWindow().setBackgroundDrawable(null);//移除默认背景，避免overdraw
-        if(!ViewUtils.MIUISetStatusBarLightMode(getWindow(),true)){
-            ViewUtils.FlymeSetStatusBarLightMode(getWindow(),true);
-        }
         switch (AppStatusManager.getInstance().getAppStatus()) {
             case AppStatusConstant.STATUS_FORCE_KILLED:
                 restartApp();
@@ -93,33 +93,11 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
 
     public void showToast(String msg) {
         ToastUtils.showShortToast(this,msg);
-        //this.showToast(msg, Toast.LENGTH_SHORT);
     }
-
-
-//    public void showToast(String msg, int duration) {
-//        if (msg == null) return;
-//        if (duration == Toast.LENGTH_SHORT || duration == Toast.LENGTH_LONG) {
-//            ToastUtils.show(this, msg, duration);
-//        } else {
-//            ToastUtils.show(this, msg, ToastUtils.LENGTH_SHORT);
-//        }
-//    }
-
 
     public void showToast(int resId) {
         ToastUtils.showShortToast(this,resId);
-      //  this.showToast(resId, Toast.LENGTH_SHORT);
     }
-
-
-//    public void showToast(int resId, int duration) {
-//        if (duration == Toast.LENGTH_SHORT || duration == Toast.LENGTH_LONG) {
-//            ToastUtils.show(this, resId, duration);
-//        } else {
-//            ToastUtils.show(this, resId, ToastUtils.LENGTH_SHORT);
-//        }
-//    }
 
     public void createDialog(String message) {
         if (this.isFinishing())
@@ -157,6 +135,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ImmersionBar.with(this).destroy();
         if(bind != null) bind.unbind();
     }
 
@@ -207,4 +186,9 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     }
 
     public void hideCustomView(boolean isUseNew){}
+
+    @SuppressWarnings("unchecked")
+    protected  <V extends View> V $(@IdRes int id){
+        return (V)findViewById(id);
+    }
 }

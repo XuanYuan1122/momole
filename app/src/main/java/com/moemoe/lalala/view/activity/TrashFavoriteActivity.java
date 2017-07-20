@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
@@ -43,6 +44,10 @@ public class TrashFavoriteActivity extends BaseAppCompatActivity {
             String FRAGMENTS_TAG = "android:support:fragments";
             savedInstanceState.remove(FRAGMENTS_TAG);
         }
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         if(getIntent()== null) {
             finish();
             return;

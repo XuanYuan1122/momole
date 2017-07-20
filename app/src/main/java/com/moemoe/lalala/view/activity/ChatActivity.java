@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -109,6 +110,11 @@ public class ChatActivity extends BaseAppCompatActivity implements ChatContract.
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .keyboardEnable(true)
+                .init();
         initBase();
         mKlCommentBoard.setVisibility(View.VISIBLE);
         mIvSet.setImageResource(R.drawable.privately_setup_blue);

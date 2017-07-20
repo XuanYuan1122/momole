@@ -1,20 +1,32 @@
 package com.moemoe.lalala.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.di.components.DaggerCoinShopComponent;
+import com.moemoe.lalala.di.modules.CoinShopModule;
+import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.entity.CoinShopEntity;
+import com.moemoe.lalala.model.entity.OrderEntity;
+import com.moemoe.lalala.presenter.CoinShopContract;
+import com.moemoe.lalala.presenter.CoinShopPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.view.adapter.CoinShopAdapter;
-import com.moemoe.lalala.view.adapter.OnItemClickListener;
+import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -22,13 +34,15 @@ import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 
 /**
  * Created by yi on 2017/6/26.
  */
 
-public class CoinShopActivity extends BaseAppCompatActivity {
+public class CoinShopActivity extends BaseAppCompatActivity implements CoinShopContract.View{
 
     @BindView(R.id.ll_root)
     LinearLayout mLlRoot;
@@ -41,6 +55,9 @@ public class CoinShopActivity extends BaseAppCompatActivity {
     @BindView(R.id.rv_list)
     PullAndLoadView mListDocs;
 
+    @Inject
+    CoinShopPresenter mPresenter;
+
     private CoinShopAdapter mAdapter;
     private boolean isLoading = false;
 
@@ -51,14 +68,25 @@ public class CoinShopActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
+        DaggerCoinShopComponent.builder()
+                .coinShopModule(new CoinShopModule(this))
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
+                .build()
+                .inject(this);
         //top time
-        TextView tvTop = new TextView(this);
-        tvTop.setTextColor(ContextCompat.getColor(this,R.color.white));
-        tvTop.setTextSize(TypedValue.COMPLEX_UNIT_DIP,12);
-        tvTop.setBackgroundColor(ContextCompat.getColor(this,R.color.main_cyan));
-        tvTop.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(this,45)));
-        tvTop.setText("[50元 话费充值] 刷新还有: 17小时");
-        mLlRoot.addView(tvTop,1);
+//        TextView tvTop = new TextView(this);
+//        tvTop.setTextColor(ContextCompat.getColor(this,R.color.white));
+//        tvTop.setTextSize(TypedValue.COMPLEX_UNIT_DIP,12);
+//        tvTop.setBackgroundColor(ContextCompat.getColor(this,R.color.main_cyan));
+//        tvTop.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(this,45)));
+//        tvTop.setGravity(Gravity.CENTER);
+//        tvTop.setText("[50元 话费充值] 刷新还有: 17小时");
+//        mLlRoot.addView(tvTop,2);
+        //
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListDocs.getRecyclerView().setHasFixedSize(true);
         mAdapter = new CoinShopAdapter(this);
@@ -66,6 +94,12 @@ public class CoinShopActivity extends BaseAppCompatActivity {
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
         mListDocs.setLoadMoreEnabled(false);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mPresenter != null) mPresenter.release();
+        super.onDestroy();
     }
 
     @Override
@@ -91,7 +125,8 @@ public class CoinShopActivity extends BaseAppCompatActivity {
             @Override
             public void OnMenuItemClick(int itemId) {
                 if(itemId == 0){
-                    //TODO 跳转购买记录界面
+                    Intent i = new Intent(CoinShopActivity.this, OrderListActivity.class);
+                    startActivity(i);
                 }
             }
         });
@@ -110,10 +145,12 @@ public class CoinShopActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initData() {
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+                Intent i = new Intent(CoinShopActivity.this, ShopDetailActivity.class);
+                i.putExtra("shop_detail", mAdapter.getItem(position));
+                startActivity(i);
             }
 
             @Override
@@ -125,11 +162,13 @@ public class CoinShopActivity extends BaseAppCompatActivity {
             @Override
             public void onLoadMore() {
                 isLoading = true;
+                mPresenter.loadShopList(mAdapter.getList().size());
             }
 
             @Override
             public void onRefresh() {
                 isLoading = true;
+                mPresenter.loadShopList(0);
             }
 
             @Override
@@ -142,5 +181,41 @@ public class CoinShopActivity extends BaseAppCompatActivity {
                 return false;
             }
         });
+        mPresenter.loadShopList(0);
     }
+
+    @Override
+    public void onFailure(int code, String msg) {
+        ErrorCodeUtils.showErrorMsgByCode(this, code, msg);
+    }
+
+    @Override
+    public void onLoadShopListSuccess(ArrayList<CoinShopEntity> list, boolean isPull) {
+        isLoading = false;
+        mListDocs.setComplete();
+        if(list.size() >= ApiService.LENGHT){
+            mListDocs.setLoadMoreEnabled(true);
+        }else {
+            mListDocs.setLoadMoreEnabled(false);
+        }
+        if(isPull){
+            mAdapter.setList(list);
+        }else {
+            mAdapter.addList(list);
+        }
+    }
+
+    public void createOrder(CoinShopEntity entity){
+        mPresenter.createOrder(entity);
+    }
+
+    @Override
+    public void onCreateOrderSuccess(OrderEntity entity) {
+        Intent i = new Intent(this,OrderActivity.class);
+        i.putExtra("order",entity);
+        i.putExtra("show_top",true);
+        i.putExtra("show_status",false);
+        startActivity(i);
+    }
+
 }

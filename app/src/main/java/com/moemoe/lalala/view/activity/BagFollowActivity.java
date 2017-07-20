@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagFollowComponent;
@@ -64,6 +65,10 @@ public class BagFollowActivity extends BaseAppCompatActivity implements BagFollo
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mTitle.setText("书包收藏");
         mTvSelect.setVisibility(View.VISIBLE);
         mTvSelect.getPaint().setFakeBoldText(true);

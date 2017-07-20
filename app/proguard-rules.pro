@@ -274,3 +274,7 @@ public static java.lang.String TABLENAME;
 -keepclasseswithmembernames class * {
     @butterknife.* <methods>;
 }
+
+-keep class com.youth.banner.** {
+    *;
+ }

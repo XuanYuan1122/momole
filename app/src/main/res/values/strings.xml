@@ -282,11 +282,23 @@
     <string name="label_order_mark">备注:</string>
     <string name="label_order_cancel">取消订单</string>
     <string name="label_order_done">提交订单</string>
+    <string name="label_order_pay">确认支付</string>
     <string name="label_order_user">收货人</string>
     <string name="label_order_phone">电话</string>
     <string name="label_order_address_2">地址</string>
     <string name="label_total_floor" formatted="false">共有%d楼</string>
     <string name="label_total_coin" formatted="false">共有%d枚</string>
+    <string name="label_user_reject">拉黑</string>
+    <string name="label_user_cancel_reject">取消拉黑</string>
+    <string name="label_user_reject_list">拉黑列表</string>
+    <string name="label_remove">移除</string>
+    <string name="label_bad_egg">臭鸡蛋</string>
+    <string name="label_remove_bad_egg">取消臭鸡蛋</string>
+    <string name="label_black_users">黑名单</string>
+    <string name="label_order">订单</string>
+    <string name="label_alipay">支付宝</string>
+    <string name="label_wx">微信</string>
+    <string name="label_qpay">QQ钱包</string>
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>
@@ -355,6 +367,7 @@
     <string name="msg_confirm_give_coin_bf">确认献上</string>
     <string name="msg_confirm_give_coin_af">枚节操?</string>
     <string name="msg_input_err_coin">节操数必须大于0</string>
+    <string name="msg_input_not_empty">信息填写不完整</string>
 
 
     <string name="a_hint_input_title">标题(选填)</string>

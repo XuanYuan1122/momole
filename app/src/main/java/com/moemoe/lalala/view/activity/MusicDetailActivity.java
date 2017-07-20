@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.netamusic.data.model.Song;
@@ -42,6 +43,9 @@ public class MusicDetailActivity extends BaseAppCompatActivity implements IPlayB
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .init();
         if (getIntent() == null) {
             finish();
             return;

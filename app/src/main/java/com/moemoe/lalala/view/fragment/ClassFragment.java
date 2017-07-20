@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.fragment;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.StartActivityConstant;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.activity.CreateRichDocActivity;
 import com.moemoe.lalala.view.adapter.ClassAdapter;
@@ -85,10 +87,10 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
                             if(mSchema.contains(getString(R.string.label_doc_path)) && !mSchema.contains("uuid")){
                                 String begin = mSchema.substring(0,mSchema.indexOf("?") + 1);
                                 String uuid = mSchema.substring(mSchema.indexOf("?") + 1);
-                                mSchema = begin + "uuid=" + uuid + "&from_name=广场";
+                                mSchema = begin + "uuid=" + uuid + "&from_name=广场&position=" + position;
                             }
                             Uri uri = Uri.parse(mSchema);
-                            IntentUtils.toActivityFromUri(getActivity(), uri,view);
+                            IntentUtils.toActivityForResultFromUri(getActivity(), uri,view, StartActivityConstant.REQ_DOC_DETAIL_ACTIVITY);
                         }
                     }
                 }
@@ -235,6 +237,24 @@ public class ClassFragment extends BaseFragment implements DepartContract.View {
         if(resultCode == CreateRichDocActivity.RESPONSE_CODE){
             mListDocs.getRecyclerView().scrollToPosition(0);
             mPresenter.requestDocList(0,"",1);
+        }else if(requestCode == StartActivityConstant.REQ_DOC_DETAIL_ACTIVITY && resultCode == Activity.RESULT_OK){
+            String type = data.getStringExtra("type");
+            int position = data.getIntExtra("position", -1);
+            if(position < 2){
+                return;
+            }
+            if("delete".equals(type)){
+                mListAdapter.getDocList().remove(position - 2);
+            }else if("egg".equals(type)){
+                DocListEntity entity = (DocListEntity) mListAdapter.getItem(position);
+                int eggs = entity.getEggs();
+                if(eggs < 10){
+                    ((DocListEntity) mListAdapter.getItem(position)).setEggs(eggs + 1);
+                    mListAdapter.notifyItemChanged(position);
+                }
+            }else if("finish".equals(type)){
+
+            }
         }
     }
 

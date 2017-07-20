@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_f6f6f6"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
 
-    <include layout="@layout/neta_bar"/>
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"/>
+
+    <include
+        android:id="@+id/include_toolbar"
+        layout="@layout/neta_bar"/>
+
 
     <ListView
         android:id="@+id/list"
         style="@style/ListDefault"
-        android:layout_marginTop="@dimen/neta_toolbar"
-        android:paddingTop="@dimen/status_bar_height"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </ListView>
@@ -27,4 +33,4 @@
         android:visibility="gone" >
     </TextView>
 
-</RelativeLayout>
+</LinearLayout>

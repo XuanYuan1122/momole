@@ -16,6 +16,7 @@ import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.model.entity.ThirdLoginEntity;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.StringUtils;
 
 import javax.inject.Inject;
 
@@ -98,9 +99,9 @@ public class SimplePresenter implements SimpleContract.Presenter {
             }else {
                 PreferenceUtils.setAuthorInfo(info);
             }
-            if(isThirdParty(info.getPlatform())){
+            if(StringUtils.isThirdParty(info.getPlatform())){
                 //三方登录
-                ThirdLoginEntity bean = new ThirdLoginEntity(info.getUserName(),info.getOpenId(),info.getPlatform(), (String) data);
+                ThirdLoginEntity bean = new ThirdLoginEntity(info.getUserName(),info.getOpenId(),StringUtils.convertPlatform(info.getPlatform()), (String) data);
                 final AuthorInfo finalInfo1 = info;
                 apiService.loginThird(bean)
                         .subscribeOn(Schedulers.io())
@@ -114,6 +115,7 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo1.setUserName(entity.getUserName());
                                 finalInfo1.setLevel(entity.getLevel());
                                 finalInfo1.setOpenBag(entity.isOpenBag());
+                                finalInfo1.setInspector(entity.isInspector());
                                 PreferenceUtils.setAuthorInfo(finalInfo1);
                                 if(view != null) view.onSuccess(entity);
                             }
@@ -141,6 +143,7 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo.setUserName(entity.getUserName());
                                 finalInfo.setLevel(entity.getLevel());
                                 finalInfo.setOpenBag(entity.isOpenBag());
+                                finalInfo.setInspector(entity.isInspector());
                                 PreferenceUtils.setAuthorInfo(finalInfo);
                                 if(view != null)  view.onSuccess(entity);
                             }
@@ -230,9 +233,6 @@ public class SimplePresenter implements SimpleContract.Presenter {
         }
     }
 
-    public boolean isThirdParty(String platform){
-        return platform != null && (platform.equals(cn.sharesdk.tencent.qq.QQ.NAME) || platform.equals(Wechat.NAME) || platform.equals(SinaWeibo.NAME));
-    }
 
     @Override
     public void release() {

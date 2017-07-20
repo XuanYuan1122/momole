@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
@@ -53,6 +54,10 @@ public class DocHistoryActivity extends BaseAppCompatActivity implements Persona
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDepartComponent;
@@ -46,8 +47,6 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     private final String EXTRA_NAME = "name";
 
-//    @BindView(R.id.app_bar)
-//    View mAppBar;
     @BindView(R.id.iv_back)
     View mIvBack;
     @BindView(R.id.tv_toolbar_title)
@@ -68,6 +67,10 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         Intent i = getIntent();
         mRoomId = "";
         if(i != null){

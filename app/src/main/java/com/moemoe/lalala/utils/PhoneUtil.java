@@ -91,7 +91,6 @@ public class PhoneUtil {
     }
     public static String getLocalCountryCode(Context context){
         PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
-        //TODO java.lang.OutOfMemoryError,java.lang.RuntimeException
         int countryCode = phoneNumberUtil.getCountryCodeForRegion(getLocaleRegion(context));
         String localCode = String.valueOf(countryCode);
         return localCode;

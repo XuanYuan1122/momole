@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.BuildConfig;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
@@ -64,6 +65,8 @@ import com.moemoe.lalala.view.widget.recycler.PullCallback;
 import com.moemoe.lalala.view.widget.recycler.RecyclerViewPositionHelper;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
+import org.json.JSONArray;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -91,6 +94,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private final int MENU_DELETE = 106;
     private final int TAG_DELETE = 107;
     private final int EDIT_DOC = 108;
+    private final int MENU_EGG = 109;
     private final int ICON_NUM_LIMIT = 9;
     private final int REQ_GET_EDIT_VERSION_IMG = 2333;
     private final int REQ_TO_FOLDER = 30003;
@@ -139,6 +143,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private boolean mIsLoading = false;
     private int mCommentNum = 0;
     private ArrayList<DocTagEntity> mDocTags;
+    private boolean isPostEgg;
+    private boolean mCanPostEgg;
+    private int mPosition;
     
     @Override
     protected int getLayoutId() {
@@ -147,12 +154,18 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .keyboardEnable(true)
+                .init();
         DaggerDetailComponent.builder()
                 .detailModule(new DetailModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mDocId = getIntent().getStringExtra(UUID);
+        mPosition = !TextUtils.isEmpty(getIntent().getStringExtra("position"))?Integer.valueOf(getIntent().getStringExtra("position")):-1;
         if(TextUtils.isEmpty(mDocId)){
             finish();
         }
@@ -190,7 +203,14 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mTvFrom.setVisibility(View.VISIBLE);
         mTvFrom.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         String from = getIntent().getStringExtra("from_name");
-        if(!TextUtils.isEmpty(from)) mTvFrom.setText(from);
+        if(!TextUtils.isEmpty(from)) {
+            mTvFrom.setText(from);
+            if(from.equals("后山") || from.equals("广场")){
+                mCanPostEgg = true;
+            }
+        }else {
+            mCanPostEgg = false;
+        }
         mIvMenu.setVisibility(View.VISIBLE);
         mTvOnlyHost.setVisibility(View.VISIBLE);
         mTvOnlyHost.setWidth(DensityUtil.dip2px(this,50));
@@ -202,18 +222,34 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     }
 
     @Override
+    public void onBackPressed() {
+        onBackPressed("finish");
+    }
+
+    public void onBackPressed(String type) {
+        Intent i = new Intent();
+        i.putExtra("position",mPosition);
+        if(isPostEgg){
+            type = "egg";
+        }
+        i.putExtra("type",type);
+        setResult(RESULT_OK,i);
+        finish();
+    }
+
+    @Override
     protected void initListeners() {
         mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                finish();
+                onBackPressed("finish");
             }
         });
         mTvFrom.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                finish();
+                onBackPressed("finish");
             }
         });
         mIvMenu.setOnClickListener(new NoDoubleClickListener() {
@@ -246,7 +282,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                   // if(!isFinishing()) Glide.with(NewDocDetailActivity.this).resumeRequests();
                     int pos = recyclerViewHelper.findFirstVisibleItemPosition();
                     if(pos >= 0){
                         Object o = mAdapter.getItem(pos);
@@ -259,7 +294,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                         }
                     }
                 } else {
-                  //  if(!isFinishing()) Glide.with(NewDocDetailActivity.this).pauseRequests();
                 }
             }
         });
@@ -400,6 +434,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             }
         });
         mPresenter.requestDoc(mDocId);
+        mPresenter.checkEgg(mDocId);
     }
 
     @Override
@@ -836,6 +871,27 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mAdapter.followUserSuccess(isFollow);
     }
 
+    @Override
+    public void checkEggSuccess(boolean isThrow) {
+        isPostEgg = isThrow;
+        if(bottomMenuFragment != null){
+            changeEggMenu();
+        }
+    }
+
+    private void changeEggMenu(){
+        bottomMenuFragment.changeItemTextById(MENU_EGG,
+                isPostEgg?getString(R.string.label_remove_bad_egg):getString(R.string.label_bad_egg),
+                isPostEgg?R.drawable.btn_doc_option_egged:R.drawable.btn_doc_option_egg);
+    }
+
+    @Override
+    public void postOrCancelEggSuccess(boolean isPost) {
+        this.isPostEgg = isPost;
+        changeEggMenu();
+        showToast("扔臭鸡蛋成功");
+    }
+
     public void getCoinContent(){
         mPresenter.getCoinContent(mDocId);
     }
@@ -877,7 +933,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             items.add(item);
 
         }else {
-
             if(entity.isFavoriteFlag()){
                 item = new MenuItem(MENU_FAVORITE, getString(R.string.label_cancel_favorite),R.drawable.btn_doc_option_collected);
             }else {
@@ -890,7 +945,17 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
             item = new MenuItem(MENU_REPORT, getString(R.string.label_jubao),R.drawable.btn_doc_option_report);
             items.add(item);
-
+            if(mCanPostEgg){
+                if(PreferenceUtils.getAuthorInfo().isInspector()){
+                    if(isPostEgg){
+                        item = new MenuItem(MENU_EGG, getString(R.string.label_remove_bad_egg),R.drawable.btn_doc_option_egged);
+                        items.add(item);
+                    }else {
+                        item = new MenuItem(MENU_EGG, getString(R.string.label_bad_egg),R.drawable.btn_doc_option_egg);
+                        items.add(item);
+                    }
+                }
+            }
         }
 
         item = new MenuItem(MENU_SHARE, getString(R.string.label_share),R.drawable.btn_doc_option_share);
@@ -928,7 +993,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                         startActivityForResult(i,REQ_DELETE_TAG);
                     }
                 }else if(itemId == EDIT_DOC){
-                   gotoEditDoc();
+                    gotoEditDoc();
+                }else if(itemId == MENU_EGG){
+                    mPresenter.postOrCancelEgg(mDocId, isPostEgg);
                 }
             }
         });
@@ -1065,7 +1132,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     @Override
     public void onDeleteDoc() {
         showToast("删除成功");
-        finish();
+        onBackPressed("delete");
     }
 
     @Override

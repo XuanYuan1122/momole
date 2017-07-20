@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -128,7 +129,7 @@ public class BottomMenuFragment extends DialogFragment{
     }
 
 
-    public void changeItemTextById(int id, String text,int imgId) {
+    public void changeItemTextById(int id, String text,@DrawableRes int imgId) {
         int index = findItemIndex(id);
         if (index >= 0) {
             menuItems.remove(index);

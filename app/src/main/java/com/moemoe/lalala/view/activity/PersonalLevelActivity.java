@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.AuthorInfo;
@@ -68,6 +69,10 @@ public class PersonalLevelActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvTitle.setText(R.string.label_level_introduce);
         mHander = new Handler();

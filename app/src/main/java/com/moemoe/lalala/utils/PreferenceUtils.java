@@ -73,6 +73,7 @@ public class PreferenceUtils {
                 sAuthorInfo.setLevel(info.getLevel());
             }
             sAuthorInfo.setOpenBag(info.isOpenBag());
+            sAuthorInfo.setInspector(info.isInspector());
         }
         sAuthorInfo.setId(1);
         AuthorInfoDao dao = GreenDaoManager.getInstance().getSession().getAuthorInfoDao();
@@ -329,14 +330,14 @@ public class PreferenceUtils {
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString("live2d_model", model);
+        editor.putString("live2d_model_new", model);
         editor.commit();
     }
 
     public static String getSelectFuku(Context context){
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME, Activity.MODE_PRIVATE);
-        return sp.getString("live2d_model", Live2DDefine.MODEL_LEN);
+        return sp.getString("live2d_model_new", Live2DDefine.MODEL_LEN);
     }
 
     public static void saveHaveGameFuku(Context context,boolean have){

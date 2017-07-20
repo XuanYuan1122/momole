@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagComponent;
@@ -101,6 +102,10 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ImmersionBar.with(this)
+                .titleBar(mToolbar)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mUserId = getIntent().getStringExtra(UUID);
         mTitleView.setCollapsedTitleTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTitleView.setExpandedTitleColor(ContextCompat.getColor(this,R.color.white));

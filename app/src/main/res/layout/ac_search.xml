@@ -4,113 +4,114 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:background="@color/bg_f6f6f6">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/neta_toolbar"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/size_12"
-            android:paddingStart="@dimen/size_12"
-            android:paddingRight="@dimen/size_16"
-            android:paddingEnd="@dimen/size_16"
-            android:background="@color/white">
+    <LinearLayout
+        android:id="@+id/ll_top_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/neta_toolbar"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/size_12"
+        android:paddingStart="@dimen/size_12"
+        android:paddingRight="@dimen/size_16"
+        android:paddingEnd="@dimen/size_16"
+        android:background="@color/white">
 
-            <RelativeLayout
-                android:id="@+id/rl_search_root"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="28dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/size_16"
-                android:layout_marginEnd="@dimen/size_16"
-                android:paddingStart="@dimen/size_10"
-                android:paddingLeft="@dimen/size_10"
-                android:paddingRight="@dimen/size_12"
-                android:paddingEnd="@dimen/size_12"
-                android:background="@drawable/shape_e8e8e8_14">
+        <RelativeLayout
+            android:id="@+id/rl_search_root"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="28dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/size_16"
+            android:layout_marginEnd="@dimen/size_16"
+            android:paddingStart="@dimen/size_10"
+            android:paddingLeft="@dimen/size_10"
+            android:paddingRight="@dimen/size_12"
+            android:paddingEnd="@dimen/size_12"
+            android:background="@drawable/shape_e8e8e8_14">
 
-                <LinearLayout
-                    android:id="@+id/ll_search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/iv_search"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_search_icon" />
-
-                    <TextView
-                        android:id="@+id/tv_hint"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:layout_toRightOf="@+id/iv_search"
-                        android:layout_toEndOf="@+id/iv_search"
-                        android:layout_marginLeft="@dimen/size_8"
-                        android:layout_marginStart="@dimen/size_8"
-                        android:text="搜索你感兴趣的"
-                        android:textSize="@dimen/size_14" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_search_root_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/iv_search_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_search_icon" />
-
-                    <EditText
-                        android:id="@+id/et_search"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="28dp"
-                        android:background="@null"
-                        android:imeOptions="actionSearch"
-                        android:textColor="@color/black_1e1e1e"
-                        android:singleLine="true"
-                        android:layout_marginLeft="@dimen/size_8"
-                        android:layout_marginStart="@dimen/size_8"
-                        android:layout_marginEnd="@dimen/size_8"
-                        android:layout_marginRight="@dimen/size_8"
-                        android:hint="搜索你感兴趣的"
-                        android:textSize="@dimen/size_14"
-                        android:textColorHint="@color/white"
-                        android:textCursorDrawable="@null"
-                        android:text="" />
-
-                    <ImageView
-                        android:id="@+id/iv_clear"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_search_cancel" />
-                </LinearLayout>
-
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/tv_cancel"
+            <LinearLayout
+                android:id="@+id/ll_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/main_cyan"
-                android:layout_gravity="center_vertical"
-                android:textSize="@dimen/size_15"
-                android:text="取消"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/iv_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search_icon" />
+
+                <TextView
+                    android:id="@+id/tv_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:layout_toRightOf="@+id/iv_search"
+                    android:layout_toEndOf="@+id/iv_search"
+                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginStart="@dimen/size_8"
+                    android:text="搜索你感兴趣的"
+                    android:textSize="@dimen/size_14" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_search_root_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/iv_search_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_search_icon" />
+
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="28dp"
+                    android:background="@null"
+                    android:imeOptions="actionSearch"
+                    android:textColor="@color/black_1e1e1e"
+                    android:singleLine="true"
+                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginStart="@dimen/size_8"
+                    android:layout_marginEnd="@dimen/size_8"
+                    android:layout_marginRight="@dimen/size_8"
+                    android:hint="搜索你感兴趣的"
+                    android:textSize="@dimen/size_14"
+                    android:textColorHint="@color/white"
+                    android:textCursorDrawable="@null"
+                    android:text="" />
+
+                <ImageView
+                    android:id="@+id/iv_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_search_cancel" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/main_cyan"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/size_15"
+            android:text="取消"/>
+    </LinearLayout>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/indicator_search_data"

@@ -15,11 +15,11 @@ public class Live2DDefine {
     public static final float VIEW_LOGICAL_LEFT = -1;
     public static final float VIEW_LOGICAL_RIGHT = 1;
 
-    public static final String MODEL_LEN	= "live2d/len/model_init.json";
-    public static final String MODEL_LEN_SWIN = "live2d/len/model_sukumizu.json";
-    public static final String MODEL_LEN_IMPACT = "live2d/len/model_bh3rd.json";
-    public static final String MODEL_LEN_SPACE = "live2d/len/model_d-breaker.json";
-    public static final String MODEL_LEN_XMAS = "live2d/len/model_christmas.json";
+    public static final String MODEL_LEN	= "live2d/len/model_school.json";
+    public static final String MODEL_LEN_SWIN = "live2d/len/model_swim.json";
+    public static final String MODEL_LEN_IMPACT = "live2d/len/model_impact.json";
+    public static final String MODEL_LEN_SPACE = "live2d/len/model_space.json";
+    public static final String MODEL_LEN_XMAS = "live2d/len/model_xmas.json";
 
     public static final String BACK_IMAGE_NAME = "image/neta_school.png" ;
     public static final String BACK_IMAGE_IMPACT = "image/bg_len_impact.png" ;

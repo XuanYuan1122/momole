@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCommentListComponent;
@@ -69,6 +70,11 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .keyboardEnable(true)
+                .init();
         DaggerCommentListComponent.builder()
                 .commentListModule(new CommentListModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

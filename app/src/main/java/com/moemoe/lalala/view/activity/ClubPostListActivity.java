@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -115,6 +116,10 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ImmersionBar.with(this)
+                .titleBar(mToolbar)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         mTagName = "";
         mHeadRoot.setVisibility(View.INVISIBLE);
         mDocNum.setText(getString(R.string.label_doc_num, 0));

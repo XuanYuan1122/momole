@@ -4,11 +4,16 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_f6f6f6"
-    android:fitsSystemWindows="true">
+    android:background="@color/bg_f6f6f6">
 
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"/>
 
     <RelativeLayout
+        android:id="@+id/include_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/neta_toolbar"
         android:background="@drawable/bg_shadow_up">

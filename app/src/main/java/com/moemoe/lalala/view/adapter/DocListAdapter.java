@@ -27,7 +27,6 @@ import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.DocListEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.GlideRoundTransform;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -36,7 +35,7 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
-import com.moemoe.lalala.view.widget.adapter.NewDocLabelAdapter;
+import com.moemoe.lalala.view.widget.view.NewDocLabelAdapter;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 
 import java.util.ArrayList;

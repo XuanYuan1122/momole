@@ -105,13 +105,13 @@ public class UnCaughtException implements Thread.UncaughtExceptionHandler {
         return true;
     }
 
+
     /**
      * 上传错误日式到服务器
      */
     private void sendCrashReportsToServer() {
         //TODO 后续版本完成
     }
-
     /***
      * 发送错误报告邮件
      */

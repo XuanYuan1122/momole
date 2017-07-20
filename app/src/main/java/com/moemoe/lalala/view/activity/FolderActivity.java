@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
@@ -121,6 +122,10 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .titleBar(mToolbar)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

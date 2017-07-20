@@ -1,5 +1,7 @@
 package com.moemoe.lalala.view.widget.netamenu;
 
+import android.support.annotation.DrawableRes;
+
 /**
  * Created by yi on 2017/6/6.
  */
@@ -19,7 +21,7 @@ public class MenuItem {
         this.text = text;
     }
 
-    public MenuItem(int id, String text, int imgId) {
+    public MenuItem(int id, String text, @DrawableRes int imgId) {
         this.id = id;
         this.text = text;
         ImgId = imgId;

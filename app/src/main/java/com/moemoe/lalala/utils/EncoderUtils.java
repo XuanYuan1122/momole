@@ -24,10 +24,8 @@ public class EncoderUtils {
             mEncoder = new RSAEncoder();
             mEncoder.loadPublicKey(context.getAssets().open("otakuhouse_public_server.pem"));
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

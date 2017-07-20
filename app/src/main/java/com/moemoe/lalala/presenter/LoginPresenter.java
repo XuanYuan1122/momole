@@ -9,6 +9,7 @@ import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.model.entity.ModifyEntity;
 import com.moemoe.lalala.model.entity.ThirdLoginEntity;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.StringUtils;
 
 import java.util.HashMap;
 
@@ -60,7 +61,7 @@ public class LoginPresenter implements LoginContract.Presenter {
             @Override
             public void onComplete(final Platform platform, int i, HashMap<String, Object> hashMap) {
                 final PlatformDb db = platform.getDb();
-                ThirdLoginEntity bean = new ThirdLoginEntity(db.getUserName(),db.getUserId(),platform.getName(), devId);
+                ThirdLoginEntity bean = new ThirdLoginEntity(db.getUserName(),db.getUserId(), StringUtils.convertPlatform(platform.getName()), devId);
                 apiService.loginThird(bean)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -87,6 +88,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                                 authorInfo.setCoin(entity.getCoin());
                                 authorInfo.setLevel(entity.getLevel());
                                 authorInfo.setOpenBag(entity.isOpenBag());
+                                authorInfo.setInspector(entity.isInspector());
                                 if(entity.isNew()){
                                     ModifyEntity entity1 = new ModifyEntity();
                                     entity1.birthday = "";

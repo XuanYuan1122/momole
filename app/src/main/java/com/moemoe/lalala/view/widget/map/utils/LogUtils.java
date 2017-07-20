@@ -31,7 +31,7 @@ public class LogUtils {
 //	    df.setMinimumFractionDigits(2);
 //
 //	    Log.d(APP, "debug. =================================");
-//	    Log.d(APP, "debug.heap native: allocated " + df.format(allocated) + "MB of " + df.format(available) + "MB (" + df.format(free) + "MB free) in [" + clazz.getName().replaceAll("com.myapp.android.","") + "]");
+//	    Log.d(APP, "debug.heap native: allocated " + df.format(allocated) + "MB of " + df.format(available) + "MB (" + df.format(free) + "MB free) in [" + clazz.getProductName().replaceAll("com.myapp.android.","") + "]");
 //	    Log.d(APP, "debug.memory: allocated: " + df.format(new Double(Runtime.getRuntime().totalMemory()/1048576)) + "MB of " + df.format(new Double(Runtime.getRuntime().maxMemory()/1048576))+ "MB (" + df.format(new Double(Runtime.getRuntime().freeMemory()/1048576)) +"MB free)");
 //	    System.gc();
 //	    System.gc();

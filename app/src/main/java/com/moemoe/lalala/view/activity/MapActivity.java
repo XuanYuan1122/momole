@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
@@ -783,7 +784,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         ErrorCodeUtils.showErrorMsgByCode(MapActivity.this,code,msg);
     }
 
-    @OnClick({R.id.iv_bag,R.id.iv_search,R.id.iv_cal,R.id.iv_card,R.id.iv_live2d,R.id.iv_square,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign})
+    @OnClick({R.id.iv_bag,R.id.iv_search,R.id.iv_cal,R.id.iv_card,R.id.iv_live2d,R.id.iv_square,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign,R.id.iv_shop})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_bag:
@@ -834,8 +835,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 startActivity(i4);
                 break;
             case R.id.iv_select_fuku:
-                Intent i5 = new Intent(MapActivity.this,SelectFukuActivity.class);
-                startActivityForResult(i5,REQ_SELECT_FUKU);
+                if(DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
+                    Intent i5 = new Intent(MapActivity.this,SelectFukuActivity.class);
+                    startActivityForResult(i5,REQ_SELECT_FUKU);
+                }
                 break;
             case R.id.iv_select_language:
                 showToast(R.string.label_can_not_use);
@@ -851,7 +854,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 startActivity(i6);
                 break;
             case R.id.iv_shop:
-
+                Intent i7 = new Intent(MapActivity.this,CoinShopActivity.class);
+                startActivity(i7);
                 break;
         }
     }

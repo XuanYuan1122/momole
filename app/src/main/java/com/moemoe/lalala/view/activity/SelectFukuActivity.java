@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFukuComponent;
@@ -19,7 +20,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.FukuSelectAdapter;
-import com.moemoe.lalala.view.adapter.OnItemClickListener;
+import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
@@ -61,6 +62,10 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements FukuCon
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ImmersionBar.with(this)
+                .statusBarView(R.id.top_view)
+                .statusBarDarkFont(true,0.2f)
+                .init();
         DaggerFukuComponent.builder()
                 .fukuModule(new FukuModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -69,7 +74,7 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements FukuCon
         mModel = PreferenceUtils.getSelectFuku(this);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListDocs.getRecyclerView().setHasFixedSize(true);
-        mAdapter = new FukuSelectAdapter(this,mModel);
+        mAdapter = new FukuSelectAdapter(mModel);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
         mListDocs.setLoadMoreEnabled(false);
@@ -108,14 +113,14 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements FukuCon
                 finish();
             }
         });
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Live2dModelEntity entity = mAdapter.getItem(position);
                 if(entity.isHave()){
                     PreferenceUtils.saveSelectFuku(SelectFukuActivity.this,entity.getLocalPath());
                     mModel = entity.getLocalPath();
-                    mAdapter.setmModel(mModel);
+                    mAdapter.setModel(mModel);
                     mAdapter.notifyDataSetChanged();
                 }else {
                     showToast("还没有获得");
