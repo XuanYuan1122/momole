@@ -22,7 +22,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  * Created by yi on 2017/6/26.
  */
 
-public class OrderListAdapter extends BaseRecyclerViewAdapter<OrderEntity,OrderListAdapter.OrderViewHolder> {
+public class OrderListAdapter extends BaseRecyclerViewAdapter<OrderEntity,OrderViewHolder> {
 
     public OrderListAdapter() {
         super(R.layout.item_order_history);
@@ -30,7 +30,7 @@ public class OrderListAdapter extends BaseRecyclerViewAdapter<OrderEntity,OrderL
 
 
     @Override
-    protected void convert(OrderViewHolder helper, final OrderEntity item) {
+    protected void convert(OrderViewHolder helper, final OrderEntity item,int position) {
         Glide.with(context)
                 .load(StringUtils.getUrl(context, item.getIcon(), DensityUtil.dip2px(context,75),DensityUtil.dip2px(context,75),false,true))
                 .override(DensityUtil.dip2px(context,75),DensityUtil.dip2px(context,75))
@@ -57,19 +57,5 @@ public class OrderListAdapter extends BaseRecyclerViewAdapter<OrderEntity,OrderL
     @Override
     public int getItemType(int position) {
         return 0;
-    }
-
-    class OrderViewHolder extends ClickableViewHolder{
-
-        ImageView ivCommodity;
-        TextView tvName,tvStatus,tvTime;
-
-        public OrderViewHolder(View itemView) {
-            super(itemView);
-            ivCommodity = $(R.id.iv_commodity);
-            tvName = $(R.id.tv_title);
-            tvStatus = $(R.id.tv_order_state);
-            tvTime = $(R.id.tv_time);
-        }
     }
 }

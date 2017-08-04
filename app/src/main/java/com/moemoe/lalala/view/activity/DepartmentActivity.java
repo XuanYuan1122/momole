@@ -7,11 +7,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDepartComponent;
@@ -23,11 +25,13 @@ import com.moemoe.lalala.model.entity.FeaturedEntity;
 import com.moemoe.lalala.presenter.DepartContract;
 import com.moemoe.lalala.presenter.DepartPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SpacesItemDecoration;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.DepartmentListAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -53,12 +57,17 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
     TextView mTitle;
     @BindView(R.id.rv_list)
     PullAndLoadView mListDocs;
+    @BindView(R.id.rl_tv_menu_root)
+    View mTvMenuRoot;
+    @BindView(R.id.tv_menu)
+    TextView mTvMenu;
 
     @Inject
     DepartPresenter mPresenter;
     private DepartmentListAdapter mListAdapter;
     private String mRoomId;
     private boolean mIsLoading = false;
+    private int mIsFollow;
 
     @Override
     protected int getLayoutId() {
@@ -67,12 +76,10 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         Intent i = getIntent();
         mRoomId = "";
+
         if(i != null){
             String roomId = i.getStringExtra(UUID);
             if(!TextUtils.isEmpty(roomId)){
@@ -93,6 +100,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
                 .build()
                 .inject(this);
         //mAppBar.getBackground().mutate().setAlpha(0);
+        mIsFollow = -1;
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListAdapter = new DepartmentListAdapter(this);
         mListDocs.getRecyclerView().setAdapter(mListAdapter);
@@ -104,7 +112,25 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(DensityUtil.dip2px(this,60),DensityUtil.dip2px(this,26));
+        lp.gravity = Gravity.CENTER_VERTICAL;
+        lp.rightMargin = DensityUtil.dip2px(this,18);
+        mTvMenuRoot.setLayoutParams(lp);
+        mTvMenuRoot.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_3);
+        mTvMenu.setVisibility(View.VISIBLE);
+        mTvMenu.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+        mTvMenu.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
+        mTvMenu.setCompoundDrawablesWithIntrinsicBounds (null,null,ContextCompat.getDrawable(this,R.drawable.ic_club_blue_follow),null);
+        mTvMenu.setCompoundDrawablePadding(DensityUtil.dip2px(this,3));
+        mTvMenu.setText("关注");
+        mTvMenuRoot.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                if(DialogUtils.checkLoginAndShowDlg(DepartmentActivity.this) && mIsFollow != -1){
+                    mPresenter.followDepartment(mRoomId,mIsFollow == 0);
+                }
+            }
+        });
     }
 
     @Override
@@ -199,6 +225,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
                 return false;
             }
         });
+        mPresenter.loadIsFollow(mRoomId);
         mPresenter.requestBannerData(mRoomId);
         mPresenter.requestFeatured(mRoomId);
         mPresenter.requestDocList(0,mRoomId,0);
@@ -259,6 +286,16 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
     @Override
     public void onChangeSuccess(Object entity) {
 
+    }
+
+    @Override
+    public void onFollowDepartmentSuccess(boolean follow) {
+        mIsFollow = follow ? 0 : 1;
+        mTvMenu.setText(follow?"已关注":"关注");
+        mTvMenu.setCompoundDrawablesWithIntrinsicBounds (null,
+                null,
+                ContextCompat.getDrawable(DepartmentActivity.this,follow?R.drawable.ic_club_blue_followed:R.drawable.ic_club_blue_follow),
+                null);
     }
 
     @Override

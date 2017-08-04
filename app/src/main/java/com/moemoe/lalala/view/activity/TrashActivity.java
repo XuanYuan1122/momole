@@ -26,6 +26,7 @@ import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.MoeMoeCallback;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.trashcard.CardSlidePanel;
 
 import java.util.ArrayList;
@@ -75,6 +76,8 @@ public class TrashActivity extends BaseAppCompatActivity implements TrashContrac
     private boolean mCanLoad;
     private int mCurTime;
     private int mCurLastTime;
+    private String mShit = "";
+    private String mFun = "";
 
     @Override
     protected int getLayoutId() {
@@ -88,6 +91,7 @@ public class TrashActivity extends BaseAppCompatActivity implements TrashContrac
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        ViewUtils.setStatusBarLight(getWindow(), null);
         entities = new ArrayList<>();
         topEntities = new ArrayList<>();
         mIsFirst = true;
@@ -256,6 +260,8 @@ public class TrashActivity extends BaseAppCompatActivity implements TrashContrac
                     mIvMyTrash.setVisibility(View.VISIBLE);
                     mIvYesterday.setVisibility(View.VISIBLE);
                     mIvCreate.setVisibility(View.VISIBLE);
+                    mTvFun.setText(mFun);
+                    mTvShite.setText(mShit);
                     mIvCreate.setEnabled(true);
                 }else {
                     finish();
@@ -281,6 +287,8 @@ public class TrashActivity extends BaseAppCompatActivity implements TrashContrac
                 mIvCreate.setEnabled(false);
                 mSwipeView.setVisibility(View.GONE);
                 mSwipeViewTop.setVisibility(View.VISIBLE);
+                mFun = mTvFun.getText().toString();
+                mShit = mTvShite.getText().toString();
                 if (topEntities.size() == 0){
                     mPresenter.getTop3List(0);
                 }

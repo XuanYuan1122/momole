@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerUserRejectComponent;
@@ -17,6 +16,7 @@ import com.moemoe.lalala.presenter.UserRejectContract;
 import com.moemoe.lalala.presenter.UserRejectPresenter;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.RejectListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
@@ -53,10 +53,12 @@ public class UserRejectListActivity extends BaseAppCompatActivity implements Use
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerUserRejectComponent.builder()
                 .userRejectModule(new UserRejectModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

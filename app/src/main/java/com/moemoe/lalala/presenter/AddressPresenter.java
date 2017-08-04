@@ -41,12 +41,12 @@ public class AddressPresenter implements AddressContract.Presenter {
                 .subscribe(new NetResultSubscriber<AddressEntity>() {
                     @Override
                     public void onSuccess(AddressEntity entity) {
-                        view.onLoadAddressSuccess(entity);
+                        if(view!=null)view.onLoadAddressSuccess(entity);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }
@@ -59,12 +59,12 @@ public class AddressPresenter implements AddressContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onSaveAddressSuccess();
+                        if(view!=null)view.onSaveAddressSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }

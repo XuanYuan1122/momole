@@ -9,94 +9,64 @@
     <View
         android:id="@+id/top_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/status_bar_height"
         android:background="@color/white"/>
 
     <include
         android:id="@+id/include_toolbar"
         layout="@layout/neta_bar"/>
 
-    <com.youth.banner.Banner
-        android:id="@+id/banner_top"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="375dp"
-        app:is_auto_play="false"
-        app:title_textsize="@dimen/size_12"
-        app:title_textcolor="@color/white"
-        app:title_background="@color/alph_80"
-        app:image_scale_type="fit_xy">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    </com.youth.banner.Banner>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <!--<RelativeLayout-->
-        <!--android:id="@+id/fl_top"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="375dp">-->
+            <com.youth.banner.Banner
+                android:id="@+id/banner_top"
+                android:layout_width="match_parent"
+                android:layout_height="375dp"
+                app:is_auto_play="false"
+                app:title_textsize="@dimen/size_12"
+                app:title_textcolor="@color/white"
+                app:title_background="@color/alph_80"
+                app:image_scale_type="fit_xy">
 
-        <!--<android.support.v4.view.ViewPager-->
-            <!--android:id="@+id/vp_commodity"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"/>-->
+            </com.youth.banner.Banner>
 
-        <!--<TextView-->
-            <!--android:id="@+id/tv_info"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:textSize="@dimen/size_12"-->
-            <!--android:padding="@dimen/size_12"-->
-            <!--android:maxLines="2"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:background="@color/alph_80"/>-->
-    <!--</RelativeLayout>-->
+            <TextView
+                android:id="@+id/tv_commodity_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_15"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="44dp"
+                android:textColor="@color/white"/>
 
-    <!--<RelativeLayout-->
-        <!--android:id="@+id/ll_point_container"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="@dimen/size_8"-->
-        <!--android:layout_gravity="center_horizontal">-->
+            <TextView
+                android:id="@+id/tv_refresh_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_12"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/size_6"
+                android:textColor="@color/gray_929292"/>
 
-        <!--<LinearLayout-->
-            <!--android:id="@+id/ll_point_group"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content">-->
+            <TextView
+                android:id="@+id/tv_done"
+                android:layout_width="130dp"
+                android:layout_height="@dimen/size_45"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/size_20"
+                android:background="@drawable/btn_coin_shop_buy"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
 
-        <!--</LinearLayout>-->
-        <!--<View-->
-            <!--android:id="@+id/view_pressed_point"-->
-            <!--android:layout_width="10dp"-->
-            <!--android:layout_height="10dp"-->
-            <!--android:background="@drawable/icon_class_banner_switch_blue"/>-->
-    <!--</RelativeLayout>-->
-
-    <TextView
-        android:id="@+id/tv_commodity_num"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/size_15"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="44dp"
-        android:textColor="@color/white"/>
-
-    <TextView
-        android:id="@+id/tv_refresh_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/size_12"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/size_6"
-        android:textColor="@color/gray_929292"/>
-
-    <TextView
-        android:id="@+id/tv_done"
-        android:layout_width="130dp"
-        android:layout_height="@dimen/size_45"
-        android:textColor="@color/white"
-        android:textSize="@dimen/size_15"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/size_20"
-        android:background="@drawable/btn_coin_shop_buy"
-        android:layout_gravity="center_horizontal" />
+    </ScrollView>
 </LinearLayout>

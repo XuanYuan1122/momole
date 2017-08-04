@@ -3,12 +3,10 @@ package com.moemoe.lalala.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBadgeComponent;
@@ -30,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -75,10 +72,12 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
         mTvTitle.setText("我的徽章");
         mTvDone.getPaint().setFakeBoldText(true);
         ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));

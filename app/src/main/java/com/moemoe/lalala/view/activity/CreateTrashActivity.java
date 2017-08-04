@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCreateTrashComponent;
@@ -26,6 +24,7 @@ import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.TrashPut;
 import com.moemoe.lalala.presenter.CreateTrashContract;
 import com.moemoe.lalala.presenter.CreateTrashPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -100,11 +99,14 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .keyboardEnable(true)
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         Intent i = getIntent();
         if(i == null){
             finish();

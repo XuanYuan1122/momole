@@ -9,6 +9,7 @@ import android.view.View;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.StorageUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.cropper.CropImageView;
 
 import java.io.File;
@@ -42,6 +43,10 @@ public class CropAvatarActivity extends BaseAppCompatActivity implements View.On
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         String mRawPath = getIntent().getStringExtra(EXTRA_RAW_IMG_PATH);
         int mWRatio = getIntent().getIntExtra(EXTRA_W_RATIO, 1);
         int mHRatio = getIntent().getIntExtra(EXTRA_H_RATIO,1);

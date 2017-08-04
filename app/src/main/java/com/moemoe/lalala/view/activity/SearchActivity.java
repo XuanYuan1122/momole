@@ -18,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.AtUserEvent;
@@ -26,6 +25,7 @@ import com.moemoe.lalala.event.SearchChangedEvent;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
 import com.moemoe.lalala.view.fragment.SearchBagFragment;
 import com.moemoe.lalala.view.fragment.SearchDocFragment;
@@ -86,10 +86,7 @@ public class SearchActivity extends BaseAppCompatActivity {
             String FRAGMENTS_TAG = "android:support:fragments";
             savedInstanceState.remove(FRAGMENTS_TAG);
         }
-        ImmersionBar.with(this)
-                .titleBar(findViewById(R.id.ll_top_root),false)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         showType = getIntent().getIntExtra("show_type",SHOW_ALL);
         mTab.setVisibility(View.GONE);
         List<Fragment> fragmentList = new ArrayList<>();

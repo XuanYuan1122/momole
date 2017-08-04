@@ -2,14 +2,12 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
@@ -18,9 +16,11 @@ import com.moemoe.lalala.model.entity.DelCommentEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import javax.inject.Inject;
 
@@ -71,11 +71,8 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerSimpleComponent.builder()
                 .simpleModule(new SimpleModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

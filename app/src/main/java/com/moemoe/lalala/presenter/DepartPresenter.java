@@ -3,6 +3,7 @@ package com.moemoe.lalala.presenter;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
+import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.DepartmentEntity;
 import com.moemoe.lalala.model.entity.DocListEntity;
@@ -145,6 +146,42 @@ public class DepartPresenter implements DepartContract.Presenter {
                         }
                     });
         }
+    }
+
+    @Override
+    public void followDepartment(String id, final boolean follow) {
+        apiService.followDepartment(!follow,id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        view.onFollowDepartmentSuccess(!follow);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadIsFollow(String id) {
+        apiService.isFollowDepartment(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        if(view!=null)view.onFollowDepartmentSuccess(aBoolean);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view!=null)view.onFailure(code, msg);
+                    }
+                });
     }
 
     @Override

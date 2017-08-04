@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     android:background="@color/bg_f6f6f6">
 
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
     <LinearLayout
         android:id="@+id/ll_top_root"
         android:layout_width="match_parent"

@@ -14,11 +14,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.StorageUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +49,12 @@ public class SelectBookActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mTitle.setText(R.string.label_select_book);
         mAdapter = new BookListAdapter();
         mList.setAdapter(mAdapter);

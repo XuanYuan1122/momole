@@ -14,15 +14,6 @@
         android:layout_marginEnd="@dimen/size_18"
         android:scaleType="fitXY"/>
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginStart="@dimen/size_18"
-        android:layout_marginLeft="@dimen/size_18"
-        android:layout_marginRight="@dimen/size_18"
-        android:layout_marginEnd="@dimen/size_18"
-        android:background="@drawable/shape_bg_5"/>
-
     <TextView
         android:id="@+id/tv_got"
         android:layout_width="wrap_content"
@@ -94,5 +85,15 @@
         android:layout_marginEnd="24dp"
         android:visibility="gone"
         android:src="@drawable/btn_select_normal"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginEnd="@dimen/size_18"
+        android:layout_marginLeft="@dimen/size_18"
+        android:layout_marginRight="@dimen/size_18"
+        android:layout_marginStart="@dimen/size_18"
+        android:background="@drawable/shape_bg_5" />
 
 </FrameLayout>

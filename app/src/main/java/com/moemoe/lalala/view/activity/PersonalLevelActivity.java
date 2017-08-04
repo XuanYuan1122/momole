@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -16,16 +15,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.utils.DensityUtil;
-import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.fragment.WebViewFragment;
 
 import butterknife.BindView;
@@ -69,10 +67,12 @@ public class PersonalLevelActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvTitle.setText(R.string.label_level_introduce);
         mHander = new Handler();

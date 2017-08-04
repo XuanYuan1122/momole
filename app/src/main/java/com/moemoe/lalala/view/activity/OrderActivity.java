@@ -13,19 +13,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerOrderComponent;
-import com.moemoe.lalala.di.modules.CoinShopModule;
 import com.moemoe.lalala.di.modules.OrderModule;
 import com.moemoe.lalala.model.entity.AddressEntity;
-import com.moemoe.lalala.model.entity.MotaResult;
 import com.moemoe.lalala.model.entity.OrderEntity;
 import com.moemoe.lalala.model.entity.PayReqEntity;
 import com.moemoe.lalala.model.entity.PayResEntity;
-import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.presenter.OrderContract;
 import com.moemoe.lalala.presenter.OrderPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -33,9 +28,9 @@ import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IpAdressUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
-import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.pingplusplus.android.Pingpp;
@@ -81,10 +76,12 @@ public class OrderActivity extends BaseAppCompatActivity implements OrderContrac
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerOrderComponent.builder()
                 .orderModule(new OrderModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -296,19 +293,34 @@ public class OrderActivity extends BaseAppCompatActivity implements OrderContrac
                         return;
                     }
                 }
-                if(order.getRmb() > 0){
-                    bottomFragment.show(getSupportFragmentManager(), "payMenu");
-                }else {
-                    createDialog();
-                    PayReqEntity entity = new PayReqEntity(order.getAddress().getAddress(),
-                            "",
-                            IpAdressUtils.getIpAdress(OrderActivity.this),
-                            order.getOrderId(),
-                            order.getAddress().getPhone(),
-                            mEtMark.getText().toString(),
-                            order.getAddress().getUserName());
-                    mPresenter.payOrder(entity);
-                }
+                final AlertDialogUtil dialogUtil1 = AlertDialogUtil.getInstance();
+                dialogUtil1.createPromptNormalDialog(OrderActivity.this, "确定购买");
+                dialogUtil1.setButtonText(getString(R.string.label_confirm), getString(R.string.label_cancel),0);
+                dialogUtil1.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                    @Override
+                    public void CancelOnClick() {
+                        dialogUtil1.dismissDialog();
+                    }
+
+                    @Override
+                    public void ConfirmOnClick() {
+                        dialogUtil1.dismissDialog();
+                        if(order.getRmb() > 0){
+                            bottomFragment.show(getSupportFragmentManager(), "payMenu");
+                        }else {
+                            createDialog();
+                            PayReqEntity entity = new PayReqEntity(order.getAddress().getAddress(),
+                                    "",
+                                    IpAdressUtils.getIpAdress(OrderActivity.this),
+                                    order.getOrderId(),
+                                    order.getAddress().getPhone(),
+                                    mEtMark.getText().toString(),
+                                    order.getAddress().getUserName());
+                            mPresenter.payOrder(entity);
+                        }
+                    }
+                });
+                dialogUtil1.showDialog();
                 break;
         }
     }

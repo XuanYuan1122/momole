@@ -42,6 +42,7 @@ import com.moemoe.lalala.model.entity.MoveFileEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
+import com.moemoe.lalala.model.entity.NewDocListEntity;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
 import com.moemoe.lalala.model.entity.OldSimpleResult;
 import com.moemoe.lalala.model.entity.OrderEntity;
@@ -70,6 +71,7 @@ import com.moemoe.lalala.model.entity.UploadEntity;
 import com.moemoe.lalala.model.entity.UploadResultEntity;
 import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.model.entity.WallBlock;
+import com.moemoe.lalala.model.entity.XianChongEntity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -562,4 +564,25 @@ public interface ApiService {
 
     @POST("api/shop/pay")
     Observable<ApiResult<PayResEntity>> payOrder(@Body PayReqEntity entity);
+
+    @GET("api/app/check/txbb")
+    Observable<ApiResult<Boolean>> checkTxbb();
+
+    @GET("api/feed/my/follow/{lastTime}")
+    Observable<ApiResult<ArrayList<NewDocListEntity>>> getFeedFollowList(@Path("lastTime")long lastTime, @Query("size")int size);
+
+    @GET("api/feed/find/{lastTime}")
+    Observable<ApiResult<ArrayList<NewDocListEntity>>> getFeedFindList(@Path("lastTime")long lastTime, @Query("size")int size);
+
+    @POST("api/user/{follow}/follow/club/{clubId}")
+    Observable<ApiResult> followClub(@Path("follow")boolean follow,@Path("clubId")String clubId);
+
+    @POST("api/user/{follow}/follow/department/{departmentId}")
+    Observable<ApiResult> followDepartment(@Path("follow")boolean follow,@Path("departmentId")String clubId);
+
+    @GET("api/cal/{departmentId}/is/follow")
+    Observable<ApiResult<Boolean>> isFollowDepartment(@Path("departmentId")String clubId);
+
+    @GET("api/index/topUser")
+    Observable<ApiResult<ArrayList<XianChongEntity>>> loadXianChongList();
 }

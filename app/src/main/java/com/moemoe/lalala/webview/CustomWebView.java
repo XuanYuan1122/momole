@@ -79,6 +79,9 @@ public class CustomWebView extends WebView {
         public void neta_chapter(int pass) {
             //ToastUtil.showCenterToast(mContext,"通过了:" + pass, Toast.LENGTH_LONG);
             PreferenceUtils.savePassEvent(mActivity,pass);
+            if(pass == 5){
+                ((WebViewActivity)mActivity).saveLive2d();
+            }
             mActivity.finish();
         }
     }

@@ -48,8 +48,8 @@
                             android:id="@+id/iv_group_image"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:layout_marginLeft="29dp"
-                            android:layout_marginStart="29dp"
+                            android:layout_marginLeft="@dimen/size_15"
+                            android:layout_marginStart="@dimen/size_15"
                             android:layout_marginTop="8dp"
                             android:src="@drawable/bg_default_square" />
 
@@ -57,80 +57,108 @@
                             android:id="@+id/ll_container_name_follow"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginLeft="13dp"
-                            android:layout_marginRight="8dp"
+                            android:layout_alignTop="@+id/iv_group_image"
+                            android:layout_marginTop="@dimen/size_2"
+                            android:layout_marginLeft="@dimen/size_12"
+                            android:layout_marginStart="@dimen/size_12"
+                            android:layout_marginRight="@dimen/size_15"
+                            android:layout_marginEnd="@dimen/size_15"
                             android:layout_toRightOf="@+id/iv_group_image"
                             android:orientation="horizontal" >
 
                             <TextView
                                 android:id="@+id/tv_group_name"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:shadowColor="@color/dark_gray"
-                                android:shadowRadius="1"
                                 android:shadowDx="1"
                                 android:shadowDy="1"
+                                android:shadowRadius="1"
+                                android:text="23333333"
                                 android:textColor="@color/white"
-                                android:textSize="18dp"
-                                android:textStyle="bold"
-                                android:text="23333333"/>
+                                android:textSize="@dimen/size_24"
+                                android:textStyle="bold" />
+
+                            <FrameLayout
+                                android:id="@+id/rl_follow_root"
+                                android:layout_width="@dimen/size_60"
+                                android:layout_height="@dimen/size_26"
+                                android:background="@drawable/shape_rect_border_white_no_background_3">
+
+                                <TextView
+                                    android:id="@+id/tv_follow"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="@dimen/size_15"
+                                    android:textColor="@color/white"
+                                    android:layout_gravity="center"
+                                    android:drawableRight="@drawable/ic_club_follow"
+                                    android:drawableEnd="@drawable/ic_club_follow"
+                                    android:drawablePadding="@dimen/size_3"
+                                    android:text="关注"
+                                    />
+                            </FrameLayout>
                         </LinearLayout>
 
                         <com.moemoe.lalala.view.widget.view.DocLabelView
                             android:id="@+id/dv_label_root"
                             android:layout_width="match_parent"
                             android:layout_height="20dp"
-                            android:layout_marginTop="18dp"
                             android:visibility="visible"
-                            android:layout_marginLeft="13dp"
-                            android:layout_marginRight="8dp"
-                            android:layout_below="@+id/ll_container_name_follow"
+                            android:layout_marginLeft="@dimen/size_12"
+                            android:layout_marginStart="@dimen/size_12"
+                            android:layout_marginRight="@dimen/size_15"
+                            android:layout_marginEnd="@dimen/size_15"
+                            android:layout_alignBottom="@+id/iv_group_image"
+                            android:layout_marginBottom="@dimen/size_2"
                             android:layout_toRightOf="@+id/iv_group_image"
+                            android:layout_toEndOf="@+id/iv_group_image"
                             app:child_view_height="18dp"
                             app:child_view_width="wrap_content"
                             app:line_spacing="6dp"
                             app:label_spacing="7dp">
                         </com.moemoe.lalala.view.widget.view.DocLabelView>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/dv_label_root"
-                            android:layout_toRightOf="@+id/iv_group_image"
-                            android:layout_marginTop="7dp"
-                            android:layout_marginLeft="13dp"
-                            android:orientation="horizontal">
+                        <!--<LinearLayout-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_below="@+id/dv_label_root"-->
+                            <!--android:layout_toRightOf="@+id/iv_group_image"-->
+                            <!--android:layout_marginTop="7dp"-->
+                            <!--android:layout_marginLeft="13dp"-->
+                            <!--android:orientation="horizontal">-->
 
-                            <TextView
-                                android:id="@+id/tv_like_num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:textSize="12dp"
-                                android:text="@string/label_like_num"
-                                />
+                            <!--<TextView-->
+                                <!--android:id="@+id/tv_like_num"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:textColor="@color/white"-->
+                                <!--android:textSize="12dp"-->
+                                <!--android:text="@string/label_like_num"-->
+                                <!--/>-->
 
-                            <TextView
-                                android:id="@+id/tv_doc_num"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/white"
-                                android:layout_marginLeft="8dp"
-                                android:layout_marginStart="8dp"
-                                android:textSize="12dp"
-                                android:text="@string/label_doc_num"
-                                />
-                        </LinearLayout>
+                            <!--<TextView-->
+                                <!--android:id="@+id/tv_doc_num"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:textColor="@color/white"-->
+                                <!--android:layout_marginLeft="8dp"-->
+                                <!--android:layout_marginStart="8dp"-->
+                                <!--android:textSize="12dp"-->
+                                <!--android:text="@string/label_doc_num"-->
+                                <!--/>-->
+                        <!--</LinearLayout>-->
 
                         <TextView
                             android:id="@+id/tv_group_brief"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignLeft="@+id/ll_container_name_follow"
+                            android:layout_alignStart="@+id/ll_container_name_follow"
                             android:layout_below="@+id/ll_container_name_follow"
-                            android:layout_marginRight="6dp"
+                            android:layout_marginRight="@dimen/size_15"
+                            android:layout_marginEnd="@dimen/size_15"
                             android:layout_marginTop="2dp"
                             android:ellipsize="end"
                             android:maxLines="1"
@@ -150,6 +178,7 @@
                 android:layout_height="@dimen/neta_toolbar"
                 app:navigationIcon="@drawable/btn_back_white_normal"
                 app:layout_collapseMode="pin"
+                android:layout_marginTop="@dimen/status_bar_height"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
 
                 <TextView

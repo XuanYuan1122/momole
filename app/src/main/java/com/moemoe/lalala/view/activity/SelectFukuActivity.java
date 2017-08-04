@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFukuComponent;
@@ -62,10 +61,12 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements FukuCon
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerFukuComponent.builder()
                 .fukuModule(new FukuModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -108,6 +109,7 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements FukuCon
             @Override
             public void onClick(View v) {
                 Intent i = new Intent();
+                PreferenceUtils.saveSelectFuku(SelectFukuActivity.this,mModel);
                 i.putExtra("model",mModel);
                 setResult(RES_OK,i);
                 finish();
@@ -118,7 +120,6 @@ public class SelectFukuActivity extends BaseAppCompatActivity implements FukuCon
             public void onItemClick(View view, int position) {
                 Live2dModelEntity entity = mAdapter.getItem(position);
                 if(entity.isHave()){
-                    PreferenceUtils.saveSelectFuku(SelectFukuActivity.this,entity.getLocalPath());
                     mModel = entity.getLocalPath();
                     mAdapter.setModel(mModel);
                     mAdapter.notifyDataSetChanged();

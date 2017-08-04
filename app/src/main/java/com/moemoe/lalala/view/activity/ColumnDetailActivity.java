@@ -6,24 +6,22 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerColumnComponent;
 import com.moemoe.lalala.di.modules.ColumnModule;
 import com.moemoe.lalala.model.entity.CalendarDayItemEntity;
-import com.moemoe.lalala.model.entity.CoinDetailEntity;
 import com.moemoe.lalala.presenter.ColumnContract;
 import com.moemoe.lalala.presenter.ColumnPresenter;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.ColumnDetailAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -72,10 +70,7 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         Intent i = getIntent();
         if(i == null){
             finish();
@@ -155,7 +150,7 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
             @Override
             public void onRefresh() {
                 mIsLoading = true;
-                mPresenter.requestFutureFresh(mBarId,-mFutureAdapter.getItemCount()-1);
+                mPresenter.requestFutureFresh(mBarId,-mFutureAdapter.getDataCount()-1);
             }
 
             @Override
@@ -197,7 +192,7 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
             @Override
             public void onLoadMore() {
                 mIsLoading = true;
-                mPresenter.requestPastFresh(mBarId,mPastAdapter.getItemCount());
+                mPresenter.requestPastFresh(mBarId,mPastAdapter.getDataCount());
             }
 
             @Override
@@ -228,7 +223,7 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
                     mPastPv.setVisibility(View.GONE);
                     mFuturePv.setVisibility(View.VISIBLE);
                     mTvTime.setText(R.string.label_review_past);
-                    if(mPastAdapter.getItemCount() == 0) mPresenter.requestFutureFresh(mBarId,-1);
+                    if(mFutureAdapter.getItemCount() == 0) mPresenter.requestFutureFresh(mBarId,-1);
                 }
             }
         });

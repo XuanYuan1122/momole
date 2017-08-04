@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import butterknife.BindView;
 
@@ -25,6 +25,10 @@ public class SelectMateActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
     }
 
     @Override

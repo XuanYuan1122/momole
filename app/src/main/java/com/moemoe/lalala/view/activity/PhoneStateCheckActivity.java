@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -16,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.igexin.sdk.PushManager;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -33,6 +31,7 @@ import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import javax.inject.Inject;
 
@@ -94,10 +93,12 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerPhoneStateComponent.builder()
                 .phoneStateModule(new PhoneStateModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

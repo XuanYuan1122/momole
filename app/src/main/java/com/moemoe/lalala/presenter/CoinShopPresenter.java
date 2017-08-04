@@ -42,12 +42,12 @@ public class CoinShopPresenter implements CoinShopContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<CoinShopEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<CoinShopEntity> list) {
-                        view.onLoadShopListSuccess(list, index == 0);
+                        if(view!=null)view.onLoadShopListSuccess(list, index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }
@@ -72,12 +72,12 @@ public class CoinShopPresenter implements CoinShopContract.Presenter {
                         orderEntity.setOrderType(shopEntity.getOrderType());
                         orderEntity.setRmb(shopEntity.getRmb());
                         orderEntity.setCoin(shopEntity.getCoin());
-                        view.onCreateOrderSuccess(orderEntity);
+                        if(view!=null) view.onCreateOrderSuccess(orderEntity);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }

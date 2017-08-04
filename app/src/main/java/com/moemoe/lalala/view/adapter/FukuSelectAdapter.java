@@ -20,7 +20,7 @@ import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
  * Created by yi on 2017/6/27.
  */
 
-public class FukuSelectAdapter extends BaseRecyclerViewAdapter<Live2dModelEntity,FukuSelectAdapter.ItemViewHolder> {
+public class FukuSelectAdapter extends BaseRecyclerViewAdapter<Live2dModelEntity,FukuItemViewHolder> {
 
     private String mModel;
 
@@ -34,7 +34,7 @@ public class FukuSelectAdapter extends BaseRecyclerViewAdapter<Live2dModelEntity
     }
 
     @Override
-    protected void convert(ItemViewHolder itemViewHolder, Live2dModelEntity item) {
+    protected void convert(FukuItemViewHolder itemViewHolder, Live2dModelEntity item,int position) {
         itemViewHolder.name.setText(item.getName());
         itemViewHolder.info.setText(item.getInfo());
         itemViewHolder.req.setText(item.getCondition());
@@ -57,21 +57,5 @@ public class FukuSelectAdapter extends BaseRecyclerViewAdapter<Live2dModelEntity
     public int getItemType(int position) {
         return 0;
     }
-
-    class ItemViewHolder extends ClickableViewHolder {
-
-        TextView name,info,req;
-        ImageView fuku,select;
-        RelativeLayout root;
-
-        ItemViewHolder(View itemView) {
-            super(itemView);
-            name = $(R.id.tv_fuku_name);
-            info = $(R.id.tv_fuku_info);
-            req = $(R.id.tv_fuku_req);
-            fuku = $(R.id.iv_fuku);
-            select = $(R.id.iv_select);
-            root = $(R.id.rl_root);
-        }
-    }
+    
 }

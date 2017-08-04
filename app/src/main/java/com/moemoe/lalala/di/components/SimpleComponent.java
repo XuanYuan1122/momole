@@ -7,6 +7,8 @@ import com.moemoe.lalala.view.activity.JuBaoActivity;
 import com.moemoe.lalala.view.activity.PhoneRegisterActivity;
 import com.moemoe.lalala.view.activity.SplashActivity;
 import com.moemoe.lalala.view.activity.TagControlActivity;
+import com.moemoe.lalala.view.activity.WebViewActivity;
+import com.moemoe.lalala.view.fragment.WebViewFragment;
 
 import dagger.Component;
 
@@ -21,4 +23,5 @@ public interface SimpleComponent {
     void inject(JuBaoActivity activity);
     void inject(SplashActivity activity);
     void inject(TagControlActivity activity);
+    void inject(WebViewActivity activity);
 }

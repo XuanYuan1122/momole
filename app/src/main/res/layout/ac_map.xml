@@ -3,7 +3,8 @@
     android:id="@+id/main_root"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <FrameLayout
         android:id="@+id/fl_map_root"
@@ -24,15 +25,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:paddingTop="@dimen/status_bar_height"
-        android:layout_marginTop="14dp"
-        android:layout_marginRight="14dp"
-        android:layout_marginEnd="14dp">
-
-        <ImageView
-            android:id="@+id/iv_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/btn_map_card"/>
+        android:layout_marginTop="@dimen/size_8"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp">
 
         <ImageView
             android:id="@+id/iv_card_dot"
@@ -44,6 +39,12 @@
             android:layout_marginEnd="@dimen/size_6"
             android:src="@drawable/btn_map_personal_reddot"
             android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/iv_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_map_card" />
     </FrameLayout>
 
     <ImageView
@@ -64,10 +65,8 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/fl_card_root"
         android:layout_toStartOf="@+id/fl_card_root"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="@dimen/size_8"
         android:paddingTop="@dimen/status_bar_height"
-        android:layout_marginRight="@dimen/size_8"
-        android:layout_marginEnd="@dimen/size_8"
         android:src="@drawable/btn_map_bag"/>
 
     <ImageView
@@ -76,10 +75,8 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/iv_bag"
         android:layout_toStartOf="@+id/iv_bag"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="@dimen/size_8"
         android:paddingTop="@dimen/status_bar_height"
-        android:layout_marginRight="@dimen/size_8"
-        android:layout_marginEnd="@dimen/size_8"
         android:src="@drawable/btn_map_search"/>
 
     <ImageView
@@ -88,10 +85,8 @@
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/iv_search"
         android:layout_toStartOf="@+id/iv_search"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="@dimen/size_8"
         android:paddingTop="@dimen/status_bar_height"
-        android:layout_marginRight="@dimen/size_8"
-        android:layout_marginEnd="@dimen/size_8"
         android:src="@drawable/btn_map_shop"/>
 
 
@@ -106,29 +101,63 @@
         android:visibility="visible"
         />
 
-    <ImageView
-        android:id="@+id/iv_cal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/btn_map_cal"
-        />
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_cal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginStart="10dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:src="@drawable/btn_map_cal"-->
+        <!--/>-->
 
-    <ImageView
-        android:id="@+id/iv_square"
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_square"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="5dp"-->
+        <!--android:layout_marginStart="5dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:layout_toRightOf="@+id/iv_cal"-->
+        <!--android:layout_toEndOf="@+id/iv_cal"-->
+        <!--android:src="@drawable/btn_map_square"-->
+        <!--/>-->
+
+    <RelativeLayout
+        android:id="@+id/rl_main_list_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
-        android:layout_toRightOf="@+id/iv_cal"
-        android:layout_toEndOf="@+id/iv_cal"
-        android:src="@drawable/btn_map_square"
-        />
+        android:background="@drawable/btn_map_phone">
+
+        <TextView
+            android:id="@+id/tv_sys_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginTop="55dp"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_30"
+            android:text="11:30"/>
+
+        <TextView
+            android:id="@+id/tv_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_9"
+            android:layout_below="@+id/tv_sys_time"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            android:drawableLeft="@drawable/ic_inform_reddot"
+            android:drawableStart="@drawable/ic_inform_reddot"
+            android:drawablePadding="@dimen/size_2"
+            android:text="23条新内容"/>
+
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/live2DLayout"

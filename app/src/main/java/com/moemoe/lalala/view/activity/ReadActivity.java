@@ -27,6 +27,7 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.read.BaseReadView;
 import com.moemoe.lalala.view.widget.read.OnReadStateChangeListener;
 import com.moemoe.lalala.view.widget.read.OverlappedWidget;
@@ -96,6 +97,10 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerFileComponent.builder()
                 .fileModule(new FileModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

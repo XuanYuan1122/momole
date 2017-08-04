@@ -189,14 +189,6 @@ public class MapPresenter implements MapContract.Presenter {
     }
 
     @Override
-    public void addBackSchoolMapMark(Context context, MapWidget map, float scale) {
-        MapMarkContainer container = new MapMarkContainer();
-        addMapMarkOneDay(context,map,container);
-        addMapMarkBackSchoolEvent(context,map,container);
-        view.onMapMarkLoaded(container);
-    }
-
-    @Override
     public void clickSnowman(final Object o, final int mapX, final int mapY) {
         apiService.clickSnowman()
                 .subscribeOn(Schedulers.io())
@@ -212,10 +204,6 @@ public class MapPresenter implements MapContract.Presenter {
                         if(view != null) view.onFailure(code,msg);
                     }
                 });
-    }
-
-    @Override
-    public void addSnowman(Context context, MapWidget map){
     }
 
     @Override
@@ -268,10 +256,11 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("影音部",2449,1606,"neta://com.moemoe.lalala/department_1.0?uuid=a77f9006-5f7f-11e6-ae2c-d0a637eac7d7&name=影音部",R.drawable.btn_map_yingyin_normal);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer);
-
+        //if(AppSetting.TXBB){
+            entity = new MapMarkEntity("影音部",2449,1606,"neta://com.moemoe.lalala/department_1.0?uuid=a77f9006-5f7f-11e6-ae2c-d0a637eac7d7&name=影音部",R.drawable.btn_map_yingyin_normal);
+            container.addMark(entity);
+            addMarkToMap(context,entity.getId(),entity,layer);
+    //    }
         entity = new MapMarkEntity("新闻部",1953,176,"neta://com.moemoe.lalala/department_1.0?uuid=26f9831a-5f7f-11e6-8f94-d0a637eac7d7&name=新闻部",R.drawable.btn_map_xingwen_normal);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
@@ -289,6 +278,14 @@ public class MapPresenter implements MapContract.Presenter {
         addMarkToMap(context,entity.getId(),entity,layer);
 
         entity = new MapMarkEntity("游戏部",1953,1892,"neta://com.moemoe.lalala/department_1.0?uuid=e255f9d4-5f7f-11e6-8a65-d0a637eac7d7&name=游戏部",R.drawable.btn_map_youxi_normal);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("IT部",837,380,"neta://com.moemoe.lalala/department_1.0?uuid=8eb517a4-6093-11e7-ae7a-525400761152&name=IT部",R.drawable.btn_map_it_normal);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("恋爱讲座",2263,550,"",R.drawable.btn_map_gal_normal);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -405,7 +402,7 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("麦克雷",2108,748,null,"我一个午时就是四个人头…”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("麦克雷",2108,748,null,"“演唱会没了，姑且听听有什么高论吧”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -465,7 +462,7 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("K-on",2201,682,null,"“两只老虎，两只老虎，跑得快！跑得快！”\n" + "“梓喵你为什么还是在唱儿歌…？”\n" + "“因为我们最近都没有新歌啊！”",R.drawable.btn_map_click);
+        entity = new MapMarkEntity("神大人",2201,682,null,"“被校长委派来开恋爱讲座，真是头大”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
@@ -633,6 +630,14 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
+        entity = new MapMarkEntity("神大人_晚上",2201,682,null,"“不知不觉都这么晚了，居然还有人，只能继续了...”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
+        entity = new MapMarkEntity("麦克雷_晚上",2108,748,null,"“居然听得停不下来，好期待下一个故事”",R.drawable.btn_map_click);
+        container.addMark(entity);
+        addMarkToMap(context,entity.getId(),entity,layer);
+
         entity = new MapMarkEntity("鸣人_晚上",496,1342,null,"“佐助现在应该在其他地方守护忍者世界吧。”\n" + "“笨蛋弟弟，我还有好多话想跟他说……”",R.drawable.btn_map_click);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
@@ -659,42 +664,6 @@ public class MapPresenter implements MapContract.Presenter {
         MapMarkEntity entity = new MapMarkEntity("剧情-场景4",1748,418,"neta://com.moemoe.lalala/event_1.0",R.drawable.btn_map_plot);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
-    }
-
-    private void addMapMarkBackSchoolEvent(Context context, MapWidget map,MapMarkContainer container){
-        Layer layer = map.createLayer(5);//5 返校剧情
-        int level = PreferenceUtils.getBackSchoolLevel(context) + 1;
-        if(level > 6) level = 6;
-
-        MapMarkEntity entity = new MapMarkEntity("返校-体育馆",2790,528,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/first.html?full_screen",R.drawable.btn_map_fx);
-      //  MapMarkEntity entity = new MapMarkEntity("返校-体育馆",2790,528,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/first.html?full_screen",R.drawable.btn_map_fx);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer,level == 1 || (level == 6 && AppSetting.isShowBackSchoolAll));
-
-        entity = new MapMarkEntity("返校-图书馆",2976,1122,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/changjing1.html?full_screen",R.drawable.btn_map_fx);
-       // entity = new MapMarkEntity("返校-图书馆",2976,1122,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/changjing1.html?full_screen",R.drawable.btn_map_fx);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer,level == 2 || (level == 6 && AppSetting.isShowBackSchoolAll));
-
-        entity = new MapMarkEntity("返校-旧教学楼二楼",992,330,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/changjing2.html?full_screen",R.drawable.btn_map_fx);
-       // entity = new MapMarkEntity("返校-旧教学楼二楼",992,330,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/changjing2.html?full_screen",R.drawable.btn_map_fx);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer,level == 3 || (level == 6 && AppSetting.isShowBackSchoolAll));
-
-        entity = new MapMarkEntity("返校-旧教学楼四楼",868,198,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/changjing3.html?full_screen",R.drawable.btn_map_fx);
-       // entity = new MapMarkEntity("返校-旧教学楼四楼",868,198,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/changjing3.html?full_screen",R.drawable.btn_map_fx);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer,level == 4 || (level == 6 && AppSetting.isShowBackSchoolAll));
-
-        entity = new MapMarkEntity("返校-结尾",2666,352,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/final.html",R.drawable.btn_map_fx);
-       // entity = new MapMarkEntity("返校-结尾",2666,352,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/final.html",R.drawable.btn_map_fx);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer,level == 5 || (level == 6 && AppSetting.isShowBackSchoolAll));
-
-        entity = new MapMarkEntity("返校-人物",2263,858,"neta://com.moemoe.lalala/url_inner_1.0?http://106.75.77.54:8080/fanxiao/xiansuo.html",R.drawable.btn_map_fxnpc);
-      //  entity = new MapMarkEntity("返校-人物",2263,858,"neta://com.moemoe.lalala/url_inner_1.0?http://192.168.1.57:8080/fanxiao/xiansuo.html",R.drawable.btn_map_fxnpc);
-        container.addMark(entity);
-        addMarkToMap(context,entity.getId(),entity,layer,level > 1);
     }
 
     private void addMarkToMap(Context context,String id,MapMarkEntity entity,Layer layer){

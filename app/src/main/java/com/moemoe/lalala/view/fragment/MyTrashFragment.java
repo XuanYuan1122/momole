@@ -113,6 +113,11 @@ public class MyTrashFragment extends BaseFragment implements TrashListContract.V
     @Override
     public void onSuccess(ArrayList<TrashEntity> entities,boolean pull) {
         isLoading = false;
+        if(mListType == 1){
+            for(TrashEntity entity : entities){
+                entity.setMark(true);
+            }
+        }
         mListDocs.setComplete();
         if(entities.size() > 0){
             mListDocs.setLoadMoreEnabled(true);

@@ -24,7 +24,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  * Created by yi on 2017/6/26.
  */
 
-public class CoinShopAdapter extends BaseRecyclerViewAdapter<CoinShopEntity,CoinShopAdapter.ShopItemViewHolder> {
+public class CoinShopAdapter extends BaseRecyclerViewAdapter<CoinShopEntity,ShopItemViewHolder> {
 
     public CoinShopAdapter(Context context) {
         super(R.layout.item_coin_shop);
@@ -32,7 +32,7 @@ public class CoinShopAdapter extends BaseRecyclerViewAdapter<CoinShopEntity,Coin
 
 
     @Override
-    protected void convert(ShopItemViewHolder helper, final CoinShopEntity item) {
+    protected void convert(ShopItemViewHolder helper, final CoinShopEntity item, int position) {
         Glide.with(context)
                 .load(StringUtils.getUrl(context, item.getIcon(), DensityUtil.dip2px(context,75),DensityUtil.dip2px(context,75),false,true))
                 .override(DensityUtil.dip2px(context,75),DensityUtil.dip2px(context,75))
@@ -75,21 +75,5 @@ public class CoinShopAdapter extends BaseRecyclerViewAdapter<CoinShopEntity,Coin
     @Override
     public int getItemType(int position) {
         return 0;
-    }
-
-    class ShopItemViewHolder extends ClickableViewHolder{
-
-        ImageView ivCommodity;
-        TextView tvTitle,tvDesc,tvNum,tvNumDesc,tvBuy;
-
-        public ShopItemViewHolder(View itemView) {
-            super(itemView);
-            ivCommodity = $(R.id.iv_commodity);
-            tvTitle = $(R.id.tv_commodity_title);
-            tvDesc = $(R.id.tv_commodity_desc);
-            tvNum = $(R.id.tv_commodity_num);
-            tvNumDesc = $(R.id.tv_commodity_num_desc);
-            tvBuy = $(R.id.tv_commodity_buy);
-        }
     }
 }

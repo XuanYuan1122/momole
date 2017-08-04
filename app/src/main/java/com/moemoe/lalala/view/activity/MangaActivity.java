@@ -35,6 +35,7 @@ import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -100,6 +101,10 @@ public class MangaActivity extends BaseAppCompatActivity implements BagContract.
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

@@ -3,6 +3,7 @@ package com.moemoe.lalala.presenter;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
+import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.model.entity.ClubZipEntity;
 import com.moemoe.lalala.model.entity.DocListEntity;
@@ -102,6 +103,24 @@ public class ClubPostPresenter implements ClubPostContract.Presenter {
                     @Override
                     public void onFail(int code,String msg) {
                         if(view != null) view.onFailure(code,msg);
+                    }
+                });
+    }
+
+    @Override
+    public void followClub(String id, final boolean follow) {
+        apiService.followClub(!follow,id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view!=null)view.onFollowClubSuccess(!follow);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
                     }
                 });
     }

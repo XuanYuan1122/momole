@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
@@ -41,6 +40,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.BagAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
@@ -122,10 +122,12 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .titleBar(mToolbar)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .titleBar(mToolbar)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/shape_bg_5" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom|end"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/size_12"
+        android:gravity="right|end"
+        android:paddingEnd="@dimen/size_8"
+        android:paddingRight="@dimen/size_8">
+
+        <TextView
+            android:id="@+id/tv_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_18"
+            android:textStyle="bold"
+            android:text=""/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/size_2"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/size_27"
+            android:text=""/>
+    </LinearLayout>
+
+
+</FrameLayout>

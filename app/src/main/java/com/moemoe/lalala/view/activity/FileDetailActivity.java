@@ -44,6 +44,7 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.scaleimage.ScaleView;
 import com.moemoe.lalala.view.widget.scaleimage.ScaleViewAttacher;
@@ -120,6 +121,10 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerFileComponent.builder()
                 .fileModule(new FileModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

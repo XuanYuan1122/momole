@@ -65,11 +65,11 @@
         <activity android:name=".view.activity.ReadActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ImageTranslucentTheme"/>
         <activity android:name=".view.activity.MangaActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ImageTranslucentTheme"/>
         <activity android:name=".view.activity.MengXinActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -94,13 +94,13 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:hardwareAccelerated="true"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/ImageTranslucentTheme">
         </activity>
         <activity
             android:name=".view.activity.NewCalendarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/ImageTranslucentTheme">
 
             <intent-filter>
                 <action android:name="blackboard_1.0" />
@@ -116,22 +116,13 @@
             android:name=".view.activity.WallBlockActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="room_1.0" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/label_scheme"
-                    android:host="@string/label_host"
-                    android:path="@string/label_room_path"/>
-            </intent-filter>
+            android:theme="@style/MainColorTranslucentTheme">
         </activity>
         <activity
             android:name=".view.activity.DepartmentActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/MainColorTranslucentTheme">
             <intent-filter>
                 <action android:name="department_1.0" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -146,12 +137,12 @@
             android:name=".view.activity.CoinDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity
             android:name=".view.activity.QiuMingShanActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/ImageTranslucentTheme">
             <intent-filter>
                 <action android:name="qiu_1.0" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -166,7 +157,7 @@
             android:name=".view.activity.SwimPoolActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/ImageTranslucentTheme">
             <intent-filter>
                 <action android:name="swim_1.0" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -178,10 +169,25 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".view.activity.ClassActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme">
+            <intent-filter>
+                <action android:name="room_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_room_path"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".view.activity.TrashFavoriteActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/MainColorTranslucentTheme">
         </activity>
         <activity
             android:name=".view.activity.TrashActivity"
@@ -220,32 +226,32 @@
         <activity android:name=".view.activity.ChangePasswordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".view.activity.FindPasswordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".view.activity.LoginActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"
+            android:theme="@style/ImageTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".view.activity.PhoneRegisterActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".view.activity.PhoneStateCheckActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".view.activity.ClubPostListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/ImageTranslucentTheme">
             <intent-filter>
                 <action android:name="tag_1.0" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -259,34 +265,34 @@
         <activity android:name=".view.activity.SettingActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.AboutActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.CreateRichDocActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/ImageTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"  />
         <activity android:name=".view.activity.CreateRichDocHideActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"  />
         <activity android:name=".view.activity.AddMusicActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/MainColorTranslucentTheme" />
         <activity android:name=".view.activity.CreateTrashActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"  />
         <activity android:name=".view.activity.CommentsListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"  >
 
             <intent-filter>
@@ -303,7 +309,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"  >
 
             <intent-filter>
@@ -319,62 +325,62 @@
         <activity android:name=".view.activity.SecretSettingActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.UserRejectListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.ReadTypeSettingActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.ChatSettingActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.NewEditAccountActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".view.activity.BagEditActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".view.activity.SelectFukuActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.CoinShopActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.AddAddressActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.OrderActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".view.activity.BadgeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.TagControlActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.CropAvatarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ImageTranslucentTheme"/>
         <activity android:name=".view.activity.NewPersonalActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/ImageTranslucentTheme">
             <intent-filter>
                 <action android:name="user_info_1.0" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -388,11 +394,11 @@
         <activity android:name=".view.activity.BagActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ImageTranslucentTheme"/>
         <activity android:name=".view.activity.FolderActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent">
+            android:theme="@style/ImageTranslucentTheme">
             <intent-filter>
                 <action android:name="folder_1.0" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -406,27 +412,27 @@
         <activity android:name=".view.activity.DocHistoryActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.BagBuyActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.BagFollowActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.OrderListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.ShopDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.FolderSelectActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.ImageBigSelectActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -434,23 +440,23 @@
         <activity android:name=".view.activity.FileDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ImageTranslucentTheme"/>
         <activity android:name=".view.activity.FilesSelectActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.SelectMateActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ImageTranslucentTheme"/>
         <activity android:name=".view.activity.MultiImageChooseActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.NewsDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/MainColorTranslucentTheme">
 
             <intent-filter>
                 <action android:name="user_info_notify_1.0" />
@@ -466,29 +472,29 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.TrashDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name=".view.activity.PersonalLevelActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.SelectMusicActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.SelectBookActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.WebViewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:hardwareAccelerated ="true"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="url_inner_1.0" />
@@ -503,11 +509,11 @@
         <activity android:name=".view.activity.MusicDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Transparent"/>
+            android:theme="@style/ImageTranslucentTheme"/>
         <activity android:name=".view.activity.NewDocDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="doc_1.0" />
@@ -522,13 +528,13 @@
         <activity android:name=".view.activity.SearchActivity"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
         android:screenOrientation="portrait"
-        android:theme="@style/AppTheme.NoActionBar"
+        android:theme="@style/MainColorTranslucentTheme"
         android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity android:name=".view.activity.ColumnDetailActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/MainColorTranslucentTheme">
             <intent-filter>
                 <action android:name="calui_1.0" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -542,7 +548,7 @@
         <activity android:name=".view.activity.JuBaoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity

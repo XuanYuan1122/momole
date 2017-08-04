@@ -3,7 +3,6 @@ package com.moemoe.lalala.view.activity;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -18,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -38,6 +36,7 @@ import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.DocListAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -78,12 +77,16 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     View mHeadRoot;
     @BindView(R.id.dv_label_root)
     DocLabelView mDocLabel;
-    @BindView(R.id.tv_like_num)
-    TextView mLikesNum;
-    @BindView(R.id.tv_doc_num)
-    TextView mDocNum;
+//    @BindView(R.id.tv_like_num)
+//    TextView mLikesNum;
+//    @BindView(R.id.tv_doc_num)
+//    TextView mDocNum;
     @BindView(R.id.tv_simple_label)
     TextView mSimpleLabel;
+    @BindView(R.id.tv_follow)
+    TextView mTvFollow;
+    @BindView(R.id.rl_follow_root)
+    View mFollowRoot;
 
     @Inject
     ClubPostPresenter mPresenter;
@@ -93,6 +96,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     private boolean mHasLoadClub = false;
     private boolean mIsLoading = false;
     private String mTagName;
+    private int mIsFollow;
 
     @Override
     protected int getLayoutId() {
@@ -116,14 +120,13 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .titleBar(mToolbar)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         mTagName = "";
+        mIsFollow = -1;
         mHeadRoot.setVisibility(View.INVISIBLE);
-        mDocNum.setText(getString(R.string.label_doc_num, 0));
-        mLikesNum.setText(getString(R.string.label_like_num, 0));
+//        mDocNum.setText(getString(R.string.label_doc_num, 0));
+//        mLikesNum.setText(getString(R.string.label_like_num, 0));
+        mTvBrief.setText("社员 0");
         mListPost.setLoadMoreEnabled(false);
         mListPost.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListPost.setLayoutManager(new LinearLayoutManager(this));
@@ -186,6 +189,14 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
                         sendBtnIn();
                         isChange = true;
                     }
+                }
+            }
+        });
+        mFollowRoot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(DialogUtils.checkLoginAndShowDlg(ClubPostListActivity.this) && mIsFollow != -1){
+                    mPresenter.followClub(mClubUuid,mIsFollow == 0);
                 }
             }
         });
@@ -284,13 +295,30 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     }
 
     @Override
+    public void onFollowClubSuccess(boolean follow) {
+        mIsFollow = follow ? 0 : 1;
+        mTvFollow.setText(follow?"已关注":"关注");
+        mTvFollow.setCompoundDrawablesWithIntrinsicBounds (null,
+                null,
+                ContextCompat.getDrawable(ClubPostListActivity.this,follow?R.drawable.ic_club_followed:R.drawable.ic_club_follow),
+                null);
+    }
+
+    @Override
     public void bindClubViewData(TagNodeEntity entity) {
         mTagName = entity.getName();
-        mDocNum.setText(getString(R.string.label_doc_num, entity.getDocNum()));
-        mLikesNum.setText(getString(R.string.label_like_num, entity.getCommentNum()));
+//        mDocNum.setText(getString(R.string.label_doc_num, entity.getDocNum()));
+//        mLikesNum.setText(getString(R.string.label_like_num, entity.getCommentNum()));
+        mTvBrief.setText("社员 " + entity.getFollower());
+        mTvFollow.setText(entity.isFollow()?"已关注":"关注");
+        mIsFollow = entity.isFollow() ? 0 : 1;
+        mTvFollow.setCompoundDrawablesWithIntrinsicBounds (null,
+                null,
+                ContextCompat.getDrawable(ClubPostListActivity.this,entity.isFollow()?R.drawable.ic_club_followed:R.drawable.ic_club_follow),
+                null);
+
         mHeadRoot.setVisibility(View.VISIBLE);
         mTvGroupTitle.setText(entity.getName());
-        mTvBrief.setVisibility(View.GONE);
         if(entity.getIcon() != null && !mHasLoadClub){
             // 这个页面的社团头像只会加载一次
             Glide.with(this)

@@ -326,7 +326,7 @@ public abstract class BaseRecyclerViewAdapter<T,K extends ClickableViewHolder> e
         int viewType = holder.getItemViewType();
         switch (viewType){
             case 0:
-                convert(holder, list.get(holder.getLayoutPosition() - getHeaderLayoutCount()));
+                convert(holder, list.get(holder.getLayoutPosition() - getHeaderLayoutCount()), position);
                 break;
             case LOADING_VIEW:
                 mLoadMoreView.convert(holder);
@@ -338,7 +338,7 @@ public abstract class BaseRecyclerViewAdapter<T,K extends ClickableViewHolder> e
             case FOOTER_VIEW:
                 break;
             default:
-                convert(holder, list.get(holder.getLayoutPosition() - getHeaderLayoutCount()));
+                convert(holder, list.get(holder.getLayoutPosition() - getHeaderLayoutCount()), position);
                 break;
         }
     }
@@ -369,7 +369,7 @@ public abstract class BaseRecyclerViewAdapter<T,K extends ClickableViewHolder> e
         }
     }
 
-    protected abstract void convert(K helper, T item);
+    protected abstract void convert(K helper, T item, int position);
 
     protected View getItemView(@LayoutRes int layoutResId, ViewGroup parent){
         return mLayoutInflater.inflate(layoutResId,parent,false);

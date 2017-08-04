@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCommentComponent;
@@ -18,6 +17,7 @@ import com.moemoe.lalala.presenter.CommentContract;
 import com.moemoe.lalala.presenter.CommentPresenter;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -60,10 +60,12 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new PersonListAdapter(this,3);
         mListDocs.getRecyclerView().setAdapter(mAdapter);

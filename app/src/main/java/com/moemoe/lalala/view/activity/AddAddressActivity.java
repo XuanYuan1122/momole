@@ -8,12 +8,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerAddAddressComponent;
 import com.moemoe.lalala.di.modules.AddAddressModule;
-import com.moemoe.lalala.di.modules.OrderListModule;
 import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.presenter.AddressContract;
 import com.moemoe.lalala.presenter.AddressPresenter;
@@ -55,10 +53,12 @@ public class AddAddressActivity extends BaseAppCompatActivity implements Address
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerAddAddressComponent.builder()
                 .addAddressModule(new AddAddressModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

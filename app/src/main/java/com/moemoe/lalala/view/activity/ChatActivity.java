@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -17,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -37,6 +35,7 @@ import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 import com.moemoe.lalala.model.entity.SendPrivateMsgEntity;
 import com.moemoe.lalala.presenter.ChatContract;
 import com.moemoe.lalala.presenter.ChatPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.GreenDaoManager;
@@ -45,6 +44,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.ChatAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -110,11 +110,14 @@ public class ChatActivity extends BaseAppCompatActivity implements ChatContract.
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .keyboardEnable(true)
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         initBase();
         mKlCommentBoard.setVisibility(View.VISIBLE);
         mIvSet.setImageResource(R.drawable.privately_setup_blue);

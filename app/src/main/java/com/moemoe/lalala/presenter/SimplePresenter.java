@@ -1,5 +1,6 @@
 package com.moemoe.lalala.presenter;
 
+import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.greendao.gen.AuthorInfoDao;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
@@ -14,6 +15,7 @@ import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.model.entity.ThirdLoginEntity;
+import com.moemoe.lalala.utils.Constant;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
@@ -230,6 +232,22 @@ public class SimplePresenter implements SimpleContract.Presenter {
 
                         }
                     });
+        }else if(type == 10){
+            apiService.checkTxbb()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .subscribe(new NetResultSubscriber<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+                            AppSetting.TXBB = aBoolean;
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+
+                        }
+                    });
+
         }
     }
 

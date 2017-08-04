@@ -29,6 +29,7 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.MoeMoeCallback;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.trashcard.CardItemView;
 import com.moemoe.lalala.view.widget.trashcard.CardSlidePanel;
 
@@ -84,6 +85,8 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
     private int mCurTime;
     private int mCurLastTime;
     private int mCurHistory;
+    private String mShit = "";
+    private String mFun = "";
 
     @Override
     protected int getLayoutId() {
@@ -92,6 +95,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerTrashComponent.builder()
                 .trashModule(new TrashModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -103,7 +107,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
         mIsFirst = true;
         mHistory.setVisibility(View.GONE);
         mHistory2.setVisibility(View.GONE);
-        mCurHistory = 0;
+        mCurHistory = -1;
         mCurTime = PreferenceUtils.getLastTrashTime(this,"image");
         loadData(mCurTime);
     }
@@ -152,7 +156,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                     mIsFirst = false;
                     loadData(mCurLastTime);
                 }
-                if(mCurHistory == 0){
+                if(mCurHistory == 0 || mCurHistory == -1){
                     mCurHistory = 1;
                     mHistory.bringToFront();
                     mHistory.setVisibility(View.VISIBLE);
@@ -338,12 +342,18 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                 if (mIsTop3){
                     mIsTop3 = false;
                     mSwipeView.setVisibility(View.VISIBLE);
-                    mHistory.setVisibility(View.VISIBLE);
+                    if(mCurHistory == 1){
+                        mHistory.setVisibility(View.VISIBLE);
+                    }else if(mCurHistory == 0){
+                        mHistory2.setVisibility(View.VISIBLE);
+                    }
                     mSwipeViewTop.setVisibility(View.GONE);
                     mIvMyTrash.setVisibility(View.VISIBLE);
                     mIvYesterday.setVisibility(View.VISIBLE);
                     mIvCreate.setVisibility(View.VISIBLE);
                     mIvCreate.setEnabled(true);
+                    mTvFun.setText(mFun);
+                    mTvShite.setText(mShit);
                 }else {
                     finish();
                 }
@@ -370,6 +380,8 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                 mHistory.setVisibility(View.GONE);
                 mHistory2.setVisibility(View.GONE);
                 mSwipeViewTop.setVisibility(View.VISIBLE);
+                mFun = mTvFun.getText().toString();
+                mShit = mTvShite.getText().toString();
                 if (topEntities.size() == 0){
                     mPresenter.getTop3List(1);
                 }

@@ -35,6 +35,7 @@ public class ColumnDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     int TYPE_DOC = 1;
     private LayoutInflater mLayoutInflater;
     private OnItemClickListener onItemClickListener;
+    private int dataCount = 0;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
         this.onItemClickListener = onItemClickListener;
@@ -50,6 +51,7 @@ public class ColumnDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         int bfSize = mList.size();
         for (CalendarDayItemEntity calendarDayItem : calendarDayItemEntities){
             ArrayList<CalendarDayItemEntity.CalendarData> docList = calendarDayItem.getDocs();
+            dataCount +=docList.size();
             String day = calendarDayItem.getDay();
             if(!isFuture){
                 deleteRepeat(docList,mList);
@@ -67,7 +69,7 @@ public class ColumnDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }else {
                     String tempDay = (String)mList.get(0);
                     if(tempDay.equals(day)){
-                        mList.add(1,docList);
+                        mList.addAll(1,docList);
                     }
                 }
             }
@@ -186,6 +188,10 @@ public class ColumnDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemViewType(int position) {
         return mList.get(position) instanceof String ? TYPE_SPLIT : TYPE_DOC;
+    }
+
+    public int getDataCount() {
+        return dataCount;
     }
 
     @Override

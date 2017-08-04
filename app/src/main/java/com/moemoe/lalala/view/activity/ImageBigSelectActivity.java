@@ -28,6 +28,7 @@ import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.scaleimage.ScaleView;
 import com.moemoe.lalala.view.widget.scaleimage.ScaleViewAttacher;
@@ -86,6 +87,10 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         initValues();
         if(mSelectMode){
             mTvSave.setText((mFirstShowIndex + 1) + File.separator + mTotalCount);

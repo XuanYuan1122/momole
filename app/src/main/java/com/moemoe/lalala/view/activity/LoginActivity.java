@@ -23,6 +23,7 @@ import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.presenter.LoginContract;
 import com.moemoe.lalala.presenter.LoginPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.CountryCode;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
@@ -31,6 +32,7 @@ import com.moemoe.lalala.utils.PhoneUtil;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
 import javax.inject.Inject;
@@ -94,6 +96,11 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
+        AndroidBug5497Workaround.assistActivity(this);
         ShareSDK.initSDK(this);
         DaggerLoginComponent.builder()
                 .loginModule(new LoginModule(this))

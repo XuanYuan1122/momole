@@ -6,18 +6,20 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
 import com.moemoe.lalala.app.AppStatusManager;
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ToastUtils;
-import com.moemoe.lalala.utils.ViewUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
@@ -40,13 +42,14 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             savedInstanceState.putParcelable("android:support:fragments", null);
         }
         super.onCreate(savedInstanceState);
-        ImmersionBar.with(this).init();
+        //ImmersionBar.with(this).init();
         this.getWindow().setBackgroundDrawable(null);//移除默认背景，避免overdraw
         switch (AppStatusManager.getInstance().getAppStatus()) {
             case AppStatusConstant.STATUS_FORCE_KILLED:
                 restartApp();
                 break;
             case AppStatusConstant.STATUS_NORMAL:
+              //  this.setContentView(LayoutInflater.from(this).inflate(this.getLayoutId(),null,false),new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.getScreenHeight(this)));
                 this.setContentView(this.getLayoutId());
                 bind = ButterKnife.bind(this);
                 this.initToolbar(savedInstanceState);
@@ -135,7 +138,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ImmersionBar.with(this).destroy();
+        //ImmersionBar.with(this).destroy();
         if(bind != null) bind.unbind();
     }
 

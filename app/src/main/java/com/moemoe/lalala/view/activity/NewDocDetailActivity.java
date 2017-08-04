@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.BuildConfig;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
@@ -44,6 +43,7 @@ import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.presenter.DocDetailContract;
 import com.moemoe.lalala.presenter.DocDetailPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -55,6 +55,7 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.DocRecyclerViewAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.SelectImgAdapter;
@@ -65,7 +66,6 @@ import com.moemoe.lalala.view.widget.recycler.PullCallback;
 import com.moemoe.lalala.view.widget.recycler.RecyclerViewPositionHelper;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
-import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -154,11 +154,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerDetailComponent.builder()
                 .detailModule(new DetailModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -857,9 +854,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     }
 
     @Override
-    public void onGiveCoin(){
+    public void onGiveCoin(int coins){
         showToast(R.string.label_give_coin_success);
-        mAdapter.onGiveCoin();
+        mAdapter.onGiveCoin(coins);
     }
 
     public void followUser(String userId,boolean follow){

@@ -27,6 +27,10 @@ public class TagNodeEntity {
     private int docNum;
     @SerializedName("commentNum")
     private int commentNum;
+    @SerializedName("follow")
+    private boolean follow;
+    @SerializedName("follower")
+    private int follower;
 
     public String getId() {
         return id;
@@ -106,5 +110,21 @@ public class TagNodeEntity {
 
     public void setCommentNum(int commentNum) {
         this.commentNum = commentNum;
+    }
+
+    public boolean isFollow() {
+        return follow;
+    }
+
+    public void setFollow(boolean follow) {
+        this.follow = follow;
+    }
+
+    public int getFollower() {
+        return follower;
+    }
+
+    public void setFollower(int follower) {
+        this.follower = follower;
     }
 }

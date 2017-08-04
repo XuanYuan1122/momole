@@ -1,7 +1,6 @@
 package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewPager;
@@ -15,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
@@ -43,6 +41,7 @@ import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.PersonalPagerAdapter;
 import com.moemoe.lalala.view.fragment.PersonalMainFragment;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
@@ -119,10 +118,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .titleBar(mToolbar)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerPersonalComponent.builder()
                 .personalModule(new PersonalModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

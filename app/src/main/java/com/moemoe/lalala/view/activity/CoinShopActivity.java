@@ -4,15 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCoinShopComponent;
@@ -22,9 +18,9 @@ import com.moemoe.lalala.model.entity.CoinShopEntity;
 import com.moemoe.lalala.model.entity.OrderEntity;
 import com.moemoe.lalala.presenter.CoinShopContract;
 import com.moemoe.lalala.presenter.CoinShopPresenter;
-import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.CoinShopAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
@@ -68,10 +64,12 @@ public class CoinShopActivity extends BaseAppCompatActivity implements CoinShopC
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerCoinShopComponent.builder()
                 .coinShopModule(new CoinShopModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

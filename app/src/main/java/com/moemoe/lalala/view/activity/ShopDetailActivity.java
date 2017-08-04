@@ -3,13 +3,10 @@ package com.moemoe.lalala.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCoinShopComponent;
@@ -21,6 +18,7 @@ import com.moemoe.lalala.presenter.CoinShopPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.GlideImageLoader;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 
@@ -53,10 +51,12 @@ public class ShopDetailActivity extends BaseAppCompatActivity implements CoinSho
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerCoinShopComponent.builder()
                 .coinShopModule(new CoinShopModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

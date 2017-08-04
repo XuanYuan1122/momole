@@ -235,6 +235,11 @@ public static java.lang.String TABLENAME;
 -keep class com.moemoe.lalala.greendao.gen.**{ *; }
 -keep class com.moemoe.lalala.utils.MigrationHelper{ *; }
 
+#保持自定义控件类不被混淆
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+}
+
 ##---------------End: proguard configuration for Gson  ----------
 
 -keep public class com.app.** {
@@ -278,3 +283,11 @@ public static java.lang.String TABLENAME;
 -keep class com.youth.banner.** {
     *;
  }
+-keep class com.moemoe.lalala.view.widget.adapter.** {
+*;
+}
+-keep public class * extends com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter
+-keep public class * extends com.moemoe.lalala.view.widget.adapter.ClickableViewHolder
+-keepclassmembers public class * extends com.moemoe.lalala.view.widget.adapter.ClickableViewHolder {
+  <init>(android.view.View);
+}

@@ -26,8 +26,6 @@ public interface MapContract {
         void addDayMapMark(Context context, MapWidget map, float scale);
         void addNightMapMark(Context context, MapWidget map, float scale);
         void addNightEventMapMark(Context context, MapWidget map, float scale);
-        void addBackSchoolMapMark(Context context, MapWidget map, float scale);
-        void addSnowman(Context context, MapWidget map);
         void clickSnowman(Object o,int mapX,int mapY);
         void getDailyTask();
         void requestPersonMain();

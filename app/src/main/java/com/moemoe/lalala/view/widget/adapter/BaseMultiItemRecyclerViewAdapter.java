@@ -22,7 +22,7 @@ public abstract class BaseMultiItemRecyclerViewAdapter<T, K extends ClickableVie
     }
 
     @Override
-    protected void convert(K helper, T item) {
+    protected void convert(K helper, T item, int position) {
 
     }
 
@@ -31,7 +31,7 @@ public abstract class BaseMultiItemRecyclerViewAdapter<T, K extends ClickableVie
         return createBaseViewHolder(parent, getLayoutId(viewType));
     }
 
-    private int getLayoutId(int viewType) {
+    protected int getLayoutId(int viewType) {
         return layouts.get(viewType,TYPE_NOT_FOUND);
     }
 

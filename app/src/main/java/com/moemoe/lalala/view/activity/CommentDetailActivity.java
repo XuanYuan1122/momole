@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -40,12 +38,12 @@ import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.presenter.CommentDetailContract;
 import com.moemoe.lalala.presenter.CommentDetailPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -53,6 +51,7 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.SelectImgAdapter;
 
 import java.util.ArrayList;
@@ -142,11 +141,14 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .keyboardEnable(true)
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         mSchema = getIntent().getStringExtra("schema");
         if(TextUtils.isEmpty(mSchema)){
             finish();

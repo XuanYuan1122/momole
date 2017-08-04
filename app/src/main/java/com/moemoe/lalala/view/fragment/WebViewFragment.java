@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.di.modules.SimpleModule;
+import com.moemoe.lalala.presenter.SimpleContract;
+import com.moemoe.lalala.presenter.SimplePresenter;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.webview.CustomWebChromeClient;
@@ -18,12 +22,15 @@ import com.moemoe.lalala.webview.CustomWebViewClient;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Created by Haru on 2016/4/29 0029.
  */
-public class WebViewFragment extends BaseFragment {
+public class WebViewFragment extends BaseFragment{
 
     @BindView(R.id.webView)
     CustomWebView mWebView;
@@ -32,6 +39,7 @@ public class WebViewFragment extends BaseFragment {
     @BindView(R.id.videoLayout)
     ViewGroup videoLayout;
     public CustomWebChromeClient mChromeClient;
+
     private String mUrl;
 
     public static WebViewFragment newInstance(String url){
@@ -96,6 +104,8 @@ public class WebViewFragment extends BaseFragment {
 //        }
         setUrl(mUrl);
     }
+
+
 
     @Override
     public void onDestroyView() {

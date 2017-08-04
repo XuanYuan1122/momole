@@ -19,6 +19,7 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ResourceUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import java.util.ArrayList;
 
@@ -84,6 +85,10 @@ public class GuideActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         String bCallByUser = getIntent().getStringExtra(EXTRA_BY_USER);
         mBCallByUser = bCallByUser != null && bCallByUser.equals("true");

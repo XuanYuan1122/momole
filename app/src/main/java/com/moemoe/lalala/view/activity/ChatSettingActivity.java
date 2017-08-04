@@ -2,12 +2,10 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSettingComponent;
@@ -18,6 +16,7 @@ import com.moemoe.lalala.presenter.SettingPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import javax.inject.Inject;
 
@@ -58,10 +57,12 @@ public class ChatSettingActivity extends BaseAppCompatActivity implements Settin
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mIsShield = getIntent().getBooleanExtra("shield",false);
         mTalkId = getIntent().getStringExtra("talk_id");
         mTvTitle.setText(getString(R.string.label_secret_setting));

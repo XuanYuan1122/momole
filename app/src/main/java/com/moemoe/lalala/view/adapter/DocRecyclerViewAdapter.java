@@ -55,6 +55,7 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.activity.JuBaoActivity;
@@ -628,49 +629,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         shapeDrawable1.getPaint().setStyle(Paint.Style.FILL);
         shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(mDocBean.getUserLevelColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
         holder.ivLevelColor.setBackgroundDrawable(shapeDrawable1);
-        Observable.range(0,3)
-                .subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer i) {
-                        holder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
-                        holder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
-                    }
-                });
-        if(mDocBean.getBadgeList().size() > 0){
-            int size = 3;
-            if(mDocBean.getBadgeList().size() < 3){
-                size = mDocBean.getBadgeList().size();
-            }
-            for (int i = 0;i < size;i++){
-                holder.huiZhangTexts[i].setVisibility(View.VISIBLE);
-                holder.huiZhangRoots[i].setVisibility(View.VISIBLE);
-                BadgeEntity badgeEntity = mDocBean.getBadgeList().get(i);
-                TextView tv = holder.huiZhangTexts[i];
-                tv.setText(badgeEntity.getTitle());
-                tv.setText(badgeEntity.getTitle());
-                tv.setBackgroundResource(R.drawable.bg_badge_cover);
-                int px = DensityUtil.dip2px(mContext,4);
-                tv.setPadding(px,0,px,0);
-                int radius2 = DensityUtil.dip2px(mContext,2);
-                float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
-                RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
-                ShapeDrawable shapeDrawable2 = new ShapeDrawable();
-                shapeDrawable2.setShape(roundRectShape2);
-                shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
-                shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(badgeEntity.getColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
-                holder.huiZhangRoots[i].setBackgroundDrawable(shapeDrawable2);
-            }
-        }
+        ViewUtils.badge(mContext,holder.huiZhangRoots,holder.huiZhangTexts,mDocBean.getBadgeList());
     }
 
     private static class TextHolder extends RecyclerView.ViewHolder{
@@ -1184,8 +1143,8 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         ((NewDocDetailActivity)mContext).giveCoin(count);
     }
 
-    public void onGiveCoin(){
-        mDocBean.setCoinPays(mDocBean.getCoinPays() + 1);
+    public void onGiveCoin(int coins){
+        mDocBean.setCoinPays(mDocBean.getCoinPays() + coins);
         notifyItemChanged(mTagsPosition + 1);
     }
 
@@ -1267,7 +1226,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         public void ConfirmOnClick() {
                             if(DialogUtils.checkLoginAndShowDlg(mContext)){
                                 String content = alertDialogUtil.getEditTextContent();
-                                if(!TextUtils.isEmpty(content) || Integer.valueOf(content) <= 0){
+                                if(!TextUtils.isEmpty(content) && Integer.valueOf(content) > 0){
                                     giveCoin(Integer.valueOf(content));
                                     alertDialogUtil.dismissDialog();
                                 }else {

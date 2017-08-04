@@ -497,14 +497,14 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 for (int i = 0; i < post.getEggs(); i++){
                     int[] local;
                     if(holder.itemView.getWidth() > 0 && holder.itemView.getHeight() > 0){
-                        local = getEggPosition(holder.itemView.getWidth() - DensityUtil.dip2px(context, 100), holder.itemView.getHeight() - DensityUtil.dip2px(context, 100));
+                        local = getEggPosition(holder.itemView.getWidth() - 200, holder.itemView.getHeight() - 200);
                     }else {
-                        local = getEggPosition(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context, 100),  DensityUtil.dip2px(context, 50));
+                        local = getEggPosition(DensityUtil.getScreenWidth(context) - 200,  DensityUtil.dip2px(context, 150) - 200);
                     }
                     ImageView iv = new ImageView(context);
-                    ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(DensityUtil.dip2px(context, 100), DensityUtil.dip2px(context, 100));
-                    layoutParams.topMargin = local[0];
-                    layoutParams.leftMargin = local[1];
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(200, 200);
+                    layoutParams.topMargin = local[0] > 0 ? local[0] : 0;
+                    layoutParams.leftMargin = local[1] > 0 ? local[1] : 0;
                     iv.setLayoutParams(layoutParams);
                     iv.setImageResource(R.drawable.ic_doclist_egg);
                     holder.mainRoot.addView(iv);
@@ -515,8 +515,8 @@ public class ClassAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private int[] getEggPosition(int r, int b){
         Random rand = new Random();
-        int x = rand.nextInt(r + 1);
-        int y = rand.nextInt(b + 1);
+        int x = rand.nextInt(b + 1);
+        int y = rand.nextInt(r + 1);
         return new int[]{x, y};
     }
 

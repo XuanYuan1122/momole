@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_f6f6f6">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
+    <RelativeLayout
+        android:id="@+id/include_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/neta_toolbar"
+        android:background="@drawable/bg_shadow_up">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/size_18"
+            android:paddingRight="@dimen/size_18"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_back_blue_normal"/>
+
+        <com.flyco.tablayout.CommonTabLayout
+            android:id="@+id/indicator_person_data"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:background="@color/white"
+            app:tl_iconVisible="false"
+            app:tl_textBold="BOTH"
+            app:tl_tab_width="@dimen/size_50"
+            app:tl_indicator_width="@dimen/size_45"
+            app:tl_indicator_height="@dimen/size_4"
+            app:tl_indicator_color="@color/main_cyan"
+            app:tl_textsize="@dimen/size_18"
+            app:tl_textSelectColor="@color/main_cyan"
+            app:tl_textUnselectColor="@color/main_cyan_70"/>
+
+        <TextView
+            android:id="@+id/tv_simple_label"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/size_18"
+            android:layout_marginEnd="@dimen/size_18"
+            android:gravity="center"
+            android:text="标签精简"
+            android:textColor="@color/txt_cyan_white"
+            android:textStyle="bold"
+            android:textSize="9dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_only_host_new"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager_person_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <include layout="@layout/view_no_pic_keyboard"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

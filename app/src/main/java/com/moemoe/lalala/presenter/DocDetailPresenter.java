@@ -450,14 +450,14 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
     }
 
     @Override
-    public void giveCoin(GiveCoinEntity entity) {
+    public void giveCoin(final GiveCoinEntity entity) {
         apiService.giveCoinToDoc(entity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        if(view != null) view.onGiveCoin();
+                        if(view != null) view.onGiveCoin(entity.coins);
                     }
 
                     @Override

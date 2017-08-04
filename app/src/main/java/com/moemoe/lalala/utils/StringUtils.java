@@ -3,7 +3,6 @@ package com.moemoe.lalala.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -451,7 +450,7 @@ public class StringUtils {
                 if(width > 600) width = 600;
             }
             if(isDoc && !isDocDetail){
-                res = res + "?imageView2/1/w/" + width + "/h/" + height + "/format/jpg";
+                res = res + "?imageView2/1/w/" + width + "/h/" + height;// + "/format/jpg";
             }else if(isDocDetail && isDoc){
                 res = res + "?imageView2/2/w/" + width + (isLow ? "/q/60" : "");
             }else {
@@ -691,20 +690,20 @@ public class StringUtils {
         return platform != null && (cn.sharesdk.tencent.qq.QQ.NAME.equals(platform)
                 || Wechat.NAME.equals(platform)
                 || SinaWeibo.NAME.equals(platform)
-                || Contant.THIRD_LOGIN_QQ.equals(platform)
-                || Contant.THIRD_LOGIN_SINA.equals(platform)
-                || Contant.THIRD_LOGIN_WECHAT.equals(platform));
+                || Constant.THIRD_LOGIN_QQ.equals(platform)
+                || Constant.THIRD_LOGIN_SINA.equals(platform)
+                || Constant.THIRD_LOGIN_WECHAT.equals(platform));
     }
 
     public static String convertPlatform(String platform){
         if(cn.sharesdk.tencent.qq.QQ.NAME.equals(platform)){
-            return Contant.THIRD_LOGIN_QQ;
+            return Constant.THIRD_LOGIN_QQ;
         }
         if(Wechat.NAME.equals(platform)){
-            return Contant.THIRD_LOGIN_WECHAT;
+            return Constant.THIRD_LOGIN_WECHAT;
         }
         if(SinaWeibo.NAME.equals(platform)){
-            return Contant.THIRD_LOGIN_SINA;
+            return Constant.THIRD_LOGIN_SINA;
         }
         return platform;
     }

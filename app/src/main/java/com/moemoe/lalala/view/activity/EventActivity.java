@@ -15,6 +15,7 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.entity.EventDataEntity;
 import com.moemoe.lalala.model.entity.OldSimpleResult;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import java.util.ArrayList;
 
@@ -102,6 +103,7 @@ public class EventActivity extends BaseAppCompatActivity implements View.OnClick
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ViewUtils.setStatusBarLight(getWindow(), null);
         requestCount();
         initEvent();
         mTvError.setVisibility(View.GONE);

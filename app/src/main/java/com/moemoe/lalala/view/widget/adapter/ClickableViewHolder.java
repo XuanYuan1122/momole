@@ -1,5 +1,6 @@
 package com.moemoe.lalala.view.widget.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
@@ -45,6 +46,12 @@ public class ClickableViewHolder extends RecyclerView.ViewHolder{
     public ClickableViewHolder setVisible(@IdRes int viewId, boolean visible) {
         View view = $(viewId);
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
+        return this;
+    }
+
+    public ClickableViewHolder setBackgroundDrawable(@IdRes int viewId, Drawable drawable){
+        View view = $(viewId);
+        view.setBackgroundDrawable(drawable);
         return this;
     }
 }

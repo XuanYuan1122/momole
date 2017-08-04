@@ -2,9 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Selection;
@@ -16,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
@@ -31,20 +28,18 @@ import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.presenter.CreateRichDocContract;
 import com.moemoe.lalala.presenter.CreateRichDocPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
-import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
-import com.moemoe.lalala.utils.compress.NetaImgCompress;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,7 +53,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -137,11 +131,14 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .keyboardEnable(true)
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         Intent i = getIntent();
         if(i == null){
             finish();

@@ -43,18 +43,19 @@ public class TrashFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void setData(ArrayList<TrashEntity> entities){
-        int bfSize = getItemCount();
+        //int bfSize = getItemCount();
         this.entities.clear();
         this.entities.addAll(entities);
-        int afSize = getItemCount();
-        int btSize = afSize - bfSize;
-        if(btSize > 0){
-            notifyItemRangeChanged(0,bfSize);
-            notifyItemRangeInserted(bfSize,btSize);
-        }else {
-            notifyItemRangeChanged(0,afSize);
-            notifyItemRangeRemoved(afSize,btSize);
-        }
+        notifyDataSetChanged();
+//        int afSize = getItemCount();
+//        int btSize = afSize - bfSize;
+//        if(btSize > 0){
+//            notifyItemRangeChanged(0,bfSize);
+//            notifyItemRangeInserted(bfSize,btSize);
+//        }else {
+//            notifyItemRangeChanged(0,afSize);
+//            notifyItemRangeRemoved(afSize,btSize);
+//        }
     }
 
     public void addData(ArrayList<TrashEntity> entities){

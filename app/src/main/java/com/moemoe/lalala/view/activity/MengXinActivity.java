@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,10 @@ public class MengXinActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         mCurNum = 1;
         try {
             AssetManager assetManager = this.getAssets();

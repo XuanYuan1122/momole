@@ -41,7 +41,7 @@ public interface DocDetailContract {
         void onDeleteComment(NewCommentEntity entity,int position);
         void onCreateLabel(String s,String name);
         void onGetCoinContent();
-        void onGiveCoin();
+        void onGiveCoin(int coins);
         void onFollowSuccess(boolean isFollow);
         void checkEggSuccess(boolean isThrow);
         void postOrCancelEggSuccess(boolean isPost);

@@ -151,6 +151,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
         AppSetting.IS_DOWNLOAD_LOW_IN_3G = PreferenceUtils.getLowIn3G(this);
         AppSetting.SUB_TAG = PreferenceUtils.getSimpleLabel(this);
+        mPresenter.doRequest(null,10);
         if(NetworkUtils.isNetworkAvailable(this)){
             mPresenter.doRequest(PushManager.getInstance().getClientid(this) + "@and",4);
             if(PreferenceUtils.getHaveGameFuku(this)){

@@ -24,6 +24,7 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.CalendarDayAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -70,6 +71,10 @@ public class NewCalendarActivity extends BaseAppCompatActivity implements Calend
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+//        ImmersionBar.with(this)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerCalendarComponent.builder()
                 .calendarModule(new CalendarModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())

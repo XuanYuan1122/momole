@@ -13,6 +13,8 @@
         android:layout_alignParentStart="true">
     </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
 
+    <include layout="@layout/view_no_pic_keyboard"/>
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/ll_not_show"
         android:layout_width="match_parent"

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_list_bottom_root"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/size_45">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:background="@color/gray_e8e8e8"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/fl_add_tag_root"
+            android:layout_width="@dimen/size_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_tag_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/btn_official_jc_small_normal"
+                android:drawableStart="@drawable/btn_official_jc_small_normal"
+                android:drawablePadding="@dimen/size_10"
+                android:textColor="@color/main_cyan"
+                android:textSize="@dimen/size_10"
+                android:text="13"/>
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="@dimen/size_1_px"
+            android:layout_height="@dimen/size_20"
+            android:background="@color/gray_e8e8e8"
+            android:layout_gravity="center_vertical"/>
+
+        <FrameLayout
+            android:id="@+id/fl_show_comment_root"
+            android:layout_width="@dimen/size_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_comment_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/btn_official_comment_normal"
+                android:drawableStart="@drawable/btn_official_comment_normal"
+                android:drawablePadding="@dimen/size_10"
+                android:textColor="@color/green_93d856"
+                android:textSize="@dimen/size_10"
+                android:text="61"/>
+        </FrameLayout>
+
+        <View
+            android:layout_width="@dimen/size_1_px"
+            android:layout_height="@dimen/size_20"
+            android:background="@color/gray_e8e8e8"
+            android:layout_gravity="center_vertical"/>
+
+        <FrameLayout
+            android:id="@+id/fl_menu_root"
+            android:layout_width="@dimen/size_0"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/btn_feed_option"/>
+
+        </FrameLayout>
+    </LinearLayout>
+</RelativeLayout>

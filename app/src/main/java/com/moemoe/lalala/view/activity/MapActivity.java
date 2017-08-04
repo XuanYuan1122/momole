@@ -28,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
@@ -54,6 +53,7 @@ import com.moemoe.lalala.model.entity.MapMarkEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
+import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.model.entity.SnowShowEntity;
 import com.moemoe.lalala.presenter.MapContract;
@@ -68,6 +68,7 @@ import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToolTipUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.explosionfield.ExplosionField;
 import com.moemoe.lalala.view.widget.map.MapWidget;
 import com.moemoe.lalala.view.widget.map.config.OfflineMapConfig;
@@ -80,6 +81,8 @@ import com.moemoe.lalala.view.widget.map.interfaces.OnMapTouchListener;
 import com.moemoe.lalala.view.widget.map.model.MapImage;
 import com.moemoe.lalala.view.widget.map.model.MapImgLayer;
 import com.moemoe.lalala.view.widget.map.model.MapObject;
+import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
+import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.tooltip.Tooltip;
 import com.moemoe.lalala.view.widget.tooltip.TooltipAnimation;
 
@@ -89,7 +92,6 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -115,7 +117,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private static final int MAP_SCHOOL = 0;
     private static final int MAP_SCHOOL_YORU = 1;
     private static final int MAP_SCHOOL_KILL = 2;
-    private static final int MAP_SCHOOL_BACK = 3;
 
     @BindView(R.id.main_root)
     RelativeLayout mMainRoot;
@@ -127,8 +128,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     ImageView mIvSearch;
     @BindView(R.id.iv_shop)
     ImageView mIvShop;
-    @BindView(R.id.iv_cal)
-    ImageView mIvCal;
+   // @BindView(R.id.iv_cal)
+  //  ImageView mIvCal;
     @BindView(R.id.iv_card)
     ImageView mIvCard;
     @BindView(R.id.fl_card_root)
@@ -137,8 +138,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     View mCardDot;
     @BindView(R.id.iv_live2d)
     ImageView mIvGal;
-    @BindView(R.id.iv_square)
-    ImageView mIvSquare;
+   // @BindView(R.id.iv_square)
+    //ImageView mIvSquare;
+    @BindView(R.id.rl_main_list_root)
+    View mRlMainRoot;
     @BindView(R.id.live2DLayout)
     FrameLayout mLive2DLayout;
     @BindView(R.id.tv_exit_live2d)
@@ -174,6 +177,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private MapMarkContainer mContainer;
     private ExplosionField mExplosionField;
     private boolean mIsSignPress = false;
+    private BottomMenuFragment menuFragment;
 
     @Override
     protected int getLayoutId() {
@@ -182,6 +186,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        ViewUtils.setStatusBarLight(getWindow(),null);
         AppSetting.isRunning = true;
         Intent intent = getIntent();
         if(intent != null){
@@ -235,8 +240,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mPresenter.addNightMapMark(this,mapWidget,scale);
         }else if(mMapState == MAP_SCHOOL_KILL){
             mPresenter.addNightEventMapMark(this,mapWidget,scale);
-        }else if(mMapState == MAP_SCHOOL_BACK){
-            mPresenter.addBackSchoolMapMark(this,mapWidget,scale);
         }
     }
 
@@ -302,17 +305,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         subscribeEvent();
         subscribeSearchChangedEvent();
         if(StringUtils.isyoru()){
-            if(StringUtils.isBackSchool()){
-                if(mMapState != MAP_SCHOOL_BACK){
-                    clearMap();
-                    mMapState = MAP_SCHOOL_BACK;
-                    initMap("map_back_school");
-                    initMapListeners();
-                    if(!PreferenceUtils.getBackSchoolDialog(this) && PreferenceUtils.getBackSchoolLevel(this) == 0){
-                        mPresenter.getServerTime();
-                    }
-                }
-            }else if(!AppSetting.isEnterEventToday && StringUtils.isKillEvent() ){
+            if(!AppSetting.isEnterEventToday && StringUtils.isKillEvent() ){
                 if(mMapState != MAP_SCHOOL_KILL){
                     clearMap();
                     mMapState = MAP_SCHOOL_KILL;
@@ -552,19 +545,42 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                     Object objectId =  objectTouchEvent.getObjectId();
                     if(layerId == 233){
                         mExplosionField.clear();
-//                        MapImgLayer layer = (MapImgLayer) mapWidget.getLayerById(233);
-//                        MapImage mapImage = layer.getMapImgObject(objectId);
-//                        layer.removeMapObject(objectId);
-//                        SnowShowEntity.removeFromCache(mapImage.getRealPos().x,mapImage.getRealPos().y);
-//                        mExplosionField.setPosition(mapX,mapY);
-//                        mExplosionField.explode(mapImage);
-//                        mapWidget.invalidate();
                         mPresenter.clickSnowman(objectId,mapX,mapY);
                     }else {
                         MapMarkEntity entity = mContainer.getMarkById((String) objectId);
                         if(!TextUtils.isEmpty(entity.getSchema())){
                             String temp = entity.getSchema();
-                            if(entity.getId().equals("扭蛋机抽奖")){
+                            if(entity.getId().equals("恋爱讲座")){
+                                if(menuFragment == null){
+                                    ArrayList<MenuItem> items = new ArrayList<>();
+                                    MenuItem item = new MenuItem(0,"赤印");
+                                    items.add(item);
+                                    item = new MenuItem(1,"雪之本境");
+                                    items.add(item);
+                                    item = new MenuItem(2,"且听琴语");
+                                    items.add(item);
+                                    menuFragment = new BottomMenuFragment();
+                                    menuFragment.setShowTop(true);
+                                    menuFragment.setTopContent("选择听哪个故事呢？");
+                                    menuFragment.setMenuItems(items);
+                                    menuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+                                    menuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
+                                        @Override
+                                        public void OnMenuItemClick(int itemId) {
+                                            String url = "";
+                                            if(itemId == 0){
+                                                url = "https://www.iqing.in/play/653";
+                                            }else if(itemId == 1){
+                                                url = "https://www.iqing.in/play/654";
+                                            }else if(itemId == 2){
+                                                url = "https://www.iqing.in/play/655";
+                                            }
+                                            WebViewActivity.startActivity(MapActivity.this,url,true);
+                                        }
+                                    });
+                                }
+                                menuFragment.show(getSupportFragmentManager(),"mapMenu");
+                            }else if(entity.getId().equals("扭蛋机抽奖")){
                                 if (DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
                                     AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
                                     try {
@@ -784,7 +800,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         ErrorCodeUtils.showErrorMsgByCode(MapActivity.this,code,msg);
     }
 
-    @OnClick({R.id.iv_bag,R.id.iv_search,R.id.iv_cal,R.id.iv_card,R.id.iv_live2d,R.id.iv_square,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign,R.id.iv_shop})
+    @OnClick({R.id.iv_bag,R.id.iv_search,R.id.iv_card,R.id.iv_live2d,R.id.rl_main_list_root,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign,R.id.iv_shop})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_bag:
@@ -793,10 +809,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                     i2.putExtra(UUID,PreferenceUtils.getUUid());
                     startActivity(i2);
                 }
-                break;
-            case R.id.iv_cal:
-                Intent i = new Intent(MapActivity.this,NewCalendarActivity.class);
-                startActivity(i);
                 break;
             case R.id.iv_card:
                 if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
@@ -817,9 +829,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 mIvSelectLanguage.setVisibility(View.VISIBLE);
                 mIvGal.setVisibility(View.GONE);
                 break;
-            case R.id.iv_square:
+            case R.id.rl_main_list_root:
                 Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
                 startActivity(i3);
+                overridePendingTransition(R.anim.main_list_in,0);
                 break;
             case R.id.tv_exit_live2d:
                 mIvGal.setVisibility(View.VISIBLE);
@@ -881,17 +894,15 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     }
 
     private void imgIn(){
-        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mCardRoot,"translationY",-mCardRoot.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
+        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mCardRoot,"translationY",-mCardRoot.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
         cardAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",-mIvBag.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
+        ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",-mIvBag.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",-mIvSearch.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
+        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",-mIvSearch.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
         searchAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",-mIvShop.getHeight()- DensityUtil.dip2px(this,14),0).setDuration(300);
+        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",-mIvShop.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
         shopAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator calAnimator = ObjectAnimator.ofFloat(mIvCal,"translationY",mIvCal.getHeight()+DensityUtil.dip2px(this,5),0).setDuration(300);
-        calAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvSquare,"translationY",mIvSquare.getHeight()+DensityUtil.dip2px(this,5),0).setDuration(300);
+        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mRlMainRoot,"translationY",mRlMainRoot.getHeight(),0).setDuration(300);
         squareAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator galAnimator = ObjectAnimator.ofFloat(mIvGal,"translationY",mIvGal.getHeight(),0).setDuration(300);
         galAnimator.setInterpolator(new OvershootInterpolator());
@@ -902,24 +913,21 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         set.play(bagAnimator).with(searchAnimator);
         set.play(searchAnimator).with(shopAnimator);
         set.play(shopAnimator).with(squareAnimator);
-        set.play(squareAnimator).with(calAnimator);
-        set.play(calAnimator).with(galAnimator);
+        set.play(squareAnimator).with(galAnimator);
         set.play(galAnimator).with(signAnimator);
         set.start();
     }
 
     private void imgOut(){
-        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mCardRoot,"translationY",0,-mCardRoot.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
+        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mCardRoot,"translationY",0,-mCardRoot.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
         cardAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",0,-mIvBag.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
+        ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",0,-mIvBag.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",0,-mIvSearch.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
+        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",0,-mIvSearch.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
         searchAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",0,-mIvShop.getHeight()- DensityUtil.dip2px(this,14)).setDuration(300);
+        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",0,-mIvShop.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
         shopAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator calAnimator = ObjectAnimator.ofFloat(mIvCal,"translationY",0,mIvCal.getHeight()+DensityUtil.dip2px(this,5)).setDuration(300);
-        calAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvSquare,"translationY",0,mIvSquare.getHeight()+DensityUtil.dip2px(this,5)).setDuration(300);
+        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mRlMainRoot,"translationY",0,mRlMainRoot.getHeight()).setDuration(300);
         squareAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator galAnimator = ObjectAnimator.ofFloat(mIvGal,"translationY",0,mIvGal.getHeight()).setDuration(300);
         galAnimator.setInterpolator(new OvershootInterpolator());
@@ -929,8 +937,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         set.play(cardAnimator).with(bagAnimator);
         set.play(bagAnimator).with(searchAnimator);
         set.play(searchAnimator).with(shopAnimator);
-        set.play(shopAnimator).with(calAnimator);
-        set.play(calAnimator).with(squareAnimator);
+        set.play(shopAnimator).with(squareAnimator);
         set.play(squareAnimator).with(galAnimator);
         set.play(galAnimator).with(signAnimator);
         set.start();
@@ -941,8 +948,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mIvBag.setVisibility(View.VISIBLE);
         mIvSearch.setVisibility(View.VISIBLE);
         mIvShop.setVisibility(View.VISIBLE);
-        mIvCal.setVisibility(View.VISIBLE);
-        mIvSquare.setVisibility(View.VISIBLE);
+        mRlMainRoot.setVisibility(View.VISIBLE);
         mIvGal.setVisibility(View.VISIBLE);
         mIvSign.setVisibility(View.VISIBLE);
     }
@@ -952,8 +958,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mIvBag.setVisibility(View.INVISIBLE);
         mIvSearch.setVisibility(View.INVISIBLE);
         mIvShop.setVisibility(View.INVISIBLE);
-        mIvCal.setVisibility(View.INVISIBLE);
-        mIvSquare.setVisibility(View.INVISIBLE);
+        mRlMainRoot.setVisibility(View.INVISIBLE);
         mIvGal.setVisibility(View.INVISIBLE);
         mIvSign.setVisibility(View.INVISIBLE);
     }

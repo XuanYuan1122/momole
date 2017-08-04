@@ -23,7 +23,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
  * Created by yi on 2017/6/26.
  */
 
-public class RejectListAdapter extends BaseRecyclerViewAdapter<RejectEntity,RejectListAdapter.RejectViewHolder> {
+public class RejectListAdapter extends BaseRecyclerViewAdapter<RejectEntity,RejectViewHolder> {
 
     public RejectListAdapter() {
         super(R.layout.item_reject_list);
@@ -31,7 +31,7 @@ public class RejectListAdapter extends BaseRecyclerViewAdapter<RejectEntity,Reje
 
 
     @Override
-    protected void convert(RejectViewHolder helper, final RejectEntity item) {
+    protected void convert(RejectViewHolder helper, final RejectEntity item,int position) {
         Glide.with(context)
                 .load(StringUtils.getUrl(context, ApiService.URL_QINIU + item.getHeadPath(), DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50),false,true))
                 .override(DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50))
@@ -51,18 +51,5 @@ public class RejectListAdapter extends BaseRecyclerViewAdapter<RejectEntity,Reje
     @Override
     public int getItemType(int position) {
         return 0;
-    }
-
-    class RejectViewHolder extends ClickableViewHolder{
-
-        ImageView ivAvatar;
-        TextView tvName,tvRemove;
-
-        public RejectViewHolder(View itemView) {
-            super(itemView);
-            ivAvatar = $(R.id.iv_avatar);
-            tvName = $(R.id.tv_name);
-            tvRemove = $(R.id.tv_remove);
-        }
     }
 }

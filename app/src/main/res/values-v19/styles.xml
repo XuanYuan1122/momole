@@ -3,7 +3,17 @@
     <style name="ApplicationTheme" parent="AppTheme">
 
     </style>
+    <style name="MainColorTranslucentTheme" parent="AppTheme.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 
+    <style name="DefaultColorTranslucentTheme" parent="AppTheme.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="ImageTranslucentTheme" parent="AppTheme.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
     <style name="Activity_Dialog" parent="AppTheme.Dialog">
         <item name="android:windowTranslucentStatus">true</item>
     </style>

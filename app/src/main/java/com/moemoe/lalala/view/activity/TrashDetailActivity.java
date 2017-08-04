@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerTrashComponent;
@@ -30,6 +29,7 @@ import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.model.entity.TrashEntity;
 import com.moemoe.lalala.presenter.TrashContract;
 import com.moemoe.lalala.presenter.TrashPresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -42,6 +42,7 @@ import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.view.NewDocLabelAdapter;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
@@ -109,11 +110,14 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .keyboardEnable(true)
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         if(getIntent() == null){
             finish();
             return;

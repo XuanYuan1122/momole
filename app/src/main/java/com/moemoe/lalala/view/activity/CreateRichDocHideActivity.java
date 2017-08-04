@@ -7,25 +7,22 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.entity.RichEntity;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
-import com.moemoe.lalala.utils.compress.NetaImgCompress;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -34,7 +31,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -80,11 +76,14 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .keyboardEnable(true)
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         Intent i = getIntent();
         if(i == null){
             finish();

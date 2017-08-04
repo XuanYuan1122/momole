@@ -17,11 +17,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.di.components.DaggerSimpleComponent;
+import com.moemoe.lalala.di.modules.SimpleModule;
 import com.moemoe.lalala.model.entity.MotaResult;
+import com.moemoe.lalala.presenter.SimpleContract;
+import com.moemoe.lalala.presenter.SimplePresenter;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.fragment.WebViewFragment;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
@@ -29,6 +35,8 @@ import com.pingplusplus.android.Pingpp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import cn.sharesdk.framework.Platform;
@@ -40,7 +48,7 @@ import cn.sharesdk.onekeyshare.OnekeyShare;
  * Created by yi on 2016/12/2.
  */
 
-public class WebViewActivity extends BaseAppCompatActivity {
+public class WebViewActivity extends BaseAppCompatActivity implements SimpleContract.View{
     public static final String EXTRA_KEY_SHARE = "share";
     public static final String EXTRA_KEY_URL = "url";
     public static final String EXTRA_KEY_SHOW_TOOLBAR = "show_toolbar";
@@ -61,6 +69,8 @@ public class WebViewActivity extends BaseAppCompatActivity {
     ImageView mIvMenu;
     private WebViewFragment mWebViewFragment;
 
+    @Inject
+    SimplePresenter mPresenter;
     private String mUrl;
     private boolean mShouldTint = false;
     private boolean mHaveShare = false;
@@ -73,11 +83,13 @@ public class WebViewActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+        DaggerSimpleComponent.builder()
+                .simpleModule(new SimpleModule(this))
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
+                .build()
+                .inject(this);
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         mProgressBar = (ProgressBar) findViewById(R.id.pgbar_progress);
         mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
@@ -352,5 +364,20 @@ public class WebViewActivity extends BaseAppCompatActivity {
                 mWebViewFragment.resultMota(temp);
             }
         }
+    }
+
+
+    public void saveLive2d(){
+        mPresenter.doRequest("space",9);
+    }
+
+    @Override
+    public void onFailure(int code, String msg) {
+
+    }
+
+    @Override
+    public void onSuccess(Object o) {
+
     }
 }

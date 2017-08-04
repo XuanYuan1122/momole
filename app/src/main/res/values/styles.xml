@@ -213,6 +213,19 @@
         <item name="android:activityCloseEnterAnimation">@anim/fade_in</item>
         <item name="android:activityCloseExitAnimation">@anim/fade_out</item>
     </style>
+
+    <style name="MainColorTranslucentTheme" parent="AppTheme.NoActionBar">
+
+    </style>
+
+    <style name="DefaultColorTranslucentTheme" parent="AppTheme.NoActionBar">
+
+    </style>
+
+    <style name="ImageTranslucentTheme" parent="AppTheme.NoActionBar">
+
+    </style>
+
     <style name="AppTheme.Dialog" parent="AppTheme.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@color/alph_30</item>
@@ -233,9 +246,6 @@
     </style>
 
     <style name="AppTheme.Transparent" parent="AppTheme.NoActionBar">
-        <item name="colorControlNormal">@color/main_cyan</item>
-        <item name="colorControlActivated">@color/main_cyan</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 </resources>

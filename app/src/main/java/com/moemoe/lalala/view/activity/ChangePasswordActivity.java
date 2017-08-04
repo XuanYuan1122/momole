@@ -2,7 +2,6 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -14,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerChangePwdComponent;
@@ -28,6 +26,7 @@ import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 
 import javax.inject.Inject;
 
@@ -76,10 +75,12 @@ public class ChangePasswordActivity extends BaseAppCompatActivity implements Cha
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mAction = i.getIntExtra(PhoneStateCheckActivity.EXTRA_ACTION,PhoneStateCheckActivity.ACTION_CHAGE_PASSWORD);
         if(mAction == PhoneStateCheckActivity.ACTION_CHAGE_PASSWORD){
             mTitle.setText(R.string.label_change_password);

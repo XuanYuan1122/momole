@@ -14,6 +14,8 @@ public interface DepartContract {
         void requestBannerData(String room);
         void requestFeatured(String room);
         void requestDocList(int index,String room,int type);
+        void followDepartment(String id, boolean follow);
+        void loadIsFollow(String id);
     }
 
     interface View extends BaseView{
@@ -21,5 +23,6 @@ public interface DepartContract {
         void onFeaturedLoadSuccess(ArrayList<FeaturedEntity> featuredEntities);
         void onDocLoadSuccess(Object entity,boolean pull);
         void onChangeSuccess(Object entity);
+        void onFollowDepartmentSuccess(boolean follow);
     }
 }

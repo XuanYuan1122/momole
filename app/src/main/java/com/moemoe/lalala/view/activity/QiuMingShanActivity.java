@@ -3,7 +3,6 @@ package com.moemoe.lalala.view.activity;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -34,6 +32,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StartActivityConstant;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.ClassAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -77,10 +76,12 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerDepartComponent.builder()
                 .departModule(new DepartModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -289,6 +290,11 @@ public class QiuMingShanActivity extends BaseAppCompatActivity implements Depart
             }
         });
         mListDocs.getRecyclerView().setAdapter(mDocAdapter);
+    }
+
+    @Override
+    public void onFollowDepartmentSuccess(boolean follow) {
+
     }
 
     @Override

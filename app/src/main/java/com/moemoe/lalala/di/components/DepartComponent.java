@@ -2,10 +2,10 @@ package com.moemoe.lalala.di.components;
 
 import com.moemoe.lalala.di.modules.DepartModule;
 import com.moemoe.lalala.di.scopes.UserScope;
+import com.moemoe.lalala.view.activity.ClassActivity;
 import com.moemoe.lalala.view.activity.DepartmentActivity;
 import com.moemoe.lalala.view.activity.QiuMingShanActivity;
 import com.moemoe.lalala.view.activity.SwimPoolActivity;
-import com.moemoe.lalala.view.fragment.ClassFragment;
 
 import dagger.Component;
 
@@ -17,6 +17,6 @@ import dagger.Component;
 public interface DepartComponent {
     void inject(DepartmentActivity activity);
     void inject(SwimPoolActivity activity);
-    void inject(ClassFragment fragment);
+    void inject(ClassActivity activity);
     void inject(QiuMingShanActivity activity);
 }

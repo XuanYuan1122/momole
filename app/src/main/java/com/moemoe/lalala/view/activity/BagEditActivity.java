@@ -21,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagComponent;
@@ -35,6 +34,7 @@ import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -150,11 +150,14 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        ImmersionBar.with(this)
-                .statusBarView(R.id.top_view)
-                .statusBarDarkFont(true,0.2f)
-                .keyboardEnable(true)
-                .init();
+//        ImmersionBar.with(this)
+//                .statusBarView(R.id.top_view)
+//                .statusBarDarkFont(true,0.2f)
+//                .transparentNavigationBar()
+//                .keyboardEnable(true)
+//                .init();
+        ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         mType = getIntent().getIntExtra(EXTRA_TYPE,-1);
         mBgPath = getIntent().getStringExtra("bg");
         mName = getIntent().getStringExtra("name");
