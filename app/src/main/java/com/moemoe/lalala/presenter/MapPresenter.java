@@ -256,11 +256,11 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        //if(AppSetting.TXBB){
+        if(AppSetting.TXBB){
             entity = new MapMarkEntity("影音部",2449,1606,"neta://com.moemoe.lalala/department_1.0?uuid=a77f9006-5f7f-11e6-ae2c-d0a637eac7d7&name=影音部",R.drawable.btn_map_yingyin_normal);
             container.addMark(entity);
             addMarkToMap(context,entity.getId(),entity,layer);
-    //    }
+        }
         entity = new MapMarkEntity("新闻部",1953,176,"neta://com.moemoe.lalala/department_1.0?uuid=26f9831a-5f7f-11e6-8f94-d0a637eac7d7&name=新闻部",R.drawable.btn_map_xingwen_normal);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
@@ -285,7 +285,7 @@ public class MapPresenter implements MapContract.Presenter {
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 
-        entity = new MapMarkEntity("恋爱讲座",2263,550,"",R.drawable.btn_map_gal_normal);
+        entity = new MapMarkEntity("恋爱讲座",2263,550,"neta://com.moemoe.lalala/empty",R.drawable.btn_map_gal_normal);
         container.addMark(entity);
         addMarkToMap(context,entity.getId(),entity,layer);
 

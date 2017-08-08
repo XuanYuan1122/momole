@@ -103,12 +103,6 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .keyboardEnable(true)
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
         DaggerEditAccountComponent.builder()
@@ -453,7 +447,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
         }
         mInfo.setSignature(mTvSign.getText().toString());
         createDialog();
-        mPresenter.modify(mInfo.getUserName(),mInfo.getSex(), mInfo.getBirthday(),mInfo.getBackground(),mInfo.getHeadPath(),mInfo.getSignature());
+        mPresenter.modify(mInfo.getUserName(),TextUtils.isEmpty(mInfo.getSex())?"M":mInfo.getSex(), mInfo.getBirthday(),mInfo.getBackground(),mInfo.getHeadPath(),mInfo.getSignature());
     }
 
     @Override

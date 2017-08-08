@@ -140,8 +140,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     ImageView mIvGal;
    // @BindView(R.id.iv_square)
     //ImageView mIvSquare;
-    @BindView(R.id.rl_main_list_root)
-    View mRlMainRoot;
+//    @BindView(R.id.rl_main_list_root)
+//    View mRlMainRoot;
+    @BindView(R.id.iv_main)
+    ImageView mIvMain;
     @BindView(R.id.live2DLayout)
     FrameLayout mLive2DLayout;
     @BindView(R.id.tv_exit_live2d)
@@ -217,6 +219,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mPresenter.checkVersion();
         }
         mPresenter.getEventList();
+        Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
+        startActivity(i3);
     }
 
     private void initMap(String map){
@@ -800,7 +804,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         ErrorCodeUtils.showErrorMsgByCode(MapActivity.this,code,msg);
     }
 
-    @OnClick({R.id.iv_bag,R.id.iv_search,R.id.iv_card,R.id.iv_live2d,R.id.rl_main_list_root,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign,R.id.iv_shop})
+    @OnClick({R.id.iv_bag,R.id.iv_search,R.id.iv_card,R.id.iv_live2d,R.id.iv_main,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign,R.id.iv_shop})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_bag:
@@ -829,7 +833,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 mIvSelectLanguage.setVisibility(View.VISIBLE);
                 mIvGal.setVisibility(View.GONE);
                 break;
-            case R.id.rl_main_list_root:
+            case R.id.iv_main:
                 Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
                 startActivity(i3);
                 overridePendingTransition(R.anim.main_list_in,0);
@@ -902,7 +906,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         searchAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",-mIvShop.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
         shopAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mRlMainRoot,"translationY",mRlMainRoot.getHeight(),0).setDuration(300);
+        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvMain,"translationY",mIvMain.getHeight(),0).setDuration(300);
         squareAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator galAnimator = ObjectAnimator.ofFloat(mIvGal,"translationY",mIvGal.getHeight(),0).setDuration(300);
         galAnimator.setInterpolator(new OvershootInterpolator());
@@ -927,7 +931,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         searchAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",0,-mIvShop.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
         shopAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mRlMainRoot,"translationY",0,mRlMainRoot.getHeight()).setDuration(300);
+        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvMain,"translationY",0,mIvMain.getHeight()).setDuration(300);
         squareAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator galAnimator = ObjectAnimator.ofFloat(mIvGal,"translationY",0,mIvGal.getHeight()).setDuration(300);
         galAnimator.setInterpolator(new OvershootInterpolator());
@@ -948,7 +952,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mIvBag.setVisibility(View.VISIBLE);
         mIvSearch.setVisibility(View.VISIBLE);
         mIvShop.setVisibility(View.VISIBLE);
-        mRlMainRoot.setVisibility(View.VISIBLE);
+        mIvMain.setVisibility(View.VISIBLE);
         mIvGal.setVisibility(View.VISIBLE);
         mIvSign.setVisibility(View.VISIBLE);
     }
@@ -958,7 +962,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mIvBag.setVisibility(View.INVISIBLE);
         mIvSearch.setVisibility(View.INVISIBLE);
         mIvShop.setVisibility(View.INVISIBLE);
-        mRlMainRoot.setVisibility(View.INVISIBLE);
+        mIvMain.setVisibility(View.INVISIBLE);
         mIvGal.setVisibility(View.INVISIBLE);
         mIvSign.setVisibility(View.INVISIBLE);
     }

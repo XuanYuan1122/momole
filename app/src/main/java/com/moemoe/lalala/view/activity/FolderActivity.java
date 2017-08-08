@@ -122,11 +122,6 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .titleBar(mToolbar)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
@@ -148,6 +143,8 @@ public class FolderActivity extends BaseAppCompatActivity implements BagContract
     private void init(boolean showMore){
         mTvNum.setText(mDir.getNumber() + "项");
         mTitleView.setTitle(mDir.getName());
+        mTitleView.setCollapsedTitleTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+        mTitleView.setExpandedTitleColor(ContextCompat.getColor(this,R.color.white));
         mTvSpaceNum.setText(mDir.getUpdateTime() + " 更新");
         Glide.with(this)
                 .load(StringUtils.getUrl(this, ApiService.URL_QINIU +  mDir.getCover(), DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,200), false, true))

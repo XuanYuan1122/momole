@@ -27,6 +27,7 @@ public class NewDocListEntity {
          *  评论帖子:FOLLOW_USER_COMMENT
          *  关注对象关注动态:FOLLOW_USER_FOLLOW
          *  学部推荐:FOLLOW_DEPARTMENT
+         *  板报推荐:FOLLOW_BROADCAST
          */
         @SerializedName("type")
         private String type;

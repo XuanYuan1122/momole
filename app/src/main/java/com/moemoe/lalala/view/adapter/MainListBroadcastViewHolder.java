@@ -64,26 +64,5 @@ public class MainListBroadcastViewHolder extends ClickableViewHolder {
                 .into((ImageView) $(R.id.iv_avatar));
         setText(R.id.tv_user_name,doc.getUserName());
         setText(R.id.tv_update_time,StringUtils.timeFormate(item.getCreateTime()));
-
-        setText(R.id.tv_tag_num, StringUtils.getNumberInLengthLimit(doc.getLikes(), 3));
-        setText(R.id.tv_comment_num, StringUtils.getNumberInLengthLimit(doc.getComments(), 3));
-        $(R.id.fl_add_tag_root).setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                //TODO 打标签
-            }
-        });
-        $(R.id.fl_show_comment_root).setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                //TODO 进入帖子详情回复界面
-            }
-        });
-        $(R.id.fl_menu_root).setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                //TODO 显示菜单
-            }
-        });
     }
 }

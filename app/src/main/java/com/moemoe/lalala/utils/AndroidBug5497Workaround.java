@@ -16,7 +16,9 @@ public class AndroidBug5497Workaround {
     // To use this class, simply invoke assistActivity() on an Activity that already has its content view set.
 
     public static void assistActivity (Activity activity) {
-         new AndroidBug5497Workaround(activity);
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            new AndroidBug5497Workaround(activity);
+        }
      }
 
     private Activity activity;

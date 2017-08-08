@@ -60,9 +60,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="18dp"
                 android:text=""
-                android:layout_gravity="center"
-                android:textColor="@color/main_cyan"
                 android:gravity="center"
+                android:textColor="@color/main_cyan"
                 android:visibility="gone" />
         </FrameLayout>
 

@@ -10,6 +10,8 @@ import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -99,7 +101,6 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        //mAppBar.getBackground().mutate().setAlpha(0);
         mIsFollow = -1;
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListAdapter = new DepartmentListAdapter(this);
@@ -117,6 +118,9 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
         lp.rightMargin = DensityUtil.dip2px(this,18);
         mTvMenuRoot.setLayoutParams(lp);
         mTvMenuRoot.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_3);
+        FrameLayout.LayoutParams lp1 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp1.gravity = Gravity.CENTER;
+        mTvMenu.setLayoutParams(lp1);
         mTvMenu.setVisibility(View.VISIBLE);
         mTvMenu.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvMenu.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);

@@ -6,9 +6,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.moemoe.lalala.R;
@@ -104,7 +108,7 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
                 if("DOC".equals(entity.getDetail().getType())){
                     NewDocListEntity.Doc doc = (NewDocListEntity.Doc) entity.getDetail().getTrueData();
                     schema = doc.getSchema();
-                }else if("FOLLOW_DEPARTMENT".equals(entity.getDetail().getType())){
+                }else if("FOLLOW_DEPARTMENT".equals(entity.getDetail().getType()) || "FOLLOW_BROADCAST".equals(entity.getDetail().getType())){
                     NewDocListEntity.FollowDepartment doc = (NewDocListEntity.FollowDepartment) entity.getDetail().getTrueData();
                     schema = doc.getSchema();
                 }
@@ -184,7 +188,7 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
             if(bannerView == null){
                 bannerView = LayoutInflater.from(getContext()).inflate(R.layout.item_new_banner, null);
                 banner = (Banner) bannerView.findViewById(R.id.banner);
-                mAdapter.addHeaderView(bannerView);
+                mAdapter.addHeaderView(bannerView,0);
             }
             banner.setImages(bannerEntities)
                     .setImageLoader(new BannerImageLoader())
@@ -214,7 +218,19 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
         if(featuredEntities.size() > 0){
             if(featuredView == null){
                 featuredView  = LayoutInflater.from(getContext()).inflate(R.layout.item_class_featured, null);
-                mAdapter.addHeaderView(featuredView);
+                int count = mAdapter.getHeaderViewCount();
+                if(count == 0){
+                    mAdapter.addHeaderView(featuredView);
+                }else if(count == 1){
+                    View v = mAdapter.getmHeaderLayout().getChildAt(0);
+                    if(v == bannerView){
+                        mAdapter.addHeaderView(featuredView);
+                    }else {
+                        mAdapter.addHeaderView(featuredView,0);
+                    }
+                }else if(count == 2){
+                    mAdapter.addHeaderView(featuredView,1);
+                }
             }
             RecyclerView rvList = (RecyclerView) featuredView.findViewById(R.id.rv_class_featured);
             rvList.setBackgroundColor(Color.WHITE);
@@ -254,14 +270,19 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
                 mAdapter.addHeaderView(xianChongView);
             }
             RecyclerView rvList = (RecyclerView) xianChongView.findViewById(R.id.rv_class_featured);
-            rvList.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(getContext(), 90)));
+            rvList.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.dip2px(getContext(), 90)));
             rvList.setBackgroundColor(Color.WHITE);
             final XianChongListAdapter recyclerViewAdapter = new XianChongListAdapter();
             LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
             layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
             rvList.setLayoutManager(layoutManager);
-            View text  = LayoutInflater.from(getContext()).inflate(R.layout.item_text, null);
-            recyclerViewAdapter.addHeaderView(text);
+            TextView text  = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.item_text, null);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.gravity = Gravity.CENTER_VERTICAL;
+            lp.leftMargin = DensityUtil.dip2px(getContext(),10);
+            lp.rightMargin = DensityUtil.dip2px(getContext(),6);
+            text.setLayoutParams(lp);
+            recyclerViewAdapter.addHeaderView(text,-1,LinearLayout.HORIZONTAL);
             rvList.setAdapter(recyclerViewAdapter);
             recyclerViewAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
                 @Override
@@ -304,7 +325,7 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
                 detail.getDetail().setTrueData(gson.fromJson(detail.getDetail().getData(),NewDocListEntity.FollowComment.class));
             }else if(detail.getDetail().getType().equals("FOLLOW_USER_FOLLOW")){
                 detail.getDetail().setTrueData(gson.fromJson(detail.getDetail().getData(),NewDocListEntity.FollowUser.class));
-            }else if(detail.getDetail().getType().equals("FOLLOW_DEPARTMENT")){
+            }else if(detail.getDetail().getType().equals("FOLLOW_BROADCAST")){
                 detail.getDetail().setTrueData(gson.fromJson(detail.getDetail().getData(),NewDocListEntity.FollowDepartment.class));
             }
         }
@@ -331,7 +352,7 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
                 detail.getDetail().setTrueData(gson.fromJson(detail.getDetail().getData(),NewDocListEntity.FollowComment.class));
             }else if(detail.getDetail().getType().equals("FOLLOW_USER_FOLLOW")){
                 detail.getDetail().setTrueData(gson.fromJson(detail.getDetail().getData(),NewDocListEntity.FollowUser.class));
-            }else if(detail.getDetail().getType().equals("FOLLOW_DEPARTMENT")){
+            }else if(detail.getDetail().getType().equals("FOLLOW_BROADCAST")){
                 detail.getDetail().setTrueData(gson.fromJson(detail.getDetail().getData(),NewDocListEntity.FollowDepartment.class));
             }
         }

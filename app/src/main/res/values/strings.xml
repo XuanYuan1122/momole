@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">neta</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">4.6.2_20170725</string>
-    <string name="app_version_code">4510</string>
+    <string name="app_version">4.7.0_20170804</string>
+    <string name="app_version_code">4700</string>
 
     <string name="label_scheme">neta</string>
     <string name="label_host">com.moemoe.lalala</string>

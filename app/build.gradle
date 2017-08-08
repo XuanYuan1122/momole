@@ -26,8 +26,8 @@ android {
         applicationId "com.moemoe.lalala"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 4620
-        versionName "4.6.2"
+        versionCode 4700
+        versionName "4.7.0"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "moemoe",
                                 GETUI_APP_ID : "yJYiw8VtVO9wuMk0DgV6p4",
                                 GETUI_APP_KEY : "WaKYr5EG2c7DIAib45aPy3",
@@ -61,6 +61,7 @@ android {
     }
     buildTypes {
         release {
+            //buildConfigField("String","BASE_URL","\"http://192.168.1.194:8088/\"")
             buildConfigField("String", "BASE_URL", "\"http://2333.moemoe.la/\"")
             buildConfigField("String", "NOT_FOUND_PAGE", "\"http://s.moemoe.la/404.html\"")
             //混淆
@@ -85,7 +86,7 @@ android {
         debug{
              buildConfigField("String","BASE_URL","\"http://192.168.1.194:8088/\"")
             //buildConfigField("String","BASE_URL","\"http://123.58.136.98:8088/\"")
-            //buildConfigField("String","BASE_URL","\"http://2333.moemoe.la/\"")
+          //  buildConfigField("String","BASE_URL","\"http://2333.moemoe.la/\"")
             buildConfigField("String", "NOT_FOUND_PAGE", "\"http://s.moemoe.la/404.html\"")
             //混淆
             minifyEnabled false

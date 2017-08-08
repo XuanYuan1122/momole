@@ -8,9 +8,9 @@ public class XianChongEntity {
 
     private String userId;
 
-    private String userName;
+    private String nickName;
 
-    private String userIcon;
+    private String headPath;
 
     public String getUserId() {
         return userId;
@@ -20,19 +20,19 @@ public class XianChongEntity {
         this.userId = userId;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
-    public String getUserIcon() {
-        return userIcon;
+    public String getHeadPath() {
+        return headPath;
     }
 
-    public void setUserIcon(String userIcon) {
-        this.userIcon = userIcon;
+    public void setHeadPath(String headPath) {
+        this.headPath = headPath;
     }
 }

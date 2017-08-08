@@ -245,7 +245,7 @@ public class MainListDocViewHolder extends ClickableViewHolder {
         shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(doc.getUserLevelColor(), ContextCompat.getColor(context, R.color.main_cyan)));
         setBackgroundDrawable(R.id.rl_level_bg, shapeDrawable1);
         ViewUtils.badge(context,huiZhangRoots,huiZhangTexts,doc.getBadgeList());
-        setText(R.id.tv_post_update_time,StringUtils.timeFormate(doc.getFolder().getUpdateTime()));
+        setText(R.id.tv_post_update_time,StringUtils.timeFormate(item.getCreateTime()));
         //user end
         setVisible(R.id.tv_post_title,false);
         setVisible(R.id.tv_post_brief,false);
@@ -326,7 +326,7 @@ public class MainListDocViewHolder extends ClickableViewHolder {
         shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(doc.getUserLevelColor(), ContextCompat.getColor(context, R.color.main_cyan)));
         setBackgroundDrawable(R.id.rl_level_bg, shapeDrawable1);
         ViewUtils.badge(context,huiZhangRoots,huiZhangTexts,doc.getBadgeList());
-        setText(R.id.tv_post_update_time,StringUtils.timeFormate(doc.getUpdateTime()));
+        setText(R.id.tv_post_update_time,StringUtils.timeFormate(item.getCreateTime()));
         //user end
         setVisible(R.id.tv_post_title,false);
         setVisible(R.id.tv_post_brief,false);
@@ -431,7 +431,7 @@ public class MainListDocViewHolder extends ClickableViewHolder {
             String content = doc.getExtra();
             String colorStr = doc.getExtraColorContent();
             if(!TextUtils.isEmpty(colorStr)){
-                CustomUrlSpan span = new CustomUrlSpan(context,"",doc.getUserId());
+                CustomUrlSpan span = new CustomUrlSpan(context,"",doc.getExtraId());
                 SpannableStringBuilder style = new SpannableStringBuilder(content);
                 style.setSpan(span, content.indexOf(colorStr), content.indexOf(colorStr) + colorStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 setText(R.id.tv_extra, style);

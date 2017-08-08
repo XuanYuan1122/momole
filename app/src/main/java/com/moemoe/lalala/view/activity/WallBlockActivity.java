@@ -17,6 +17,11 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.di.components.DaggerSimpleComponent;
+import com.moemoe.lalala.di.components.DaggerWallComponent;
+import com.moemoe.lalala.di.modules.SimpleModule;
+import com.moemoe.lalala.di.modules.WallModule;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.presenter.WallContract;
@@ -79,6 +84,11 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
             String FRAGMENTS_TAG = "android:support:fragments";
             savedInstanceState.remove(FRAGMENTS_TAG);
         }
+        DaggerWallComponent.builder()
+                .wallModule(new WallModule(this))
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
+                .build()
+                .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
         followMainFragment = FollowMainFragment.newInstance();

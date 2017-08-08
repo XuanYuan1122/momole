@@ -213,6 +213,7 @@
         android:textColor="@color/gray_929292"
         android:textSize="@dimen/size_15"
         android:maxLines="1"
+        android:ellipsize="end"
         android:visibility="gone"/>
 
     <LinearLayout

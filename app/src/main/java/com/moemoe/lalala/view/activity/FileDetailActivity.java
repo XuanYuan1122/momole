@@ -121,9 +121,6 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerFileComponent.builder()
                 .fileModule(new FileModule(this))
@@ -539,9 +536,11 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                 break;
             case R.id.fl_delete_root:
                 ArrayList<String> ids = new ArrayList<>();
-                ids.add(mItems.get(mViewPager.getCurrentItem()).getFileId());
-                createDialog();
-                mPresenter.deleteFiles(mFolderId,ids);
+                if(ids.size() > 0){
+                    ids.add(mItems.get(mViewPager.getCurrentItem()).getFileId());
+                    createDialog();
+                    mPresenter.deleteFiles(mFolderId,ids);
+                }
                 break;
             case R.id.fl_move_root:
                 Intent i = new Intent(FileDetailActivity.this,FolderSelectActivity.class);

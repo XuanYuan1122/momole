@@ -102,11 +102,6 @@ public class BagActivity extends BaseAppCompatActivity implements BagContract.Vi
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-//        ImmersionBar.with(this)
-//                .titleBar(mToolbar)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(),null);
         mUserId = getIntent().getStringExtra(UUID);
         mTitleView.setCollapsedTitleTextColor(ContextCompat.getColor(this,R.color.main_cyan));
