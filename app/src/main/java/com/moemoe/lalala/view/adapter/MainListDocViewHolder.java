@@ -193,6 +193,7 @@ public class MainListDocViewHolder extends ClickableViewHolder {
         }else {
             if(docLabel != null) docLabel.setVisibility(View.GONE);
         }
+        setVisible(R.id.rl_list_bottom_root,true);
         setText(R.id.tv_tag_num, StringUtils.getNumberInLengthLimit(doc.getLikes(), 3));
         setText(R.id.tv_comment_num, StringUtils.getNumberInLengthLimit(doc.getComments(), 3));
         $(R.id.fl_add_tag_root).setOnClickListener(new NoDoubleClickListener() {

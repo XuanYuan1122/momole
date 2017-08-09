@@ -24,6 +24,7 @@ public class ErrorCodeUtils {
         if(context != null){
             String res;
             if(errorCode < 0){
+                if(errorCode == -1) return true;
                 res = getErrorMsgByCode(context, errorCode);
             }else {
                 res = msg;

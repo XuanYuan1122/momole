@@ -536,11 +536,9 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                 break;
             case R.id.fl_delete_root:
                 ArrayList<String> ids = new ArrayList<>();
-                if(ids.size() > 0){
-                    ids.add(mItems.get(mViewPager.getCurrentItem()).getFileId());
-                    createDialog();
-                    mPresenter.deleteFiles(mFolderId,ids);
-                }
+                ids.add(mItems.get(mViewPager.getCurrentItem()).getFileId());
+                createDialog();
+                mPresenter.deleteFiles(mFolderId,ids);
                 break;
             case R.id.fl_move_root:
                 Intent i = new Intent(FileDetailActivity.this,FolderSelectActivity.class);

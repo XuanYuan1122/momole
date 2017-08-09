@@ -71,11 +71,6 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerFileComponent.builder()
                 .fileModule(new FileModule(this))
@@ -136,7 +131,7 @@ public class FilesSelectActivity extends BaseAppCompatActivity implements FilesC
                 for (FileEntity entity : mSelectMap.values()){
                     ids.add(entity.getFileId());
                 }
-                mPresenter.deleteFiles(folderId,ids);
+                if(ids.size() > 0) mPresenter.deleteFiles(folderId,ids);
             }
         });
         mFlMoveRoot.setOnClickListener(new NoDoubleClickListener() {

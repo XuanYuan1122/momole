@@ -96,9 +96,6 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), null);
         AndroidBug5497Workaround.assistActivity(this);
         ShareSDK.initSDK(this);

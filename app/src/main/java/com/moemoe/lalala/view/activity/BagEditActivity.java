@@ -150,12 +150,6 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .keyboardEnable(true)
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
         mType = getIntent().getIntExtra(EXTRA_TYPE,-1);
@@ -449,10 +443,12 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             String name = mTvName.getText().toString();
             if (TextUtils.isEmpty(name)) {
                 showToast(R.string.msg_name_cannot_null);
+                mTvSave.setEnabled(true);
                 return;
             }
             if(TextUtils.isEmpty(mBgPath)){
                 showToast("封面不能为空");
+                mTvSave.setEnabled(true);
                 return;
             }
             createDialog();
@@ -472,10 +468,12 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                 String name = mTvName.getText().toString();
                 if (TextUtils.isEmpty(name)) {
                     showToast(R.string.msg_name_cannot_null);
+                    mTvSave.setEnabled(true);
                     return;
                 }
                 if(TextUtils.isEmpty(mBgPath)){
                     showToast("封面不能为空");
+                    mTvSave.setEnabled(true);
                     return;
                 }
                 ArrayList<String> paths = new ArrayList<>();
@@ -504,10 +502,12 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             String name = mTvName.getText().toString();
             if (TextUtils.isEmpty(name)) {
                 showToast(R.string.msg_name_cannot_null);
+                mTvSave.setEnabled(true);
                 return;
             }
             if(TextUtils.isEmpty(mBgPath)){
                 showToast("封面不能为空");
+                mTvSave.setEnabled(true);
                 return;
             }
             createDialog();
@@ -808,6 +808,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             }
         }else {
             showToast("空间不足");
+            mTvSave.setEnabled(true);
         }
     }
 
