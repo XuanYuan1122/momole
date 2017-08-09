@@ -117,6 +117,10 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         mSimpleLabel.setVisibility(View.VISIBLE);
         mSimpleLabel.setSelected(AppSetting.SUB_TAG);
         mCurTag = AppSetting.SUB_TAG;
+        if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
+            Intent i = new Intent(this,MengXinActivity.class);
+            startActivity(i);
+        }
     }
 
     @Override

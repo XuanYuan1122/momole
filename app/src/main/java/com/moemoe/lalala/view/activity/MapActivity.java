@@ -199,10 +199,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
-            Intent i = new Intent(this,MengXinActivity.class);
-            startActivity(i);
-        }
         initMap("map");
         SoundManager.init(this);
         FileManager.init(this);
