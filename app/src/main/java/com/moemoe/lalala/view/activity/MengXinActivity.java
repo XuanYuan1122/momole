@@ -62,7 +62,7 @@ public class MengXinActivity extends BaseAppCompatActivity {
             @Override
             public void onClick(View view) {
                 mCurNum++;
-                if(mCurNum < 13){
+                if(mCurNum < 14){
                     try {
                         AssetManager assetManager = getAssets();
                         InputStream in = assetManager.open("bg_guide_" + mCurNum + ".jpg");

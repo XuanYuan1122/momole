@@ -105,6 +105,6 @@ public class DiscoveryMainPresenter implements DiscovertMainContract.Presenter{
 
     @Override
     public void release() {
-
+        view = null;
     }
 }

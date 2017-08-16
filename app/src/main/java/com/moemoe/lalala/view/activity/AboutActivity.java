@@ -17,8 +17,6 @@ import butterknife.BindView;
 
 public class AboutActivity extends BaseAppCompatActivity {
 
-    @BindView(R.id.include_toolbar)
-    View mToolbar;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
@@ -31,11 +29,6 @@ public class AboutActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true, 0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mTvTitle.setText(R.string.label_about_neta);
     }

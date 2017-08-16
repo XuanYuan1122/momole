@@ -116,7 +116,7 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
                     if(schema.contains(getString(R.string.label_doc_path)) && !schema.contains("uuid")){
                         String begin = schema.substring(0,schema.indexOf("?") + 1);
                         String uuid = schema.substring(schema.indexOf("?") + 1);
-                        schema = begin + "uuid=" + uuid + "&from_name=关注";
+                        schema = begin + "uuid=" + uuid + "&from_name=发现";
                     }
                     Uri uri = Uri.parse(schema);
                     IntentUtils.toActivityFromUri(getActivity(), uri,view);

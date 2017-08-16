@@ -12,14 +12,14 @@ import java.util.ArrayList;
  */
 
 public interface DiscovertMainContract{
-    interface Presenter extends BaseBannerContract.Presenter{
+    interface Presenter extends BasePresenter{
         void loadXianChongList();
         void loadDocList(long index, boolean change,boolean isPull);
         void requestBannerData(String room);
         void requestFeatured(String room);
     }
 
-    interface View extends BaseBannerContract.View{
+    interface View extends BaseView{
         void onLoadXianChongSuccess(ArrayList<XianChongEntity> entities);
         void onChangeSuccess(ArrayList<NewDocListEntity> entities);
         void onLoadDocListSuccess(ArrayList<NewDocListEntity> entities, boolean isPull);

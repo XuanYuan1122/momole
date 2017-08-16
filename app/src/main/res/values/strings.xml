@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">neta</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">4.7.0_20170804</string>
+    <string name="app_version">4.7.0_20170810</string>
     <string name="app_version_code">4700</string>
 
     <string name="label_scheme">neta</string>
@@ -188,7 +188,8 @@
     <string name="label_simple_label">精简标签</string>
     <string name="label_about">关于</string>
     <string name="label_clear">清空</string>
-    <string name="label_square">发现</string>
+    <string name="label_square">广场</string>
+    <string name="label_find">发现</string>
     <string name="label_club">社团</string>
     <string name="label_class">班级</string>
     <string name="label_open_out">用外部浏览器打开</string>

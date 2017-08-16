@@ -3,6 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
+    <include layout="@layout/neta_bar"/>
+
     <com.moemoe.lalala.view.widget.view.PullAndLoadLayout
         android:id="@+id/scroll_root"
         android:layout_width="match_parent"

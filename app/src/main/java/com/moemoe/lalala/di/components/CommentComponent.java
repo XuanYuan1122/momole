@@ -3,7 +3,7 @@ package com.moemoe.lalala.di.components;
 import com.moemoe.lalala.di.modules.CommentModule;
 import com.moemoe.lalala.di.scopes.UserScope;
 import com.moemoe.lalala.view.activity.CoinDetailActivity;
-import com.moemoe.lalala.view.fragment.WallBlockFragment;
+import com.moemoe.lalala.view.activity.WallActivity;
 
 import dagger.Component;
 
@@ -13,6 +13,6 @@ import dagger.Component;
 @UserScope
 @Component(modules = CommentModule.class,dependencies = NetComponent.class)
 public interface CommentComponent {
-    void inject(WallBlockFragment fragment);
+    void inject(WallActivity activity);
     void inject(CoinDetailActivity activity);
 }

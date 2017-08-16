@@ -168,20 +168,26 @@
                     android:path="@string/label_swim_path"/>
             </intent-filter>
         </activity>
+        <!--<activity-->
+            <!--android:name=".view.activity.ClassActivity"-->
+            <!--android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/ImageTranslucentTheme">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="room_1.0" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <!--<data-->
+                    <!--android:scheme="@string/label_scheme"-->
+                    <!--android:host="@string/label_host"-->
+                    <!--android:path="@string/label_room_path"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
         <activity
-            android:name=".view.activity.ClassActivity"
+            android:name=".view.activity.WallActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme">
-            <intent-filter>
-                <action android:name="room_1.0" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/label_scheme"
-                    android:host="@string/label_host"
-                    android:path="@string/label_room_path"/>
-            </intent-filter>
+            android:theme="@style/MainColorTranslucentTheme">
         </activity>
         <activity
             android:name=".view.activity.TrashFavoriteActivity"

@@ -12,8 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.utils.NoDoubleClickListener;
-import com.moemoe.lalala.view.activity.ClassActivity;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 import com.moemoe.lalala.view.widget.recycler.ScrollDirection;
 
@@ -23,7 +21,6 @@ import com.moemoe.lalala.view.widget.recycler.ScrollDirection;
 public class PullAndLoadLayout extends FrameLayout {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ScrollView mScrollView;
-    private View mClass;
     private ProgressBar mProgressBar;
     private PullCallback mPullCallback;
     private DraggableLayout mFsdLayout;
@@ -48,7 +45,6 @@ public class PullAndLoadLayout extends FrameLayout {
         mScrollView = (ScrollView) findViewById(R.id.scroll);
         mFsdLayout = (DraggableLayout) findViewById(R.id.fsd_layout);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mClass = findViewById(R.id.tv_class);
         init();
     }
 
@@ -60,13 +56,6 @@ public class PullAndLoadLayout extends FrameLayout {
                 if (null != mPullCallback && !mPullCallback.isLoading()) {
                     mPullCallback.onRefresh();
                 }
-            }
-        });
-        mClass.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                Intent i = new Intent(getContext(), ClassActivity.class);
-                getContext().startActivity(i);
             }
         });
     }

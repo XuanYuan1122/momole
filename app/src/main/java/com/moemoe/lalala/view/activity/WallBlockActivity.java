@@ -31,11 +31,12 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
+import com.moemoe.lalala.utils.StartActivityConstant;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
+import com.moemoe.lalala.view.fragment.ClassMainFragment;
 import com.moemoe.lalala.view.fragment.DiscoveryMainFragment;
 import com.moemoe.lalala.view.fragment.FollowMainFragment;
-import com.moemoe.lalala.view.fragment.WallBlockFragment;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
    // private ClassFragment classFragment;
     private DiscoveryMainFragment discoveryMainFragment;
     private FollowMainFragment followMainFragment;
+    private ClassMainFragment classMainFragment;
     private boolean mCurTag;
 
     @Inject
@@ -94,16 +96,17 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         followMainFragment = FollowMainFragment.newInstance();
        // classFragment = new ClassFragment();
         discoveryMainFragment = DiscoveryMainFragment.newInstance();
-        WallBlockFragment wallBlockFragment = new WallBlockFragment();
+        classMainFragment = ClassMainFragment.newInstance();
+//        WallBlockFragment wallBlockFragment = new WallBlockFragment();
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(followMainFragment);
         fragmentList.add(discoveryMainFragment);
-        fragmentList.add(wallBlockFragment);
+        fragmentList.add(classMainFragment);
         List<String> titles = new ArrayList<>();
         titles.add(getString(R.string.label_follow));
+        titles.add(getString(R.string.label_find));
         titles.add(getString(R.string.label_square));
-        titles.add(getString(R.string.label_club));
-        String[] mTitles = {getString(R.string.label_follow),getString(R.string.label_square),getString(R.string.label_club)};
+        String[] mTitles = {getString(R.string.label_follow),getString(R.string.label_find),getString(R.string.label_square)};
         ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
@@ -145,6 +148,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                 PreferenceUtils.setSimpleLabel(WallBlockActivity.this,AppSetting.SUB_TAG);
                 if(discoveryMainFragment != null) discoveryMainFragment.changeLabelAdapter();
                 if(followMainFragment != null) followMainFragment.changeLabelAdapter();
+                if(classMainFragment != null) classMainFragment.changeLabelAdapter();
             }
         });
         mPageIndicator.setOnTabSelectListener(new OnTabSelectListener() {
@@ -245,9 +249,9 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == CreateRichDocActivity.RESPONSE_CODE){
-            if(discoveryMainFragment != null){
-                discoveryMainFragment.onActivityResult(requestCode,resultCode,data);
+        if(resultCode == CreateRichDocActivity.RESPONSE_CODE ||requestCode == StartActivityConstant.REQ_DOC_DETAIL_ACTIVITY){
+            if(classMainFragment != null){
+                classMainFragment.onActivityResult(requestCode,resultCode,data);
             }
         }
     }
@@ -264,6 +268,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
             mSimpleLabel.setSelected(AppSetting.SUB_TAG);
             if(discoveryMainFragment != null) discoveryMainFragment.changeLabelAdapter();
             if(followMainFragment != null) followMainFragment.changeLabelAdapter();
+            if(classMainFragment != null) classMainFragment.changeLabelAdapter();
             mCurTag = AppSetting.SUB_TAG;
         }
     }

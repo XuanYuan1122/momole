@@ -33,7 +33,6 @@ import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
-import com.moemoe.lalala.di.components.DaggerMapComponent;
 import com.moemoe.lalala.di.modules.MapModule;
 import com.moemoe.lalala.dialog.SignDialog;
 import com.moemoe.lalala.event.BackSchoolEvent;
@@ -71,6 +70,7 @@ import com.moemoe.lalala.utils.ToolTipUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.explosionfield.ExplosionField;
 import com.moemoe.lalala.view.widget.map.MapWidget;
+import com.moemoe.lalala.di.components.DaggerMapComponent;
 import com.moemoe.lalala.view.widget.map.config.OfflineMapConfig;
 import com.moemoe.lalala.view.widget.map.events.MapTouchedEvent;
 import com.moemoe.lalala.view.widget.map.events.ObjectTouchEvent;
@@ -158,8 +158,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     ImageView mIvSoundLoad;
     @BindView(R.id.iv_sign)
     ImageView mIvSign;
-    @BindView(R.id.btn_ip)
-    Button mIp;
+//    @BindView(R.id.btn_ip)
+//    Button mIp;
     @Inject
     MapPresenter mPresenter;
     private MapWidget mapWidget;
