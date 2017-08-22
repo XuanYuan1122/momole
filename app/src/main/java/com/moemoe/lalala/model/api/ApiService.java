@@ -103,6 +103,8 @@ public interface ApiService {
     @GET("api/sys/getTime")
     Observable<ApiResult<Date>> getServerTime();
 
+
+
     @GET
     Observable<OldSimpleResult> getUrl(@Url String url);
 

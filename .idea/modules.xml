@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Neta-Android.iml" filepath="$PROJECT_DIR$/Neta-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/neta_spacial.iml" filepath="$PROJECT_DIR$/neta_spacial.iml" />
     </modules>
   </component>
 </project>
