@@ -17,15 +17,19 @@ import com.moemoe.lalala.di.modules.BagModule;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.FolderDecoration;
 import com.moemoe.lalala.utils.GridItemDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.BagAdapter;
+import com.moemoe.lalala.view.adapter.BagCollectionTopAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
+import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
@@ -52,10 +56,11 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
 
     @Inject
     BagPresenter mPresenter;
-    private BagAdapter mAdapter;
+    private BagCollectionTopAdapter mAdapter;
     private boolean isLoading = false;
     private String mSelectId;
     private String mFolderId;
+    private String mFolderType;
 
     @Override
     protected int getLayoutId() {
@@ -64,11 +69,6 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerBagComponent.builder()
                 .bagModule(new BagModule(this))
@@ -76,15 +76,17 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
                 .build()
                 .inject(this);
         mFolderId = getIntent().getStringExtra("folderId");
+        mFolderType = getIntent().getStringExtra("folderType");
         mTvDone.setVisibility(View.VISIBLE);
         mTvDone.getPaint().setFakeBoldText(true);
         ViewUtils.setRightMargins(mTvDone,DensityUtil.dip2px(this,18));
         mTvDone.setText(getString(R.string.label_done));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mAdapter = new BagAdapter(this,false,0);
+        mAdapter = new BagCollectionTopAdapter();
+        mAdapter.setSelect(true);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
-        mListDocs.getRecyclerView().setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
+        mListDocs.getRecyclerView().addItemDecoration(new FolderDecoration());
         mListDocs.setLayoutManager(layoutManager);
         mListDocs.getRecyclerView().addItemDecoration(new GridItemDecoration(DensityUtil.dip2px(this,10)));
         mListDocs.setLoadMoreEnabled(false);
@@ -122,13 +124,16 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
                 finish();
             }
         });
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                BagDirEntity entity = (BagDirEntity) mAdapter.getItem(position);
+                ShowFolderEntity entity = mAdapter.getItem(position);
                 if(TextUtils.isEmpty(mFolderId) || !mFolderId.equals(entity.getFolderId())){
                     mSelectId = entity.getFolderId();
-                    mAdapter.setSelectPosition(position);
+                    for(ShowFolderEntity temp : mAdapter.getList()){
+                        temp.setSelect(false);
+                    }
+                    entity.setSelect(true);
                     mAdapter.notifyDataSetChanged();
                 }else {
                     showToast("不能选择当前文件夹");
@@ -154,13 +159,13 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
             @Override
             public void onLoadMore() {
                 isLoading = true;
-                mPresenter.getFolderList(PreferenceUtils.getUUid(),mAdapter.getItemCount());
+                mPresenter.getFolderList(PreferenceUtils.getUUid(),mAdapter.getItemCount(),mFolderType);
             }
 
             @Override
             public void onRefresh() {
                 isLoading = true;
-                mPresenter.getFolderList(PreferenceUtils.getUUid(),0);
+                mPresenter.getFolderList(PreferenceUtils.getUUid(),0,mFolderType);
             }
 
             @Override
@@ -173,7 +178,7 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
                 return false;
             }
         });
-        mPresenter.getFolderList(PreferenceUtils.getUUid(),0);
+        mPresenter.getFolderList(PreferenceUtils.getUUid(),0,mFolderType);
     }
 
     @Override
@@ -192,14 +197,14 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
     }
 
     @Override
-    public void loadFolderListSuccess(ArrayList<BagDirEntity> entities, boolean isPull) {
+    public void loadFolderListSuccess(ArrayList<ShowFolderEntity> entities, boolean isPull) {
         isLoading = false;
         mListDocs.setComplete();
         mListDocs.setLoadMoreEnabled(true);
         if(isPull){
-            mAdapter.setData(entities);
+            mAdapter.setList(entities);
         }else {
-            mAdapter.addData(entities);
+            mAdapter.addList(entities);
         }
     }
 

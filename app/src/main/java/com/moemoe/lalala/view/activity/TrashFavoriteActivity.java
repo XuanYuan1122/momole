@@ -11,6 +11,7 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
+import com.moemoe.lalala.view.fragment.BaseFragment;
 import com.moemoe.lalala.view.fragment.MyTrashFragment;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class TrashFavoriteActivity extends BaseAppCompatActivity {
     ViewPager mDataPager;
     @BindView(R.id.indicator_person_data)
     TabLayout mPageIndicator;
+
+    private TabFragmentPagerAdapter mAdapter;
 
     @Override
     protected int getLayoutId() {
@@ -60,13 +63,13 @@ public class TrashFavoriteActivity extends BaseAppCompatActivity {
         bundle.putString(EXTRA_TYPE,type);
         bundle.putInt(EXTRA_LIST_TYPE,1);
         favoriteFragment.setArguments(bundle);
-        List<Fragment> fragmentList = new ArrayList<>();
+        List<BaseFragment> fragmentList = new ArrayList<>();
         fragmentList.add(myTrashFragment);
         fragmentList.add(favoriteFragment);
         List<String> titles = new ArrayList<>();
         titles.add(getString(R.string.label_mine));
         titles.add(getString(R.string.label_favorite));
-        TabFragmentPagerAdapter mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
+         mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
         mDataPager.setAdapter(mAdapter);
         mPageIndicator.setupWithViewPager(mDataPager);
     }
@@ -98,6 +101,7 @@ public class TrashFavoriteActivity extends BaseAppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if(mAdapter != null) mAdapter.release();
         super.onDestroy();
     }
 }

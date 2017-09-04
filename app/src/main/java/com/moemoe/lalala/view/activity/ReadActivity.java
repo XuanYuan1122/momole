@@ -21,6 +21,7 @@ import com.moemoe.lalala.di.components.DaggerFileComponent;
 import com.moemoe.lalala.di.modules.FileModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BookInfo;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.presenter.FilesContract;
 import com.moemoe.lalala.presenter.FilesPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -210,21 +211,12 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
 
     }
 
-    @OnClick({R.id.iv_back,R.id.fl_down_root,R.id.fl_delete_root,R.id.fl_move_root,R.id.fl_edit_root})
+    @OnClick({R.id.iv_back,R.id.fl_down_root,R.id.fl_delete_root,R.id.fl_edit_root})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_back:
                 finish();
                 break;
-//            case R.id.tv_bookReadMode:
-//                mLlSetRoot.setVisibility(View.GONE);
-//                boolean isNight = !PreferenceUtils.isNight(ReadActivity.this);
-//                PreferenceUtils.setNight(ReadActivity.this,isNight);
-//                mPageWidget.setTheme(isNight);
-//                mPageWidget.setTextColor(ContextCompat.getColor(this, isNight ? R.color.chapter_content_night : R.color.black),
-//                        ContextCompat.getColor(this, isNight ? R.color.chapter_content_night : R.color.black));
-//                mTvNight.setSelected(!isNight);
-//                break;
             case R.id.fl_down_root:
                 createDialog();
                 downloadRaw();
@@ -233,13 +225,13 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                 ArrayList<String> ids = new ArrayList<>();
                 ids.add(mBookId);
                 createDialog();
-                mPresenter.deleteFiles(mFolderId,ids);
+                mPresenter.deleteFiles(mFolderId, FolderType.ZH.toString(),ids);
                 break;
-            case R.id.fl_move_root:
-                Intent i = new Intent(ReadActivity.this,FolderSelectActivity.class);
-                i.putExtra("folderId",mFolderId);
-                startActivityForResult(i,REQ_SELECT_FOLDER);
-                break;
+//            case R.id.fl_move_root:
+//                Intent i = new Intent(ReadActivity.this,FolderSelectActivity.class);
+//                i.putExtra("folderId",mFolderId);
+//                startActivityForResult(i,REQ_SELECT_FOLDER);
+//                break;
             case R.id.fl_edit_root:
                 final EditText editText = new EditText(this);
                 new AlertDialog.Builder(this).setTitle("文件名称")
@@ -249,7 +241,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if(!TextUtils.isEmpty(editText.getText().toString())){
                                     createDialog();
-                                    mPresenter.modifyFile(mBookId,editText.getText().toString());
+                                    mPresenter.modifyFile(FolderType.ZH.toString(),mFolderId,mBookId,editText.getText().toString());
                                     dialogInterface.dismiss();
                                 }else {
                                     showToast("文件名不能为空");

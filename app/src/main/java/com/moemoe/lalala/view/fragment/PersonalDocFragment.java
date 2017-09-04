@@ -119,10 +119,9 @@ public class PersonalDocFragment extends BaseFragment implements PersonalListCon
         mPresenter.doRequest(id,0,1);
     }
 
-    @Override
-    public void onDestroyView() {
-        mPresenter.release();
-        super.onDestroyView();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
+        super.release();
     }
 
     @Override

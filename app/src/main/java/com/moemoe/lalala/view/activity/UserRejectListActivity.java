@@ -53,11 +53,6 @@ public class UserRejectListActivity extends BaseAppCompatActivity implements Use
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerUserRejectComponent.builder()
                 .userRejectModule(new UserRejectModule(this))
@@ -147,5 +142,11 @@ public class UserRejectListActivity extends BaseAppCompatActivity implements Use
     public void onRemoveBlackSuccess(RejectEntity entity) {
         mAdapter.getList().remove(entity);
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(mPresenter != null) mPresenter.release();
+        super.onDestroy();
     }
 }

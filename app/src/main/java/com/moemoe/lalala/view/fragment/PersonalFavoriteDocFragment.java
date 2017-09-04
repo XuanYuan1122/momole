@@ -134,10 +134,9 @@ public class PersonalFavoriteDocFragment extends BaseFragment  implements Person
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        mPresenter.release();
-        super.onDestroyView();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
+        super.release();
     }
 
     @Override

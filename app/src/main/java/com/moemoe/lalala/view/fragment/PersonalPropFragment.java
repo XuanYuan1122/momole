@@ -54,4 +54,10 @@ public class PersonalPropFragment extends BaseFragment {
                     "因为道具功能还没开放。\n");
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        super.release();
+    }
 }

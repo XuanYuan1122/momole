@@ -27,6 +27,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
+import com.moemoe.lalala.view.fragment.BaseFragment;
 import com.moemoe.lalala.view.fragment.SearchBagFragment;
 import com.moemoe.lalala.view.fragment.SearchDocFragment;
 import com.moemoe.lalala.view.fragment.SearchUserFragment;
@@ -89,7 +90,7 @@ public class SearchActivity extends BaseAppCompatActivity {
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         showType = getIntent().getIntExtra("show_type",SHOW_ALL);
         mTab.setVisibility(View.GONE);
-        List<Fragment> fragmentList = new ArrayList<>();
+        List<BaseFragment> fragmentList = new ArrayList<>();
         List<String> titles = new ArrayList<>();
         if(showType == SHOW_ALL){
             SearchDocFragment docFragment = SearchDocFragment.newInstance();
@@ -279,6 +280,7 @@ public class SearchActivity extends BaseAppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if(mAdapter != null)mAdapter.release();
         super.onDestroy();
         RxBus.getInstance().unSubscribe(this);
     }

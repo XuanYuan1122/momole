@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.NewDocListEntity;
@@ -39,11 +40,14 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
+import com.moemoe.lalala.view.activity.BagBuyActivity;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
-import com.moemoe.lalala.view.activity.FolderActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.activity.JuBaoActivity;
 import com.moemoe.lalala.view.activity.NewDocDetailActivity;
+import com.moemoe.lalala.view.activity.NewFileCommonActivity;
+import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
+import com.moemoe.lalala.view.activity.NewFileXiaoshuoActivity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
 import com.moemoe.lalala.view.activity.WallBlockActivity;
 import com.moemoe.lalala.view.fragment.FollowMainFragment;
@@ -218,7 +222,7 @@ public class MainListDocViewHolder extends ClickableViewHolder {
         });
     }
 
-    public void createFolderDoc(NewDocListEntity item){
+    public void createFolderDoc(final NewDocListEntity item){
         final NewDocListEntity.FollowFolder doc = (NewDocListEntity.FollowFolder) item.getDetail().getTrueData();
         setVisible(R.id.rl_from_top, false);
         //user
@@ -287,11 +291,15 @@ public class MainListDocViewHolder extends ClickableViewHolder {
         v.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                Intent i = new Intent(context,FolderActivity.class);
-                i.putExtra("info",doc.getFolder());
-                i.putExtra("show_more",true);
-                i.putExtra("uuid", doc.getUserId());
-                context.startActivity(i);
+                if(doc.getFolder().getFolderType().equals(FolderType.ZH.toString())){
+                    NewFileCommonActivity.startActivity(context,FolderType.ZH.toString(),doc.getFolder().getFolderId(),doc.getFolder().getUserId());
+                }else if(doc.getFolder().getFolderType().equals(FolderType.TJ.toString())){
+                    NewFileCommonActivity.startActivity(context,FolderType.TJ.toString(),doc.getFolder().getFolderId(),doc.getFolder().getUserId());
+                }else if(doc.getFolder().getFolderType().equals(FolderType.MH.toString())){
+                    NewFileManHuaActivity.startActivity(context,FolderType.MH.toString(),doc.getFolder().getFolderId(),doc.getFolder().getUserId());
+                }else if(doc.getFolder().getFolderType().equals(FolderType.XS.toString())){
+                    NewFileXiaoshuoActivity.startActivity(context,FolderType.XS.toString(),doc.getFolder().getFolderId(),doc.getFolder().getUserId());
+                }
             }
         });
         container.addView(v);

@@ -62,12 +62,6 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
     }
 
     @Override
-    public void onDestroyView() {
-        mPresenter.release();
-        super.onDestroyView();
-    }
-
-    @Override
     protected void initViews(Bundle savedInstanceState) {
         if(savedInstanceState != null){
             return;
@@ -212,9 +206,9 @@ public class PersonalMsgFragment extends BaseFragment implements PersonalListCon
         RxBus.getInstance().addSubscription(this, sysSubscription);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
         RxBus.getInstance().unSubscribe(this);
+        super.release();
     }
 }

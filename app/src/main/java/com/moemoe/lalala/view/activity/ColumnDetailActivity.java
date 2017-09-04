@@ -163,10 +163,10 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
                 return false;
             }
         });
-        mPastAdapter.setOnItemClickListener(new OnItemClickListener() {
+        mFutureAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Object bean = mPastAdapter.getItem(position);
+                Object bean = mFutureAdapter.getItem(position);
                 String id = null;
                 if (bean instanceof CalendarDayItemEntity.CalendarData) {
                     CalendarDayItemEntity.CalendarData doc = (CalendarDayItemEntity.CalendarData) bean;

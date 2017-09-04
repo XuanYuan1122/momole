@@ -62,6 +62,7 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
     private int mSelectType;//1 report 2.del 3.bag
     private String mDocId;
     private int position;
+    private String mUserId;
     private Boolean changeGroup = false;
 
     @Override
@@ -90,6 +91,7 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
         mDocId = getIntent().getStringExtra(EXTRA_DOC_ID);
         mTarget = getIntent().getStringExtra(EXTRA_TARGET);
         position = getIntent().getIntExtra(EXTRA_POSITION,-1);
+        mUserId = getIntent().getStringExtra("userId");
         mTvContent1.setText(mName);
         mTvContent2.setText(mContent);
         mType = "色情";
@@ -129,7 +131,7 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
                     DelCommentEntity bean =new DelCommentEntity(mUuid,mDocId,mEtContent.getText().toString(),mType);
                     mPresenter.doRequest(bean,5);
                 }else if(mSelectType == 3){
-                    ReportEntity bean = new ReportEntity(mEtContent.getText().toString(),mType,mUuid,mTarget);
+                    ReportEntity bean = new ReportEntity(mEtContent.getText().toString(),mType,mUuid,mTarget,mUserId);
                     mPresenter.doRequest(bean,6);
                 }
             }

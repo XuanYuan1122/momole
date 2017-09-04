@@ -9,12 +9,29 @@ public class ReportEntity {
     private String reasonType;
     private String targetId;
     private String targetType;
+    private String userId;
 
     public ReportEntity(String reason, String reasonType, String targetId, String targetType) {
         this.reason = reason;
         this.reasonType = reasonType;
         this.targetId = targetId;
         this.targetType = targetType;
+    }
+
+    public ReportEntity(String reason, String reasonType, String targetId, String targetType, String userId) {
+        this.reason = reason;
+        this.reasonType = reasonType;
+        this.targetId = targetId;
+        this.targetType = targetType;
+        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getReason() {

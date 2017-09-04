@@ -46,7 +46,7 @@ public class ClubPostPresenter implements ClubPostContract.Presenter {
                     public String call(ApiResult<TagNodeEntity> tagNodeEntityApiResult) {
                         if(tagNodeEntityApiResult.getState() == 200 && tagNodeEntityApiResult.getData() != null){
                             tagName = tagNodeEntityApiResult.getData().getName();
-                            view.bindClubViewData(tagNodeEntityApiResult.getData());
+                            if(view!=null) view.bindClubViewData(tagNodeEntityApiResult.getData());
                             return tagNodeEntityApiResult.getData().getName();
                         }else {
                             return "";

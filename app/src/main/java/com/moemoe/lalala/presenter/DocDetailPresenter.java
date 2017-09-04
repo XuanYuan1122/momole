@@ -167,12 +167,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                 .subscribe(new NetResultSubscriber<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        view.checkEggSuccess(aBoolean);
+                        if(view!=null)view.checkEggSuccess(aBoolean);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null) view.onFailure(code, msg);
                     }
                 });
     }
@@ -186,12 +186,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.postOrCancelEggSuccess(false);
+                            if(view!=null)view.postOrCancelEggSuccess(false);
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code, msg);
+                            if(view!=null)view.onFailure(code, msg);
                         }
                     });
         }else {
@@ -201,12 +201,12 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.postOrCancelEggSuccess(true);
+                            if(view!=null)view.postOrCancelEggSuccess(true);
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code, msg);
+                            if(view!=null)view.onFailure(code, msg);
                         }
                     });
         }

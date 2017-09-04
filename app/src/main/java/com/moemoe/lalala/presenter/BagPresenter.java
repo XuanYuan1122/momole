@@ -10,8 +10,10 @@ import com.moemoe.lalala.model.entity.BagFolderInfo;
 import com.moemoe.lalala.model.entity.BagModifyEntity;
 import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FileEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.UploadEntity;
 import com.moemoe.lalala.model.entity.UploadResultEntity;
 import com.moemoe.lalala.utils.FileUtil;
@@ -156,13 +158,13 @@ public class BagPresenter implements BagContract.Presenter {
     }
 
     @Override
-    public void getFolderList(String userId, final int index) {
-        apiService.getFolderList(userId,ApiService.LENGHT,index)
+    public void getFolderList(String userId, final int index,String type) {
+        apiService.loadFolderList(userId,type,ApiService.LENGHT,index)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetResultSubscriber<ArrayList<BagDirEntity>>() {
+                .subscribe(new NetResultSubscriber<ArrayList<ShowFolderEntity>>() {
                     @Override
-                    public void onSuccess(ArrayList<BagDirEntity> entities) {
+                    public void onSuccess(ArrayList<ShowFolderEntity> entities) {
                         if(view != null) view.loadFolderListSuccess(entities,index == 0);
                     }
 

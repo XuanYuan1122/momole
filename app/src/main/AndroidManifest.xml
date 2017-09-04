@@ -66,7 +66,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
-        <activity android:name=".view.activity.MangaActivity"
+        <activity android:name=".view.activity.BagOpenActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
@@ -97,23 +97,63 @@
             android:theme="@style/ImageTranslucentTheme">
         </activity>
         <activity
-            android:name=".view.activity.NewCalendarActivity"
+            android:name=".view.activity.WallBlockActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme">
-
-            <intent-filter>
-                <action android:name="blackboard_1.0" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/label_scheme"
-                    android:host="@string/label_host"
-                    android:path="@string/label_blackboard_path"/>
-            </intent-filter>
+            android:theme="@style/MainColorTranslucentTheme">
         </activity>
         <activity
-            android:name=".view.activity.WallBlockActivity"
+            android:name=".view.activity.FilesUploadActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity
+            android:name=".view.activity.NewFileCommonActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.NewFileManHuaActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.NewFileManHua2Activity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.NewFileXiaoshuoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.NewFileXiaoShuo2Activity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.NewFolderActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.NewFolderEditActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+        <activity
+            android:name=".view.activity.SelectZipActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme">
@@ -397,33 +437,15 @@
                     android:path="@string/label_user_info_path"/>
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.BagActivity"
+        <activity android:name=".view.activity.NewBagActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
-        <activity android:name=".view.activity.FolderActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme">
-            <intent-filter>
-                <action android:name="folder_1.0" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/label_scheme"
-                    android:host="@string/label_host"
-                    android:path="@string/label_folder_path"/>
-            </intent-filter>
-        </activity>
         <activity android:name=".view.activity.DocHistoryActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.BagBuyActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/MainColorTranslucentTheme"/>
-        <activity android:name=".view.activity.BagFollowActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"/>
@@ -447,10 +469,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
-        <activity android:name=".view.activity.FilesSelectActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.SelectMateActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"

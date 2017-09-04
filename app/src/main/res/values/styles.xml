@@ -166,6 +166,11 @@
         <item name="android:textSize">@dimen/size_15</item>
     </style>
 
+    <style name="BagTitle">
+        <item name="android:textSize">@dimen/size_20</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="Popwindow_anim_style">
         <item name="android:windowEnterAnimation">@anim/pop_scale_in</item>
         <item name="android:windowExitAnimation">@anim/pop_scale_out</item>

@@ -707,4 +707,20 @@ public class StringUtils {
         }
         return platform;
     }
+
+    public static String getMinute(int time) {
+        int h = time / (1000 * 60 * 60);
+        String minute;
+        int sec = (time % (1000 * 60)) / 1000;
+        int min = time % (1000 * 60 * 60) / (1000 * 60);
+        String hS = h < 10 ? "0" + h : "" + h;
+        String secS = sec < 10 ? "0" + sec : "" + sec;
+        String minS = min < 10 ? "0" + min : "" + min;
+        if (h == 0) {
+            minute = minS + ":" + secS;
+        } else {
+            minute = hS + ":" + minS + ":" + secS;
+        }
+        return minute;
+    }
 }

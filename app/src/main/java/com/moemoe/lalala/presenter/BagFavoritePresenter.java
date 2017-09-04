@@ -4,6 +4,7 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.BagDirEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +34,9 @@ public class BagFavoritePresenter implements BagFavoriteContract.Presenter {
         apiService.getBagFavoriteList(ApiService.LENGHT,index)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetResultSubscriber<ArrayList<BagDirEntity>>() {
+                .subscribe(new NetResultSubscriber<ArrayList<ShowFolderEntity>>() {
                     @Override
-                    public void onSuccess(ArrayList<BagDirEntity> entities) {
+                    public void onSuccess(ArrayList<ShowFolderEntity> entities) {
                         if(view != null) view.loadListSuccess(entities,index == 0);
                     }
 
@@ -47,9 +48,9 @@ public class BagFavoritePresenter implements BagFavoriteContract.Presenter {
     }
 
     @Override
-    public void deleteFavoriteList(HashMap<Integer, BagDirEntity> map) {
+    public void deleteFavoriteList(HashMap<Integer, ShowFolderEntity> map) {
         ArrayList<String> ids = new ArrayList<>();
-        for(BagDirEntity id : map.values()){
+        for(ShowFolderEntity id : map.values()){
             ids.add(id.getFolderId());
         }
         apiService.deleteBagFavoriteList(ids)

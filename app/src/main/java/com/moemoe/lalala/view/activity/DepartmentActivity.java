@@ -118,7 +118,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
         lp.rightMargin = DensityUtil.dip2px(this,18);
         mTvMenuRoot.setLayoutParams(lp);
         mTvMenuRoot.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_3);
-        FrameLayout.LayoutParams lp1 = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp1.gravity = Gravity.CENTER;
         mTvMenu.setLayoutParams(lp1);
         mTvMenu.setVisibility(View.VISIBLE);

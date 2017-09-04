@@ -135,6 +135,11 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         mPresenter.doRequest(uuid,0,0);
     }
 
+    @Override
+    protected void init() {
+        super.init();
+    }
+
     @OnClick({R.id.iv_level_name_details,R.id.tv_all_liuyan})
     public void onClick(View view){
         switch (view.getId()){
@@ -149,10 +154,9 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        mPresenter.release();
-        super.onDestroyView();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
+        super.release();
     }
 
     @Override

@@ -192,16 +192,10 @@ public class ClassMainFragment extends BaseFragment  implements ClassMainContrac
         ErrorCodeUtils.showErrorMsgByCode(getContext(),code,msg);
     }
 
-    @Override
-    public void onDestroyView() {
-        if(mPresenter != null)mPresenter.release();
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
         RxBus.getInstance().unSubscribe(this);
+        super.release();
     }
 
     private void sendBtnIn(){

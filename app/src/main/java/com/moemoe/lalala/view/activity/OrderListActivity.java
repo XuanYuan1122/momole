@@ -62,11 +62,6 @@ public class OrderListActivity extends BaseAppCompatActivity implements OrderLis
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mTitle.setText("订单状态");
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
@@ -160,6 +155,7 @@ public class OrderListActivity extends BaseAppCompatActivity implements OrderLis
 
     @Override
     protected void onDestroy() {
+        if(mPresenter != null) mPresenter.release();
         super.onDestroy();
     }
 

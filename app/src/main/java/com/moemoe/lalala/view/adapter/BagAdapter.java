@@ -186,7 +186,7 @@ public class BagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         .centerCrop()
                         .into(viewHolder.ivImg);
                 viewHolder.tvMusicName.setText(entity.getFileName());
-                viewHolder.tvMusicTime.setText(getMinute(entity.getAttr().get("timestamp").getAsInt()));
+                viewHolder.tvMusicTime.setText(StringUtils.getMinute(entity.getAttr().get("timestamp").getAsInt()));
             }else if(entity.getType().equals("txt")){
                 viewHolder.mMusicRoot.setVisibility(View.VISIBLE);
                 viewHolder.ivMusic.setVisibility(View.INVISIBLE);
@@ -222,21 +222,6 @@ public class BagAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         });
     }
 
-    private String getMinute(int time) {
-        int h = time / (1000 * 60 * 60);
-        String minute;
-        int sec = (time % (1000 * 60)) / 1000;
-        int min = time % (1000 * 60 * 60) / (1000 * 60);
-        String hS = h < 10 ? "0" + h : "" + h;
-        String secS = sec < 10 ? "0" + sec : "" + sec;
-        String minS = min < 10 ? "0" + min : "" + min;
-        if (h == 0) {
-            minute = minS + ":" + secS;
-        } else {
-            minute = hS + ":" + minS + ":" + secS;
-        }
-        return minute;
-    }
 
     public Object getItem(int position){
         if(position == 0 && mNeedAdd){

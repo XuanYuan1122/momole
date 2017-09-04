@@ -191,6 +191,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     protected void onDestroy() {
         if(mPresenter != null)mPresenter.release();
         RxBus.getInstance().unSubscribe(this);
+        if(mAdapter != null)mAdapter.release();
         super.onDestroy();
     }
 
@@ -310,7 +311,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 }
                 break;
             case R.id.iv_bag:
-                Intent i2 = new Intent(NewPersonalActivity.this,BagActivity.class);
+                Intent i2 = new Intent(NewPersonalActivity.this,NewBagActivity.class);
                 i2.putExtra(UUID,mUserId);
                 startActivity(i2);
                 break;
@@ -417,7 +418,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     @Override
     public void onLoadUserInfoFail() {
        // Intent i = new Intent(this, LoginActivity.class);
-       // startActivity(i);
+       // startActivityForResult(i);
         showToast("获取个人信息失败,请稍后再试!");
         finish();
     }

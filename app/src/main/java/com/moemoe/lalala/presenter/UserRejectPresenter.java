@@ -41,12 +41,12 @@ public class UserRejectPresenter implements UserRejectContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<RejectEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<RejectEntity> list) {
-                        view.onLoadBlackList(list, index == 0);
+                        if(view!=null)view.onLoadBlackList(list, index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }
@@ -59,12 +59,12 @@ public class UserRejectPresenter implements UserRejectContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onRemoveBlackSuccess(item);
+                        if(view!=null)view.onRemoveBlackSuccess(item);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }

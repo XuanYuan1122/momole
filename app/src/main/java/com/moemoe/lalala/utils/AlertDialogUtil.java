@@ -66,6 +66,24 @@ public class AlertDialogUtil {
         cancel = (Button) view.findViewById(R.id.general_dialog_btn_cancel);
     }
 
+    public void createBuyFolderDialog(Context context,int coin){
+        this.context = context;
+        if (this.dialog != null && this.dialog.isShowing()) {
+            this.dialog.dismiss();
+            this.dialog = null;
+        }
+        View contentView = View.inflate(context,R.layout.dialog_buy_folder,null);
+        this.dialog = new Dialog(context,R.style.NetaDialog);
+        this.dialog.setContentView(contentView);
+        Window window = dialog.getWindow();
+        window.setWindowAnimations(R.style.dialogWindowAnim);
+        TextView tv = (TextView) contentView.findViewById(R.id.tv_coin);
+        tv.setText(coin + " 节操");
+        dialog.setCancelable(false);
+        cancel = (Button) contentView.findViewById(R.id.btn_cancel);
+        confirm = (Button) contentView.findViewById(R.id.btn_buy);
+    }
+
     public void createPromptNormalDialog(Context context, String content) {
         this.context = context;
         if (this.dialog != null && this.dialog.isShowing()) {

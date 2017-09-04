@@ -24,12 +24,14 @@ import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.CoinDetailEntity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.PersonDocEntity;
 import com.moemoe.lalala.model.entity.PersonFollowEntity;
 import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 import com.moemoe.lalala.model.entity.ReplyEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.GlideRoundTransform;
@@ -38,8 +40,8 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.BadgeActivity;
-import com.moemoe.lalala.view.activity.BagActivity;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
+import com.moemoe.lalala.view.activity.NewBagActivity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
 import com.moemoe.lalala.view.activity.TagControlActivity;
 
@@ -50,6 +52,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
+import jp.wasabeef.glide.transformations.CropSquareTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import rx.Observable;
 import rx.Subscriber;
 
@@ -522,7 +526,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             msgHolder.time.setText(StringUtils.timeFormate(entity.getCreateTime()));
         } else if(mType == 11){
             BagItemViewHolder viewHolder = (BagItemViewHolder) holder;
-            final BagDirEntity entity = (BagDirEntity) getItem(position);
+            final ShowFolderEntity entity = (ShowFolderEntity) getItem(position);
             String path ;
             if(entity.getCover().startsWith("/")){
                 path = entity.getCover();
@@ -535,28 +539,41 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .centerCrop()
-                    .transform(new GlideRoundTransform(context,5))
+                    .bitmapTransform(new CropSquareTransformation(context),new RoundedCornersTransformation(context,DensityUtil.dip2px(context,4),0))
                     .into(viewHolder.ivBg);
-            if (entity.getCoin() > 0){
-                viewHolder.tvMark.setBackgroundResource(R.drawable.ic_bag_mask_red);
-                viewHolder.tvMark.setText(entity.getCoin() + " 节操");
-                viewHolder.tvMark.setTextSize(TypedValue.COMPLEX_UNIT_DIP,12);
-            }else {
-                viewHolder.tvMark.setBackgroundResource(R.drawable.ic_bag_mask_green);
-                viewHolder.tvMark.setText("无料");
-                viewHolder.tvMark.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
+            if(entity.getType().equals(FolderType.ZH.toString())){
+                viewHolder.tvMark.setText("综合");
+                viewHolder.tvMark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+            }else if(entity.getType().equals(FolderType.TJ.toString())){
+                viewHolder.tvMark.setText("图集");
+                viewHolder.tvMark.setBackgroundResource(R.drawable.shape_rect_tuji);
+            }else if(entity.getType().equals(FolderType.MH.toString())){
+                viewHolder.tvMark.setText("漫画");
+                viewHolder.tvMark.setBackgroundResource(R.drawable.shape_rect_manhua);
+            }else if(entity.getType().equals(FolderType.XS.toString())){
+                viewHolder.tvMark.setText("小说");
+                viewHolder.tvMark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
             }
-            viewHolder.tvNum.setText(entity.getNumber() + "项");
-            viewHolder.tvName.setText(entity.getName());
-            viewHolder.tvTime.setText(StringUtils.timeFormate(entity.getUpdateTime()));
+
+            viewHolder.tvName.setText(entity.getFolderName());
+            String tagStr = "";
+            for(int i = 0;i < entity.getTexts().size();i++){
+                String tagTmp = entity.getTexts().get(i);
+                if(i == 0){
+                    tagStr = tagTmp;
+                }else {
+                    tagStr += " · " + tagTmp;
+                }
+            }
+            viewHolder.tvTime.setText(tagStr);
             viewHolder.ivSelected.setVisibility(View.GONE);
-            viewHolder.tvCreator.setText(entity.getUserName());
+            viewHolder.tvCreator.setText(entity.getCreateUserName());
             viewHolder.tvCreator.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    if(!entity.getUserId().equals(PreferenceUtils.getUUid())){
+                    if(!entity.getCreateUser().equals(PreferenceUtils.getUUid())){
                         Intent i = new Intent(context, NewPersonalActivity.class);
-                        i.putExtra("uuid",entity.getUserId());
+                        i.putExtra("uuid",entity.getCreateUser());
                         context.startActivity(i);
                     }
                 }
@@ -564,8 +581,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolder.tvBag.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    Intent i2 = new Intent(context,BagActivity.class);
-                    i2.putExtra("uuid",entity.getUserId());
+                    Intent i2 = new Intent(context,NewBagActivity.class);
+                    i2.putExtra("uuid",entity.getCreateUser());
                     context.startActivity(i2);
                 }
             });
@@ -846,7 +863,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private class BagItemViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvMark,tvTime,tvName,tvNum,tvCreator,tvBag;
+        TextView tvMark,tvTime,tvName,tvCreator,tvBag;
         ImageView ivSelected,ivBg;
 
         View root;
@@ -857,7 +874,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tvMark = (TextView) itemView.findViewById(R.id.tv_mark);
             tvTime = (TextView) itemView.findViewById(R.id.tv_time);
             tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvNum = (TextView) itemView.findViewById(R.id.tv_num);
             tvBag = (TextView) itemView.findViewById(R.id.tv_bag);
             tvCreator = (TextView) itemView.findViewById(R.id.tv_create_name);
             ivBg = (ImageView) itemView.findViewById(R.id.iv_bg);

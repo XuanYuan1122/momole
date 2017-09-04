@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerTrashListComponent;
 import com.moemoe.lalala.di.modules.TrashListModule;
 import com.moemoe.lalala.model.entity.TrashEntity;
@@ -104,10 +105,9 @@ public class MyTrashFragment extends BaseFragment implements TrashListContract.V
         mPresenter.doRequest(0,mType,mListType);
     }
 
-    @Override
-    public void onDestroyView() {
-        mPresenter.release();
-        super.onDestroyView();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
+        super.release();
     }
 
     @Override

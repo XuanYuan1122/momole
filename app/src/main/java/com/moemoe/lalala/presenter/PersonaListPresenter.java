@@ -9,6 +9,7 @@ import com.moemoe.lalala.model.entity.PersonFollowEntity;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.ReplyEntity;
 import com.moemoe.lalala.model.entity.SearchEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 
 import java.util.ArrayList;
 
@@ -192,9 +193,9 @@ public class PersonaListPresenter implements PersonalListContract.Presenter {
             apiService.getSearchBag(entity)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetResultSubscriber<ArrayList<BagDirEntity>>() {
+                    .subscribe(new NetResultSubscriber<ArrayList<ShowFolderEntity>>() {
                         @Override
-                        public void onSuccess(ArrayList<BagDirEntity> bagEntities) {
+                        public void onSuccess(ArrayList<ShowFolderEntity> bagEntities) {
                             if(view != null) view.onSuccess(bagEntities,index == 1);
                         }
 

@@ -64,11 +64,6 @@ public class CoinShopActivity extends BaseAppCompatActivity implements CoinShopC
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerCoinShopComponent.builder()
                 .coinShopModule(new CoinShopModule(this))

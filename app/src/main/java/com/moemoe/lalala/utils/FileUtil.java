@@ -17,7 +17,9 @@ import com.moemoe.lalala.view.activity.MultiImageChooseActivity;
 import com.orhanobut.logger.Logger;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.DataInputStream;
 import java.io.File;
@@ -32,6 +34,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Created by yi on 2016/11/28.
@@ -439,7 +443,8 @@ public class FileUtil {
         if (!TextUtils.isEmpty(path)) {
             if (path.toLowerCase().endsWith(".jpg") ||
                     path.toLowerCase().endsWith(".png") ||
-                    path.toLowerCase().endsWith(".gif")) {
+                    path.toLowerCase().endsWith(".gif")||
+                    path.toLowerCase().endsWith(".jpeg")) {
                 ret = true;
             }
         }
@@ -466,8 +471,33 @@ public class FileUtil {
                 }
             }
         }
-//		LogUtils.LOGD(TAG, "file2String = " + sb);
         return sb.toString();
+    }
+
+    public static String readFileToString(File file) {
+        InputStream in = null;
+        try {
+            // 一次读多个字节
+            byte[] tempbytes;
+            if(file.length() > 1024){
+                tempbytes = new byte[1024];
+            }else {
+                tempbytes = new byte[(int) file.length()];
+            }
+            in = new FileInputStream(file);
+            in.read(tempbytes);
+            return new String(tempbytes,"utf-8");
+        } catch (Exception e1) {
+            e1.printStackTrace();
+            return "";
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e1) {
+                }
+            }
+        }
     }
 
     public static String file2String(String filepath, String charsetName) {
@@ -883,5 +913,65 @@ public class FileUtil {
         }
 
         return charset;
+    }
+
+    public static boolean unzip(String zipFile, String targetDir) {
+        int BUFFER = 4096; //这里缓冲区我们使用4KB，
+        String strEntry; //保存每个zip的条目名称
+        try {
+            BufferedOutputStream dest = null; //缓冲输出流
+            FileInputStream fis = new FileInputStream(zipFile);
+            ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
+            ZipEntry entry; //每个zip条目的实例
+
+            while ((entry = zis.getNextEntry()) != null) {
+                try {
+                    int count;
+                    byte data[] = new byte[BUFFER];
+                    strEntry = entry.getName();
+
+                    File entryFile = new File(targetDir + strEntry);
+                    File entryDir = new File(entryFile.getParent());
+                    if (!entryDir.exists()) {
+                        entryDir.mkdirs();
+                    }
+
+                    FileOutputStream fos = new FileOutputStream(entryFile);
+                    dest = new BufferedOutputStream(fos, BUFFER);
+                    while ((count = zis.read(data, 0, BUFFER)) != -1) {
+                        dest.write(data, 0, count);
+                    }
+                    dest.flush();
+                    dest.close();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    return false;
+                }
+            }
+            zis.close();
+            return true;
+        } catch (Exception cwj) {
+            cwj.printStackTrace();
+            return false;
+        }
+    }
+
+    public static ArrayList<String> getUnZipFileList(String strPath) {
+        ArrayList<String> res = new ArrayList<>();
+        File dir = new File(strPath);
+        File[] files = dir.listFiles(); // 该文件目录下文件全部放入数组
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                if (!files[i].isDirectory()) { // 判断是文件还是文件夹
+                    String path = files[i].getAbsolutePath();
+                    if(isImageFileBySuffix(path)){
+                        res.add(files[i].getAbsolutePath());
+                    }
+
+                }
+            }
+
+        }
+        return res;
     }
 }

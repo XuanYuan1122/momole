@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.BookInfo;
+import com.moemoe.lalala.model.entity.ZipInfo;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.MusicLoader;
 
@@ -26,11 +27,21 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
     private ArrayList<Object> paths;
     private Context mContext;
     private OnItemClickListener mOnItemClickListener;
+    private int selectSize;
 
     public SelectItemAdapter(Context context){
         mLayoutInflater = LayoutInflater.from(context);
         paths = new ArrayList<>();
         mContext = context;
+        selectSize = 9;
+    }
+
+    public int getSelectSize() {
+        return selectSize;
+    }
+
+    public void setSelectSize(int selectSize) {
+        this.selectSize = selectSize;
     }
 
     public interface OnItemClickListener {
@@ -113,7 +124,7 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
 
     @Override
     public int getItemCount() {
-        if(paths.size() < 9){
+        if(paths.size() < selectSize){
             return paths.size() + 1;
         }
         return paths.size();

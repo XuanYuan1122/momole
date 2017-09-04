@@ -32,12 +32,14 @@ import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.CommentSendEntity;
 import com.moemoe.lalala.model.entity.DocDetailEntity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.GiveCoinEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.RichDocListEntity;
 import com.moemoe.lalala.model.entity.RichEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.presenter.DocDetailContract;
@@ -311,12 +313,15 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     WebViewActivity.startActivity(NewDocDetailActivity.this, link.getUrl());
                 }else if(o instanceof BagDirEntity){
                     BagDirEntity entity = (BagDirEntity) o;
-                    Intent i = new Intent(NewDocDetailActivity.this,FolderActivity.class);
-                    i.putExtra("info",entity);
-                    i.putExtra("position",position);
-                    i.putExtra("show_more",true);
-                    i.putExtra(UUID, entity.getUserId());
-                    startActivityForResult(i,REQ_TO_FOLDER);
+                    if(entity.getFolderType().equals(FolderType.ZH.toString())){
+                        NewFileCommonActivity.startActivity(NewDocDetailActivity.this,FolderType.ZH.toString(),entity.getFolderId(),entity.getUserId());
+                    }else if(entity.getFolderType().equals(FolderType.TJ.toString())){
+                        NewFileCommonActivity.startActivity(NewDocDetailActivity.this,FolderType.TJ.toString(),entity.getFolderId(),entity.getUserId());
+                    }else if(entity.getFolderType().equals(FolderType.MH.toString())){
+                        NewFileManHuaActivity.startActivity(NewDocDetailActivity.this,FolderType.MH.toString(),entity.getFolderId(),entity.getUserId());
+                    }else if(entity.getFolderType().equals(FolderType.XS.toString())){
+                        NewFileXiaoshuoActivity.startActivity(NewDocDetailActivity.this,FolderType.XS.toString(),entity.getFolderId(),entity.getUserId());
+                    }
                 }
             }
 

@@ -41,12 +41,12 @@ public class OrderListPresenter implements OrderListContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<OrderEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<OrderEntity> entities) {
-                        view.onLoadOrderListSuccess(entities, index == 0);
+                        if(view!=null)view.onLoadOrderListSuccess(entities, index == 0);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }

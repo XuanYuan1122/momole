@@ -60,6 +60,10 @@ public abstract class BaseRecyclerViewAdapter<T,K extends ClickableViewHolder> e
     private RecyclerView mRecyclerView;
     private int mLayoutResId;
 
+    public void setLayoutResId(@LayoutRes int layoutResId){
+        mLayoutResId = layoutResId;
+    }
+
     protected RecyclerView getRecyclerView() {
         return mRecyclerView;
     }

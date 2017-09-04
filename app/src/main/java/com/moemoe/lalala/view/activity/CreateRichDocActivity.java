@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -21,8 +22,10 @@ import com.moemoe.lalala.di.components.DaggerCreateRichDocComponent;
 import com.moemoe.lalala.di.modules.CreateRichDocModule;
 import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.entity.DocPut;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewDocType;
+import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.RichDocListEntity;
 import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.presenter.CreateRichDocContract;
@@ -32,11 +35,15 @@ import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
+import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
+import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
+import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
@@ -55,7 +62,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_MODIFY_BAG;
+
 /**
+ *
  * Created by yi on 2017/5/15.
  */
 
@@ -118,6 +128,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private int mDocType;
     private RichDocListEntity mDoc;
     private ArrayList<String> mUserIds;
+    private BottomMenuFragment bottomFragment;
+    private String mFolderType;
 
     @Override
     protected int getLayoutId() {
@@ -131,12 +143,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .keyboardEnable(true)
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
         Intent i = getIntent();
@@ -180,6 +186,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mTvMenuRight.setWidth(DensityUtil.dip2px(this,44));
         mTvMenuRight.setHeight(DensityUtil.dip2px(this,24));
         mTvMenuRight.setBackgroundResource(R.drawable.shape_rect_border_main_background_2);
+        initPopupMenus();
     }
 
     @Override
@@ -329,6 +336,45 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         RxBus.getInstance().addSubscription(this, subscription);
     }
 
+    private void initPopupMenus() {
+        bottomFragment = new BottomMenuFragment();
+        ArrayList<MenuItem> items = new ArrayList<>();
+
+        MenuItem item = new MenuItem(0, "综合");
+        items.add(item);
+
+        item = new MenuItem(1, "图集");
+        items.add(item);
+
+        item = new MenuItem(2, "漫画");
+        items.add(item);
+
+        item = new MenuItem(3, "小说");
+        items.add(item);
+
+
+        bottomFragment.setShowTop(false);
+        bottomFragment.setMenuItems(items);
+        bottomFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+        bottomFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
+            @Override
+            public void OnMenuItemClick(int itemId) {
+                if(itemId == 0){
+                    mFolderType = FolderType.ZH.toString();
+                }else if(itemId == 1){
+                    mFolderType = FolderType.TJ.toString();
+                }else if (itemId == 2) {
+                    mFolderType = FolderType.MH.toString();
+                }else if (itemId == 3) {
+                    mFolderType = FolderType.XS.toString();
+                }
+                Intent i1 = new Intent(CreateRichDocActivity.this,FolderSelectActivity.class);
+                i1.putExtra("folderType",mFolderType);
+                startActivityForResult(i1,REQ_SELECT_FOLDER);
+            }
+        });
+    }
+
     private void createPost() {
         if(!NetworkUtils.isNetworkAvailable(this)){
             showToast(R.string.msg_connection);
@@ -440,8 +486,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 }
                 break;
             case R.id.iv_add_bag:
-                Intent i1 = new Intent(CreateRichDocActivity.this,FolderSelectActivity.class);
-                startActivityForResult(i1,REQ_SELECT_FOLDER);
+                if(bottomFragment != null) bottomFragment.show(getSupportFragmentManager(),"createDoc");
                 break;
             case R.id.iv_add_music:
                 Intent i2 = new Intent(CreateRichDocActivity.this,AddMusicActivity.class);

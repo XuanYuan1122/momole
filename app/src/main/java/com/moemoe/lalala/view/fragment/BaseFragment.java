@@ -1,6 +1,7 @@
 package com.moemoe.lalala.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,11 +23,17 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (rootView == null)
+        if (rootView == null){
             rootView = inflater.inflate(getLayoutId(), container, false);
-        bind = ButterKnife.bind(this, rootView);
-        initViews(savedInstanceState);
+            bind = ButterKnife.bind(this, rootView);
+            initViews(savedInstanceState);
+        }
+        init();
         return rootView;
+    }
+
+    protected void init(){
+
     }
 
     protected abstract int getLayoutId();
@@ -36,7 +43,21 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        bind.unbind();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    public void release(){
+        if(bind != null){
+            try {
+                bind.unbind();
+            }catch (Exception e){
+
+            }
+        }
     }
 
     @Override

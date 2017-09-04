@@ -73,11 +73,6 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
                 .build()
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         mTvTitle.setText("我的徽章");
         mTvDone.getPaint().setFakeBoldText(true);
         ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));

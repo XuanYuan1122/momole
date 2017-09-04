@@ -23,19 +23,6 @@
             android:background="@drawable/shape_bg_30_5"/>
 
         <TextView
-            android:id="@+id/tv_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/size_18"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:paddingTop="@dimen/size_8"
-            android:paddingRight="@dimen/size_8"
-            android:paddingEnd="@dimen/size_8"/>
-
-        <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,8 +57,8 @@
             android:paddingStart="@dimen/size_8"
             android:text=""
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"/>
 
         <ImageView
             android:id="@+id/iv_selected"

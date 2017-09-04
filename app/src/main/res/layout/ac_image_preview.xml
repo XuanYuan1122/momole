@@ -215,7 +215,8 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:paddingBottom="@dimen/size_10"
-            android:paddingTop="@dimen/size_10">
+            android:paddingTop="@dimen/size_10"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_move"

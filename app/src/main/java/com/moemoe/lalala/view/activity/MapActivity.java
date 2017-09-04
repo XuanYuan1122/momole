@@ -128,8 +128,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     ImageView mIvSearch;
     @BindView(R.id.iv_shop)
     ImageView mIvShop;
-   // @BindView(R.id.iv_cal)
-  //  ImageView mIvCal;
     @BindView(R.id.iv_card)
     ImageView mIvCard;
     @BindView(R.id.fl_card_root)
@@ -138,10 +136,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     View mCardDot;
     @BindView(R.id.iv_live2d)
     ImageView mIvGal;
-   // @BindView(R.id.iv_square)
-    //ImageView mIvSquare;
-//    @BindView(R.id.rl_main_list_root)
-//    View mRlMainRoot;
     @BindView(R.id.iv_main)
     ImageView mIvMain;
     @BindView(R.id.live2DLayout)
@@ -804,10 +798,21 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_bag:
+//                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
+//                    Intent i2 = new Intent(MapActivity.this,BagActivity.class);
+//                    i2.putExtra(UUID,PreferenceUtils.getUUid());
+//                    startActivityForResult(i2);
+//                }
+
                 if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
-                    Intent i2 = new Intent(MapActivity.this,BagActivity.class);
-                    i2.putExtra(UUID,PreferenceUtils.getUUid());
-                    startActivity(i2);
+                    if(PreferenceUtils.getAuthorInfo().isOpenBag()){
+                        Intent i2 = new Intent(MapActivity.this,NewBagActivity.class);
+                        i2.putExtra(UUID,PreferenceUtils.getUUid());
+                        startActivity(i2);
+                    }else {
+                        Intent i2 = new Intent(MapActivity.this,BagOpenActivity.class);
+                        startActivity(i2);
+                    }
                 }
                 break;
             case R.id.iv_card:

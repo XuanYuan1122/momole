@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,13 +13,18 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagFavoriteComponent;
 import com.moemoe.lalala.di.modules.BagFavoriteModule;
 import com.moemoe.lalala.model.entity.BagDirEntity;
+import com.moemoe.lalala.model.entity.FolderType;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.BagFavoriteContract;
 import com.moemoe.lalala.presenter.BagFavoritePresenter;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.FolderDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.ViewUtils;
+import com.moemoe.lalala.view.adapter.BagCollectionTopAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
+import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
@@ -49,10 +55,10 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
     @Inject
     BagFavoritePresenter mPresenter;
 
-    private PersonListAdapter mAdapter;
+    private BagCollectionTopAdapter mAdapter;
     private boolean isSelect;
     private boolean isLoading = false;
-    private HashMap<Integer,BagDirEntity> mSelectMap;
+    private HashMap<Integer,ShowFolderEntity> mSelectMap;
 
     @Override
     protected int getLayoutId() {
@@ -66,11 +72,6 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mTitle.setText("书包购买");
         mTvSelect.setVisibility(View.VISIBLE);
@@ -78,10 +79,11 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
         ViewUtils.setRightMargins(mTvSelect, DensityUtil.dip2px(this,18));
         mTvSelect.setText("选择");
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mAdapter = new PersonListAdapter(this,7);
-        mListDocs.getRecyclerView().setHasFixedSize(true);
+        mListDocs.setPadding(DensityUtil.dip2px(this,12),0,DensityUtil.dip2px(this,12),0);
+        mAdapter = new BagCollectionTopAdapter();
         mListDocs.getRecyclerView().setAdapter(mAdapter);
-        mListDocs.setLayoutManager(new LinearLayoutManager(this));
+        mListDocs.setLayoutManager( new GridLayoutManager(this,3));
+        mListDocs.getRecyclerView().addItemDecoration(new FolderDecoration());
         mListDocs.setLoadMoreEnabled(false);
         isSelect = false;
         mSelectMap = new HashMap<>();
@@ -102,7 +104,10 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
                 if(isSelect){
                     isSelect = !isSelect;
                     mTvSelect.setText("选择");
-                    mAdapter.setCanDelete(isSelect);
+                    for(ShowFolderEntity entity : mAdapter.getList()){
+                        entity.setSelect(false);
+                    }
+                    mAdapter.setSelect(isSelect);
                     mAdapter.notifyDataSetChanged();
                 }else {
                     finish();
@@ -116,23 +121,27 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
                     isSelect = !isSelect;
                     mTvSelect.setText("删除");
                     mSelectMap.clear();
-                    mAdapter.setCanDelete(isSelect);
+                    mAdapter.setSelect(isSelect);
                     mAdapter.notifyDataSetChanged();
                 }else {
                     if(mSelectMap.size() > 0) mPresenter.deleteFavoriteList(mSelectMap);
                 }
             }
         });
-        mAdapter.setOnItemClickListener(new OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                BagDirEntity entity = (BagDirEntity) mAdapter.getItem(position);
+                ShowFolderEntity entity = mAdapter.getItem(position);
                 if(!isSelect){
-                    Intent i = new Intent(BagBuyActivity.this,FolderActivity.class);
-                    i.putExtra("info",entity);
-                    i.putExtra("show_more",true);
-                    i.putExtra(UUID, entity.getUserId());
-                    startActivity(i);
+                    if(entity.getType().equals(FolderType.ZH.toString())){
+                        NewFileCommonActivity.startActivity(BagBuyActivity.this,FolderType.ZH.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(entity.getType().equals(FolderType.TJ.toString())){
+                        NewFileCommonActivity.startActivity(BagBuyActivity.this,FolderType.TJ.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(entity.getType().equals(FolderType.MH.toString())){
+                        NewFileManHuaActivity.startActivity(BagBuyActivity.this,FolderType.MH.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(entity.getType().equals(FolderType.XS.toString())){
+                        NewFileXiaoshuoActivity.startActivity(BagBuyActivity.this,FolderType.XS.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }
                 }else {
                     if(entity.isSelect()){
                         mSelectMap.remove(position);
@@ -182,7 +191,7 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
     }
 
     @Override
-    public void loadListSuccess(ArrayList<BagDirEntity> entities, boolean isPull) {
+    public void loadListSuccess(ArrayList<ShowFolderEntity> entities, boolean isPull) {
         isLoading = false;
         if(entities.size() == 0){
             mListDocs.setLoadMoreEnabled(false);
@@ -191,15 +200,15 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
         }
         mListDocs.setComplete();
         if(isPull){
-            mAdapter.setData(entities);
+            mAdapter.setList(entities);
         }else {
-            mAdapter.addData(entities);
+            mAdapter.addList(entities);
         }
     }
 
     @Override
     public void deleteSuccess() {
-        for(BagDirEntity entity : mSelectMap.values()){
+        for(ShowFolderEntity entity : mSelectMap.values()){
             mAdapter.getList().remove(entity);
         }
         mAdapter.notifyDataSetChanged();

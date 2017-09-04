@@ -34,6 +34,7 @@ import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StartActivityConstant;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
+import com.moemoe.lalala.view.fragment.BaseFragment;
 import com.moemoe.lalala.view.fragment.ClassMainFragment;
 import com.moemoe.lalala.view.fragment.DiscoveryMainFragment;
 import com.moemoe.lalala.view.fragment.FollowMainFragment;
@@ -66,11 +67,11 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     KeyboardListenerLayout mKlCommentBoard;
     @BindView(R.id.iv_comment_send)
     View mTvSendComment;
-   // private ClassFragment classFragment;
     private DiscoveryMainFragment discoveryMainFragment;
     private FollowMainFragment followMainFragment;
     private ClassMainFragment classMainFragment;
     private boolean mCurTag;
+    private TabFragmentPagerAdapter mAdapter;
 
     @Inject
     WallPresenter mPresenter;
@@ -94,11 +95,9 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
         followMainFragment = FollowMainFragment.newInstance();
-       // classFragment = new ClassFragment();
         discoveryMainFragment = DiscoveryMainFragment.newInstance();
         classMainFragment = ClassMainFragment.newInstance();
-//        WallBlockFragment wallBlockFragment = new WallBlockFragment();
-        List<Fragment> fragmentList = new ArrayList<>();
+        List<BaseFragment> fragmentList = new ArrayList<>();
         fragmentList.add(followMainFragment);
         fragmentList.add(discoveryMainFragment);
         fragmentList.add(classMainFragment);
@@ -111,9 +110,9 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
         }
-        TabFragmentPagerAdapter mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
+        mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
         mDataPager.setAdapter(mAdapter);
-        mDataPager.setOffscreenPageLimit(2);
+       // mDataPager.setOffscreenPageLimit(2);
         mDataPager.setCurrentItem(1);
         mPageIndicator.setTabData(mTabEntities);
         mPageIndicator.setCurrentTab(1);
@@ -281,6 +280,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     @Override
     protected void onDestroy() {
         if (mPresenter != null) mPresenter.release();
+        if(mAdapter != null) mAdapter.release();
         super.onDestroy();
     }
 

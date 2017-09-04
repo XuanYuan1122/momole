@@ -138,4 +138,12 @@ public class Utils {
             return src;
         }
     }
+
+    public static int[] getDocIconSize(int width, int height, int widthLimit){
+        int[] res = new int[2];
+        res[0] = widthLimit;
+        res[1] = height * widthLimit / width;
+        return res;
+    }
+
 }

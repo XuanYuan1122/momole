@@ -1,5 +1,6 @@
 package com.moemoe.lalala.model.api;
 
+import com.google.gson.JsonArray;
 import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
@@ -8,6 +9,7 @@ import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
 import com.moemoe.lalala.model.entity.BagFolderInfo;
 import com.moemoe.lalala.model.entity.BagModifyEntity;
+import com.moemoe.lalala.model.entity.BagMyEntity;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.CalendarDayEntity;
@@ -20,6 +22,8 @@ import com.moemoe.lalala.model.entity.CommentDetailEntity;
 import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
 import com.moemoe.lalala.model.entity.CommentListSendEntity;
 import com.moemoe.lalala.model.entity.CommentSendEntity;
+import com.moemoe.lalala.model.entity.CommonFileEntity;
+import com.moemoe.lalala.model.entity.CopyFileEntity;
 import com.moemoe.lalala.model.entity.CreateOrderEntity;
 import com.moemoe.lalala.model.entity.CreatePrivateMsgEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
@@ -31,18 +35,26 @@ import com.moemoe.lalala.model.entity.DocListEntity;
 import com.moemoe.lalala.model.entity.DocPut;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.DonationInfoEntity;
+import com.moemoe.lalala.model.entity.DynamicEntity;
+import com.moemoe.lalala.model.entity.DynamicTopEntity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
+import com.moemoe.lalala.model.entity.FolderRepEntity;
 import com.moemoe.lalala.model.entity.GiveCoinEntity;
 import com.moemoe.lalala.model.entity.Live2dModelEntity;
 import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
+import com.moemoe.lalala.model.entity.ManHua2Entity;
+import com.moemoe.lalala.model.entity.ManHuaUploadEntity;
 import com.moemoe.lalala.model.entity.ModifyEntity;
+import com.moemoe.lalala.model.entity.ModifyFileEntity;
 import com.moemoe.lalala.model.entity.MoveFileEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.NetaMsgEntity;
+import com.moemoe.lalala.model.entity.NewBagEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.NewDocListEntity;
+import com.moemoe.lalala.model.entity.NewFolderEntity;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
 import com.moemoe.lalala.model.entity.OldSimpleResult;
 import com.moemoe.lalala.model.entity.OrderEntity;
@@ -57,6 +69,7 @@ import com.moemoe.lalala.model.entity.ReplyEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.model.entity.SearchEntity;
 import com.moemoe.lalala.model.entity.SendPrivateMsgEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.model.entity.SnowEntity;
 import com.moemoe.lalala.model.entity.SnowInfo;
@@ -71,6 +84,7 @@ import com.moemoe.lalala.model.entity.UploadEntity;
 import com.moemoe.lalala.model.entity.UploadResultEntity;
 import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.model.entity.WallBlock;
+import com.moemoe.lalala.model.entity.WenZhangFolderEntity;
 import com.moemoe.lalala.model.entity.XianChongEntity;
 
 import java.util.ArrayList;
@@ -147,7 +161,7 @@ public interface ApiService {
             , @Query("index") int index
             , @Query("size") int len);
 
-    @POST("api/upload/{suffix}")
+    @POST("V2/api/upload/{suffix}")
     Observable<ApiResult<UploadEntity>> requestQnFileKey(@Path("suffix") String suffix);
 
     @POST("api/doc/addV2")
@@ -161,6 +175,9 @@ public interface ApiService {
 
     @POST("api/doc/addSwimPoolV2")
     Observable<ApiResult> createSwimPoolDoc(@Body DocPut doc);
+
+    @POST("api/doc/addArticle")
+    Observable<ApiResult> createWenZhangDoc(@Body DocPut doc);
 
     @GET("api/classroom/banner")
     Observable<ApiResult<ArrayList<BannerEntity>>> requestNewBanner(@Query("room") String room);
@@ -403,10 +420,16 @@ public interface ApiService {
     @GET("api/app/check/build")
     Observable<ApiResult<BuildEntity>> checkBuild(@Query("buildVersion")int buildVersion, @Query("appVersion")int appVersion);
 
-    @POST("api/bag/open")
+//    @POST("api/bag/open")
+//    Observable<ApiResult> openBag(@Body BagModifyEntity entity);
+
+    @POST("V2/api/bag/open")
     Observable<ApiResult> openBag(@Body BagModifyEntity entity);
 
-    @POST("api/bag/update")
+//    @POST("api/bag/update")
+//    Observable<ApiResult> updateBag(@Body BagModifyEntity entity);
+
+    @POST("V2/api/bag/update")
     Observable<ApiResult> updateBag(@Body BagModifyEntity entity);
 
     @GET("api/bag/{userId}/info")
@@ -415,7 +438,7 @@ public interface ApiService {
     @GET("api/bag/{userId}/folder/list")
     Observable<ApiResult<ArrayList<BagDirEntity>>> getFolderList(@Path("userId")String userId,@Query("size") int size,@Query("index") int index);
 
-    @POST("api/upload/check/md5")
+    @POST("V2/api/upload/check/md5")
     Observable<ApiResult<ArrayList<UploadResultEntity>>> checkMd5(@Body ArrayList<NewUploadEntity> uploadentities);
 
     @POST("api/bag/folder/add")
@@ -424,22 +447,31 @@ public interface ApiService {
     @POST("api/bag/folder/{folderId}/upload")
     Observable<ApiResult> uploadFolder(@Path("folderId")String folderId,@Body ArrayList<UploadResultEntity> files);
 
-    @GET("api/bag/check/size")
+    @GET("V2/api/bag/check/size")
     Observable<ApiResult<Boolean>> checkSize(@Query("size")long size);
 
     @GET("api/bag/folder/{folderId}/list")
     Observable<ApiResult<ArrayList<FileEntity>>> getFolderItemList(@Path("folderId")String id, @Query("index")int index, @Query("size")int size);
 
-    @POST("api/bag/favorites")
-    Observable<ApiResult<ArrayList<BagDirEntity>>> getBagFavoriteList(@Query("size")int size,@Query("index")int index);
+//    @POST("api/bag/favorites")
+//    Observable<ApiResult<ArrayList<BagDirEntity>>> getBagFavoriteList(@Query("size")int size,@Query("index")int index);
+//
+//    @POST("V2/api/bag/buy/list")
+//    Observable<ApiResult<ArrayList<BagDirEntity>>> getBagFavoriteList(@Query("size")int size,@Query("index")int index);
 
-    @POST("api/bag/follows")
-    Observable<ApiResult<ArrayList<BagDirEntity>>> getBagFollowList(@Query("size")int size,@Query("index")int index);
+    @GET("V2/api/bag/buy/list")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> getBagFavoriteList(@Query("size")int size,@Query("index")int index);
 
-    @POST("api/bag/favorite/delete")
-    Observable<ApiResult> deleteBagFavoriteList(@Body ArrayList<String> ids);
+//    @POST("api/bag/follows")
+//    Observable<ApiResult<ArrayList<BagDirEntity>>> getBagFollowList(@Query("size")int size,@Query("index")int index);
 
-    @POST("api/bag/report")
+//    @POST("api/bag/favorite/delete")
+//    Observable<ApiResult> deleteBagFavoriteList(@Body ArrayList<String> ids);
+
+    @POST("V2/api/bag/buy/delete")
+    Observable<ApiResult> deleteBagFavoriteList(@Body ArrayList<String> folderIds);
+
+    @POST("V2/api/bag/report")
     Observable<ApiResult> reportBag(@Body ReportEntity bean);
 
     @POST("api/bag/folder/{folderId}/buy")
@@ -463,11 +495,18 @@ public interface ApiService {
     @POST("api/bag/folder/{folderId}/move")
     Observable<ApiResult> moveFiles(@Path("folderId")String folderId, @Body MoveFileEntity entity);
 
-    @POST("api/bag/folder/file/{fileId}/update")
-    Observable<ApiResult> modifyFile(@Path("fileId")String fileId,@Body String fileName);
+//    @POST("api/bag/folder/file/{fileId}/update")
+//    Observable<ApiResult> modifyFile(@Path("fileId")String fileId,@Body String fileName);
 
-    @POST("api/bag/folder/{folderId}/file/{fileId}/copy")
-    Observable<ApiResult> copyFile(@Path("folderId")String folderId,@Path("fileId")String fileId);
+    @POST("V2/api/bag/update/file/name/{type}")
+    Observable<ApiResult> modifyFile(@Path("type")String type,@Body ModifyFileEntity entity);
+
+//    @POST("api/bag/folder/{folderId}/file/{fileId}/copy")
+//    Observable<ApiResult> copyFile(@Path("folderId")String folderId,@Path("fileId")String fileId);
+
+    @POST("V2/api/bag/file/copy")
+    Observable<ApiResult> copyFile(@Body CopyFileEntity entity);
+
 
     @POST("api/tag/delete")
     Observable<ApiResult> delTags(@Body DelTagEntity entity);
@@ -487,8 +526,8 @@ public interface ApiService {
     @POST("api/search/searchDoc")
     Observable<ApiResult<ArrayList<PersonDocEntity>>> getSearchDoc(@Body SearchEntity entity);
 
-    @POST("api/search/searchBag")
-    Observable<ApiResult<ArrayList<BagDirEntity>>> getSearchBag(@Body SearchEntity entity);
+    @POST("V2/api/search/searchBag")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> getSearchBag(@Body SearchEntity entity);
 
     @POST("api/search/searchUser")
     Observable<ApiResult<ArrayList<PersonFollowEntity>>> getSearchUser(@Body SearchEntity entity);
@@ -585,4 +624,91 @@ public interface ApiService {
 
     @GET("api/index/topUser")
     Observable<ApiResult<ArrayList<XianChongEntity>>> loadXianChongList();
+
+    @GET("V2/api/bag/{userId}/info")
+    Observable<ApiResult<NewBagEntity>> loadBagData(@Path("userId")String userId);
+
+    @GET("V2/api/bag/{userId}/items")
+    Observable<ApiResult<BagMyEntity>> loadBagMy(@Path("userId")String userId);
+
+    @GET("V2/api/bag/my/follow")
+    Observable<ApiResult<BagMyEntity>> loadBagMyFollow();
+
+    @POST("V2/api/bag/update/{id}/folder")
+    Observable<ApiResult> updateFolder(@Path("id")String folderId, @Body FolderRepEntity entity);
+
+    @POST("V2/api/bag/add/folder")
+    Observable<ApiResult> createFolder(@Body FolderRepEntity entity);
+
+    @GET("V2/api/bag/{userId}/{type}/folder/list")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadFolderList(@Path("userId")String userId,@Path("type")String type,@Query("size")int size,@Query("index")int index);
+
+    @POST("V2/api/bag/delete/{type}/folder")
+    Observable<ApiResult> deleteFolders(@Body ArrayList<String> folderIds,@Path("type")String type);
+
+    @POST("V2/api/bag/top/{id}/folder")
+    Observable<ApiResult> topFolder(@Path("id")String folderId);
+
+    @GET("V2/api/bag/{userId}/{type}/folder/{folderId}/info")
+    Observable<ApiResult<NewFolderEntity>> loadFolderInfo(@Path("userId")String userId,@Path("type")String type,@Path("folderId")String folderId);
+
+    @GET("V2/api/bag/{userId}/{type}/folder/{folderId}/file/list")
+    Observable<ApiResult<JsonArray>> loadFileList(@Path("userId")String userId, @Path("type")String type, @Path("folderId")String folderId, @Query("size")int size, @Query("index")int index);
+
+    @GET("V2/api/bag/{userId}/cartoon/{parentFolderId}/folder/list")
+    Observable<ApiResult<ArrayList<ManHua2Entity>>> loadFiManHua2List(@Path("userId")String userId, @Path("parentFolderId")String parentFolderId, @Query("size")int size, @Query("index")int index);
+
+    @POST("V2/api/bag/delete/{type}/{folderId}/file")
+    Observable<ApiResult> deleteFiles(@Body ArrayList<String> fileIds,@Path("type")String type,@Path("folderId")String folderId);
+
+    @POST("V2/api/bag/delete/{parentFolderId}/cartoon/folder")
+    Observable<ApiResult> deleteManHua2(@Body ArrayList<String> fileIds,@Path("parentFolderId")String parentFolderId);
+
+    @POST("V2/api/bag/top/{parentFolderId}/cartoon/{folderId}/folder")
+    Observable<ApiResult> topManHua2(@Path("parentFolderId")String parentFolderId,@Path("folderId")String folderId);
+
+    @POST("V2/api/bag/top/{folderId}/folder/{type}/file/{fileId}")
+    Observable<ApiResult> topFile(@Path("folderId")String folderId,@Path("type")String type,@Path("fileId")String fileId);
+
+    @POST("V2/api/bag/remove/{userId}/folder/{type}/{folderId}/follow")
+    Observable<ApiResult> removeFollowFolder(@Path("userId")String userId,@Path("type")String type,@Path("folderId")String folderId);
+
+    @POST("V2/api/bag/{userId}/folder/{type}/{folderId}/follow")
+    Observable<ApiResult> followFolder(@Path("userId")String userId,@Path("type")String type,@Path("folderId")String folderId);
+
+    @POST("V2/api/bag/{userId}/folder/{type}/{folderId}/buy")
+    Observable<ApiResult> buyFolder(@Path("userId")String userId,@Path("type")String type,@Path("folderId")String folderId);
+
+    @POST("V2/api/bag/folder/fiction/{folderId}/upload")
+    Observable<ApiResult> uploadXiaoshuo(@Path("folderId")String folderId,@Body ArrayList<UploadResultEntity> entities);
+
+    @POST("V2/api/bag/folder/image/{folderId}/upload")
+    Observable<ApiResult> uploadTuji(@Path("folderId")String folderId,@Body ArrayList<UploadResultEntity> entities);
+
+    @POST("V2/api/bag/folder/synthesize/{folderId}/upload")
+    Observable<ApiResult> uploadZonghe(@Path("folderId")String folderId,@Body ArrayList<UploadResultEntity> entities);
+
+    @POST("V2/api/bag/update/{parentFolderId}/cartoon/{id}/folder")
+    Observable<ApiResult> uploadManhua2(@Path("parentFolderId")String parentFolderId,@Path("id")String folderId,@Body ManHuaUploadEntity entities);
+
+    @POST("V2/api/bag/add/{parentFolderId}/cartoon/folder")
+    Observable<ApiResult> uploadManhua(@Path("parentFolderId")String parentFolderId,@Body ManHuaUploadEntity entities);
+
+    @GET("V2/api/bag/my/dynamic")
+    Observable<ApiResult<ArrayList<DynamicTopEntity>>> loadDynamicTop();
+
+    @GET("V2/api/bag/{userId}/article/list")
+    Observable<ApiResult<ArrayList<WenZhangFolderEntity>>> loadWenZhangList(@Path("userId")String userId,@Query("size")int size,@Query("index")int index);
+
+    @POST("V2/api/bag/delete/cartoon/{parentFolderId}/{folderId}/file/")
+    Observable<ApiResult> deleteManHuaFile(@Path("parentFolderId")String parentId,@Path("folderId")String folderId,@Body ArrayList<String> fileIds);
+
+    @GET("V2/api/bag/follow/{type}/folder/list")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadFollowFolderList(@Path("type")String type,@Query("size")int size,@Query("index")int index);
+
+    @GET("V2/api/bag/my/follow/feed/{lastTime}")
+    Observable<ApiResult<ArrayList<DynamicEntity>>> loadDynamicList(@Path("lastTime")long lastTime);
+
+    @GET("V2/api/bag/folder/recommend/reload/{excludeFolderId}")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadRefreshList(@Path("excludeFolderId")String excludeFolderId,@Query("folderName")String folderName,@Query("page")int page);
 }

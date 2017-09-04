@@ -26,7 +26,8 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFileComponent;
 import com.moemoe.lalala.di.modules.FileModule;
 import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.entity.FileEntity;
+import com.moemoe.lalala.model.entity.CommonFileEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.MoveFileEntity;
 import com.moemoe.lalala.netamusic.data.model.PlayList;
 import com.moemoe.lalala.netamusic.data.model.Song;
@@ -105,9 +106,10 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
     FilesPresenter mPresenter;
 
     private ImagePagerAdapter mPagerAdapter;
-    private ArrayList<FileEntity> mItems = null;
+    private ArrayList<CommonFileEntity> mItems = null;
     private int mFirstShowIndex = 0;
     private RxDownload downloadSub;
+    private String mFolderType;
     private String mFolderId;
     private boolean change;
     private int changeNum = 0;
@@ -136,14 +138,21 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
         mItems = getIntent().getParcelableArrayListExtra("list");
         mFolderId = getIntent().getStringExtra("folderId");
         mUserId = getIntent().getStringExtra("userId");
+        mFolderType = getIntent().getStringExtra("folderType");
         if(mItems == null){
             finish();
             return;
         }
         if(mUserId.equals(PreferenceUtils.getUUid())){
             mTvMove.setText("移动");
+            mTvMove.setVisibility(View.GONE);
         }else {
-            mTvMove.setText("存到我的书包");
+            if(mFolderType.equals(FolderType.TJ.toString())){
+                mTvMove.setVisibility(View.GONE);
+            }else {
+                mTvMove.setText("存到我的书包");
+                mTvMove.setVisibility(View.VISIBLE);
+            }
             mDelRoot.setVisibility(View.GONE);
             mEditRoot.setVisibility(View.GONE);
         }
@@ -188,7 +197,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                     mPlayer.pause();
                     mHandler.removeCallbacks(mProgressCallback);
                 }
-                FileEntity entity = mItems.get(mViewPager.getCurrentItem());
+                CommonFileEntity entity = mItems.get(mViewPager.getCurrentItem());
                 if(entity.getType().equals("music")){
                     View v =  mPagerAdapter.getViewByPos(mViewPager.getCurrentItem());
                     ImageView ivControl = (ImageView) v.findViewById(R.id.iv_music_control);
@@ -271,7 +280,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
 
     @Override
     public void onPlayStatusChanged(boolean isPlaying) {
-        FileEntity entity = mItems.get(mViewPager.getCurrentItem());
+        CommonFileEntity entity = mItems.get(mViewPager.getCurrentItem());
         if(entity.getType().equals("music")){
             View v =  mPagerAdapter.getViewByPos(mViewPager.getCurrentItem());
             TextView tvTime = (TextView) v.findViewById(R.id.tv_music_time);
@@ -311,7 +320,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
 
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
-            final FileEntity fb = mItems.get(position);
+            final CommonFileEntity fb = mItems.get(position);
             View view;
             View.OnClickListener clickListener = new NoDoubleClickListener() {
                 @Override
@@ -409,7 +418,10 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                     }
                 }
             }else if(fb.getType().equals("music")){
-                int time = fb.getAttr().get("timestamp").getAsInt();
+                int time = 0;
+                if(fb.getAttr().has("timestamp")){
+                    time = fb.getAttr().get("timestamp").getAsInt();
+                }
                 View viewTemp = View.inflate(FileDetailActivity.this,R.layout.item_music_detail,null);
                 ImageView bg = (ImageView) viewTemp.findViewById(R.id.iv_bg);
                 TextView tvTime = (TextView) viewTemp.findViewById(R.id.tv_music_time);
@@ -444,6 +456,29 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                 container.addView(viewTemp);
                 view = viewTemp;
                 view.setOnClickListener(clickListener);
+            }else if(fb.getType().equals("txt")){
+                ImagePreView viewPack = new ImagePreView(FileDetailActivity.this);
+                container.addView(viewPack);
+                final ScaleView scaleView = viewPack.getImageView();
+                Glide.with(FileDetailActivity.this)
+                        .load(R.drawable.bg_bag_word)
+                        .placeholder(R.drawable.bg_default_square)
+                        .error(R.drawable.bg_default_square)
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(new SimpleTarget<GlideDrawable>() {
+                            @Override
+                            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                                scaleView.setImageDrawable(resource);
+                            }
+                        });
+                scaleView.setOnViewTapListener(new ScaleViewAttacher.OnViewTapListener() {
+                    @Override
+                    public void onViewTap(View view, float x, float y) {
+                        finish();
+                    }
+                });
+                view = viewPack;
             }else {
                 ImagePreView viewPack = new ImagePreView(FileDetailActivity.this);
                 container.addView(viewPack);
@@ -538,10 +573,11 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                 ArrayList<String> ids = new ArrayList<>();
                 ids.add(mItems.get(mViewPager.getCurrentItem()).getFileId());
                 createDialog();
-                mPresenter.deleteFiles(mFolderId,ids);
+                mPresenter.deleteFiles(mFolderId,mFolderType,ids);
                 break;
             case R.id.fl_move_root:
                 Intent i = new Intent(FileDetailActivity.this,FolderSelectActivity.class);
+                i.putExtra("folderType",mFolderType);
                 i.putExtra("folderId",mFolderId);
                 startActivityForResult(i,REQ_SELECT_FOLDER);
                 break;
@@ -554,7 +590,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if(!TextUtils.isEmpty(editText.getText().toString())){
                                     createDialog();
-                                    mPresenter.modifyFile(mItems.get(mViewPager.getCurrentItem()).getFileId(),editText.getText().toString());
+                                    mPresenter.modifyFile(mFolderType,mFolderId,mItems.get(mViewPager.getCurrentItem()).getFileId(),editText.getText().toString());
                                     dialogInterface.dismiss();
                                 }else {
                                     showToast("文件名不能为空");
@@ -584,13 +620,13 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                 mPresenter.moveFiles(data.getStringExtra("folderId"),entity);
             }else {
                 createDialog();
-                mPresenter.copyFile(data.getStringExtra("folderId"),mItems.get(mViewPager.getCurrentItem()).getFileId());
+                mPresenter.copyFile(mFolderId,mItems.get(mViewPager.getCurrentItem()).getFileId(),data.getStringExtra("folderId"));
             }
         }
     }
 
     public void downloadRaw(){
-        final FileEntity entity = mItems.get(mViewPager.getCurrentItem());
+        final CommonFileEntity entity = mItems.get(mViewPager.getCurrentItem());
         String temp = "neta_" + System.currentTimeMillis() + "." +FileUtil.getExtensionName(entity.getPath());
         final File file;
         String path;

@@ -9,6 +9,7 @@
     <color name="black_1e1e1e">#1e1e1e</color>
     <color name="bg_f6f6f6">#f6f6f6</color>
 
+    <color name="alph_20">#20000000</color>
     <color name="alph_30">#30000000</color>
     <color name="alph_60">#60000000</color>
     <color name="alph_80">#80000000</color>
@@ -17,6 +18,7 @@
     <color name="white">#ffffff</color>
     <color name="white_20">#20ffffff</color>
     <color name="white_50">#50ffffff</color>
+    <color name="white_60">#60ffffff</color>
     <color name="white_70">#70ffffff</color>
     <color name="white_95">#95ffffff</color>
     <color name="black">#000000</color>
@@ -40,6 +42,7 @@
     <color name="gray_595e64">#595E64</color>
     <color name="gray_f6f6f6">#f6f6f6</color>
     <color name="gray_383d40">#383d40</color>
+    <color name="gray_383d3f">#383d3f</color>
     <color name="gray_4b5052">#4b5052</color>
     <color name="gray_bcbcbc">#bcbcbc</color>
     <color name="gray_e8e8e8">#e8e8e8</color>

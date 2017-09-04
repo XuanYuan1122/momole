@@ -42,12 +42,12 @@ public class FukuPresenter implements FukuContract.Presenter {
                 .subscribe(new NetResultSubscriber<ArrayList<Live2dModelEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<Live2dModelEntity> live2dModelEntities) {
-                        view.getFukuListSuccess(live2dModelEntities);
+                        if(view!=null)view.getFukuListSuccess(live2dModelEntities);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }

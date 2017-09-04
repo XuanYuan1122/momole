@@ -113,4 +113,13 @@ public class PersonalPagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return mIsSelf ? 7 : 5;
     }
+
+    public void release() {
+        if(mainFragment != null) mainFragment.release();
+        if(docFragment != null) docFragment.release();
+        if(favoriteDocFragment != null) favoriteDocFragment.release();
+        if(fansFragment != null) fansFragment.release();
+        if(followFragment != null) followFragment.release();
+        if(msgFragment != null) msgFragment.release();
+    }
 }

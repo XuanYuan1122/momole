@@ -13,11 +13,15 @@ import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.event.DirBuyEvent;
 import com.moemoe.lalala.event.SearchChangedEvent;
 import com.moemoe.lalala.model.entity.BagDirEntity;
+import com.moemoe.lalala.model.entity.FolderType;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.PersonaListPresenter;
 import com.moemoe.lalala.presenter.PersonalListContract;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.GridItemDecoration;
-import com.moemoe.lalala.view.activity.FolderActivity;
+import com.moemoe.lalala.view.activity.NewFileCommonActivity;
+import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
+import com.moemoe.lalala.view.activity.NewFileXiaoshuoActivity;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -49,7 +53,7 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
     private boolean isLoading = false;
     private String mKeyWord;
     private int mCurPage = 1;
-    private boolean notFirst;
+  //  private boolean notFirst;
 
     @Override
     protected int getLayoutId() {
@@ -65,9 +69,9 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        if(savedInstanceState != null || notFirst){
-            return;
-        }
+       // if(savedInstanceState != null || notFirst){
+       //     return;
+      //  }
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -85,13 +89,16 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                BagDirEntity entity = (BagDirEntity) mAdapter.getItem(position);
-                Intent i = new Intent(getContext(),FolderActivity.class);
-                i.putExtra("info",entity);
-                i.putExtra("position",position);
-                i.putExtra("show_more",true);
-                i.putExtra("uuid",entity.getUserId());
-                startActivity(i);
+                ShowFolderEntity entity = (ShowFolderEntity) mAdapter.getItem(position);
+                if(entity.getType().equals(FolderType.ZH.toString())){
+                    NewFileCommonActivity.startActivity(getContext(),FolderType.ZH.toString(),entity.getFolderId(),entity.getCreateUser());
+                }else if(entity.getType().equals(FolderType.TJ.toString())){
+                    NewFileCommonActivity.startActivity(getContext(),FolderType.TJ.toString(),entity.getFolderId(),entity.getCreateUser());
+                }else if(entity.getType().equals(FolderType.MH.toString())){
+                    NewFileManHuaActivity.startActivity(getContext(),FolderType.MH.toString(),entity.getFolderId(),entity.getCreateUser());
+                }else if(entity.getType().equals(FolderType.XS.toString())){
+                    NewFileXiaoshuoActivity.startActivity(getContext(),FolderType.XS.toString(),entity.getFolderId(),entity.getCreateUser());
+                }
             }
 
             @Override
@@ -124,7 +131,7 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
             }
         });
         subscribeSearchChangedEvent();
-        notFirst = true;
+     //   notFirst = true;
     }
 
     @Override
@@ -195,13 +202,12 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
 
     @Override
     public void onDestroyView() {
-        mPresenter.release();
         super.onDestroyView();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
         RxBus.getInstance().unSubscribe(this);
+        super.release();
     }
 }

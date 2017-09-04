@@ -48,8 +48,6 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
     private boolean isLoading = false;
     private String mKeyWord;
     private int mCurPage = 1;
-    private ArrayList<Object> mCurList;
-    private boolean notFirst;
 
     @Override
     protected int getLayoutId() {
@@ -66,9 +64,6 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        if(savedInstanceState != null || notFirst){
-            return;
-        }
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -79,9 +74,6 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
         mLlShow.setVisibility(View.GONE);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new PersonListAdapter(getContext(),1);
-        if(mCurList != null && mCurList.size() > 0){
-            mAdapter.setData(mCurList);
-        }
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
         mListDocs.setLoadMoreEnabled(false);
@@ -133,7 +125,6 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
             }
         });
         subscribeSearchChangedEvent();
-        notFirst = true;
     }
 
     @Override
@@ -182,16 +173,9 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
         RxBus.getInstance().addSubscription(this, subscription);
     }
 
-    @Override
-    public void onDestroyView() {
-        mCurList = mAdapter.getList();
-        mPresenter.release();
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
         RxBus.getInstance().unSubscribe(this);
+        super.release();
     }
 }

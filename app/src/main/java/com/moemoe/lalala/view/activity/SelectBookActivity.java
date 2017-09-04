@@ -49,11 +49,6 @@ public class SelectBookActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mTitle.setText(R.string.label_select_book);
         mAdapter = new BookListAdapter();
@@ -100,11 +95,8 @@ public class SelectBookActivity extends BaseAppCompatActivity {
         Cursor cursor = getContentResolver().query(
                 Uri.parse("content://media/external/file"),
                 projection,
-                MediaStore.Files.FileColumns.DATA + " not like ? and ("
-                        + MediaStore.Files.FileColumns.DATA + " like ? or "
-                        + MediaStore.Files.FileColumns.DATA + " like ? or "
-                        + MediaStore.Files.FileColumns.DATA + " like ? or "
-                        + MediaStore.Files.FileColumns.DATA + " like ? )",
+                MediaStore.Files.FileColumns.DATA + " not like ? and "
+                        + MediaStore.Files.FileColumns.DATA + " like ?",
                 new String[]{"%" + bookpath + "%",
                         "%" + ".txt"}, null);
 

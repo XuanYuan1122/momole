@@ -41,6 +41,8 @@ public class BagDirEntity implements Parcelable{
     private String readType;//IMAGE TEXT ""
     @SerializedName("follow")
     private boolean follow;
+    @SerializedName("folderType")
+    private String folderType;
 
     private transient boolean isSelect;
 
@@ -172,6 +174,14 @@ public class BagDirEntity implements Parcelable{
         this.follow = follow;
     }
 
+    public String getFolderType() {
+        return folderType;
+    }
+
+    public void setFolderType(String folderType) {
+        this.folderType = folderType;
+    }
+
     public static final Parcelable.Creator<BagDirEntity> CREATOR = new Parcelable.Creator<BagDirEntity>() {
         @Override
         public BagDirEntity createFromParcel(Parcel in) {
@@ -193,6 +203,7 @@ public class BagDirEntity implements Parcelable{
             entity.userName = bundle.getString("userName");
             entity.buyUserNum = bundle.getInt("buyUserNum");
             entity.readType = bundle.getString("readType");
+            entity.folderType = bundle.getString("folderType");
             entity.follow = bundle.getBoolean("follow");
             return entity;
         }
@@ -226,6 +237,7 @@ public class BagDirEntity implements Parcelable{
         bundle.putString("userName",userName);
         bundle.putInt("buyUserNum",buyUserNum);
         bundle.putString("readType",readType);
+        bundle.putString("folderType",folderType);
         bundle.putBoolean("follow",follow);
         parcel.writeBundle(bundle);
     }

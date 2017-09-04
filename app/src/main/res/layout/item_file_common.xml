@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <com.moemoe.lalala.view.widget.longimage.LongImageView
+        android:id="@+id/iv_long_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_9"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/size_6"
+        android:layout_marginStart="@dimen/size_5"
+        android:layout_marginLeft="@dimen/size_5"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/size_10"
+        android:layout_above="@+id/tv_size"
+        android:layout_marginLeft="@dimen/size_5"
+        android:layout_marginStart="@dimen/size_5"/>
+
+    <ImageView
+        android:id="@+id/iv_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/size_3"
+        android:layout_marginLeft="@dimen/size_3"
+        android:layout_marginStart="@dimen/size_3"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:src="@drawable/btn_select_normal"/>
+</RelativeLayout>

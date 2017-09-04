@@ -31,6 +31,7 @@ import com.moemoe.lalala.model.entity.BagEntity;
 import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.model.entity.Image;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.BagContract;
 import com.moemoe.lalala.presenter.BagPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -167,6 +168,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
         }
         mTvSave.setVisibility(View.VISIBLE);
         mTvSave.getPaint().setFakeBoldText(true);
+        mTvSave.setEnabled(true);
         ViewUtils.setRightMargins(mTvSave,DensityUtil.dip2px(this,18));
         mTvSave.setText(getString(R.string.label_done));
         if(mType != TYPE_DIR_ITEM_ADD){
@@ -316,7 +318,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     }
 
     private void initCoinRoot() {
-         View mLlCoin = mStubCoinRoot.inflate();
+        View mLlCoin = mStubCoinRoot.inflate();
         TextView tvNameLabel = (TextView) mLlCoin.findViewById(R.id.tv_name_label);
         tvNameLabel.setText(getString(R.string.label_coin_set));
         mTvCoin = (TextView) mLlCoin.findViewById(R.id.tv_name);
@@ -758,7 +760,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
     }
 
     @Override
-    public void loadFolderListSuccess(ArrayList<BagDirEntity> entities, boolean isPull) {
+    public void loadFolderListSuccess(ArrayList<ShowFolderEntity> entities, boolean isPull) {
 
     }
 

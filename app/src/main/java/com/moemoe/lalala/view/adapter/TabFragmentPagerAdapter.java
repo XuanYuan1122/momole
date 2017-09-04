@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 
+import com.moemoe.lalala.view.fragment.BaseFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,17 +16,17 @@ import java.util.List;
 
 public class TabFragmentPagerAdapter extends FragmentPagerAdapter{
 
-    List<Fragment> fragmentList = new ArrayList<Fragment>();
+    List<BaseFragment> fragmentList = new ArrayList<>();
     private List<String> mTitles;
 
-    public TabFragmentPagerAdapter(FragmentManager fm, List<Fragment> fragmentList, List<String> mTitles) {
+    public TabFragmentPagerAdapter(FragmentManager fm, List<BaseFragment> fragmentList, List<String> mTitles) {
         super(fm);
         this.mTitles = mTitles;
         setFragments(fm,fragmentList,mTitles);
     }
 
     //刷新fragment
-    public void setFragments(FragmentManager fm,List<Fragment> fragments,List<String> mTitles) {
+    public void setFragments(FragmentManager fm,List<BaseFragment> fragments,List<String> mTitles) {
         this.mTitles = mTitles;
         if (this.fragmentList != null) {
             FragmentTransaction ft = fm.beginTransaction();
@@ -52,5 +54,11 @@ public class TabFragmentPagerAdapter extends FragmentPagerAdapter{
     @Override
     public int getCount() {
         return fragmentList.size();
+    }
+
+    public void release(){
+        for (BaseFragment fragment : fragmentList){
+            fragment.release();
+        }
     }
 }

@@ -60,8 +60,6 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
 
     @BindView(R.id.list)
     PullAndLoadView mListDocs;
-    @BindView(R.id.ll_not_show)
-    View mLlShow;
     @Inject
     DiscoveryMainPresenter mPresenter;
     private DiscoveryMainAdapter mAdapter;
@@ -85,16 +83,13 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        if(savedInstanceState != null){
-            return;
-        }
         DaggerDiscoveryComponent.builder()
                 .discoveryModule(new DiscoveryModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mListDocs.setVisibility(View.VISIBLE);
-        mLlShow.setVisibility(View.GONE);
+        rootView.findViewById(R.id.ll_not_show).setVisibility(View.GONE);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new DiscoveryMainAdapter(null);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
@@ -138,7 +133,7 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
             @Override
             public void onRefresh() {
                 isLoading = true;
-                mPresenter.requestBannerData("");
+                mPresenter.requestBannerData("CLASSROOM");
                 mPresenter.requestFeatured("");
                 mPresenter.loadDocList(0,false,true);
             }
@@ -153,7 +148,7 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
                 return false;
             }
         });
-        mPresenter.requestBannerData("");
+        mPresenter.requestBannerData("CLASSROOM");
         mPresenter.requestFeatured("");
         mPresenter.loadXianChongList();
         mPresenter.loadDocList(0,false,true);
@@ -166,16 +161,10 @@ public class DiscoveryMainFragment extends BaseFragment  implements DiscovertMai
         ErrorCodeUtils.showErrorMsgByCode(getContext(),code,msg);
     }
 
-    @Override
-    public void onDestroyView() {
-        if(mPresenter != null)mPresenter.release();
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void release(){
+        if(mPresenter != null) mPresenter.release();
         RxBus.getInstance().unSubscribe(this);
+        super.release();
     }
 
     public void changeLabelAdapter(){

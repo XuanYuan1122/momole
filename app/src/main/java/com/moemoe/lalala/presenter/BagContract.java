@@ -4,6 +4,7 @@ import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
 import com.moemoe.lalala.model.entity.FileEntity;
 import com.moemoe.lalala.model.entity.Image;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public interface BagContract {
     interface Presenter extends BasePresenter{
         void openBag(String name,Image image,int type);
         void getBagInfo(String userId);
-        void getFolderList(String userId,int index);
+        void getFolderList(String userId,int index,String type);
         void createFolder(String folderName,int coin,Image cover,ArrayList<Object> items,String readType);
         void modifyFolder(String folderId,String folderName,int coin,Image cover,long size,String readType);
         void uploadFilesToFolder(String folderId,ArrayList<Object> items);
@@ -31,7 +32,7 @@ public interface BagContract {
     interface View extends BaseView{
         void openOrModifyBagSuccess();
         void loadBagInfoSuccess(BagEntity entity);
-        void loadFolderListSuccess(ArrayList<BagDirEntity> entities,boolean isPull);
+        void loadFolderListSuccess(ArrayList<ShowFolderEntity> entities, boolean isPull);
         void createFolderSuccess();
         void uploadFolderSuccess();
         void loadFolderItemListSuccess(ArrayList<FileEntity> entities, boolean isPull);

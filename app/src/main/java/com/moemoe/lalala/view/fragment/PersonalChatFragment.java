@@ -113,6 +113,8 @@ public class PersonalChatFragment extends BaseFragment{
         super.onDestroyView();
     }
 
+
+
     private void subscribeEvent() {
         Subscription subscription = RxBus.getInstance()
                 .toObservable(PrivateMessageEvent.class)

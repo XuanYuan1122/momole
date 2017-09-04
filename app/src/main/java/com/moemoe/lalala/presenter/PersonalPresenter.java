@@ -106,12 +106,12 @@ public class PersonalPresenter implements PersonalContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSaveOrCancelBlackSuccess(false);
+                            if(view!=null)view.onSaveOrCancelBlackSuccess(false);
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code, msg);
+                            if(view!=null)view.onFailure(code, msg);
                         }
                     });
         }else {
@@ -121,12 +121,12 @@ public class PersonalPresenter implements PersonalContract.Presenter {
                     .subscribe(new NetSimpleResultSubscriber() {
                         @Override
                         public void onSuccess() {
-                            view.onSaveOrCancelBlackSuccess(true);
+                            if(view!=null)view.onSaveOrCancelBlackSuccess(true);
                         }
 
                         @Override
                         public void onFail(int code, String msg) {
-                            view.onFailure(code, msg);
+                            if(view!=null)view.onFailure(code, msg);
                         }
                     });
         }

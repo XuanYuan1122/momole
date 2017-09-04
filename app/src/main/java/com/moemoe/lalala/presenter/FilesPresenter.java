@@ -2,6 +2,8 @@ package com.moemoe.lalala.presenter;
 
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
+import com.moemoe.lalala.model.entity.CopyFileEntity;
+import com.moemoe.lalala.model.entity.ModifyFileEntity;
 import com.moemoe.lalala.model.entity.MoveFileEntity;
 
 import java.util.ArrayList;
@@ -27,8 +29,8 @@ public class FilesPresenter implements FilesContract.Presenter {
     }
 
     @Override
-    public void deleteFiles(String folderId, ArrayList<String> ids) {
-        apiService.deleteFiles(folderId,ids)
+    public void deleteFiles(String folderId,String folderType, ArrayList<String> ids) {
+        apiService.deleteFiles(ids,folderType,folderId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetSimpleResultSubscriber() {
@@ -63,8 +65,9 @@ public class FilesPresenter implements FilesContract.Presenter {
     }
 
     @Override
-    public void modifyFile(String fileId, final String fileName) {
-        apiService.modifyFile(fileId,fileName)
+    public void modifyFile(String type,String folderId,String fileId, final String fileName) {
+        ModifyFileEntity entity = new ModifyFileEntity(fileId,fileName,folderId);
+        apiService.modifyFile(type,entity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetSimpleResultSubscriber() {
@@ -81,8 +84,9 @@ public class FilesPresenter implements FilesContract.Presenter {
     }
 
     @Override
-    public void copyFile(String folderId, String fileId) {
-        apiService.copyFile(folderId,fileId)
+    public void copyFile(String folderId, String fileId,String myFolderId) {
+        CopyFileEntity entity = new CopyFileEntity(fileId,folderId,myFolderId);
+        apiService.copyFile(entity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetSimpleResultSubscriber() {

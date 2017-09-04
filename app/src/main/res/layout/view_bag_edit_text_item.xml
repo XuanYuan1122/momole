@@ -27,5 +27,5 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:textSize="@dimen/size_15"
-        android:gravity="right" />
+        android:gravity="end" />
 </LinearLayout>

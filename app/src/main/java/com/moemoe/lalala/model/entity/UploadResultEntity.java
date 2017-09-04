@@ -7,24 +7,22 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class UploadResultEntity {
-    @SerializedName("attr")
     private String attr;
-    @SerializedName("md5")
     private String md5;
-    @SerializedName("path")
     private String path;
-    @SerializedName("save")
     private boolean save;
-    @SerializedName("size")
     private long size;
-    @SerializedName("type")
     private String type;
-    @SerializedName("uploadToken")
     private String uploadToken;
 
     private String fileName;
     private transient String filePath;
     private transient int musicTime;
+    private String content;
+    private String cover;
+    private int coverSize;
+    private int num;
+    private String title;
 
     public String getAttr() {
         return attr;
@@ -104,5 +102,45 @@ public class UploadResultEntity {
 
     public void setMusicTime(int musicTime) {
         this.musicTime = musicTime;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
+    public int getCoverSize() {
+        return coverSize;
+    }
+
+    public void setCoverSize(int coverSize) {
+        this.coverSize = coverSize;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

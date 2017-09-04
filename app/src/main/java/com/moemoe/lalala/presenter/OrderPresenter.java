@@ -41,12 +41,12 @@ public class OrderPresenter implements OrderContract.Presenter {
                 .subscribe(new NetSimpleResultSubscriber() {
                     @Override
                     public void onSuccess() {
-                        view.onCancelOrderSuccess();
+                        if(view!=null)view.onCancelOrderSuccess();
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }
@@ -59,12 +59,12 @@ public class OrderPresenter implements OrderContract.Presenter {
                 .subscribe(new NetResultSubscriber<PayResEntity>() {
                     @Override
                     public void onSuccess(PayResEntity entity) {
-                        view.onPayOrderSuccess(entity);
+                        if(view!=null)view.onPayOrderSuccess(entity);
                     }
 
                     @Override
                     public void onFail(int code, String msg) {
-                        view.onFailure(code, msg);
+                        if(view!=null)view.onFailure(code, msg);
                     }
                 });
     }
