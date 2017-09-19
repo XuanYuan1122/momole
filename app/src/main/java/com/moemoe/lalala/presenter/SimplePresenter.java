@@ -115,9 +115,11 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo1.setUserId(entity.getUserId());
                                 finalInfo1.setCoin(entity.getCoin());
                                 finalInfo1.setUserName(entity.getUserName());
+                                finalInfo1.setRcToken(entity.getRcToken());
                                 finalInfo1.setLevel(entity.getLevel());
                                 finalInfo1.setOpenBag(entity.isOpenBag());
                                 finalInfo1.setInspector(entity.isInspector());
+                                finalInfo1.setDeskMateEntities(entity.getDeskMateList());
                                 PreferenceUtils.setAuthorInfo(finalInfo1);
                                 if(view != null) view.onSuccess(entity);
                             }
@@ -143,9 +145,11 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo.setUserId(entity.getUserId());
                                 finalInfo.setCoin(entity.getCoin());
                                 finalInfo.setUserName(entity.getUserName());
+                                finalInfo.setRcToken(entity.getRcToken());
                                 finalInfo.setLevel(entity.getLevel());
                                 finalInfo.setOpenBag(entity.isOpenBag());
                                 finalInfo.setInspector(entity.isInspector());
+                                finalInfo.setDeskMateEntities(entity.getDeskMateList());
                                 PreferenceUtils.setAuthorInfo(finalInfo);
                                 if(view != null)  view.onSuccess(entity);
                             }

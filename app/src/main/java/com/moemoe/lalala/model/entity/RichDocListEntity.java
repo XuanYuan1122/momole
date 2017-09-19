@@ -23,6 +23,7 @@ public class RichDocListEntity implements Parcelable{
     private Image cover;
     private int time;
     private boolean hidType;
+    private String bgCover;
 
     public RichDocListEntity(){
         list = new ArrayList<>();
@@ -48,6 +49,7 @@ public class RichDocListEntity implements Parcelable{
             info.musicPath = bundle.getString("musicPath");
             info.musicTitle = bundle.getString("musicTitle");
             info.folderId = bundle.getString("folderId");
+            info.bgCover = bundle.getString("bgCover");
             info.time = bundle.getInt("time");
             info.cover = bundle.getParcelable("cover");
             info.hidType = bundle.getBoolean("hidType");
@@ -71,6 +73,7 @@ public class RichDocListEntity implements Parcelable{
         bundle.putString("musicPath",musicPath);
         bundle.putString("musicTitle",musicTitle);
         bundle.putString("folderId",folderId);
+        bundle.putString("bgCover",bgCover);
         bundle.putInt("time",time);
         bundle.putParcelable("cover",cover);
         bundle.putBoolean("hidType",hidType);
@@ -163,5 +166,13 @@ public class RichDocListEntity implements Parcelable{
 
     public void setHidType(boolean hidType) {
         this.hidType = hidType;
+    }
+
+    public String getBgCover() {
+        return bgCover;
+    }
+
+    public void setBgCover(String bgCover) {
+        this.bgCover = bgCover;
     }
 }

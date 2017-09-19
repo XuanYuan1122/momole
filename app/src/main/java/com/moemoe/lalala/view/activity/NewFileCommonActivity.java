@@ -708,13 +708,13 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                     @Override
                     public void onNoDoubleClick(View v) {
                         if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.ZH.toString(),item.getFolderId(),mUserId);
+                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.TJ.toString(),item.getFolderId(),mUserId);
+                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileCommonActivity.this,FolderType.MH.toString(),item.getFolderId(),mUserId);
+                            NewFileManHuaActivity.startActivity(NewFileCommonActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileCommonActivity.this,FolderType.XS.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileCommonActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
                         }
                     }
                 });
@@ -781,13 +781,13 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                     @Override
                     public void onNoDoubleClick(View v) {
                         if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.ZH.toString(),item.getFolderId(),mUserId);
+                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.TJ.toString(),item.getFolderId(),mUserId);
+                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileCommonActivity.this,FolderType.MH.toString(),item.getFolderId(),mUserId);
+                            NewFileManHuaActivity.startActivity(NewFileCommonActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileCommonActivity.this,FolderType.XS.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileCommonActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
                         }
                     }
                 });
@@ -953,13 +953,13 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                     @Override
                     public void onNoDoubleClick(View v) {
                         if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.ZH.toString(),item.getFolderId(),mUserId);
+                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.TJ.toString(),item.getFolderId(),mUserId);
+                            NewFileCommonActivity.startActivity(NewFileCommonActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileCommonActivity.this,FolderType.MH.toString(),item.getFolderId(),mUserId);
+                            NewFileManHuaActivity.startActivity(NewFileCommonActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileCommonActivity.this,FolderType.XS.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileCommonActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
                         }
                     }
                 });

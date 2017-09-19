@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.moemoe.lalala.R;
 
@@ -31,6 +32,8 @@ public class AlertDialogUtil {
     private Button item1,item2,item3,item4;
     private EditText editText;
     private Context context;
+    private int hour;
+    private int minute;
 
     private AlertDialogUtil() {
     }
@@ -105,6 +108,36 @@ public class AlertDialogUtil {
             ((TextView) contentView.findViewById(R.id.tv_content)).setText(content);
         else
             ((TextView) contentView.findViewById(R.id.tv_content)).setText("");
+
+    }
+
+    public void createTimepickerDialog(Context context, int hourT, int minuteT) {
+        this.context = context;
+        if (this.dialog != null && this.dialog.isShowing()) {
+            this.dialog.dismiss();
+            this.dialog = null;
+        }
+        View contentView = View.inflate(context,R.layout.dialog_timepicker,null);
+        this.dialog = new Dialog(context,R.style.NetaDialog);
+        this.dialog.setContentView(contentView);
+        Window window = dialog.getWindow();
+        window.setWindowAnimations(R.style.dialogWindowAnim);
+        dialog.setCancelable(false);
+        cancel = (Button) contentView.findViewById(R.id.cancel);
+        confirm = (Button) contentView.findViewById(R.id.confirm);
+        TimePicker timePicker = (TimePicker) contentView.findViewById(R.id.timerpicker);
+        timePicker.setIs24HourView(true);
+        hour = hourT;
+        minute = minuteT;
+        timePicker.setCurrentHour(hourT);
+        timePicker.setCurrentMinute(minuteT);
+        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minutep) {
+                hour = hourOfDay;
+                minute = minutep;
+            }
+        });
 
     }
 
@@ -343,5 +376,21 @@ public class AlertDialogUtil {
         void CancelOnClick();
 
         void ConfirmOnClick();
+    }
+
+    public int getHour() {
+        return hour;
+    }
+
+    public void setHour(int hour) {
+        this.hour = hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
+    public void setMinute(int minute) {
+        this.minute = minute;
     }
 }

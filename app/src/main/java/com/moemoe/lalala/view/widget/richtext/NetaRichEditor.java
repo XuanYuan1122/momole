@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -18,9 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
@@ -35,6 +38,7 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.CustomUrlSpan;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -42,6 +46,8 @@ import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
+import com.moemoe.lalala.view.activity.FilesUploadActivity;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
@@ -50,6 +56,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.CropTransformation;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -61,6 +68,10 @@ import zlc.season.rxdownload.entity.DownloadStatus;
  */
 
 public class NetaRichEditor extends ScrollView {
+    /**
+     * 标题限制长度
+     */
+    private final int TITLE_LIMIT = 30;
     private static final int EDIT_PADDING = 10; // edittext常规padding是10dp
     private int viewTagIndex = 1; // 新生的view都会打一个tag，对每个view来说，这个tag是唯一的。
     private LinearLayout allLayout; // 这个是所有子view的容器，scrollView内部的唯一一个ViewGroup
@@ -81,6 +92,10 @@ public class NetaRichEditor extends ScrollView {
     private String mTagNameDef;
     private LinearLayout root;
     private RxDownload downloadSub;
+    private EditText mEtTitle;
+    private TextView mTvTitleCount;
+    private ImageView mCover;
+    private TextView mTvAddCover;
 
     public NetaRichEditor(Context context) {
         this(context,null);
@@ -231,6 +246,74 @@ public class NetaRichEditor extends ScrollView {
             }
         }
         return 0;
+    }
+
+    public void setTop(){
+        View topRoot = createTopView();
+        mEtTitle = (EditText) topRoot.findViewById(R.id.et_title);
+        mCover = (ImageView) topRoot.findViewById(R.id.iv_cover);
+        mTvAddCover = (TextView) topRoot.findViewById(R.id.tv_add_cover);
+        mTvTitleCount = (TextView) topRoot.findViewById(R.id.ev_title_count);
+        mCover.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ArrayList<String> arrayList = new ArrayList<>();
+                DialogUtils.createImgChooseDlg((BaseAppCompatActivity)getContext(), null,getContext(), arrayList, 1).show();
+            }
+        });
+        mEtTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Editable editable = mEtTitle.getText();
+                int len = editable.length();
+                if (len > TITLE_LIMIT) {
+                    int selEndIndex = Selection.getSelectionEnd(editable);
+                    String str = editable.toString();
+                    String newStr = str.substring(0, TITLE_LIMIT);
+                    mEtTitle.setText(newStr);
+                    editable = mEtTitle.getText();
+                    int newLen = editable.length();
+                    if (selEndIndex > newLen) {
+                        selEndIndex = editable.length();
+                    }
+                    Selection.setSelection(editable, selEndIndex);
+                }
+                mTvTitleCount.setText((TITLE_LIMIT - mEtTitle.getText().length()) + "");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        root.addView(topRoot,0);
+    }
+
+    public void setTitle(String title){
+        if(mEtTitle == null)return;
+        mEtTitle.setText(title);
+    }
+
+    public String getTitle(){
+        return mEtTitle == null ? "" : mEtTitle.getText().toString();
+    }
+
+    public void setCover(String path){
+        if(mCover == null) return;
+        int w = (int) (DensityUtil.getScreenWidth(getContext()) - getContext().getResources().getDimension(R.dimen.x36) * 2);
+        int h = (int) getContext().getResources().getDimension(R.dimen.y200);
+        Glide.with(getContext())
+                .load(path)
+                .error(R.drawable.bg_default_square)
+                .placeholder(R.drawable.bg_default_square)
+                .bitmapTransform(new CropTransformation(getContext(),w,h))
+                .into(mCover);
+        mTvAddCover.setVisibility(GONE);
     }
 
     public void setLabelAble(){
@@ -448,6 +531,10 @@ public class NetaRichEditor extends ScrollView {
         return view;
     }
 
+    private View createTopView(){
+        View view = inflater.inflate(R.layout.item_rich_top,null);
+        return view;
+    }
 
     /**
      * 生成文本输入框

@@ -333,8 +333,9 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                                     }
                                 });
                     }else {
+                        final int[] wh = BitmapUtils.getDocIconSize(fb.getW() * 2, fb.getH() * 2, DensityUtil.getScreenWidth(ImageBigSelectActivity.this));
                         Glide.with(ImageBigSelectActivity.this)
-                                .load(StringUtils.getUrl(ImageBigSelectActivity.this,ApiService.URL_QINIU + fb.getPath(), DensityUtil.getScreenWidth(ImageBigSelectActivity.this), fb.getH(), true, true))
+                                .load(StringUtils.getUrl(ImageBigSelectActivity.this,ApiService.URL_QINIU + fb.getPath(), wh[0], wh[1], true, true))
                                 .placeholder(R.drawable.bg_default_square)
                                 .error(R.drawable.bg_default_square)
                                 .skipMemoryCache(true)

@@ -60,11 +60,6 @@ public class CoinDetailActivity extends BaseAppCompatActivity implements Comment
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new PersonListAdapter(this,3);

@@ -79,7 +79,6 @@ public class BagMyFragment extends BaseFragment implements BagMyContract.View{
         userId = getArguments().getString("uuid");
         mListDocs.setVisibility(View.VISIBLE);
         mLlShow.setVisibility(View.GONE);
-        mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new BagMyAdapter(userId,type);
         mListDocs.getRecyclerView().setBackgroundColor(ContextCompat.getColor(getContext(),R.color.white));
         mListDocs.getRecyclerView().setAdapter(mAdapter);

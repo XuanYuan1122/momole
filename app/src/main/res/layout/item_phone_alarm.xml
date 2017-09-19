@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y124"
+    android:background="@color/white">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray_e8e8e8"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y14"
+        android:layout_marginLeft="@dimen/x36"
+        android:layout_marginStart="@dimen/x36"
+        android:textColor="@color/black_1e1e1e"
+        android:textSize="@dimen/size_24" />
+
+    <TextView
+        android:id="@+id/tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/main_cyan"
+        android:textSize="@dimen/size_12"
+        android:layout_alignBottom="@+id/tv_time"
+        android:layout_toRightOf="@+id/tv_time"
+        android:layout_toEndOf="@+id/tv_time"
+        android:layout_marginBottom="@dimen/y8"
+        android:layout_marginLeft="@dimen/x16"
+        android:layout_marginStart="@dimen/x16"/>
+
+    <TextView
+        android:id="@+id/tv_week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/size_12"
+        android:textColor="@color/gray_929292"
+        android:layout_alignLeft="@+id/tv_time"
+        android:layout_alignStart="@+id/tv_time"
+        android:layout_below="@+id/tv_time" />
+
+    <ImageView
+        android:id="@+id/iv_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/x36"
+        android:layout_marginEnd="@dimen/x36"
+        android:layout_centerVertical="true"
+        android:src="@drawable/select_btn_3g"/>
+</RelativeLayout>

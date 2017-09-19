@@ -147,13 +147,13 @@ public class BagMyViewHolder extends ClickableViewHolder {
                         @Override
                         public void onNoDoubleClick(View v) {
                             if(position == 0){
-                                NewFileCommonActivity.startActivity(itemView.getContext(),FolderType.ZH.toString(),item.getFolderId(),userId);
+                                NewFileCommonActivity.startActivity(itemView.getContext(),FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
                             }else if(position == 1){
-                                NewFileCommonActivity.startActivity(itemView.getContext(),FolderType.TJ.toString(),item.getFolderId(),userId);
+                                NewFileCommonActivity.startActivity(itemView.getContext(),FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
                             }else if(position == 2){
-                                NewFileManHuaActivity.startActivity(itemView.getContext(),FolderType.MH.toString(),item.getFolderId(),userId);
+                                NewFileManHuaActivity.startActivity(itemView.getContext(),FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
                             }else {
-                                NewFileXiaoshuoActivity.startActivity(itemView.getContext(),FolderType.XS.toString(),item.getFolderId(),userId);
+                                NewFileXiaoshuoActivity.startActivity(itemView.getContext(),FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
                             }
                         }
                     });

@@ -1,6 +1,9 @@
 package com.moemoe.lalala.utils;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
+
+import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 
 /**
  * Created by yi on 2016/11/27.
@@ -36,11 +39,23 @@ public class DensityUtil {
         return widthPixels;
     }
 
+    public static int getScreenRWidth(Context context) {
+        DisplayMetrics metrics =new DisplayMetrics();
+        ((BaseAppCompatActivity)context).getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        return metrics.widthPixels;
+    }
+
 
     public static int getScreenHeight(Context context) {
         if (heightPixels <= 0) {
             heightPixels = context.getResources().getDisplayMetrics().heightPixels;
         }
         return heightPixels;
+    }
+
+    public static int getScreenRHeight(Context context) {
+        DisplayMetrics metrics =new DisplayMetrics();
+        ((BaseAppCompatActivity)context).getWindowManager().getDefaultDisplay().getRealMetrics(metrics);
+        return metrics.heightPixels;
     }
 }

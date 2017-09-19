@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_f6f6f6">
+
+    <include layout="@layout/neta_bar"/>
+
+    <com.flyco.tablayout.SegmentTabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y64"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/y24"
+        android:paddingLeft="@dimen/x24"
+        android:paddingRight="@dimen/x24"
+        app:tl_bar_color="@color/bg_f6f6f6"
+        app:tl_indicator_color="@color/main_cyan"
+        app:tl_indicator_corner_radius="@dimen/size_4"
+        app:tl_textBold="SELECT"
+        app:tl_textSelectColor="@color/white"
+        app:tl_textUnselectColor="@color/main_cyan"
+        app:tl_textsize="@dimen/size_12" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y24"/>
+</LinearLayout>

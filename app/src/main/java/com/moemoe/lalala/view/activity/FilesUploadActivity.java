@@ -307,7 +307,7 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
             showToast(R.string.msg_connection);
             return;
         }
-        if(mFolderType.equals(FolderType.MH.toString()) || mFolderType.equals(FolderType.XS.toString())){
+        if(mFolderType.equals(FolderType.MH.toString()) || mFolderType.equals(FolderType.XS.toString()) || mFolderType.equals(FolderType.MHD.toString()) ){
             String name = mTvName.getText().toString();
             if (TextUtils.isEmpty(name)) {
                 showToast(R.string.msg_name_cannot_null);

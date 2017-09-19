@@ -287,10 +287,12 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
         }
         authorInfo.setCoin(entity.getCoin());
         authorInfo.setUserName(entity.getUserName());
+        authorInfo.setRcToken(entity.getRcToken());
         authorInfo.setLevel(entity.getLevel());
         authorInfo.setOpenBag(entity.isOpenBag());
         authorInfo.setInspector(entity.isInspector());
         authorInfo.setPlatform("neta");
+        authorInfo.setDeskMateEntities(entity.getDeskMateList());
         finalizeDialog();
         PreferenceUtils.setAuthorInfo(authorInfo);
         showToast(R.string.msg_login_success);

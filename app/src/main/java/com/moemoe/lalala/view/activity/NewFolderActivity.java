@@ -153,7 +153,6 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
             manager = new LinearLayoutManager(this);
         }else {
             manager = new GridLayoutManager(this,3);
-           // mListDocs.getRecyclerView().setPadding(DensityUtil.dip2px(this,12),0,DensityUtil.dip2px(this,12),0);
             mListDocs.getRecyclerView().addItemDecoration(new FolderDecoration());
         }
         mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
@@ -162,13 +161,13 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
                 ShowFolderEntity entity = mAdapter.getItem(position);
                 if(!mIsSelect){
                     if(mFolderType.equals(FolderType.ZH.toString())){
-                        NewFileCommonActivity.startActivity(NewFolderActivity.this,FolderType.ZH.toString(),entity.getFolderId(),mUserId);
+                        NewFileCommonActivity.startActivity(NewFolderActivity.this,FolderType.ZH.toString(),entity.getFolderId(),entity.getCreateUser());
                     }else if(mFolderType.equals(FolderType.TJ.toString())){
-                        NewFileCommonActivity.startActivity(NewFolderActivity.this,FolderType.TJ.toString(),entity.getFolderId(),mUserId);
+                        NewFileCommonActivity.startActivity(NewFolderActivity.this,FolderType.TJ.toString(),entity.getFolderId(),entity.getCreateUser());
                     }else if(mFolderType.equals(FolderType.MH.toString())){
-                        NewFileManHuaActivity.startActivity(NewFolderActivity.this,FolderType.MH.toString(),entity.getFolderId(),mUserId);
+                        NewFileManHuaActivity.startActivity(NewFolderActivity.this,FolderType.MH.toString(),entity.getFolderId(),entity.getCreateUser());
                     }else if(mFolderType.equals(FolderType.XS.toString())){
-                        NewFileXiaoshuoActivity.startActivity(NewFolderActivity.this,FolderType.XS.toString(),entity.getFolderId(),mUserId);
+                        NewFileXiaoshuoActivity.startActivity(NewFolderActivity.this,FolderType.XS.toString(),entity.getFolderId(),entity.getCreateUser());
                     }
                 }else {
                     if(entity.isSelect()){

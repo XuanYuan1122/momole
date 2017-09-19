@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;

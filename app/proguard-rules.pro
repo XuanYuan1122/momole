@@ -87,8 +87,7 @@
 # Retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature
--keepattributes Exceptions
+-keepattributes Exceptions,InnerClasses
 # OkHttp3
 -dontwarn okhttp3.logging.**
 -keep class okhttp3.internal.**{*;}
@@ -219,11 +218,8 @@ public static java.lang.String TABLENAME;
 ##---------------Begin: proguard configuration for Gson  ----------
 # Gson uses generic index information stored in a class file when working with fields. Proguard
 # removes such information by default, so configure it to keep all of it.
--keepattributes Signature
--keepattributes Exceptions
 
 # For using GSON @Expose annotation
--keepattributes *Annotation*
 
 # Gson specific classes
 -keep class sun.misc.Unsafe { *; }
@@ -291,3 +287,27 @@ public static java.lang.String TABLENAME;
 -keepclassmembers public class * extends com.moemoe.lalala.view.widget.adapter.ClickableViewHolder {
   <init>(android.view.View);
 }
+#rongyun
+# RongCloud SDK
+-keep class io.rong.** {*;}
+-keep class * implements io.rong.imlib.model.MessageContent {*;}
+-dontwarn io.rong.push.**
+-dontnote com.xiaomi.**
+-dontnote com.google.android.gms.gcm.**
+-dontnote io.rong.**
+# VoIP
+-keep class io.agora.rtc.** {*;}
+
+# Location
+-keep class com.amap.api.**{*;}
+-keep class com.amap.api.services.**{*;}
+
+# 红包
+-keep class com.google.gson.** { *; }
+-keep class com.uuhelper.Application.** {*;}
+-keep class net.sourceforge.zbar.** { *; }
+-keep class com.google.android.gms.** { *; }
+-keep class com.alipay.** {*;}
+-keep class com.jrmf360.rylib.** {*;}
+-ignorewarnings
+-keep class com.moemoe.lalala.broadcast.SealNotificationReceiver {*;}

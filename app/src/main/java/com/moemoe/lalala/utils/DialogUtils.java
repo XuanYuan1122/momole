@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.moemoe.lalala.R;
@@ -20,6 +21,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import io.rong.imkit.RongExtension;
+import io.rong.imkit.plugin.IPluginModule;
 
 /**
  * Created by yi on 2016/11/28.
@@ -59,7 +63,7 @@ public class DialogUtils {
      * @param
      * @return
      */
-    public static AlertDialog createImgChooseDlg(final Activity activity, final BaseFragment fragment,
+    public static AlertDialog createImgChooseDlg(final Activity activity, final Fragment fragment,
                                                  final Context context, final ArrayList<String> selected, final int maxPhotos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.a_dlg_title_take_photo);
@@ -103,6 +107,45 @@ public class DialogUtils {
         return builder.create();
     }
 
+    public static AlertDialog createImgChooseDlg(final RongExtension rongExtension, final Fragment fragment,
+                                                 final IPluginModule pluginModule, final ArrayList<String> selected, final int maxPhotos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(fragment.getContext());
+        builder.setTitle(R.string.a_dlg_title_take_photo);
+        CharSequence[] items = new String[] { fragment.getContext().getString(R.string.label_take_photo),
+                fragment.getContext().getString(R.string.label_get_picture) };
+
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Uri mTmpAvatar = null;
+                try {
+                    mTmpAvatar = Uri.fromFile(createImageFile());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (which == 0) {
+                    // 拍照
+                    try {
+                        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE, null);
+                        i.putExtra(MediaStore.EXTRA_OUTPUT, mTmpAvatar);
+                        rongExtension.startActivityForPluginResult(i, 23, pluginModule);
+                    } catch (Exception e) {
+                        Toast.makeText(fragment.getContext(), fragment.getContext().getString(R.string.msg_no_system_camera), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                } else {
+                    // 从多选界面选择
+                    Intent intent = new Intent(fragment.getContext(), MultiImageChooseActivity.class);
+                    intent.putExtra(MultiImageChooseActivity.EXTRA_KEY_MAX_PHOTO, maxPhotos);
+                    intent.putExtra(MultiImageChooseActivity.EXTRA_KEY_SELETED_PHOTOS, selected);
+                    rongExtension.startActivityForPluginResult(intent, 23, pluginModule);
+                }
+            }
+        });
+        return builder.create();
+    }
+
     /**
      * 把程序拍摄的照片放到 SD卡的 Pictures目录中 sheguantong 文件夹中
      * 照片的命名规则为：neta_20130125_173729.jpg
@@ -134,7 +177,7 @@ public class DialogUtils {
      */
     public static boolean handleImgChooseResult(Context context, int requestCode, int resultCode, Intent data,final OnPhotoGetListener listener) {
         boolean res = false;
-        if (requestCode == REQ_GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == REQ_GET_FROM_GALLERY || requestCode == 23) && resultCode == Activity.RESULT_OK) {
             ArrayList<String> paths = data.getStringArrayListExtra(MultiImageChooseActivity.EXTRA_KEY_SELETED_PHOTOS);
             if (listener != null) {
                 listener.onPhotoGet(paths, true);

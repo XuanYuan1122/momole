@@ -6,6 +6,8 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.util.ArrayList;
+
 /**
  * Created by yi on 2016/11/28.
  */
@@ -25,8 +27,12 @@ public class AuthorInfo {
     private String userName;
     private int level;
     private boolean openBag;
+    private String rcToken;
+
     @Transient
     private boolean inspector;
+    @Transient
+    private ArrayList<DeskMateEntity> deskMateEntities;
 
     public AuthorInfo(){
         headPath = "";
@@ -40,12 +46,15 @@ public class AuthorInfo {
         userName = "";
         level = 1;
         openBag = false;
+        rcToken = "";
+        deskMateEntities = new ArrayList<>();
     }
 
-    @Generated(hash = 669657143)
+
+    @Generated(hash = 671368255)
     public AuthorInfo(long id, String headPath, String userId, String openId,
             String platform, String token, String password, String phone, int coin,
-            String userName, int level, boolean openBag) {
+            String userName, int level, boolean openBag, String rcToken) {
         this.id = id;
         this.headPath = headPath;
         this.userId = userId;
@@ -58,7 +67,9 @@ public class AuthorInfo {
         this.userName = userName;
         this.level = level;
         this.openBag = openBag;
+        this.rcToken = rcToken;
     }
+    
 
     public long getId() {
         return id;
@@ -166,5 +177,21 @@ public class AuthorInfo {
 
     public void setInspector(boolean inspector) {
         this.inspector = inspector;
+    }
+
+    public String getRcToken() {
+        return rcToken;
+    }
+
+    public void setRcToken(String rcToken) {
+        this.rcToken = rcToken;
+    }
+
+    public ArrayList<DeskMateEntity> getDeskMateEntities() {
+        return deskMateEntities;
+    }
+
+    public void setDeskMateEntities(ArrayList<DeskMateEntity> deskMateEntities) {
+        this.deskMateEntities = deskMateEntities;
     }
 }

@@ -71,11 +71,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mHander = new Handler();
         DaggerSettingComponent.builder()

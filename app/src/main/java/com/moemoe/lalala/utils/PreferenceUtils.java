@@ -72,6 +72,9 @@ public class PreferenceUtils {
             if(info.getLevel() > 1){
                 sAuthorInfo.setLevel(info.getLevel());
             }
+            if(!TextUtils.isEmpty(info.getRcToken())){
+                sAuthorInfo.setRcToken(info.getRcToken());
+            }
             sAuthorInfo.setOpenBag(info.isOpenBag());
             sAuthorInfo.setInspector(info.isInspector());
         }
@@ -117,6 +120,19 @@ public class PreferenceUtils {
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME,Activity.MODE_PRIVATE);
         return sp.getBoolean(type,false);
+    }
+
+    public static void setDeskMate(Context context,String role){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putString("neta_role", role);
+        ed.commit();
+    }
+
+    public static String getDeskMate(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getString("neta_role","");
     }
 
     public static void setIp(Context context,String ip){

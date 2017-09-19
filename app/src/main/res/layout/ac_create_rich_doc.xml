@@ -21,116 +21,81 @@
             layout="@layout/neta_bar"/>
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_top_root"
+    <RelativeLayout
+        android:id="@+id/rl_type_root"
         android:layout_below="@+id/top_root"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:background="@color/white"
         android:paddingLeft="@dimen/size_18"
         android:paddingStart="@dimen/size_18"
-        android:paddingRight="@dimen/size_12"
-        android:paddingEnd="@dimen/size_12">
+        android:paddingRight="@dimen/size_18"
+        android:paddingEnd="@dimen/size_18"
+        android:visibility="gone">
 
-        <RelativeLayout
-            android:id="@+id/rl_title_root"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_coin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_12"
+            android:textSize="@dimen/size_18"
+            android:textColor="@color/main_cyan"
+            android:text="@string/label_coin_watch"/>
 
-            <EditText
-                android:id="@+id/et_title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/label_edit_doc_hint"
-                android:textColorHint="@color/gray_d7d7d7"
-                android:textColor="@color/black_1e1e1e"
-                android:textSize="@dimen/size_16"
-                android:singleLine="true"
-                android:background="@null"
-                android:gravity="center_vertical"/>
+        <TextView
+            android:id="@+id/tv_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_coin"
+            android:layout_marginTop="@dimen/size_12"
+            android:textSize="@dimen/size_18"
+            android:textColor="@color/gray_d7d7d7"
+            android:text="/"/>
 
-            <TextView
-                android:id="@+id/ev_title_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_12"
-                android:textColor="@color/gray_d7d7d7"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:text="30"/>
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_12"
+            android:textSize="@dimen/size_18"
+            android:layout_toRightOf="@+id/tv_filter"
+            android:textColor="@color/gray_d7d7d7"
+            android:text="@string/label_report_watch"/>
 
-        <RelativeLayout
-            android:id="@+id/rl_type_root"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_type_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_coin"
+            android:textSize="@dimen/size_10"
+            android:layout_marginTop="@dimen/size_3"
+            android:textColor="@color/gray_d7d7d7"
+            android:text="@string/label_coin_watch_info"/>
 
-            <TextView
-                android:id="@+id/tv_coin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_12"
-                android:textSize="@dimen/size_18"
-                android:textColor="@color/main_cyan"
-                android:text="@string/label_coin_watch"/>
-
-            <TextView
-                android:id="@+id/tv_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/tv_coin"
-                android:layout_marginTop="@dimen/size_12"
-                android:textSize="@dimen/size_18"
-                android:textColor="@color/gray_d7d7d7"
-                android:text="/"/>
-
-            <TextView
-                android:id="@+id/tv_report"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_12"
-                android:textSize="@dimen/size_18"
-                android:layout_toRightOf="@+id/tv_filter"
-                android:textColor="@color/gray_d7d7d7"
-                android:text="@string/label_report_watch"/>
-
-            <TextView
-                android:id="@+id/tv_type_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_coin"
-                android:textSize="@dimen/size_10"
-                android:layout_marginTop="@dimen/size_3"
-                android:textColor="@color/gray_d7d7d7"
-                android:text="@string/label_coin_watch_info"/>
-
-            <TextView
-                android:id="@+id/tv_change_type"
-                android:layout_width="44dp"
-                android:layout_height="24dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="@dimen/size_6"
-                android:layout_marginRight="@dimen/size_6"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:text="@string/label_change_type"
-                android:background="@drawable/shape_rect_border_main_background_2"/>
-        </RelativeLayout>
-    </FrameLayout>
+        <TextView
+            android:id="@+id/tv_change_type"
+            android:layout_width="44dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/size_6"
+            android:layout_marginRight="@dimen/size_6"
+            android:textColor="@color/white"
+            android:textSize="@dimen/size_15"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="@string/label_change_type"
+            android:background="@drawable/shape_rect_border_main_background_2"/>
+    </RelativeLayout>
 
     <View
         android:id="@+id/view_sep"
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_1"
-        android:layout_below="@+id/fl_top_root"
-        android:background="@color/gray_e8e8e8"/>
+        android:layout_below="@+id/rl_type_root"
+        android:background="@color/gray_e8e8e8"
+        android:visibility="gone"/>
 
     <com.moemoe.lalala.view.widget.richtext.NetaRichEditor
         android:id="@+id/rich_et"
@@ -154,7 +119,6 @@
         android:layout_height="56dp"
         android:background="@color/white"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
         <ImageView

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCoinShopComponent;

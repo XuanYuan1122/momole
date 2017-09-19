@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/x36"
+        android:paddingRight="@dimen/x36"
+        android:paddingTop="@dimen/y24"
+        android:paddingBottom="@dimen/y24">
+
+        <ImageView
+            android:id="@+id/iv_cover"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y200"
+            android:src="@drawable/shape_dash_gray_d7d7d7"/>
+
+        <TextView
+            android:id="@+id/tv_add_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x30"
+            android:layout_gravity="center"
+            android:textColor="@color/gray_d7d7d7"
+            android:text="添加封面图"/>
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:background="@color/gray_e8e8e8"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_title_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y108"
+        android:paddingLeft="@dimen/x36"
+        android:paddingStart="@dimen/x36"
+        android:paddingRight="@dimen/x36"
+        android:paddingEnd="@dimen/x36">
+
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/label_edit_doc_hint"
+            android:textColorHint="@color/gray_d7d7d7"
+            android:textColor="@color/black_1e1e1e"
+            android:textSize="@dimen/x32"
+            android:singleLine="true"
+            android:background="@null"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/ev_title_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/gray_d7d7d7"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:text="30"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:background="@color/gray_e8e8e8"/>
+</LinearLayout>

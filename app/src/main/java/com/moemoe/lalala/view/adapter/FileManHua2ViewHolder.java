@@ -69,12 +69,6 @@ public class FileManHua2ViewHolder extends ClickableViewHolder {
                 .error(R.drawable.bg_default_square)
                 .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
                 .into(cover);
-//        iv.setOnClickListener(new NoDoubleClickListener() {
-//            @Override
-//            public void onNoDoubleClick(View v) {
-//                //TODO 跳转文件夹
-//            }
-//        });
     }
 
 }

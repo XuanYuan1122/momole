@@ -480,9 +480,9 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
             mTvTag2.setTextColor(ContextCompat.getColor(this,R.color.green_93d856));
         }
         mTvTag2.setText(mTag2);
-        mIsFollow = entity.isFollow();
+        mIsFollow = entity.isFavorite();
         if(!mUserId.equals(PreferenceUtils.getUUid())){
-            mIvAdd.setImageResource(entity.isFollow()?R.drawable.btn_unfollow_folder_item:R.drawable.btn_follow_folder_item);
+            mIvAdd.setImageResource(entity.isFavorite()?R.drawable.btn_unfollow_folder_item:R.drawable.btn_follow_folder_item);
             mIvAdd.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
@@ -620,13 +620,13 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     @Override
                     public void onNoDoubleClick(View v) {
                         if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),mUserId);
+                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
                         }
                     }
                 });
@@ -694,13 +694,13 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     @Override
                     public void onNoDoubleClick(View v) {
                         if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),mUserId);
+                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
                         }
                     }
                 });
@@ -868,13 +868,13 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     @Override
                     public void onNoDoubleClick(View v) {
                         if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileCommonActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),mUserId);
+                            NewFileCommonActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileCommonActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),mUserId);
+                            NewFileCommonActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),mUserId);
+                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
                         }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),mUserId);
+                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
                         }
                     }
                 });

@@ -271,46 +271,9 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
 
                 @Override
                 public void onPhotoGet(final ArrayList<String> photoPaths, boolean override) {
-                   // final ArrayList<String> res = new ArrayList<>();
                     Collections.reverse(photoPaths);
                     createDialog("图片插入中...");
                     onGetPhotos(photoPaths);
-//                    NetaImgCompress.get(CreateRichDocHideActivity.this)
-//                            .load(photoPaths)
-//                            .asPath()
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .doOnError(new Action1<Throwable>() {
-//                                @Override
-//                                public void call(Throwable throwable) {
-//                                    throwable.printStackTrace();
-//                                }
-//                            })
-//                            .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
-//                                @Override
-//                                public Observable<? extends String> call(Throwable throwable) {
-//                                    return Observable.empty();
-//                                }
-//                            })
-//                            .subscribe(new Subscriber<String>() {
-//                                @Override
-//                                public void onCompleted() {
-//                                    for (int i = 0;i < photoPaths.size();i++){
-//                                        mPathMap.put(res.get(i),photoPaths.get(i));
-//                                    }
-//                                    onGetPhotos(res);
-//                                }
-//
-//                                @Override
-//                                public void onError(Throwable e) {
-//
-//                                }
-//
-//                                @Override
-//                                public void onNext(String s) {
-//                                    res.add(s);
-//                                }
-//                            });
                 }
             });
         }

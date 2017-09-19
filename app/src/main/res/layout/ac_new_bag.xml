@@ -114,8 +114,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="@color/white"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.flyco.tablayout.SegmentTabLayout
@@ -129,9 +129,9 @@
             app:tl_bar_color="#ffffff"
             app:tl_indicator_color="@color/gray_e8e8e8"
             app:tl_indicator_corner_radius="@dimen/size_4"
+            app:tl_textBold="SELECT"
             app:tl_textSelectColor="@color/main_cyan"
             app:tl_textUnselectColor="@color/gray_e8e8e8"
-            app:tl_textBold="SELECT"
             app:tl_textsize="@dimen/size_12" />
 
         <android.support.v4.view.ViewPager

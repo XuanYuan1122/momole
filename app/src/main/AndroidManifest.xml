@@ -45,6 +45,15 @@
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp3.OkHttpGlideModule"
             android:value="GlideModule" />
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.moemoe.lalala.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/rc_file_path" />
+        </provider>
         <activity android:name=".view.activity.SplashActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -67,6 +76,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
         <activity android:name=".view.activity.BagOpenActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/ImageTranslucentTheme"/>
+        <activity android:name=".view.activity.PhoneAlarmActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
@@ -98,6 +111,12 @@
         </activity>
         <activity
             android:name=".view.activity.WallBlockActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.MateSelectActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme">
@@ -251,6 +270,27 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".view.activity.PhoneMainActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Activity_Dialog"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:host="com.moemoe.lalala"
+                    android:pathPrefix="/conversationlist"
+                    android:scheme="rong" />
+                <data
+                    android:host="com.moemoe.lalala"
+                    android:pathPrefix="/conversation/"
+                    android:scheme="rong" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".view.activity.ImageTrashActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -327,6 +367,10 @@
             android:theme="@style/MainColorTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden"  />
         <activity android:name=".view.activity.AddMusicActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme" />
+        <activity android:name=".view.activity.NewFolderWenZhangActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme" />
@@ -649,6 +693,49 @@
         </receiver>
 
         <service android:name=".broadcast.PushIntentService"/>
+        <service
+            android:name=".service.DaemonService"
+            android:exported="true"
+            android:process=":daemon">
+        </service>
+        <service
+            android:name=".service.DaemonService$DaemonInnerService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":daemon"/>
+        <receiver android:name=".broadcast.BootBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".broadcast.WakeReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.moemoe.lalala.wake.gray"/>
+            </intent-filter>
+        </receiver>
+        <service
+            android:name=".broadcast.WakeReceiver$WakeNotifyService"
+            android:enabled="true"
+            android:exported="false"/>
+
+        <service
+            android:name=".broadcast.WakeReceiver$WakeGrayInnerService"
+            android:enabled="true"
+            android:exported="false"/>
+        <receiver
+            android:name=".broadcast.AlarmClockProcessReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.moemoe.lalala.AlarmClockOff"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".broadcast.AlarmClockBroadcast"
+            android:process=":daemon">
+        </receiver>
 
         <service android:name=".broadcast.PushService"
             android:exported="true"
@@ -663,6 +750,22 @@
                 <data android:scheme="package"/>
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".broadcast.SealNotificationReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="io.rong.push.intent.MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MI_MESSAGE_ARRIVED" />
+                <action android:name="io.rong.push.intent.MESSAGE_CLICKED" />
+                <action android:name="io.rong.push.intent.MI_MESSAGE_CLICKED" />
+            </intent-filter>
+        </receiver>
+        <service
+            android:name="io.rong.imlib.ipc.RongService"
+            android:process=":ipc" />
+        <service android:name="io.rong.imlib.ReConnectService" />
+
+        <receiver android:name="io.rong.imlib.ConnectChangeReceiver" />
     </application>
 
 </manifest>

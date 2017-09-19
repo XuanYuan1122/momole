@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include layout="@layout/neta_bar"/>
+
+    <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/y24">
+
+    </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+
+    <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+        android:id="@+id/list_2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/y24"
+        android:visibility="gone">
+
+    </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/y44"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_phone_album_left"/>
+
+        <TextView
+            android:id="@+id/tv_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_15"
+            android:textColor="@color/main_cyan"
+            android:layout_marginLeft="@dimen/x36"
+            android:layout_marginStart="@dimen/x36"
+            android:layout_marginRight="@dimen/x36"
+            android:layout_marginEnd="@dimen/x36"
+            android:text="1/6"/>
+
+        <ImageView
+            android:id="@+id/iv_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_phone_album_right"/>
+    </LinearLayout>
+</LinearLayout>

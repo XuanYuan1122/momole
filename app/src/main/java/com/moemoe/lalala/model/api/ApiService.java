@@ -1,6 +1,7 @@
 package com.moemoe.lalala.model.api;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
@@ -63,6 +64,10 @@ import com.moemoe.lalala.model.entity.PayResEntity;
 import com.moemoe.lalala.model.entity.PersonDocEntity;
 import com.moemoe.lalala.model.entity.PersonFollowEntity;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
+import com.moemoe.lalala.model.entity.PhoneAlbumEntity;
+import com.moemoe.lalala.model.entity.PhoneFukuEntity;
+import com.moemoe.lalala.model.entity.PhoneMateEntity;
+import com.moemoe.lalala.model.entity.PhoneMenuEntity;
 import com.moemoe.lalala.model.entity.RegisterEntity;
 import com.moemoe.lalala.model.entity.RejectEntity;
 import com.moemoe.lalala.model.entity.ReplyEntity;
@@ -210,7 +215,7 @@ public interface ApiService {
     @POST("api/code/sendForgetV2")
     Observable<ApiResult> requestCode4ResetPwd(@Body CodeEntity mobile);
 
-    @GET("api/user/{userId}/infoV2")
+    @GET("api/user/{userId}/infoV3")
     Observable<ApiResult<UserInfo>> requestUserInfoV2(@Path("userId") String userId);
 
     @POST("api/report/save")
@@ -255,7 +260,7 @@ public interface ApiService {
     @GET("api/cal/blackboard/{day}")
     Observable<ApiResult<CalendarDayEntity>> requestCalDayList(@Path("day")String day);
 
-    @GET("api/doc/loadV2/{docId}")
+    @GET("api/doc/loadV3/{docId}")
     Observable<ApiResult<DocDetailEntity>> requestNewDocContent(@Path("docId") String id);
 
     @GET("api/doc/{docId}/comments")
@@ -711,4 +716,43 @@ public interface ApiService {
 
     @GET("V2/api/bag/folder/recommend/reload/{excludeFolderId}")
     Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadRefreshList(@Path("excludeFolderId")String excludeFolderId,@Query("folderName")String folderName,@Query("page")int page);
+
+    @GET("V2/api/user/getSampleUserInfo/{userId}")
+    Observable<ApiResult<JsonObject>> loadSampleUserInfo(@Path("userId")String userId);
+
+    @GET("V2/api/user/eachOthers")
+    Observable<ApiResult<ArrayList<PhoneMenuEntity>>> loadFollowListBoth(@Query("index")int index,@Query("size")int size);
+
+    @GET("V2/api/user/followers")
+    Observable<ApiResult<ArrayList<PhoneMenuEntity>>> loadFollowListFollow(@Query("index")int index,@Query("size")int size);
+
+    @GET("V2/api/user/fans")
+    Observable<ApiResult<ArrayList<PhoneMenuEntity>>> loadFollowListFans(@Query("index")int index,@Query("size")int size);
+
+    @GET("V2/api/user/getRcToken")
+    Observable<ApiResult<String>> loadRcToken();
+
+    @GET("V2/api/mobile/get/cg/type")
+    Observable<ApiResult<ArrayList<PhoneAlbumEntity>>> loadAlbumList(@Query("index")int index,@Query("size")int size);
+
+    @GET("V2/api/mobile/get/cg/{typeId}/id")
+    Observable<ApiResult<ArrayList<PhoneAlbumEntity>>> loadAlbumItemList(@Path("typeId")String typeId,@Query("index")int index,@Query("size")int size);
+
+    @GET("V2/api/mobile/get/cg/type/count")
+    Observable<ApiResult<Integer>> loadAlbumCount();
+
+    @GET("V2/api/mobile/get/cg/{typeId}/id/count")
+    Observable<ApiResult<Integer>> loadAlbumItemCount(@Path("typeId")String typeId);
+
+    @GET("V2/api/mobile/get/role/likes")
+    Observable<ApiResult<ArrayList<PhoneMateEntity>>> loadMateList();
+
+    @GET("V2/api/mobile/get/{role}/clothes")
+    Observable<ApiResult<ArrayList<PhoneFukuEntity>>> loadFukuList(@Path("role")String role);
+
+    @POST("V2/api/mobile/set/{role}/clothes/{clothesId}")
+    Observable<ApiResult> setFuku(@Path("role")String role,@Path("clothesId")String clothesId);
+
+    @POST("V2/api/mobile/set/{role}/to/deskmate")
+    Observable<ApiResult> setMate(@Path("role")String role);
 }

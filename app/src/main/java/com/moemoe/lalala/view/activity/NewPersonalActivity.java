@@ -1,6 +1,7 @@
 package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewPager;
@@ -35,6 +36,7 @@ import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.presenter.PersonalContract;
 import com.moemoe.lalala.presenter.PersonalPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.GreenDaoManager;
@@ -55,6 +57,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.rong.imkit.RongIM;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -316,29 +319,36 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 startActivity(i2);
                 break;
             case R.id.tv_private_msg:
-                goToChat();
+                //goToChat();
+                if(DialogUtils.checkLoginAndShowDlg(NewPersonalActivity.this)){
+                    if(!TextUtils.isEmpty(PreferenceUtils.getAuthorInfo().getRcToken()) && !TextUtils.isEmpty(mInfo.getRcTargetId())){
+                        RongIM.getInstance().startPrivateChat(NewPersonalActivity.this, mInfo.getRcTargetId(), mInfo.getUserName());
+                    }else {
+                        showToast("打开私信失败");
+                    }
+                }
                 break;
         }
     }
 
-    private void goToChat() {
-        if(mInfo != null){
-            GroupUserEntityDao dao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
-            List<GroupUserEntity> list = dao.queryBuilder()
-                    .where(GroupUserEntityDao.Properties.UserId.eq(mUserId))
-                    .limit(1)
-                    .list();
-            if(list.size() == 1){
-                //存在  直接跳转
-                Intent i = new Intent(this, ChatActivity.class);
-                i.putExtra("talkId",list.get(0).getTalkId());
-                i.putExtra("title",mInfo.getUserName());
-                startActivity(i);
-            }else {
-                mPresenter.createPrivateMsg(mUserId);
-            }
-        }
-    }
+//    private void goToChat() {
+//        if(mInfo != null){
+//            GroupUserEntityDao dao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
+//            List<GroupUserEntity> list = dao.queryBuilder()
+//                    .where(GroupUserEntityDao.Properties.UserId.eq(mUserId))
+//                    .limit(1)
+//                    .list();
+//            if(list.size() == 1){
+//                //存在  直接跳转
+//                Intent i = new Intent(this, ChatActivity.class);
+//                i.putExtra("talkId",list.get(0).getTalkId());
+//                i.putExtra("title",mInfo.getUserName());
+//                startActivity(i);
+//            }else {
+//                mPresenter.createPrivateMsg(mUserId);
+//            }
+//        }
+//    }
 
     @Override
     public void onCreatePrivateMsgSuccess(CreatePrivateMsgEntity entity) {
@@ -417,16 +427,16 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
 
     @Override
     public void onLoadUserInfoFail() {
-       // Intent i = new Intent(this, LoginActivity.class);
-       // startActivityForResult(i);
         showToast("获取个人信息失败,请稍后再试!");
         finish();
     }
 
     private void updateView(UserInfo info){
-        if(!info.getHeadPath().contains("http")){
+        if(!(info.getHeadPath().startsWith("http")  || info.getHeadPath().startsWith("https"))){
             info.setHeadPath(ApiService.URL_QINIU + info.getHeadPath());
         }
+        io.rong.imlib.model.UserInfo rcInfo = new io.rong.imlib.model.UserInfo(info.getUserId(),info.getUserName(), Uri.parse(info.getHeadPath()));
+        RongIM.getInstance().refreshUserInfoCache(rcInfo);
         if(!mIsSelf && info.isOpenBag()){
             mIvBag.setVisibility(View.VISIBLE);
         }else {

@@ -138,7 +138,6 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //ImmersionBar.with(this).destroy();
         if(bind != null) bind.unbind();
     }
 

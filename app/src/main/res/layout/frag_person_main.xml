@@ -71,7 +71,7 @@
                 android:layout_marginLeft="@dimen/size_15"
                 android:layout_marginStart="@dimen/size_15"
                 android:layout_gravity="center_vertical"
-                android:text="LV32"/>
+                android:text="LV0"/>
 
             <RelativeLayout
                 android:layout_width="145dp"

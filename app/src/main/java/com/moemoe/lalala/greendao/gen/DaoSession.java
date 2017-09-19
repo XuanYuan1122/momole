@@ -8,6 +8,7 @@ import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
+import com.moemoe.lalala.model.entity.AlarmClockEntity;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.model.entity.ChatContentDbEntity;
 import com.moemoe.lalala.model.entity.ChatUserEntity;
@@ -15,6 +16,7 @@ import com.moemoe.lalala.model.entity.GroupUserEntity;
 import com.moemoe.lalala.model.entity.NetaDb;
 import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 
+import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
 import com.moemoe.lalala.greendao.gen.AuthorInfoDao;
 import com.moemoe.lalala.greendao.gen.ChatContentDbEntityDao;
 import com.moemoe.lalala.greendao.gen.ChatUserEntityDao;
@@ -31,6 +33,7 @@ import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
  */
 public class DaoSession extends AbstractDaoSession {
 
+    private final DaoConfig alarmClockEntityDaoConfig;
     private final DaoConfig authorInfoDaoConfig;
     private final DaoConfig chatContentDbEntityDaoConfig;
     private final DaoConfig chatUserEntityDaoConfig;
@@ -38,6 +41,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig netaDbDaoConfig;
     private final DaoConfig privateMessageItemEntityDaoConfig;
 
+    private final AlarmClockEntityDao alarmClockEntityDao;
     private final AuthorInfoDao authorInfoDao;
     private final ChatContentDbEntityDao chatContentDbEntityDao;
     private final ChatUserEntityDao chatUserEntityDao;
@@ -48,6 +52,9 @@ public class DaoSession extends AbstractDaoSession {
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
+
+        alarmClockEntityDaoConfig = daoConfigMap.get(AlarmClockEntityDao.class).clone();
+        alarmClockEntityDaoConfig.initIdentityScope(type);
 
         authorInfoDaoConfig = daoConfigMap.get(AuthorInfoDao.class).clone();
         authorInfoDaoConfig.initIdentityScope(type);
@@ -67,6 +74,7 @@ public class DaoSession extends AbstractDaoSession {
         privateMessageItemEntityDaoConfig = daoConfigMap.get(PrivateMessageItemEntityDao.class).clone();
         privateMessageItemEntityDaoConfig.initIdentityScope(type);
 
+        alarmClockEntityDao = new AlarmClockEntityDao(alarmClockEntityDaoConfig, this);
         authorInfoDao = new AuthorInfoDao(authorInfoDaoConfig, this);
         chatContentDbEntityDao = new ChatContentDbEntityDao(chatContentDbEntityDaoConfig, this);
         chatUserEntityDao = new ChatUserEntityDao(chatUserEntityDaoConfig, this);
@@ -74,6 +82,7 @@ public class DaoSession extends AbstractDaoSession {
         netaDbDao = new NetaDbDao(netaDbDaoConfig, this);
         privateMessageItemEntityDao = new PrivateMessageItemEntityDao(privateMessageItemEntityDaoConfig, this);
 
+        registerDao(AlarmClockEntity.class, alarmClockEntityDao);
         registerDao(AuthorInfo.class, authorInfoDao);
         registerDao(ChatContentDbEntity.class, chatContentDbEntityDao);
         registerDao(ChatUserEntity.class, chatUserEntityDao);
@@ -83,12 +92,17 @@ public class DaoSession extends AbstractDaoSession {
     }
     
     public void clear() {
+        alarmClockEntityDaoConfig.clearIdentityScope();
         authorInfoDaoConfig.clearIdentityScope();
         chatContentDbEntityDaoConfig.clearIdentityScope();
         chatUserEntityDaoConfig.clearIdentityScope();
         groupUserEntityDaoConfig.clearIdentityScope();
         netaDbDaoConfig.clearIdentityScope();
         privateMessageItemEntityDaoConfig.clearIdentityScope();
+    }
+
+    public AlarmClockEntityDao getAlarmClockEntityDao() {
+        return alarmClockEntityDao;
     }
 
     public AuthorInfoDao getAuthorInfoDao() {

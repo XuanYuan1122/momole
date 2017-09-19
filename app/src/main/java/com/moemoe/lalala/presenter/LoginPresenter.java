@@ -83,6 +83,8 @@ public class LoginPresenter implements LoginContract.Presenter {
                                     }
 
                                 }
+                                authorInfo.setRcToken(entity.getRcToken());
+                                authorInfo.setDeskMateEntities(entity.getDeskMateList());
                                 authorInfo.setToken(entity.getToken());
                                 authorInfo.setUserId(entity.getUserId());
                                 authorInfo.setCoin(entity.getCoin());

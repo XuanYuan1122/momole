@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
+    <include
+        android:id="@+id/include_toolbar"
+        layout="@layout/neta_bar"/>
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/x24"
+        android:paddingRight="@dimen/x24"
+        android:paddingTop="@dimen/y36"
+        android:paddingBottom="@dimen/y56"
+        android:background="@null"
+        android:maxLines="6"
+        android:textColor="@color/gray_444444"
+        android:textSize="@dimen/x30"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingLeft="@dimen/x24"
+        android:paddingRight="@dimen/x24">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/tv_create_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y24"
+        android:textColor="@color/gray_d7d7d7"
+        android:layout_marginStart="@dimen/x36"
+        android:text="添加标签"
+        android:textSize="@dimen/x24" />
+
+    <com.moemoe.lalala.view.widget.view.DocLabelView
+        android:id="@+id/dv_doc_label_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingTop="@dimen/y24"
+        android:paddingBottom="@dimen/y24"
+        android:paddingStart="@dimen/x36"
+        android:paddingEnd="@dimen/x36"
+        app:child_view_height="22dp"
+        app:child_view_width="wrap_content"
+        app:line_spacing="7dp"
+        app:label_spacing="7dp" />
+
+    <com.moemoe.lalala.view.widget.view.KeyboardListenerLayout
+        android:id="@+id/rl_ope_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y112"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tv_content_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/x36"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/gray_929292"/>
+
+        <ImageView
+            android:id="@+id/iv_add_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/size_30"
+            android:src="@drawable/btn_doc_pic"/>
+
+        <ImageView
+            android:id="@+id/iv_alt_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/iv_add_img"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="24dp"
+            android:src="@drawable/btn_doc_at"/>
+
+    </com.moemoe.lalala.view.widget.view.KeyboardListenerLayout>
+</LinearLayout>

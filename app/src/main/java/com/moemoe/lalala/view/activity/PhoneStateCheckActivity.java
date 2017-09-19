@@ -225,8 +225,10 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
         info.setUserId(entity.getUserId());
         info.setLevel(1);
         info.setUserName(entity.getUserName());
+        info.setRcToken(entity.getRcToken());
         info.setCoin(0);
         info.setOpenBag(entity.isOpenBag());
+        info.setDeskMateEntities(entity.getDeskMateList());
         info.setInspector(entity.isInspector());
         if(!entity.getHeadPath().startsWith("http")){
             info.setHeadPath(ApiService.URL_QINIU + entity.getHeadPath());

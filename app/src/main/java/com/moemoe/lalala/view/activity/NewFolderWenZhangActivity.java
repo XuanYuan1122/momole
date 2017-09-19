@@ -127,7 +127,7 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                     intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
                     intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
                     intent.putExtra("from_name","书包");
-                    intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_1.0");
+                    intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");//TODO 2.0
                     startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
                 }
             });

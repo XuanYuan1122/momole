@@ -2,6 +2,8 @@ package com.moemoe.lalala.model.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by yi on 2016/11/12.
  */
@@ -25,6 +27,14 @@ public class LoginResultEntity {
     private boolean openBag;
     @SerializedName("inspector")
     private boolean inspector;
+    @SerializedName("rcToken")
+    private String rcToken;
+    @SerializedName("deskMateList")
+    private ArrayList<DeskMateEntity> deskMateList;
+
+    public LoginResultEntity(){
+        deskMateList = new ArrayList<>();
+    }
 
     public boolean isNew() {
         return isNew;
@@ -97,4 +107,21 @@ public class LoginResultEntity {
     public void setInspector(boolean inspector) {
         this.inspector = inspector;
     }
+
+    public String getRcToken() {
+        return rcToken;
+    }
+
+    public void setRcToken(String rcToken) {
+        this.rcToken = rcToken;
+    }
+
+    public ArrayList<DeskMateEntity> getDeskMateList() {
+        return deskMateList;
+    }
+
+    public void setDeskMateList(ArrayList<DeskMateEntity> deskMateList) {
+        this.deskMateList = deskMateList;
+    }
+
 }

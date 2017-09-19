@@ -36,6 +36,7 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
         public final static Property UserName = new Property(9, String.class, "userName", false, "USER_NAME");
         public final static Property Level = new Property(10, int.class, "level", false, "LEVEL");
         public final static Property OpenBag = new Property(11, boolean.class, "openBag", false, "OPEN_BAG");
+        public final static Property RcToken = new Property(12, String.class, "rcToken", false, "RC_TOKEN");
     }
 
 
@@ -62,7 +63,8 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
                 "\"COIN\" INTEGER NOT NULL ," + // 8: coin
                 "\"USER_NAME\" TEXT," + // 9: userName
                 "\"LEVEL\" INTEGER NOT NULL ," + // 10: level
-                "\"OPEN_BAG\" INTEGER NOT NULL );"); // 11: openBag
+                "\"OPEN_BAG\" INTEGER NOT NULL ," + // 11: openBag
+                "\"RC_TOKEN\" TEXT);"); // 12: rcToken
     }
 
     /** Drops the underlying database table. */
@@ -118,6 +120,11 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
         }
         stmt.bindLong(11, entity.getLevel());
         stmt.bindLong(12, entity.getOpenBag() ? 1L: 0L);
+ 
+        String rcToken = entity.getRcToken();
+        if (rcToken != null) {
+            stmt.bindString(13, rcToken);
+        }
     }
 
     @Override
@@ -167,6 +174,11 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
         }
         stmt.bindLong(11, entity.getLevel());
         stmt.bindLong(12, entity.getOpenBag() ? 1L: 0L);
+ 
+        String rcToken = entity.getRcToken();
+        if (rcToken != null) {
+            stmt.bindString(13, rcToken);
+        }
     }
 
     @Override
@@ -188,7 +200,8 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
             cursor.getInt(offset + 8), // coin
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // userName
             cursor.getInt(offset + 10), // level
-            cursor.getShort(offset + 11) != 0 // openBag
+            cursor.getShort(offset + 11) != 0, // openBag
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // rcToken
         );
         return entity;
     }
@@ -207,6 +220,7 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
         entity.setUserName(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setLevel(cursor.getInt(offset + 10));
         entity.setOpenBag(cursor.getShort(offset + 11) != 0);
+        entity.setRcToken(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
      }
     
     @Override

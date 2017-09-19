@@ -46,6 +46,10 @@ public class UserInfo implements Parcelable{
     private boolean openBag;
     @SerializedName("black")
     private boolean black;
+    @SerializedName("rcTargetId")
+    private String rcTargetId;
+    @SerializedName("userNo")
+    private int userNo;
 
 
     public String getBackground() {
@@ -192,6 +196,22 @@ public class UserInfo implements Parcelable{
         this.black = black;
     }
 
+    public String getRcTargetId() {
+        return rcTargetId;
+    }
+
+    public void setRcTargetId(String rcTargetId) {
+        this.rcTargetId = rcTargetId;
+    }
+
+    public int getUserNo() {
+        return userNo;
+    }
+
+    public void setUserNo(int userNo) {
+        this.userNo = userNo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -207,6 +227,7 @@ public class UserInfo implements Parcelable{
             info.coin = bundle.getInt("coin");
             info.docCount = bundle.getInt("docCount");
             info.followers = bundle.getInt("followers");
+            info.userNo = bundle.getInt("userNo");
             info.following = bundle.getBoolean("following");
             info.headPath = bundle.getString("headPath");
             info.registerTime = bundle.getString("registerTime");
@@ -218,6 +239,7 @@ public class UserInfo implements Parcelable{
             info.userId = bundle.getString("userId");
             info.userName = bundle.getString("userName");
             info.signature = bundle.getString("signature");
+            info.rcTargetId = bundle.getString("rcTargetId");
             info.size = bundle.getLong("size");
             info.black = bundle.getBoolean("black");
             return info;
@@ -237,6 +259,7 @@ public class UserInfo implements Parcelable{
         bundle.putInt("coin",coin);
         bundle.putInt("docCount",docCount);
         bundle.putInt("followers",followers);
+        bundle.putInt("userNo",userNo);
         bundle.putBoolean("following",following);
         bundle.putString("headPath",headPath);
         bundle.putString("registerTime",registerTime);
@@ -248,6 +271,7 @@ public class UserInfo implements Parcelable{
         bundle.putString("userId",userId);
         bundle.putString("userName",userName);
         bundle.putString("signature",signature);
+        bundle.putString("rcTargetId",rcTargetId);
         bundle.putLong("size",size);
         bundle.putBoolean("black",black);
         parcel.writeBundle(bundle);

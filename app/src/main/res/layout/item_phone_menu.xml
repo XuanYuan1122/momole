@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y100"
+    android:background="@drawable/btn_white_border_selector">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/x64"
+            android:layout_height="@dimen/y64"
+            android:layout_marginLeft="@dimen/x24"
+            android:layout_marginStart="@dimen/x24"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_1e1e1e"
+            android:textSize="@dimen/size_15"
+            android:layout_marginLeft="@dimen/x24"
+            android:layout_marginStart="@dimen/x24"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <ImageView
+            android:id="@+id/iv_sex"
+            android:layout_width="@dimen/x30"
+            android:layout_height="@dimen/y30"
+            android:layout_marginStart="@dimen/x20"
+            android:layout_marginLeft="@dimen/x20"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y1"
+        android:background="@color/gray_e8e8e8"/>
+</LinearLayout>

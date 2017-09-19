@@ -631,18 +631,28 @@ public class StringUtils {
      * @return
      */
     public static SpannableStringBuilder buildAtUserToShow(Context context, String s){
+        s = s.replace(" ","&nbsp;").replace("<at_user&nbsp;","<at_user ");
         Document document = Jsoup.parse(s);
         Elements elements = document.select("at_user");
         DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
         for(Element element : elements){
             String text = element.text();
-            String all = element.toString().replace("\"","").replace("\n","").replace(" " + text,text);
             String id = element.attr("user_id");
+            String all = element.toString().replace("\n","")
+                    .replace("\"" + id + "\"",id)
+                    .replace(" ","")
+                    .replace("&nbsp;"," ");
+            if(!all.contains("<at_user>")){
+                all = all.replace("<at_user","<at_user ");
+            }
+            s = s.replace("&nbsp;"," ");
             String beginStr = s.substring(0,s.indexOf(all));
             String endStr = s.substring(s.indexOf(all) + all.length());
             map.put(id,s.indexOf(all),s.indexOf(all) + text.length());
             s = beginStr + text + endStr;
+            s = s.replace(" ","&nbsp;").replace("<at_user&nbsp;","<at_user ");
         }
+        s = s.replace("&nbsp;"," ");
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(s);
         for(String id : map.getFirstKeys()){
             ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(id);
@@ -661,18 +671,28 @@ public class StringUtils {
      * @return
      */
     public static SpannableStringBuilder buildAtUserToEdit(Context context, String s){
+        s = s.replace(" ","&nbsp;").replace("<at_user&nbsp;","<at_user ");
         Document document = Jsoup.parse(s);
         Elements elements = document.select("at_user");
         DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
         for(Element element : elements){
             String text = element.text();
-            String all = element.toString().replace("\"","").replace("\n","").replace(" " + text,text);
             String id = element.attr("user_id");
+            String all = element.toString().replace("\n","")
+                    .replace("\"" + id + "\"",id)
+                    .replace(" ","")
+                    .replace("&nbsp;"," ");
+            if(!all.contains("<at_user>")){
+                all = all.replace("<at_user","<at_user ");
+            }
+            s = s.replace("&nbsp;"," ");
             String beginStr = s.substring(0,s.indexOf(all));
             String endStr = s.substring(s.indexOf(all) + all.length());
             map.put(id,s.indexOf(all),s.indexOf(all) + text.length());
             s = beginStr + text + endStr;
+            s = s.replace(" ","&nbsp;").replace("<at_user&nbsp;","<at_user ");
         }
+        s = s.replace("&nbsp;"," ");
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(s);
         for(String id : map.getFirstKeys()){
             ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(id);
@@ -722,5 +742,31 @@ public class StringUtils {
             minute = hS + ":" + minS + ":" + secS;
         }
         return minute;
+    }
+
+
+    /**
+     * 格式化时间
+     *
+     * @param hour   小时
+     * @param minute 分钟
+     * @return 格式化后的时间:[xx:xx]
+     */
+    public static String formatTime(int hour, int minute) {
+        return addZero(hour) + ":" + addZero(minute);
+    }
+
+    /**
+     * 时间补零
+     *
+     * @param time 需要补零的时间
+     * @return 补零后的时间
+     */
+    public static String addZero(int time) {
+        if (String.valueOf(time).length() == 1) {
+            return "0" + time;
+        }
+
+        return String.valueOf(time);
     }
 }

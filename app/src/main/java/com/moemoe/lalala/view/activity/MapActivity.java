@@ -57,6 +57,7 @@ import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.model.entity.SnowShowEntity;
 import com.moemoe.lalala.presenter.MapContract;
 import com.moemoe.lalala.presenter.MapPresenter;
+import com.moemoe.lalala.service.DaemonService;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -124,10 +125,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     FrameLayout mMap;
     @BindView(R.id.iv_bag)
     ImageView mIvBag;
-    @BindView(R.id.iv_search)
-    ImageView mIvSearch;
-    @BindView(R.id.iv_shop)
-    ImageView mIvShop;
+//    @BindView(R.id.iv_search)
+//    ImageView mIvSearch;
+//    @BindView(R.id.iv_shop)
+//    ImageView mIvShop;
     @BindView(R.id.iv_card)
     ImageView mIvCard;
     @BindView(R.id.fl_card_root)
@@ -152,8 +153,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     ImageView mIvSoundLoad;
     @BindView(R.id.iv_sign)
     ImageView mIvSign;
-//    @BindView(R.id.btn_ip)
-//    Button mIp;
     @Inject
     MapPresenter mPresenter;
     private MapWidget mapWidget;
@@ -196,6 +195,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         initMap("map");
         SoundManager.init(this);
         FileManager.init(this);
+        startService(new Intent(this, DaemonService.class));
         mFuku = PreferenceUtils.getSelectFuku(this);
         mExplosionField = ExplosionField.attach2Window(this);
         live2DMgr = new Live2DManager(mFuku);
@@ -794,16 +794,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         ErrorCodeUtils.showErrorMsgByCode(MapActivity.this,code,msg);
     }
 
-    @OnClick({R.id.iv_bag,R.id.iv_search,R.id.iv_card,R.id.iv_live2d,R.id.iv_main,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign,R.id.iv_shop})
+    @OnClick({R.id.iv_bag,R.id.iv_card,R.id.iv_live2d,R.id.iv_main,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_bag:
-//                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
-//                    Intent i2 = new Intent(MapActivity.this,BagActivity.class);
-//                    i2.putExtra(UUID,PreferenceUtils.getUUid());
-//                    startActivityForResult(i2);
-//                }
-
                 if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
                     if(PreferenceUtils.getAuthorInfo().isOpenBag()){
                         Intent i2 = new Intent(MapActivity.this,NewBagActivity.class);
@@ -823,16 +817,18 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 }
                 break;
             case R.id.iv_live2d:
-                if(mLive2dView == null){
-                    mLive2dView = live2DMgr.createView(this) ;
-                    mLive2DLayout.addView(mLive2dView, 0, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                }
-                mLive2DLayout.setVisibility(View.VISIBLE);
-                mExitLive2D.setVisibility(View.VISIBLE);
-                mIvSelectMate.setVisibility(View.VISIBLE);
-                mIvSelectFuku.setVisibility(View.VISIBLE);
-                mIvSelectLanguage.setVisibility(View.VISIBLE);
-                mIvGal.setVisibility(View.GONE);
+//                if(mLive2dView == null){
+//                    mLive2dView = live2DMgr.createView(this) ;
+//                    mLive2DLayout.addView(mLive2dView, 0, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//                }
+//                mLive2DLayout.setVisibility(View.VISIBLE);
+//                mExitLive2D.setVisibility(View.VISIBLE);
+//                mIvSelectMate.setVisibility(View.VISIBLE);
+//                mIvSelectFuku.setVisibility(View.VISIBLE);
+//                mIvSelectLanguage.setVisibility(View.VISIBLE);
+//                mIvGal.setVisibility(View.GONE);
+                Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+                startActivity(i2);
                 break;
             case R.id.iv_main:
                 Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
@@ -840,13 +836,15 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 overridePendingTransition(R.anim.main_list_in,0);
                 break;
             case R.id.tv_exit_live2d:
-                mIvGal.setVisibility(View.VISIBLE);
-                mLive2DLayout.setVisibility(View.GONE);
-                mExitLive2D.setVisibility(View.GONE);
-                mIvSelectMate.setVisibility(View.GONE);
-                mIvSelectFuku.setVisibility(View.GONE);
-                mIvSelectLanguage.setVisibility(View.GONE);
-                mIvSoundLoad.setVisibility(View.GONE);
+//                mIvGal.setVisibility(View.VISIBLE);
+//                mLive2DLayout.setVisibility(View.GONE);
+//                mExitLive2D.setVisibility(View.GONE);
+//                mIvSelectMate.setVisibility(View.GONE);
+//                mIvSelectFuku.setVisibility(View.GONE);
+//                mIvSelectLanguage.setVisibility(View.GONE);
+//                mIvSoundLoad.setVisibility(View.GONE);
+//                Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+//                startActivity(i2);
                 break;
             case R.id.iv_select_deskmate:
                 Intent i4 = new Intent(MapActivity.this,SelectMateActivity.class);
@@ -867,14 +865,14 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                     mPresenter.getDailyTask();
                 }
                 break;
-            case R.id.iv_search:
-                Intent i6 = new Intent(MapActivity.this,SearchActivity.class);
-                startActivity(i6);
-                break;
-            case R.id.iv_shop:
-                Intent i7 = new Intent(MapActivity.this,CoinShopActivity.class);
-                startActivity(i7);
-                break;
+//            case R.id.iv_search:
+//                Intent i6 = new Intent(MapActivity.this,SearchActivity.class);
+//                startActivity(i6);
+//                break;
+//            case R.id.iv_shop:
+//                Intent i7 = new Intent(MapActivity.this,CoinShopActivity.class);
+//                startActivity(i7);
+//                break;
         }
     }
 
@@ -903,10 +901,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",-mIvBag.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",-mIvSearch.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
-        searchAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",-mIvShop.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
-        shopAnimator.setInterpolator(new OvershootInterpolator());
+//        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",-mIvSearch.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
+//        searchAnimator.setInterpolator(new OvershootInterpolator());
+//        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",-mIvShop.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
+//        shopAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvMain,"translationY",mIvMain.getHeight(),0).setDuration(300);
         squareAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator galAnimator = ObjectAnimator.ofFloat(mIvGal,"translationY",mIvGal.getHeight(),0).setDuration(300);
@@ -915,9 +913,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         signAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
-        set.play(bagAnimator).with(searchAnimator);
-        set.play(searchAnimator).with(shopAnimator);
-        set.play(shopAnimator).with(squareAnimator);
+        set.play(bagAnimator).with(squareAnimator);
         set.play(squareAnimator).with(galAnimator);
         set.play(galAnimator).with(signAnimator);
         set.start();
@@ -928,10 +924,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",0,-mIvBag.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",0,-mIvSearch.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
-        searchAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",0,-mIvShop.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
-        shopAnimator.setInterpolator(new OvershootInterpolator());
+//        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",0,-mIvSearch.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
+//        searchAnimator.setInterpolator(new OvershootInterpolator());
+//        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",0,-mIvShop.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
+//        shopAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvMain,"translationY",0,mIvMain.getHeight()).setDuration(300);
         squareAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator galAnimator = ObjectAnimator.ofFloat(mIvGal,"translationY",0,mIvGal.getHeight()).setDuration(300);
@@ -940,9 +936,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         signAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
-        set.play(bagAnimator).with(searchAnimator);
-        set.play(searchAnimator).with(shopAnimator);
-        set.play(shopAnimator).with(squareAnimator);
+        set.play(bagAnimator).with(squareAnimator);
         set.play(squareAnimator).with(galAnimator);
         set.play(galAnimator).with(signAnimator);
         set.start();
@@ -951,8 +945,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private void showBtn(){
         mCardRoot.setVisibility(View.VISIBLE);
         mIvBag.setVisibility(View.VISIBLE);
-        mIvSearch.setVisibility(View.VISIBLE);
-        mIvShop.setVisibility(View.VISIBLE);
+
         mIvMain.setVisibility(View.VISIBLE);
         mIvGal.setVisibility(View.VISIBLE);
         mIvSign.setVisibility(View.VISIBLE);
@@ -961,8 +954,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private void hideBtn(){
         mCardRoot.setVisibility(View.INVISIBLE);
         mIvBag.setVisibility(View.INVISIBLE);
-        mIvSearch.setVisibility(View.INVISIBLE);
-        mIvShop.setVisibility(View.INVISIBLE);
+
         mIvMain.setVisibility(View.INVISIBLE);
         mIvGal.setVisibility(View.INVISIBLE);
         mIvSign.setVisibility(View.INVISIBLE);

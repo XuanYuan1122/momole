@@ -24,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId "com.moemoe.lalala"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 25
         versionCode 4700
         versionName "4.7.0"
@@ -39,8 +39,6 @@ android {
         renderscriptSupportModeEnabled = true
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
-        buildConfigField "String", "TINKER_ID", "\"tinkerId\""
-        buildConfigField "String", "PLATFORM",  "\"all\""
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "mips", "mips64", "x86", "x86_64"
         }
@@ -59,10 +57,16 @@ android {
             keyPassword "moemoe"
         }
     }
+    sourceSets {
+        main {
+            jni.srcDirs = []
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     buildTypes {
         release {
-            buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
-           // buildConfigField("String", "BASE_URL", "\"http://2333.moemoe.la/\"")
+           // buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
+            buildConfigField("String", "BASE_URL", "\"http://2333.moemoe.la/\"")
             buildConfigField("String", "NOT_FOUND_PAGE", "\"http://s.moemoe.la/404.html\"")
             //混淆
             minifyEnabled true
@@ -109,7 +113,7 @@ android {
         }
     }
     greendao{
-        schemaVersion 2
+        schemaVersion 4
         daoPackage 'com.moemoe.lalala.greendao.gen'
         targetGenDir 'src/main/java'
     }
@@ -205,7 +209,10 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
+    //    compile 'cn.rongcloud.android:IMLib:2.8.6'
 
+    //    compile 'cn.rongcloud.android:IMKit:2.8.6'
+    compile 'com.coolerfall:android-app-daemon:1.2.0'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
     //butterknife
@@ -251,6 +258,7 @@ dependencies {
     //使用QQ钱包时添加
 
     //toolbar
+
     //compile 'com.gyf.barlibrary:barlibrary:2.2.5'
 
     //tabLayout
@@ -260,7 +268,7 @@ dependencies {
     //compile 'com.getui:ext:2.0.3'
     compile 'com.facebook.rebound:rebound:0.3.8'
     //jsoup
-    compile 'org.jsoup:jsoup:1.9.2'
+    compile 'org.jsoup:jsoup:1.10.3'
     //bannar
     compile 'com.youth.banner:banner:1.4.9'
     testCompile 'junit:junit:4.12'
@@ -279,6 +287,7 @@ dependencies {
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    compile project(':IMKit')
 }
 
 def buildTime() {

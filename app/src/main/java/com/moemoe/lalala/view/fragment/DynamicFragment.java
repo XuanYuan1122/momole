@@ -146,10 +146,9 @@ public class DynamicFragment extends BaseFragment implements BagDynamicContract.
         autoPollRecyclerView.addItemDecoration(new MenuVItemDecoration(DensityUtil.dip2px(getContext(),8)));
         mTopAdapter = new DynamicTopAdapter();
         autoPollRecyclerView.setAdapter(mTopAdapter);
-        mTopAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        autoPollRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void onChanged() {
-                super.onChanged();
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 int lastPosition = ((LinearLayoutManager)autoPollRecyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
                 if(lastPosition < mTopAdapter.getList().size() - 1){
                     mTopAdapter.setSize(Integer.MAX_VALUE);
@@ -180,6 +179,7 @@ public class DynamicFragment extends BaseFragment implements BagDynamicContract.
     }
 
     public void release(){
+        if(autoPollRecyclerView != null) autoPollRecyclerView.stop();
         if(mPresenter != null) mPresenter.release();
         super.release();
     }

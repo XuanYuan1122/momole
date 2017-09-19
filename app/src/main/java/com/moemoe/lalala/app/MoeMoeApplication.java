@@ -15,6 +15,8 @@ import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import io.rong.imkit.RongIM;
+
 /**
  * Created by yi on 2017/5/11.
  */
@@ -32,7 +34,9 @@ public class MoeMoeApplication extends Application {
         super.onCreate();
         mInstance = this;
         MultiDex.install(this);
+        RongIM.init(this);
         initLogger();
+        MoeMoeAppListener.init(this);
         initNet();
         GreenDaoManager.getInstance();
         UnCaughtException caughtException = UnCaughtException.getInstance();

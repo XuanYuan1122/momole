@@ -77,10 +77,6 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     View mHeadRoot;
     @BindView(R.id.dv_label_root)
     DocLabelView mDocLabel;
-//    @BindView(R.id.tv_like_num)
-//    TextView mLikesNum;
-//    @BindView(R.id.tv_doc_num)
-//    TextView mDocNum;
     @BindView(R.id.tv_simple_label)
     TextView mSimpleLabel;
     @BindView(R.id.tv_follow)

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include layout="@layout/neta_bar"/>
+
+    <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y410"
+        android:layout_marginTop="@dimen/y20"
+        android:paddingLeft="@dimen/x24">
+    </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+
+    <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
+        android:id="@+id/list_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y410"
+        android:layout_marginTop="@dimen/y20"
+        android:paddingLeft="@dimen/x24"
+        android:visibility="gone">
+    </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/ll_name_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y48"
+                android:layout_marginLeft="@dimen/x24"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_1e1e1e"
+                    android:textSize="@dimen/size_20"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_relationship"
+                    android:layout_width="@dimen/x88"
+                    android:layout_height="@dimen/y36"
+                    android:layout_marginLeft="@dimen/x16"
+                    android:layout_marginStart="@dimen/x16"
+                    android:gravity="center"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_extra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black_1e1e1e"
+                android:textSize="@dimen/size_12"
+                android:layout_below="@+id/ll_name_root"
+                android:layout_marginTop="@dimen/y24"
+                android:layout_alignLeft="@+id/ll_name_root"
+                android:layout_alignStart="@+id/ll_name_root" />
+
+            <TextView
+                android:id="@+id/tv_extra_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_12"
+                android:textStyle="bold"
+                android:layout_marginLeft="@dimen/x12"
+                android:layout_marginStart="@dimen/x12"
+                android:layout_alignTop="@+id/tv_extra"
+                android:layout_toRightOf="@+id/tv_extra"
+                android:layout_toEndOf="@+id/tv_extra"/>
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_extra"
+                android:layout_alignStart="@+id/tv_extra"
+                android:layout_alignLeft="@+id/tv_extra"
+                android:textColor="@color/gray_929292"
+                android:textSize="@dimen/size_12" />
+
+
+            <LinearLayout
+                android:id="@+id/ll_fuku_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/tv_content"
+                android:layout_marginTop="@dimen/y48"
+                android:gravity="center"
+                android:background="@drawable/btn_mate_fuku">
+
+                <TextView
+                    android:id="@+id/tv_select_fuku"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_15"
+                    android:textStyle="bold"
+                    android:text="服装"/>
+
+                <TextView
+                    android:id="@+id/tv_select_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/size_10"
+                    android:textColor="@color/white"
+                    android:text="当前：校服"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_set_mate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_below="@+id/ll_fuku_root"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/btn_mate_select"
+                android:layout_marginTop="@dimen/y12"
+                android:text="设置为同桌"/>
+        </RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>
