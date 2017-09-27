@@ -47,7 +47,6 @@ import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
-import com.moemoe.lalala.view.activity.FilesUploadActivity;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
@@ -56,12 +55,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.glide.transformations.CropTransformation;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/5/11.
@@ -194,7 +197,7 @@ public class NetaRichEditor extends ScrollView {
             }
         };
 
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(getContext())
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
@@ -595,13 +598,12 @@ public class NetaRichEditor extends ScrollView {
     public void insertTextInCurSelection(String str,String id){
         SpannableStringBuilder lastEditStr = new SpannableStringBuilder(lastFocusEdit.getText());
         int cursorIndex = lastFocusEdit.getSelectionStart();
+        CustomUrlSpan span = new CustomUrlSpan(getContext(),"", id);
         if(cursorIndex < 0){
             lastEditStr.insert(lastEditStr.length(),str + " ");
-            CustomUrlSpan span = new CustomUrlSpan(getContext(),"", id);
             lastEditStr.setSpan(span,lastFocusEdit.getText().length(),lastFocusEdit.getText().length() + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }else {
             lastEditStr.insert(cursorIndex,str + " ");
-            CustomUrlSpan span = new CustomUrlSpan(getContext(),"", id);
             lastEditStr.setSpan(span,cursorIndex,cursorIndex + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         lastFocusEdit.setText(lastEditStr);
@@ -693,7 +695,7 @@ public class NetaRichEditor extends ScrollView {
             width = w;
             height = h;
         }
-        final int[] wh = BitmapUtils.getDocIconSize(width * 2, height * 2, DensityUtil.getScreenWidth(getContext()) - DensityUtil.dip2px(getContext(),36));
+        final int[] wh = BitmapUtils.getDocIconSizeFromW(width * 2, height * 2, DensityUtil.getScreenWidth(getContext()) - DensityUtil.dip2px(getContext(),36));
         if(wh[1] > 2048){
             imageView.setVisibility(GONE);
             longImageView.setVisibility(VISIBLE);
@@ -717,21 +719,26 @@ public class NetaRichEditor extends ScrollView {
                     downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<DownloadStatus>() {
+                            .subscribe(new Observer<DownloadStatus>() {
                                 @Override
-                                public void onCompleted() {
+                                public void onSubscribe(@NonNull Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(@NonNull DownloadStatus downloadStatus) {
+
+                                }
+
+                                @Override
+                                public void onError(@NonNull Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
                                     BitmapUtils.galleryAddPic(getContext(), longImage.getAbsolutePath());
                                     longImageView.setImage(longImage.getAbsolutePath());
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-
-                                @Override
-                                public void onNext(DownloadStatus downloadStatus) {
-
                                 }
                             });
                 }

@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_normal_white_btn"
-    android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
     android:paddingBottom="15dp">
 

@@ -2,9 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_from_top"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_32"
-    android:paddingLeft="@dimen/size_12"
-    android:paddingRight="@dimen/size_12">
+    android:layout_height="@dimen/size_32">
 
     <View
         android:layout_width="match_parent"
@@ -18,6 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:textColor="@color/gray_929292"
+        android:layout_marginStart="@dimen/size_12"
         android:textSize="@dimen/size_10"
         android:text="@string/label_from"/>
 

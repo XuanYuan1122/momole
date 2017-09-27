@@ -346,7 +346,9 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         finalizeDialog();
         for (Integer i : mSelectMap.keySet()){
             mAdapter.getList().get(i).setSelect(false);
-            mAdapter.notifyItemChanged(i);
+            WenZhangFolderEntity entity = mAdapter.getList().remove((int)i);
+            mAdapter.getList().add(0,entity);
+            mAdapter.notifyItemRangeChanged(0,i + 1);
         }
         mSelectMap.clear();
     }

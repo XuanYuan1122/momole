@@ -10,12 +10,10 @@ import java.util.ArrayList;
 
 public interface ColumnContract {
     interface Presenter extends BasePresenter{
-        void requestFutureFresh(String barId,int index);
         void requestPastFresh(String barId,int index);
     }
 
     interface View extends BaseView{
-        void loadColumnFutureData(ArrayList<CalendarDayItemEntity> calendarDayItemEntities);
         void loadColumnPastData(ArrayList<CalendarDayItemEntity> calendarDayItemEntities);
     }
 }

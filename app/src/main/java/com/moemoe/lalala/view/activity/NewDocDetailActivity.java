@@ -30,6 +30,7 @@ import com.moemoe.lalala.di.modules.DetailModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.CommentSendEntity;
+import com.moemoe.lalala.model.entity.CommentV2Entity;
 import com.moemoe.lalala.model.entity.DocDetailEntity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.FolderType;
@@ -39,9 +40,10 @@ import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.RichDocListEntity;
 import com.moemoe.lalala.model.entity.RichEntity;
-import com.moemoe.lalala.model.entity.ShowFolderEntity;
+import com.moemoe.lalala.model.entity.ShareArticleEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
+import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.DocDetailContract;
 import com.moemoe.lalala.presenter.DocDetailPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -85,6 +87,7 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
 /**
+ * 文章
  * Created by yi on 2016/12/2.
  */
 
@@ -92,11 +95,11 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private final int MENU_FAVORITE = 102;
     private final int MENU_SHARE = 103;
     private final int MENU_REPORT = 104;
-    private final int MENU_GOTO_FLOOR = 105;
     private final int MENU_DELETE = 106;
     private final int TAG_DELETE = 107;
     private final int EDIT_DOC = 108;
     private final int MENU_EGG = 109;
+    private final int MENU_FORWARD = 110;
     private final int ICON_NUM_LIMIT = 9;
     private final int REQ_GET_EDIT_VERSION_IMG = 2333;
     private final int REQ_TO_FOLDER = 30003;
@@ -112,12 +115,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     ImageView mIvMenu;
     @BindView(R.id.rv_img)
     RecyclerView mRvComment;
-    @BindView(R.id.tv_menu)
-    TextView mTvOnlyHost;
-    @BindView(R.id.tv_jump_to)
-    TextView mTvJumpTo;
-    @BindView(R.id.ll_jump_root)
-    View mLlJumpRoot;
     @BindView(R.id.edt_comment_input)
     EditText mEdtCommentInput;
     @BindView(R.id.iv_comment_send)
@@ -136,19 +133,14 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private DocRecyclerViewAdapter mAdapter;
     private SelectImgAdapter mSelectAdapter;
     private BottomMenuFragment bottomMenuFragment;
-    private boolean mTargetId;
-    private int mCurFloor = 0;
     private int mCurType = 0;//0.对楼主 1.对某楼 2.对标签
     private ArrayList<Image> mImages ;
     private ArrayList<String> mIconPaths = new ArrayList<>();
     private boolean hasLoaded = false;
-    private boolean mIsLoading = false;
-    private int mCommentNum = 0;
     private ArrayList<DocTagEntity> mDocTags;
-    private boolean isPostEgg;
-    private boolean mCanPostEgg;
     private int mPosition;
-    
+    private int mCommentNum;
+
     @Override
     protected int getLayoutId() {
         return R.layout.ac_one_recycleview;
@@ -175,19 +167,12 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mIvMenu.setVisibility(View.VISIBLE);
         mList.setLoadMoreEnabled(false);
         mList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
+        mList.getSwipeRefreshLayout().setEnabled(false);
         mAdapter = new DocRecyclerViewAdapter(this);
         mList.getRecyclerView().setAdapter(mAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mList.setLayoutManager(layoutManager);
         mImages = new ArrayList<>();
-        mCurFloor = PreferenceUtils.getDocCurFloor(this,mDocId);
-        if (mCurFloor > 20){
-            mTvJumpTo.setText(getString(R.string.label_jump_to,mCurFloor));
-            mLlJumpRoot.setVisibility(View.VISIBLE);
-        }else {
-            PreferenceUtils.removeData(this,mDocId);
-            mLlJumpRoot.setVisibility(View.GONE);
-        }
         mSelectAdapter = new SelectImgAdapter(this);
         LinearLayoutManager selectRvL = new LinearLayoutManager(this);
         selectRvL.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -201,23 +186,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     protected void initToolbar(Bundle savedInstanceState) {
         mTvFrom.setVisibility(View.VISIBLE);
         mTvFrom.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-        String from = getIntent().getStringExtra("from_name");
-        if(!TextUtils.isEmpty(from)) {
-            mTvFrom.setText(from);
-            if(from.equals("后山") || from.equals("广场")){
-                mCanPostEgg = true;
-            }
-        }else {
-            mCanPostEgg = false;
-        }
+        mTvFrom.setText("文章");
         mIvMenu.setVisibility(View.VISIBLE);
-        mTvOnlyHost.setVisibility(View.VISIBLE);
-        mTvOnlyHost.setWidth(DensityUtil.dip2px(this,50));
-        mTvOnlyHost.setHeight(DensityUtil.dip2px(this,20));
-        mTvOnlyHost.setTextSize(TypedValue.COMPLEX_UNIT_DIP,9);
-        mTvOnlyHost.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-        mTvOnlyHost.setText(getString(R.string.label_only_host));
-        mTvOnlyHost.setBackgroundResource(R.drawable.btn_only_host_new);
     }
 
     @Override
@@ -228,9 +198,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     public void onBackPressed(String type) {
         Intent i = new Intent();
         i.putExtra("position",mPosition);
-        if(isPostEgg){
-            type = "egg";
-        }
         i.putExtra("type",type);
         setResult(RESULT_OK,i);
         finish();
@@ -257,45 +224,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 if(bottomMenuFragment != null) bottomMenuFragment.show(getSupportFragmentManager(),"DocDetailMenu");
             }
         });
-        final RecyclerViewPositionHelper recyclerViewHelper = RecyclerViewPositionHelper.createHelper(mList.getRecyclerView());
-        mList.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if(mLlJumpRoot.getVisibility() == View.VISIBLE){
-                    int pos = recyclerViewHelper.findFirstVisibleItemPosition();
-                    if(pos >= 0){
-                        Object o = mAdapter.getItem(pos);
-                        if(o instanceof NewCommentEntity){
-                            NewCommentEntity bean = (NewCommentEntity) o;
-                            int curFloor = bean.getIdx();
-                            if(curFloor > 10){
-                                mLlJumpRoot.setVisibility(View.GONE);
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int pos = recyclerViewHelper.findFirstVisibleItemPosition();
-                    if(pos >= 0){
-                        Object o = mAdapter.getItem(pos);
-                        if(o instanceof NewCommentEntity){
-                            NewCommentEntity bean = (NewCommentEntity) o;
-                            if(!mTargetId) mCurFloor = bean.getIdx();
-
-                        }else {
-                            mCurFloor = 0;
-                        }
-                    }
-                } else {
-                }
-            }
-        });
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -306,7 +234,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     intent.putExtra(ImageBigSelectActivity.EXTRA_KEY_FILEBEAN, mImages);
                     intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX,
                             mImages.indexOf(img));
-                    // 以后可选择 有返回数据
                     startActivity(intent);
                 } else if (o instanceof DocDetailEntity.DocLink) {
                     DocDetailEntity.DocLink link = (DocDetailEntity.DocLink) o;
@@ -405,38 +332,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 mTvSendComment.setEnabled(false);
             }
         });
-        mList.setPullCallback(new PullCallback() {
-            @Override
-            public void onLoadMore() {
-                int floor = 1;
-                Object o = mAdapter.getItem(mAdapter.getItemCount() - 1);
-                if(o instanceof NewCommentEntity){
-                    floor = ((NewCommentEntity)o).getIdx() + 1;
-                }
-                mIsLoading = true;
-                requestCommentsByFloor(floor,mTargetId,false,false);
-            }
-
-            @Override
-            public void onRefresh() {
-                if(NetworkUtils.checkNetworkAndShowError(NewDocDetailActivity.this)){
-                    mIsLoading = true;
-                    mPresenter.requestDoc(mDocId);
-                }
-            }
-
-            @Override
-            public boolean isLoading() {
-                return mIsLoading;
-            }
-
-            @Override
-            public boolean hasLoadedAllItems() {
-                return false;
-            }
-        });
         mPresenter.requestDoc(mDocId);
-        mPresenter.checkEgg(mDocId);
     }
 
     @Override
@@ -464,36 +360,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             alertDialogUtil.showDialog();
 
         }
-    }
-
-    private void jumpToFloor(){
-        if(hasLoaded){
-            if(mCommentNum > 0){
-                final AlertDialogUtil dialogUtil = AlertDialogUtil.getInstance();
-                dialogUtil.createEditDialog(this, mCommentNum,1);
-                dialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
-                    @Override
-                    public void CancelOnClick() {
-                        dialogUtil.dismissDialog();
-                    }
-
-                    @Override
-                    public void ConfirmOnClick() {
-                        String content = dialogUtil.getEditTextContent();
-                        if(!TextUtils.isEmpty(content)){
-                            requestCommentsByFloor(Long.valueOf(content),mTargetId,true,false);
-                            dialogUtil.dismissDialog();
-                        }else {
-                            showToast(R.string.msg_can_not_empty);
-                        }
-                    }
-                });
-                dialogUtil.showDialog();
-            }else {
-                showToast(R.string.msg_have_no_comments);
-            }
-        }
-
     }
 
     private void favoriteDoc(){
@@ -563,7 +429,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     protected void onDestroy() {
         if(mPresenter != null)mPresenter.release();
         if(mAdapter != null) mAdapter.releaseAdapter();
-        PreferenceUtils.saveDocCurFloor(this,mDocId,mCurFloor);
         super.onDestroy();
     }
 
@@ -579,7 +444,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         super.onResume();
     }
 
-    @OnClick({R.id.iv_comment_send,R.id.iv_add_img,R.id.tv_menu,R.id.iv_cancel_jump,R.id.tv_jump_to})
+    @OnClick({R.id.iv_comment_send,R.id.iv_add_img})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.iv_comment_send:
@@ -591,29 +456,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 break;
             case R.id.iv_add_img:
                 choosePhoto();
-                break;
-            case R.id.tv_menu:
-                if(!mTargetId){
-                    if(hasLoaded){
-                        mTargetId = true;
-                        mTvOnlyHost.setSelected(true);
-                        mTvOnlyHost.setTextColor(ContextCompat.getColor(this,R.color.white));
-                        requestCommentsByFloor(1,mTargetId,true,false);
-                    }
-                }else {
-                    mTargetId = false;
-                    mTvOnlyHost.setSelected(false);
-                    mTvOnlyHost.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-                    requestCommentsByFloor(1,mTargetId,true,false);
-                }
-                break;
-            case R.id.iv_cancel_jump:
-                mLlJumpRoot.setVisibility(View.GONE);
-                break;
-            case R.id.tv_jump_to:
-                mLlJumpRoot.setVisibility(View.GONE);
-                PreferenceUtils.removeData(NewDocDetailActivity.this,mDocId);
-                requestCommentsByFloor(mCurFloor,mTargetId,true,false);
                 break;
         }
     }
@@ -815,24 +657,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mPresenter.requestDoc(mDocId);
     }
 
-    public void requestCommentsByFloor(final long floor, final boolean targetId, final boolean isJump, final boolean addBefore, int length, final boolean clear){
-        if(hasLoaded){
-            if (floor < 1){
-                showToast(R.string.label_floor_limit);
-                return;
-            }
-            mPresenter.requestCommentFloor(mDocId,floor,length,targetId,isJump,clear,addBefore);
-        }
-    }
-
-    public void requestCommentsByFloor(final long floor, final boolean targetId, final boolean isJump, final boolean addBefore){
-        requestCommentsByFloor(floor,targetId,isJump,addBefore, ApiService.LENGHT,true);
-    }
-
     @Override
     public void onFailure(int code,String msg) {
         finalizeDialog();
-        mIsLoading = false;
         mList.setComplete();
         ErrorCodeUtils.showErrorMsgByCode(NewDocDetailActivity.this,code,msg);
     }
@@ -843,14 +670,16 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mAdapter.plusSuccess(isLike,position);
     }
 
-    public void deleteComment(NewCommentEntity entity, int position){
-        mPresenter.deleteComment(entity,position);
+    @Override
+    public void onDeleteCommentSuccess(int position) {
+        showToast("删除评论成功");
+        CommentV2Entity entity = (CommentV2Entity) mAdapter.getItem(position);
+        mAdapter.getmComments().remove(entity);
+        mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onDeleteComment(NewCommentEntity entity, int position) {
-        showToast(R.string.msg_comment_delete_success);
-        mAdapter.deleteCommentSuccess(entity,position);
+    public void deleteComment(String id, String commentId, final int position){
+        mPresenter.deleteComment(id,commentId,position);
     }
 
     public void giveCoin(int count){
@@ -874,25 +703,21 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     }
 
     @Override
-    public void checkEggSuccess(boolean isThrow) {
-        isPostEgg = isThrow;
-        if(bottomMenuFragment != null){
-            changeEggMenu();
+    public void favoriteCommentSuccess(boolean isFavorite, int position) {
+        if(isFavorite){
+            showToast("点赞成功");
+        }else {
+            showToast("取消点赞成功");
         }
+        ((CommentV2Entity)mAdapter.getItem(position)).setLike(isFavorite);
+        if(isFavorite){
+            ((CommentV2Entity)mAdapter.getItem(position)).setLikes(((CommentV2Entity)mAdapter.getItem(position)).getLikes() + 1);
+        }else {
+            ((CommentV2Entity)mAdapter.getItem(position)).setLikes( ((CommentV2Entity)mAdapter.getItem(position)).getLikes() - 1);
+        }
+        mAdapter.notifyItemChanged(position);
     }
 
-    private void changeEggMenu(){
-        bottomMenuFragment.changeItemTextById(MENU_EGG,
-                isPostEgg?getString(R.string.label_remove_bad_egg):getString(R.string.label_bad_egg),
-                isPostEgg?R.drawable.btn_doc_option_egged:R.drawable.btn_doc_option_egg);
-    }
-
-    @Override
-    public void postOrCancelEggSuccess(boolean isPost) {
-        this.isPostEgg = isPost;
-        changeEggMenu();
-        showToast("扔臭鸡蛋成功");
-    }
 
     public void getCoinContent(){
         mPresenter.getCoinContent(mDocId);
@@ -916,15 +741,12 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mAdapter.onCreateLabel(s,name);
     }
 
-    private void initPopupMenus(DocDetailEntity entity) {
+    private void initPopupMenus(final DocDetailEntity entity) {
         bottomMenuFragment = new BottomMenuFragment();
         ArrayList<MenuItem> items = new ArrayList<>();
         MenuItem item;
 
         if(entity.getUserId().equals(PreferenceUtils.getUUid())){
-            item = new MenuItem(MENU_GOTO_FLOOR, getString(R.string.label_goto_floor),R.drawable.btn_doc_option_jump);
-            items.add(item);
-
             item = new MenuItem(TAG_DELETE,getString(R.string.label_tag_ctrl),R.drawable.btn_doc_option_tag);
             items.add(item);
 
@@ -942,23 +764,12 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             }
             items.add(item);
 
-            item = new MenuItem(MENU_GOTO_FLOOR, getString(R.string.label_goto_floor),R.drawable.btn_doc_option_jump);
-            items.add(item);
-
             item = new MenuItem(MENU_REPORT, getString(R.string.label_jubao),R.drawable.btn_doc_option_report);
             items.add(item);
-            if(mCanPostEgg){
-                if(PreferenceUtils.getAuthorInfo().isInspector()){
-                    if(isPostEgg){
-                        item = new MenuItem(MENU_EGG, getString(R.string.label_remove_bad_egg),R.drawable.btn_doc_option_egged);
-                        items.add(item);
-                    }else {
-                        item = new MenuItem(MENU_EGG, getString(R.string.label_bad_egg),R.drawable.btn_doc_option_egg);
-                        items.add(item);
-                    }
-                }
-            }
         }
+
+        item = new MenuItem(MENU_FORWARD, "转发");
+        items.add(item);
 
         item = new MenuItem(MENU_SHARE, getString(R.string.label_share),R.drawable.btn_doc_option_share);
         items.add(item);
@@ -971,12 +782,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             public void OnMenuItemClick(int itemId) {
                 if(itemId == MENU_FAVORITE){
                     favoriteDoc();
-                }else if(itemId == MENU_GOTO_FLOOR){
-                    if(!mTargetId) {
-                        jumpToFloor();
-                    }else {
-                        showToast("只看楼主时无法跳转楼层");
-                    }
                 }else if (itemId == MENU_REPORT) {
                     reportDoc();
                 }else if (itemId == MENU_SHARE) {
@@ -996,8 +801,27 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     }
                 }else if(itemId == EDIT_DOC){
                     gotoEditDoc();
-                }else if(itemId == MENU_EGG){
-                    mPresenter.postOrCancelEgg(mDocId, isPostEgg);
+                }else if(itemId == MENU_FORWARD){
+                    ShareArticleEntity entity1 = new ShareArticleEntity();
+                    entity1.setDocId(mDoc.getId());
+                    entity1.setTitle(mDoc.getShare().getTitle());
+                    entity1.setContent(mDoc.getShare().getDesc());
+                    entity1.setCover(mDoc.getCover());
+                    entity1.setCreateTime(mDoc.getCreateTime());
+                    UserTopEntity entity2 = new UserTopEntity();
+                    if(mDoc.getBadgeList().size() > 0){
+                        entity2.setBadge(mDoc.getBadgeList().get(0));
+                    }else {
+                        entity2.setBadge(null);
+                    }
+                    entity2.setHeadPath(mDoc.getUserIcon());
+                    entity2.setLevel(mDoc.getUserLevel());
+                    entity2.setLevelColor(mDoc.getUserLevelColor());
+                    entity2.setSex(mDoc.getUserSex());
+                    entity2.setUserId(mDoc.getUserId());
+                    entity2.setUserName(mDoc.getUserName());
+                    entity1.setDocCreateUser(entity2);
+                    CreateForwardActivity.startActivity(NewDocDetailActivity.this,entity1);
                 }
             }
         });
@@ -1055,7 +879,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     @Override
     public void onDocLoaded(DocDetailEntity entity) {
         mDoc = entity;
-        mIsLoading = false;
         mList.setComplete();
         isReplyShow = entity.isCoinComment() && (entity.getCoinDetails() == null || (entity.getCoinDetails() != null && entity.getCoinDetails().size() <= 0));
         mList.setLoadMoreEnabled(true);
@@ -1104,30 +927,22 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             }
         }
         mAdapter.setData(entity);
-        requestCommentsByFloor(1,mTargetId,false,false);
+        mPresenter.requestTopComment(mDoc.getId());
+    }
+
+    public void favoriteComment(String id,boolean isFavorite,int position){
+        mPresenter.favoriteComment(mDoc.getId(),id,isFavorite,position);
     }
 
     @Override
-    public void onCommentsLoaded(ArrayList<NewCommentEntity> entities,boolean pull,boolean isJump,boolean clear,boolean addBefore) {
+    public void onLoadTopCommentSuccess(ArrayList<CommentV2Entity> commentV2Entities) {
         finalizeDialog();
-        mIsLoading = false;
         mList.setComplete();
-        if(entities.size() > 0){
-            if((pull || isJump) && clear){
-                mAdapter.setComment(entities,mTargetId);
-            }else {
-                mAdapter.addComment(entities,mTargetId,addBefore);
-            }
-            if(isJump) {
-                mList.getRecyclerView().scrollToPosition(mAdapter.getTagsPosition() + 2);
-            }
+        mAdapter.setComment(commentV2Entities);
+        if(commentV2Entities.size() <= mCommentNum){
+            mAdapter.setShowAll(false);
         }else {
-            if(!pull){
-                showToast("没有更多评论了");
-            }
-        }
-        if(entities.size() == 0 && isJump){
-            mAdapter.setComment(entities,mTargetId);
+            mAdapter.setShowAll(true);
         }
     }
 

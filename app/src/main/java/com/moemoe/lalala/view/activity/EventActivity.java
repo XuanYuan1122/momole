@@ -20,9 +20,11 @@ import com.moemoe.lalala.utils.ViewUtils;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 事件页 临时写的 没时间改 将就将就
@@ -447,15 +449,21 @@ public class EventActivity extends BaseAppCompatActivity implements View.OnClick
         MoeMoeApplication.getInstance().getNetComponent().getApiService().getUrl("http://prize.moemoe.la:8000/principal_samsara")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<OldSimpleResult>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                .subscribe(new Observer<OldSimpleResult>() {
 
                     @Override
                     public void onError(Throwable e) {
                         mKillCount = 1;
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
                     }
 
                     @Override

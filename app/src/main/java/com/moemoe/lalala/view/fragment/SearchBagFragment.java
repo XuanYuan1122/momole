@@ -32,10 +32,10 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/12/15.
@@ -158,40 +158,42 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
     }
 
     private void subscribeSearchChangedEvent() {
-        Subscription subscription = RxBus.getInstance()
+        Disposable subscription = RxBus.getInstance()
                 .toObservable(SearchChangedEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .subscribe(new Action1<SearchChangedEvent>() {
+                .subscribe(new Consumer<SearchChangedEvent>() {
+
                     @Override
-                    public void call(SearchChangedEvent event) {
-                        mKeyWord = event.getKeyWord();
+                    public void accept(SearchChangedEvent searchChangedEvent) throws Exception {
+                        mKeyWord = searchChangedEvent.getKeyWord();
                         mCurPage = 1;
                         mPresenter.doRequest(mKeyWord,mCurPage,8);
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
+
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });
-        Subscription buySubscription = RxBus.getInstance()
+        Disposable buySubscription = RxBus.getInstance()
                 .toObservable(DirBuyEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .subscribe(new Action1<DirBuyEvent>() {
+                .subscribe(new Consumer<DirBuyEvent>() {
                     @Override
-                    public void call(DirBuyEvent event) {
-                        if(event.getPosition() != -1){
-                            Object o = mAdapter.getItem(event.getPosition());
-                            ((BagDirEntity)o).setBuy(event.isBuy());
+                    public void accept(DirBuyEvent dirBuyEvent) throws Exception {
+                        if(dirBuyEvent.getPosition() != -1){
+                            Object o = mAdapter.getItem(dirBuyEvent.getPosition());
+                            ((BagDirEntity)o).setBuy(dirBuyEvent.isBuy());
                         }
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });

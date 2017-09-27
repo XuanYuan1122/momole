@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.model.entity.ApiResult;
 
 import io.rong.common.RLog;
 import io.rong.imkit.RongContext;
@@ -41,13 +42,13 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
         holder.layout = findViewById(result, io.rong.imkit.R.id.rc_item_conversation);
         holder.leftImageLayout = findViewById(result, io.rong.imkit.R.id.rc_item1);
         holder.rightImageLayout = findViewById(result, io.rong.imkit.R.id.rc_item2);
-        holder.leftImageView = (AsyncImageView)findViewById(result, io.rong.imkit.R.id.rc_left);
-        holder.rightImageView = (AsyncImageView)findViewById(result, io.rong.imkit.R.id.rc_right);
-        holder.contentView = (ProviderContainerView)findViewById(result, io.rong.imkit.R.id.rc_content);
-        holder.unReadMsgCount = (TextView)findViewById(result, io.rong.imkit.R.id.rc_unread_message);
-        holder.unReadMsgCountRight = (TextView)findViewById(result, io.rong.imkit.R.id.rc_unread_message_right);
-        holder.unReadMsgCountIcon = (ImageView)findViewById(result, io.rong.imkit.R.id.rc_unread_message_icon);
-        holder.unReadMsgCountRightIcon = (ImageView)findViewById(result, io.rong.imkit.R.id.rc_unread_message_icon_right);
+        holder.leftImageView = findViewById(result, io.rong.imkit.R.id.rc_left);
+        holder.rightImageView = findViewById(result, io.rong.imkit.R.id.rc_right);
+        holder.contentView = findViewById(result, io.rong.imkit.R.id.rc_content);
+        holder.unReadMsgCount = findViewById(result, io.rong.imkit.R.id.rc_unread_message);
+        holder.unReadMsgCountRight = findViewById(result, io.rong.imkit.R.id.rc_unread_message_right);
+        holder.unReadMsgCountIcon = findViewById(result, io.rong.imkit.R.id.rc_unread_message_icon);
+        holder.unReadMsgCountRightIcon = findViewById(result, io.rong.imkit.R.id.rc_unread_message_icon_right);
         result.setTag(holder);
         return result;
     }
@@ -58,10 +59,6 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
             if (data.getConversationType().equals(Conversation.ConversationType.DISCUSSION))
                 data.setUnreadType(UIConversation.UnreadRemindType.REMIND_ONLY);
         }
-      //  super.bindView(v, position, data);
-
-
-
         ViewHolder holder = (ViewHolder)v.getTag();
         if(data != null) {
             IContainerItemProvider.ConversationProvider provider = RongContext.getInstance().getConversationTemplate(data.getConversationType().getName());
@@ -118,7 +115,6 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
                             }
 
                             holder.unReadMsgCount.setVisibility(View.VISIBLE);
-                           // holder.unReadMsgCountIcon.setImageResource(io.rong.imkit.R.drawable.shape_rect_phone_msg);
                         } else {
                             holder.unReadMsgCount.setVisibility(View.GONE);
                             holder.unReadMsgCountIcon.setImageResource(io.rong.imkit.R.drawable.shape_rect_phone_msg);

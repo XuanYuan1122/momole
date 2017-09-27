@@ -29,7 +29,9 @@ import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ManHua2Entity;
 import com.moemoe.lalala.model.entity.NewFolderEntity;
 import com.moemoe.lalala.model.entity.REPORT;
+import com.moemoe.lalala.model.entity.ShareFolderEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
+import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.NewFolderItemContract;
 import com.moemoe.lalala.presenter.NewFolderItemPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -263,6 +265,8 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
             MenuItem item = new MenuItem(2, "举报");
             items.add(item);
         }
+        MenuItem item = new MenuItem(4, "转发");
+        items.add(item);
         bottomMenuFragment.setMenuItems(items);
         bottomMenuFragment.setShowTop(false);
         bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
@@ -296,6 +300,23 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                     startActivity(intent);
                 }else if(itemId == 3){
                     NewFolderEditActivity.startActivity(NewFileManHuaActivity.this,"modify",mFolderType,mFolderInfo);
+                }else if(itemId == 4){
+                    if(mFolderInfo == null) return;
+                    ShareFolderEntity entity = new ShareFolderEntity();
+                    entity.setFolderCover(mFolderInfo.getCover());
+                    entity.setFolderId(mFolderInfo.getFolderId());
+                    entity.setFolderName(mFolderInfo.getFolderName());
+                    entity.setFolderTags(mFolderInfo.getTexts());
+                    entity.setFolderType(mFolderInfo.getType());
+                    entity.setUpdateTime(mFolderInfo.getCreateTime());
+                    UserTopEntity entity1 = new UserTopEntity();
+                    entity1.setUserName(mFolderInfo.getCreateUserName());
+                    entity1.setUserId(mFolderInfo.getCreateUserId());
+                    entity1.setSex("N");
+                    entity1.setBadge(null);
+                    entity1.setHeadPath(mFolderInfo.getUserIcon().getPath());
+                    entity.setCreateUser(entity1);
+                    CreateForwardActivity.startActivity(NewFileManHuaActivity.this,entity);
                 }
             }
         });
@@ -683,7 +704,9 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
         finalizeDialog();
         for (Integer i : mSelectMap.keySet()){
             mAdapter.getList().get(i).setSelect(false);
-            mAdapter.notifyItemChanged(i);
+            ManHua2Entity entity = mAdapter.getList().remove((int)i);
+            mAdapter.getList().add(0,entity);
+            mAdapter.notifyItemRangeChanged(0,i + 1);
         }
         mSelectMap.clear();
     }

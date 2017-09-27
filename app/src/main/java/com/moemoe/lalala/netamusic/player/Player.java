@@ -1,5 +1,6 @@
 package com.moemoe.lalala.netamusic.player;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -13,11 +14,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2016/10/31.
@@ -40,22 +43,22 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
     private boolean isStarted;
     private RxDownload downloadSub;
 
-    private Player(){
+    private Player(Context context){
         mPlayer = new MediaPlayer();
         mPlayList = new PlayList();
         mPlayer.setOnCompletionListener(this);
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(context)
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getMusicRootPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
-    public static Player getInstance(){
+    public static Player getInstance(Context context){
         if(sInstance == null){
             synchronized (Player.class){
                 if(sInstance == null){
-                    sInstance = new Player();
+                    sInstance = new Player(context);
                 }
             }
         }
@@ -80,7 +83,6 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
         if(mPlayList.prepare()){
             final Song song = mPlayList.getCurrentSong();
             String url = song.getPath();
-            //final String suffix = url.substring(url.lastIndexOf("."));
             try {
                 mPlayer.reset();
                 if(StorageUtils.isMusicExit(song.getDisplayName())){
@@ -92,30 +94,14 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
                     downloadSub.download(url,song.getDisplayName(),null)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<DownloadStatus>() {
+                            .subscribe(new Observer<DownloadStatus>() {
                                 @Override
-                                public void onCompleted() {
-//                                    if(mPlayList != null && mPlayList.getCurrentSong() != null){
-//                                        try {
-//                                            int progress = mPlayer.getCurrentPosition();
-//                                            mPlayer.reset();
-//                                            mPlayer.setDataSource(StorageUtils.getMusicPath(song.getDisplayName()));
-//                                            mPlayer.prepare();
-//                                            mPlayer.start();
-//                                            seekTo(progress);
-//                                        } catch (IOException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }
+                                public void onSubscribe(@NonNull Disposable d) {
+
                                 }
 
                                 @Override
-                                public void onError(Throwable e) {
-                                    int i = 0;
-                                }
-
-                                @Override
-                                public void onNext(DownloadStatus downloadStatus) {
+                                public void onNext(@NonNull DownloadStatus downloadStatus) {
                                     if(mPlayList != null && mPlayList.getCurrentSong() != null ){
                                         long totalSize =  downloadStatus.getTotalSize();
                                         long downloaded = downloadStatus.getDownloadSize();
@@ -136,6 +122,16 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
                                             isStarted = true;
                                         }
                                     }
+                                }
+
+                                @Override
+                                public void onError(@NonNull Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
                                 }
                             });
                     isStarted = false;

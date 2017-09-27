@@ -40,7 +40,7 @@ public class MateSelectActivity extends BaseAppCompatActivity {
         ArrayList<Integer> list = new ArrayList<>();
         list.add(R.drawable.btn_deskmate_chose_mei);
         list.add(R.drawable.btn_deskmate_chose_len);
-        list.add(R.drawable.btn_deskmate_chose_sha);
+        list.add(R.drawable.btn_deskmate_chose_sari);
         mAdapter.setList(list);
 
     }

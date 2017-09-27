@@ -364,7 +364,9 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
         finalizeDialog();
         for (Integer i : mSelectMap.keySet()){
             mAdapter.getList().get(i).setSelect(false);
-            mAdapter.notifyItemChanged(i);
+            ShowFolderEntity entity = mAdapter.getList().remove((int)i);
+            mAdapter.getList().add(0,entity);
+            mAdapter.notifyItemRangeChanged(0,i + 1);
         }
         mSelectMap.clear();
     }

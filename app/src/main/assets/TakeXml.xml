@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<screenplay>
+  <contents type="task">
+    <contents type="index">0</contents>
+    <contents type="name">伊藤诚</contents>
+    <contents type="character_pose">
+      <contents type="effect">无</contents>
+      <contents type="file">无</contents>
+    </contents>
+    <contents type="character_face">
+      <contents type="effect">无</contents>
+      <contents type="file">无</contents>
+    </contents>
+    <contents type="character_extra">
+      <contents type="effect">无</contents>
+      <contents type="file">无</contents>
+    </contents>
+    <contents type="vol">
+      <contents type="file">无</contents>
+    </contents>
+    <contents type="bgm">
+      <contents type="file">无</contents>
+    </contents>
+    <contents type="CG">
+      <contents type="file">无</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="background">
+      <contents type="file">material/2017-09-25/6389fbc7-0f1a-4da5-ae26-98810ff2f8b8.jpg</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="item">
+      <contents type="file">无</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="talk">
+      <contents type="text">「她人呢？叫我买鸡腿，自己跑掉了」</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="undefined">
+      <contents type="undefined">1</contents>
+    </contents>
+    <contents type="option">
+      <contents type="undefined">无</contents>
+    </contents>
+  </contents>
+  <contents type="task">
+    <contents type="index">1</contents>
+    <contents type="name">伊藤诚</contents>
+    <contents type="character_pose">
+      <contents type="file">无</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="character_face">
+      <contents type="file">无</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="character_extra">
+      <contents type="file">无</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="vol">
+      <contents type="file">无</contents>
+    </contents>
+    <contents type="bgm">
+      <contents type="file">无</contents>
+    </contents>
+    <contents type="CG">
+      <contents type="file">无</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="background">
+      <contents type="file">material/2017-09-25/6389fbc7-0f1a-4da5-ae26-98810ff2f8b8.jpg</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="item">
+      <contents type="file">无</contents>
+      <contents type="effect">无</contents>
+    </contents>
+    <contents type="talk">
+      <contents type="text">「算了，还是先回去吧」</contents>
+      <contents type="effect">无</contents>
+    </contents>
+  </contents>
+</screenplay>

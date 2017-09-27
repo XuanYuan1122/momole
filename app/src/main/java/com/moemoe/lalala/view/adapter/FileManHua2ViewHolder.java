@@ -21,18 +21,9 @@ import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.Utils;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
-import com.moemoe.lalala.view.widget.longimage.LongImageView;
 
-import java.io.File;
-
-import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/8/20.

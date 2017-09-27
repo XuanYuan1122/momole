@@ -41,11 +41,13 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2016/11/30.
@@ -87,9 +89,6 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), null);
         initValues();
         if(mSelectMode){
@@ -133,7 +132,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
             mTvSaveToGallery.setVisibility(View.VISIBLE);
             mTvRaw.setVisibility(View.VISIBLE);
         }
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(this)
                     .maxThread(3)
                     .maxRetryCount(3)
                     .defaultSavePath(StorageUtils.getGalleryDirPath())
@@ -278,15 +277,21 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                     downloadSub.download(ApiService.URL_QINIU + fb.getPath(),temp,null)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<DownloadStatus>() {
+                            .subscribe(new Observer<DownloadStatus>() {
+
                                 @Override
-                                public void onCompleted() {
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
                                     BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
                                     imageView.setImage(longImage.getAbsolutePath());
                                 }
 
                                 @Override
-                                public void onError(Throwable e) {
+                                public void onSubscribe(@NonNull Disposable d) {
 
                                 }
 
@@ -333,7 +338,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                                     }
                                 });
                     }else {
-                        final int[] wh = BitmapUtils.getDocIconSize(fb.getW() * 2, fb.getH() * 2, DensityUtil.getScreenWidth(ImageBigSelectActivity.this));
+                        final int[] wh = BitmapUtils.getDocIconSizeFromW(fb.getW() * 2, fb.getH() * 2, DensityUtil.getScreenWidth(ImageBigSelectActivity.this));
                         Glide.with(ImageBigSelectActivity.this)
                                 .load(StringUtils.getUrl(ImageBigSelectActivity.this,ApiService.URL_QINIU + fb.getPath(), wh[0], wh[1], true, true))
                                 .placeholder(R.drawable.bg_default_square)
@@ -437,16 +442,22 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
         downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DownloadStatus>() {
+                .subscribe(new Observer<DownloadStatus>() {
+
                     @Override
-                    public void onCompleted() {
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
                         image.setLocal_path(longImage.getAbsolutePath());
                         BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, image.getLocal_path());
                         showToast(getString(R.string.msg_register_to_gallery_success, image.getLocal_path()));
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onSubscribe(@NonNull Disposable d) {
 
                     }
 

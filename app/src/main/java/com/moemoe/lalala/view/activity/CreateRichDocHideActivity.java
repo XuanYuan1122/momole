@@ -26,12 +26,15 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2017/5/15.
@@ -133,12 +136,18 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
             if(TextUtils.isEmpty(entity.getInputStr())){
                 mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
             }
-            Observable.from(mHideList)
+            Observable.fromIterable(mHideList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<RichEntity>() {
+                    .subscribe(new Observer<RichEntity>() {
+
                         @Override
-                        public void onCompleted() {
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             RichEntity entity1 = mHideList.get(mHideList.size() - 1);
                             if(TextUtils.isEmpty(entity1.getInputStr())){
                                 mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
@@ -146,7 +155,7 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
                         }
 
                         @Override
-                        public void onError(Throwable e) {
+                        public void onSubscribe(@NonNull Disposable d) {
 
                         }
 
@@ -167,20 +176,20 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     }
 
     private void subscribeChangedEvent() {
-        Subscription subscription = RxBus.getInstance()
+        Disposable subscription = RxBus.getInstance()
                 .toObservable(RichImgRemoveEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .subscribe(new Action1<RichImgRemoveEvent>() {
+                .subscribe(new Consumer<RichImgRemoveEvent>() {
                     @Override
-                    public void call(RichImgRemoveEvent event) {
-                        mPathMap.remove(event.getPath());
+                    public void accept(RichImgRemoveEvent richImgRemoveEvent) throws Exception {
+                        mPathMap.remove(richImgRemoveEvent.getPath());
                         mImageSize--;
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });
@@ -280,33 +289,38 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
     }
 
     private void onGetPhotos(final ArrayList<String> paths) {
-        Observable.create(new Observable.OnSubscribe<String>() {
+        Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void call(final Subscriber<? super String> subscriber) {
+            public void subscribe(@NonNull ObservableEmitter<String> res) throws Exception {
                 mRichEt.measure(0,0);
                 try{
                     for (String s : paths){
-                        subscriber.onNext(s);
+                        res.onNext(s);
                     }
-                    subscriber.onCompleted();
+                    res.onComplete();
                 }catch (Exception e){
-                    subscriber.onError(e);
+                    res.onError(e);
                 }
             }
         })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<String>() {
+        .subscribe(new Observer<String>() {
             @Override
-            public void onCompleted() {
+            public void onError(Throwable e) {
+                finalizeDialog();
+                showToast("图片插入失败");
+            }
+
+            @Override
+            public void onComplete() {
                 finalizeDialog();
                 showToast("图片插入成功");
             }
 
             @Override
-            public void onError(Throwable e) {
-                finalizeDialog();
-                showToast("图片插入失败");
+            public void onSubscribe(@NonNull Disposable d) {
+
             }
 
             @Override

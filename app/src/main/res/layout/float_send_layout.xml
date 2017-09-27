@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_role_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentBottom="true">
+
+    <ImageView
+        android:id="@+id/iv_role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/btn_len_normal" />
+
+    <ImageView
+        android:id="@+id/iv_create_dynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/iv_role"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/x296"
+        android:layout_marginBottom="@dimen/y60"
+        android:src="@drawable/btn_create_dynamic"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_create_wenzhang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/iv_create_dynamic"
+        android:layout_marginEnd="@dimen/x36"
+        android:layout_alignBottom="@+id/iv_role"
+        android:layout_marginBottom="@dimen/y60"
+        android:src="@drawable/btn_create_wenzhang"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_show_text"
+        android:layout_width="@dimen/x432"
+        android:layout_height="@dimen/y128"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/iv_create_wenzhang"
+        android:layout_marginEnd="@dimen/x260"
+        android:layout_marginBottom="@dimen/y48"
+        android:background="@drawable/bg_classmate_talkbar"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x24"
+        android:maxLines="3"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x40"
+        android:visibility="gone"/>
+</RelativeLayout>

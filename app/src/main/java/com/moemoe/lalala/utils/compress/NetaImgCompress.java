@@ -18,9 +18,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Func1;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.functions.Function;
 
 /**
  * Created by yi on 2017/5/12.
@@ -76,22 +78,23 @@ public class NetaImgCompress {
     }
 
     public Observable<String> asPath(){
-        return Observable.from(mPaths)
-               .concatMap(new Func1<String, Observable<String>>() {
+        return Observable.fromIterable(mPaths)
+               .concatMap(new Function<String, ObservableSource<String>>() {
                    @Override
-                   public Observable<String> call(final String s) {
-                       return Observable.create(new Observable.OnSubscribe<String>() {
+                   public ObservableSource<String> apply(@io.reactivex.annotations.NonNull final String s) throws Exception {
+
+                       return Observable.create(new ObservableOnSubscribe<String>() {
                            @Override
-                           public void call(Subscriber<? super String> subscriber) {
+                           public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<String> res) throws Exception {
                                try {
                                    if(FileUtil.isGif(s)){
-                                       subscriber.onNext(s);
+                                       res.onNext(s);
                                    }else {
-                                       subscriber.onNext(firstCompress(new File(s)));
+                                       res.onNext(firstCompress(new File(s)));
                                    }
-                                   subscriber.onCompleted();
+                                   res.onComplete();
                                }catch (Exception e){
-                                   subscriber.onError(e);
+                                   res.onError(e);
                                }
                            }
                        });

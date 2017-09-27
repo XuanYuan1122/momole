@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -15,6 +15,7 @@
     <RelativeLayout
         android:id="@+id/include_toolbar"
         android:layout_width="match_parent"
+        android:layout_below="@+id/top_view"
         android:layout_height="@dimen/neta_toolbar"
         android:background="@drawable/bg_shadow_up">
 
@@ -63,7 +64,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/include_toolbar">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager_person_data"
@@ -74,4 +76,5 @@
 
     </RelativeLayout>
 
-</LinearLayout>
+    <include layout="@layout/float_send_layout"/>
+</RelativeLayout>

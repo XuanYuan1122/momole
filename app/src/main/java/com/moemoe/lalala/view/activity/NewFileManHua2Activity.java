@@ -130,7 +130,7 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
         mIvAddFolder.setVisibility(View.GONE);
         mListDocs.setPadding(0,0,0,0);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mAdapter = new FileCommonAdapter("");
+        mAdapter = new FileCommonAdapter("",this);
         mAdapter.setGrid(false);
         mItemDecoration = new FileItemDecoration();
         mListDocs.getRecyclerView().setAdapter(mAdapter);
@@ -451,7 +451,9 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
         finalizeDialog();
         for (Integer i : mSelectMap.keySet()){
             mAdapter.getList().get(i).setSelect(false);
-            mAdapter.notifyItemChanged(i);
+            CommonFileEntity entity = mAdapter.getList().remove((int)i);
+            mAdapter.getList().add(0,entity);
+            mAdapter.notifyItemRangeChanged(0,i + 1);
         }
         mSelectMap.clear();
     }

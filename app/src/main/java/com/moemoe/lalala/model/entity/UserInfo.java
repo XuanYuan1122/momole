@@ -16,8 +16,6 @@ public class UserInfo implements Parcelable{
     private String birthday;
     @SerializedName("coin")
     private int coin ;
-    @SerializedName("docCount")
-    private int docCount;
     @SerializedName("followers")
     private int followers;
     @SerializedName("following")
@@ -50,6 +48,12 @@ public class UserInfo implements Parcelable{
     private String rcTargetId;
     @SerializedName("userNo")
     private int userNo;
+    @SerializedName("followCount")
+    private int followCount;
+   // @SerializedName("inviteUserName")
+   // private String inviteUserName;
+  //  @SerializedName("vipTime")
+   // private String vipTime;
 
 
     public String getBackground() {
@@ -74,14 +78,6 @@ public class UserInfo implements Parcelable{
 
     public void setCoin(int coin) {
         this.coin = coin;
-    }
-
-    public int getDocCount() {
-        return docCount;
-    }
-
-    public void setDocCount(int docCount) {
-        this.docCount = docCount;
     }
 
     public int getFollowers() {
@@ -208,9 +204,33 @@ public class UserInfo implements Parcelable{
         return userNo;
     }
 
+  //  public String getInviteUserName() {
+   //     return inviteUserName;
+   // }
+
+   // public void setInviteUserName(String inviteUserName) {
+   //     this.inviteUserName = inviteUserName;
+  //  }
+
     public void setUserNo(int userNo) {
         this.userNo = userNo;
     }
+
+    public int getFollowCount() {
+        return followCount;
+    }
+
+    public void setFollowCount(int followCount) {
+        this.followCount = followCount;
+    }
+
+//    public String getVipTime() {
+//        return vipTime;
+//    }
+//
+//    public void setVipTime(String vipTime) {
+//        this.vipTime = vipTime;
+//    }
 
     @Override
     public int describeContents() {
@@ -225,9 +245,9 @@ public class UserInfo implements Parcelable{
             info.background = bundle.getString("background");
             info.birthday = bundle.getString("birthday");
             info.coin = bundle.getInt("coin");
-            info.docCount = bundle.getInt("docCount");
             info.followers = bundle.getInt("followers");
             info.userNo = bundle.getInt("userNo");
+            info.followCount = bundle.getInt("followCount");
             info.following = bundle.getBoolean("following");
             info.headPath = bundle.getString("headPath");
             info.registerTime = bundle.getString("registerTime");
@@ -240,6 +260,8 @@ public class UserInfo implements Parcelable{
             info.userName = bundle.getString("userName");
             info.signature = bundle.getString("signature");
             info.rcTargetId = bundle.getString("rcTargetId");
+        //    info.inviteUserName = bundle.getString("inviteUserName");
+         //   info.vipTime = bundle.getString("vipTime");
             info.size = bundle.getLong("size");
             info.black = bundle.getBoolean("black");
             return info;
@@ -257,7 +279,7 @@ public class UserInfo implements Parcelable{
         bundle.putString("background",background);
         bundle.putString("birthday",birthday);
         bundle.putInt("coin",coin);
-        bundle.putInt("docCount",docCount);
+        bundle.putInt("followCount",followCount);
         bundle.putInt("followers",followers);
         bundle.putInt("userNo",userNo);
         bundle.putBoolean("following",following);
@@ -272,6 +294,8 @@ public class UserInfo implements Parcelable{
         bundle.putString("userName",userName);
         bundle.putString("signature",signature);
         bundle.putString("rcTargetId",rcTargetId);
+    //    bundle.putString("inviteUserName",inviteUserName);
+     //   bundle.putString("vipTime",vipTime);
         bundle.putLong("size",size);
         bundle.putBoolean("black",black);
         parcel.writeBundle(bundle);

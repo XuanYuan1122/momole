@@ -578,7 +578,6 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 ivCreatorAvatar.setOnClickListener(mAvatarListener);
             }
             docLabelAdapter = new NewDocLabelAdapter(mContext,true);
-            if(AppSetting.SUB_TAG)docLabel.setmMaxLines(3);
             ivIcon1.setOnClickListener(mIconListener);
             ivIcon2.setOnClickListener(mIconListener);
             ivIcon3.setOnClickListener(mIconListener);

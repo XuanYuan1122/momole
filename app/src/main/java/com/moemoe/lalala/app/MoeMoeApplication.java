@@ -9,9 +9,9 @@ import com.moemoe.lalala.di.components.NetComponent;
 import com.moemoe.lalala.di.modules.NetModule;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.UnCaughtException;
+import com.moemoe.lalala.utils.tag.TagControl;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
-import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -40,6 +40,7 @@ public class MoeMoeApplication extends Application {
         initNet();
         GreenDaoManager.getInstance();
         UnCaughtException caughtException = UnCaughtException.getInstance();
+        TagControl.getInstance().init(this);
         caughtException.init(this);
         //初始化Leak内存泄露检测工具
         //LeakCanary.install(this);

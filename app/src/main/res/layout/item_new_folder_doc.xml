@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y320">
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <ImageView
+        android:id="@+id/iv_mask"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y100"
+        android:layout_alignParentBottom="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/icon_blackboard_mask"/>
+
+    <TextView
+        android:id="@+id/tv_mark"
+        android:layout_width="@dimen/x80"
+        android:layout_height="@dimen/y40"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/y16"
+        android:layout_marginEnd="@dimen/x24"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x24"
+        android:gravity="center"
+        android:background="@drawable/shape_bg_y20"/>
+
+    <TextView
+        android:id="@+id/tv_folder_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/x36"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginBottom="@dimen/y24"
+        android:layout_alignParentBottom="true"/>
+
+    <TextView
+        android:id="@+id/tv_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/y24"
+        android:layout_marginEnd="@dimen/x24"
+        android:textSize="@dimen/x24"
+        android:textColor="@color/white_60"/>
+</RelativeLayout>

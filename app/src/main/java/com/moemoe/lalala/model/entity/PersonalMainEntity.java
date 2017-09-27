@@ -30,6 +30,8 @@ public class PersonalMainEntity {
     private ArrayList<NewCommentEntity> commentList;
     @SerializedName("badgeList")
     private ArrayList<BadgeEntity> badgeList;
+    @SerializedName("folderList")
+    private ArrayList<ShowFolderEntity> folderList;
 
     public int getLevel() {
         return level;
@@ -109,5 +111,13 @@ public class PersonalMainEntity {
 
     public void setBadgeList(ArrayList<BadgeEntity> badgeList) {
         this.badgeList = badgeList;
+    }
+
+    public ArrayList<ShowFolderEntity> getFolderList() {
+        return folderList;
+    }
+
+    public void setFolderList(ArrayList<ShowFolderEntity> folderList) {
+        this.folderList = folderList;
     }
 }

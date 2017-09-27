@@ -55,11 +55,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2016/12/14.
@@ -128,9 +130,8 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
                 .build()
                 .inject(this);
         mType = getIntent().getStringExtra("type");
-      //  mId = getIntent().getStringExtra("id");
         mEntity = getIntent().getParcelableExtra("item");
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(this)
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
@@ -384,7 +385,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
 
     private void createImage(Image image){
         if(image.getW() >0 && image.getH() > 0){
-            final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,20));
+            final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,20));
             if(wh[1] > 2048){
                 mIvContent.setVisibility(View.GONE);
                 mLongImage.setVisibility(View.VISIBLE);
@@ -401,15 +402,21 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
                     downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<DownloadStatus>() {
+                            .subscribe(new Observer<DownloadStatus>() {
+
                                 @Override
-                                public void onCompleted() {
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
                                     BitmapUtils.galleryAddPic(TrashDetailActivity.this, longImage.getAbsolutePath());
                                     mLongImage.setImage(longImage.getAbsolutePath());
                                 }
 
                                 @Override
-                                public void onError(Throwable e) {
+                                public void onSubscribe(@NonNull Disposable d) {
 
                                 }
 

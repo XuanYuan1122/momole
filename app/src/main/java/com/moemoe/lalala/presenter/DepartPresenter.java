@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.
@@ -88,7 +88,7 @@ public class DepartPresenter implements DepartContract.Presenter {
                         }
                     });
         }else if(type == 1){
-            apiService.requestTagDocList(index,ApiService.LENGHT,room.equals("change")?"":room, AppSetting.SUB_TAG)
+            apiService.requestTagDocList(index,ApiService.LENGHT,room.equals("change")?"":room, false)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetResultSubscriber<ArrayList<DocListEntity>>() {
@@ -107,7 +107,7 @@ public class DepartPresenter implements DepartContract.Presenter {
                         }
                     });
         }else if(type == 2){
-            apiService.requestSwimDocList(index,ApiService.LENGHT, AppSetting.SUB_TAG)
+            apiService.requestSwimDocList(index,ApiService.LENGHT,false)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetResultSubscriber<ArrayList<DocListEntity>>() {
@@ -126,7 +126,7 @@ public class DepartPresenter implements DepartContract.Presenter {
                         }
                     });
         }else if(type == 3){
-            apiService.requestQiuMingShanDocList(index,ApiService.LENGHT, AppSetting.SUB_TAG)
+            apiService.requestQiuMingShanDocList(index,ApiService.LENGHT, false)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetResultSubscriber<ArrayList<DocListEntity>>() {

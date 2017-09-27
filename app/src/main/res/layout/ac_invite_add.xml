@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
+    <include layout="@layout/neta_bar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/ll_name_root"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_normal_white_btn"
+        android:visibility="visible"
+        android:layout_marginTop="@dimen/size_10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/size_14"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/size_15"
+            android:text="邀请人的邀请码" />
+
+        <EditText
+            android:id="@+id/et_num"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/gray_929292"
+            android:textSize="@dimen/size_14"
+            android:gravity="end"
+            android:background="@null"/>
+    </LinearLayout>
+</LinearLayout>

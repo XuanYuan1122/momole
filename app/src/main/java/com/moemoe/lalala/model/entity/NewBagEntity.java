@@ -8,8 +8,8 @@ public class NewBagEntity {
 
     private String bagName;
     private String bg;
-    private int maxSize;
-    private int useSize;
+    private long maxSize;
+    private long useSize;
     private String userId;
     private String userName;
 
@@ -29,19 +29,19 @@ public class NewBagEntity {
         this.bg = bg;
     }
 
-    public int getMaxSize() {
+    public long getMaxSize() {
         return maxSize;
     }
 
-    public void setMaxSize(int maxSize) {
+    public void setMaxSize(long maxSize) {
         this.maxSize = maxSize;
     }
 
-    public int getUseSize() {
+    public long getUseSize() {
         return useSize;
     }
 
-    public void setUseSize(int useSize) {
+    public void setUseSize(long useSize) {
         this.useSize = useSize;
     }
 

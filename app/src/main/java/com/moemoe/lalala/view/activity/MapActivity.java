@@ -2,29 +2,28 @@ package com.moemoe.lalala.view.activity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,25 +35,16 @@ import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.modules.MapModule;
 import com.moemoe.lalala.dialog.SignDialog;
 import com.moemoe.lalala.event.BackSchoolEvent;
-import com.moemoe.lalala.event.PrivateMessageEvent;
 import com.moemoe.lalala.event.SystemMessageEvent;
-import com.moemoe.lalala.galgame.FileManager;
-import com.moemoe.lalala.galgame.Live2DManager;
-import com.moemoe.lalala.galgame.Live2DView;
-import com.moemoe.lalala.galgame.SoundManager;
-import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
-import com.moemoe.lalala.model.entity.MapMarkContainer;
-import com.moemoe.lalala.model.entity.MapMarkEntity;
+import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
+import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
-import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
-import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.SignEntity;
-import com.moemoe.lalala.model.entity.SnowShowEntity;
 import com.moemoe.lalala.presenter.MapContract;
 import com.moemoe.lalala.presenter.MapPresenter;
 import com.moemoe.lalala.service.DaemonService;
@@ -62,30 +52,16 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
-import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.IntentUtils;
+import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.NetworkUtils;
+import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.utils.StringUtils;
-import com.moemoe.lalala.utils.ToolTipUtils;
 import com.moemoe.lalala.utils.ViewUtils;
-import com.moemoe.lalala.view.widget.explosionfield.ExplosionField;
-import com.moemoe.lalala.view.widget.map.MapWidget;
 import com.moemoe.lalala.di.components.DaggerMapComponent;
-import com.moemoe.lalala.view.widget.map.config.OfflineMapConfig;
-import com.moemoe.lalala.view.widget.map.events.MapTouchedEvent;
-import com.moemoe.lalala.view.widget.map.events.ObjectTouchEvent;
-import com.moemoe.lalala.view.widget.map.interfaces.Layer;
-import com.moemoe.lalala.view.widget.map.interfaces.MapEventsListener;
-import com.moemoe.lalala.view.widget.map.interfaces.OnMapTilesFinishedLoadingListener;
-import com.moemoe.lalala.view.widget.map.interfaces.OnMapTouchListener;
-import com.moemoe.lalala.view.widget.map.model.MapImage;
-import com.moemoe.lalala.view.widget.map.model.MapImgLayer;
-import com.moemoe.lalala.view.widget.map.model.MapObject;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
-import com.moemoe.lalala.view.widget.tooltip.Tooltip;
-import com.moemoe.lalala.view.widget.tooltip.TooltipAnimation;
+import com.unity3d.player.UnityPlayer;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -93,31 +69,30 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.rong.imkit.RongIM;
+import io.rong.imkit.manager.IUnReadMessageObserver;
+import io.rong.imlib.model.Conversation;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_DOC;
 
 /**
  * 地图主界面
  * Created by yi on 2016/11/27.
  */
 
-public class MapActivity extends BaseAppCompatActivity implements MapContract.View {
-
-    public static final int REQ_SELECT_FUKU = 5555;
-    private static final int MAP_SCHOOL = 0;
-    private static final int MAP_SCHOOL_YORU = 1;
-    private static final int MAP_SCHOOL_KILL = 2;
+public class MapActivity extends BaseAppCompatActivity implements MapContract.View,IUnReadMessageObserver {
 
     @BindView(R.id.main_root)
     RelativeLayout mMainRoot;
@@ -125,54 +100,163 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     FrameLayout mMap;
     @BindView(R.id.iv_bag)
     ImageView mIvBag;
-//    @BindView(R.id.iv_search)
-//    ImageView mIvSearch;
-//    @BindView(R.id.iv_shop)
-//    ImageView mIvShop;
     @BindView(R.id.iv_card)
     ImageView mIvCard;
     @BindView(R.id.fl_card_root)
     View mCardRoot;
     @BindView(R.id.iv_card_dot)
     View mCardDot;
-    @BindView(R.id.iv_live2d)
-    ImageView mIvGal;
     @BindView(R.id.iv_main)
     ImageView mIvMain;
-    @BindView(R.id.live2DLayout)
-    FrameLayout mLive2DLayout;
-    @BindView(R.id.tv_exit_live2d)
-    TextView mExitLive2D;
-    @BindView(R.id.iv_select_deskmate)
-    ImageView mIvSelectMate;
-    @BindView(R.id.iv_select_language)
-    ImageView mIvSelectLanguage;
-    @BindView(R.id.iv_select_fuku)
-    ImageView mIvSelectFuku;
-    @BindView(R.id.iv_sound_load)
-    ImageView mIvSoundLoad;
+    @BindView(R.id.rl_main_list_root)
+    View mPhoneRoot;
     @BindView(R.id.iv_sign)
     ImageView mIvSign;
+    @BindView(R.id.tv_msg)
+    TextView mTvMsg;
+    @BindView(R.id.iv_role)
+    ImageView mIvRole;
+    @BindView(R.id.iv_create_dynamic)
+    ImageView mIvCreatDynamic;
+    @BindView(R.id.iv_create_wenzhang)
+    ImageView mIvCreateWen;
+    @BindView(R.id.tv_show_text)
+    TextView mTvText;
+    @BindView(R.id.rl_role_root)
+    RelativeLayout mRoleRoot;
+    @BindView(R.id.tv_sys_time)
+    TextView mTvTime;
+
     @Inject
     MapPresenter mPresenter;
-    private MapWidget mapWidget;
-    private TextView mEventTv;
 
+    protected UnityPlayer mUnityPlayer;
+
+    private TextView mEventTv;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private boolean isGisterReciver;
     private long mLastBackTime = 0;
     private String mSchema;
     public static String updateApkName;
-    private Live2DManager live2DMgr;
-    private String mFuku;
-    private Live2DView mLive2dView;
     private boolean mIsOut = false;
-    private int mMapState = MAP_SCHOOL;
-    private ObjectAnimator mSoundLoadAnim;
     public static long mUpdateDownloadId = Integer.MIN_VALUE;
-    private MapMarkContainer mContainer;
-    private ExplosionField mExplosionField;
     private boolean mIsSignPress = false;
+    private boolean isLoadUnity;
     private BottomMenuFragment menuFragment;
+
+    static {
+        System.loadLibrary("kira");
+    }
+
+    public native int initNDK();
+
+    public void StartLoad(){
+        isLoadUnity = true;
+        imgIn();
+        mIsOut = false;
+        mPresenter.checkStoryVersion();
+        Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
+        startActivity(i3);
+        if(!TextUtils.isEmpty(mSchema)){
+            IntentUtils.toActivityFromUri(this, Uri.parse(mSchema),null);
+        }
+    }
+
+    public void changeButtonState(){
+        if(mIsOut){
+            imgIn();
+            mIsOut = false;
+        }else {
+            imgOut();
+            mIsOut = true;
+        }
+    }
+
+    public void toNativeView(String schema,String name){
+        try{
+            if(!TextUtils.isEmpty(schema)) {
+                String temp = schema;
+                if (name.equals("恋爱讲座")) {
+                    if (menuFragment == null) {
+                        ArrayList<MenuItem> items = new ArrayList<>();
+                        MenuItem item = new MenuItem(0, "赤印");
+                        items.add(item);
+                        item = new MenuItem(1, "雪之本境");
+                        items.add(item);
+                        item = new MenuItem(2, "且听琴语");
+                        items.add(item);
+                        menuFragment = new BottomMenuFragment();
+                        menuFragment.setShowTop(true);
+                        menuFragment.setTopContent("选择听哪个故事呢？");
+                        menuFragment.setMenuItems(items);
+                        menuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+                        menuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
+                            @Override
+                            public void OnMenuItemClick(int itemId) {
+                                String url = "";
+                                if (itemId == 0) {
+                                    url = "https://www.iqing.in/play/653";
+                                } else if (itemId == 1) {
+                                    url = "https://www.iqing.in/play/654";
+                                } else if (itemId == 2) {
+                                    url = "https://www.iqing.in/play/655";
+                                }
+                                WebViewActivity.startActivity(MapActivity.this, url, true);
+                            }
+                        });
+                    }
+                    menuFragment.show(getSupportFragmentManager(), "mapMenu");
+                } else if (name.equals("扭蛋机抽奖")) {
+                    if (DialogUtils.checkLoginAndShowDlg(MapActivity.this)) {
+                        AuthorInfo authorInfo = PreferenceUtils.getAuthorInfo();
+                        try {
+                            temp += "?user_id=" + authorInfo.getUserId()
+                                    + "&nickname=" + (TextUtils.isEmpty(authorInfo.getUserName()) ? "" : URLEncoder.encode(authorInfo.getUserName(), "UTF-8"))
+                                    + "&token=" + PreferenceUtils.getToken();
+                            Uri uri = Uri.parse(temp);
+                            IntentUtils.haveShareWeb(MapActivity.this, uri, null);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else if (name.equals("返校-人物")) {
+                    int level = PreferenceUtils.getBackSchoolLevel(MapActivity.this);
+                    if (level == 5) {
+                        if (!AppSetting.isShowBackSchoolAll) showEventDialog("是否回顾剧情", 2);
+                    } else {
+                        temp += "?token=" + PreferenceUtils.getToken()
+                                + "&full_screen";
+                        Uri uri = Uri.parse(temp);
+                        IntentUtils.toActivityFromUri(MapActivity.this, uri, null);
+                    }
+                } else {
+                    if (temp.contains("http://prize.moemoe.la:8000/mt")) {
+                        AuthorInfo authorInfo = PreferenceUtils.getAuthorInfo();
+                        temp += "?user_id=" + authorInfo.getUserId() + "&nickname=" + authorInfo.getUserName();
+                    }
+                    if (temp.contains("http://prize.moemoe.la:8000/netaopera/chap")) {
+                        AuthorInfo authorInfo = PreferenceUtils.getAuthorInfo();
+                        temp += "?pass=" + PreferenceUtils.getPassEvent(MapActivity.this) + "&user_id=" + authorInfo.getUserId();
+                    }
+                    if (temp.contains("http://neta.facehub.me/")) {
+                        AuthorInfo authorInfo = PreferenceUtils.getAuthorInfo();
+                        temp += "?open_id=" + authorInfo.getUserId() + "&nickname=" + authorInfo.getUserName() + "&pay_way=alipay,wx,qq" + "&full_screen";
+                    }
+                    if (temp.contains("fanxiao/final.html")) {
+                        temp += "?token=" + PreferenceUtils.getToken()
+                                + "&full_screen";
+                    }
+                    if (temp.contains("fanxiao/paihang.html")) {
+                        temp += "?token=" + PreferenceUtils.getToken();
+                    }
+                    Uri uri = Uri.parse(temp);
+                    IntentUtils.toActivityFromUri(MapActivity.this, uri, null);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected int getLayoutId() {
@@ -192,13 +276,21 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        initMap("map");
-        SoundManager.init(this);
-        FileManager.init(this);
+        if(1 != initNDK()){
+            Log.e("NDKUtil","初始化失败");
+        }else {
+            Log.e("NDKUtil","初始化成功");
+        }
+        final Conversation.ConversationType[] conversationTypes = {
+                Conversation.ConversationType.PRIVATE
+        };
+        RongIM.getInstance().addUnReadMessageCountChangedObserver(this, conversationTypes);
+        mUnityPlayer = new UnityPlayer(this);
+        mMap.addView(mUnityPlayer);
+        mUnityPlayer.requestFocus();
+        //imgOut();
+        //mIsOut = true;
         startService(new Intent(this, DaemonService.class));
-        mFuku = PreferenceUtils.getSelectFuku(this);
-        mExplosionField = ExplosionField.attach2Window(this);
-        live2DMgr = new Live2DManager(mFuku);
         if(!isGisterReciver){
             IntentFilter filter = new IntentFilter();
             filter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
@@ -209,32 +301,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mPresenter.checkVersion();
         }
         mPresenter.getEventList();
-        Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
-        startActivity(i3);
-    }
-
-    private void initMap(String map){
-        mapWidget = new MapWidget(this,map,12);
-        mapWidget.centerMap();
-        float scale = (float) DensityUtil.getScreenHeight(this) / mapWidget.getOriginalMapHeight();
-        mapWidget.setScale(scale);
-        OfflineMapConfig config = mapWidget.getConfig();
-        mapWidget.scrollMapTo(0,0);
-        config.setPinchZoomEnabled(true);
-        config.setFlingEnabled(true);
-        config.setMaxZoomLevelLimit(14);
-        config.setMinZoomLevelLimit(12);
-        config.setZoomBtnsVisible(false);
-        config.setMapCenteringEnabled(true);
-        mMap.removeAllViews();
-        mMap.addView(mapWidget);
-        if(mMapState == MAP_SCHOOL){
-            mPresenter.addDayMapMark(this,mapWidget,scale);
-        }else if(mMapState == MAP_SCHOOL_YORU){
-            mPresenter.addNightMapMark(this,mapWidget,scale);
-        }else if(mMapState == MAP_SCHOOL_KILL){
-            mPresenter.addNightEventMapMark(this,mapWidget,scale);
-        }
+        String mTime = dateFormat.format(new Date());
+        mTvTime.setText(mTime);
     }
 
     @Override
@@ -242,54 +310,80 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         super.onPause();
         RxBus.getInstance().unSubscribe(this);
         hideBtn();
-    }
-
-    private void clearMap(){
-        if(mapWidget != null){
-            mapWidget.clearLayers();
-            mapWidget = null;
-        }
+        mUnityPlayer.pause();
     }
 
     private void subscribeEvent() {
-        Subscription subscription = RxBus.getInstance()
-                .toObservable(PrivateMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Action1<PrivateMessageEvent>() {
-                    @Override
-                    public void call(PrivateMessageEvent event) {
-                        if(event.isShow()){
-                            mCardDot.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-
-                    }
-                });
-        Subscription sysSubscription = RxBus.getInstance()
+        Disposable sysSubscription = RxBus.getInstance()
                 .toObservable(SystemMessageEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .subscribe(new Action1<SystemMessageEvent>() {
+                .subscribe(new Consumer<SystemMessageEvent>() {
                     @Override
-                    public void call(SystemMessageEvent event) {
+                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
                         if(PreferenceUtils.getMessageDot(MapActivity.this,"neta") || PreferenceUtils.getMessageDot(MapActivity.this,"system") || PreferenceUtils.getMessageDot(MapActivity.this,"at_user")){
                             mCardDot.setVisibility(View.VISIBLE);
                         }
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });
-        RxBus.getInstance().addSubscription(this, subscription);
         RxBus.getInstance().addSubscription(this, sysSubscription);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mUnityPlayer.lowMemory();
+    }
+
+    @Override
+    public void onTrimMemory(int var1) {
+        super.onTrimMemory(var1);
+        if(var1 == 15) {
+            this.mUnityPlayer.lowMemory();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration var1) {
+        super.onConfigurationChanged(var1);
+        this.mUnityPlayer.configurationChanged(var1);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean var1) {
+        super.onWindowFocusChanged(var1);
+        this.mUnityPlayer.windowFocusChanged(var1);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent var1) {
+        return var1.getAction() == 2?this.mUnityPlayer.injectEvent(var1):super.dispatchKeyEvent(var1);
+    }
+
+    @Override
+    public boolean onKeyUp(int var1, KeyEvent var2) {
+        return this.mUnityPlayer.injectEvent(var2);
+    }
+
+    @Override
+    public boolean onKeyDown(int var1, KeyEvent var2) {
+        if(var1 == 4){
+            onBackPressed();
+            return true;
+        }else {
+            return this.mUnityPlayer.injectEvent(var2);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent var1) {
+        return this.mUnityPlayer.injectEvent(var1);
     }
 
     @Override
@@ -298,71 +392,52 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         showBtn();
         subscribeEvent();
         subscribeSearchChangedEvent();
-        if(StringUtils.isyoru()){
-            if(!AppSetting.isEnterEventToday && StringUtils.isKillEvent() ){
-                if(mMapState != MAP_SCHOOL_KILL){
-                    clearMap();
-                    mMapState = MAP_SCHOOL_KILL;
-                    initMap("map_kill_event");
-                    initMapListeners();
-                }
-            }else if(mMapState != MAP_SCHOOL_YORU){
-                clearMap();
-                mMapState = MAP_SCHOOL_YORU;
-                initMap("map_yoru");
-                initMapListeners();
-            }
-        }else {
-            if(mMapState != MAP_SCHOOL){
-                clearMap();
-                mMapState = MAP_SCHOOL;
-                initMap("map");
-                initMapListeners();
-            }
-            Layer layer = mapWidget.getLayerById(3);
-            boolean isVisible = layer.isVisible();
-            if(!StringUtils.isDayEvent()){
-                if(isVisible){
-                    layer.setVisible(false);
-                    mapWidget.invalidate();
-                }
-            }else {
-                if(!isVisible){
-                    layer.setVisible(true);
-                    mapWidget.invalidate();
-                }
-            }
-
-        }
-        PrivateMessageItemEntityDao dao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
-        List<PrivateMessageItemEntity> list = dao.queryBuilder().list();
-        boolean showDot = false;
-        for(PrivateMessageItemEntity entity : list){
-            if(entity.getDot() > 0){
-                showDot = true;
-                break;
-            }
-        }
-        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") || showDot){
+        mUnityPlayer.resume();
+        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") ){//|| showDot){
             mCardDot.setVisibility(View.VISIBLE);
         }else {
             mCardDot.setVisibility(View.GONE);
         }
+        String mTime = dateFormat.format(new Date());
+        mTvTime.setText(mTime);
+        ViewUtils.setRoleButton(mIvRole);
     }
 
     @Override
     public void onGetTimeSuccess(Date time) {
-        try {
-            String temp = "2017-04-30 22:00:00";
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            Date checkTime = sdf.parse(temp);
-            if(time.getTime() > checkTime.getTime()){
-                showEventDialog(getString(R.string.label_enter_event),1);
-                PreferenceUtils.setBackSchoolDialog(this,true);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time);
+        String id = JuQingUtil.checkJuQing(calendar);
+        if(!TextUtils.isEmpty(id)){
+            if(JuQingUtil.isForce(id)){
+                Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
+                        .appendPath("conversation").appendPath("private")
+                        .appendQueryParameter("targetId", "juqing").build();
+                Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+                i2.setData(uri);
+                startActivity(i2);
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onGetTriggerSuccess(ArrayList<JuQingTriggerEntity> entities) {
+        JuQingUtil.saveJuQingTriggerList(entities);
+    }
+
+    @Override
+    public void onGetAllStorySuccess(ArrayList<JuQIngStoryEntity> entities) {
+        JuQingUtil.saveJuQingStoryList(entities);
+    }
+
+    @Override
+    public void onCheckStoryVersionSuccess(int version) {
+        int version1 = PreferenceUtils.getJuQingVersion(this);
+        if(version1 < version){
+            mPresenter.getAllStory();
+            mPresenter.getTrigger();
+        }
+        mPresenter.getServerTime();
     }
 
     @Override
@@ -394,7 +469,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 if(type == 1){
                     backSchoolEvent();
                 }else if(type == 2){
-                    showEventMapMark(true);
                     AppSetting.isShowBackSchoolAll = true;
                     PreferenceUtils.setAllBackSchool(MapActivity.this,true);
                 }
@@ -446,50 +520,27 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                         mMainRoot.removeView(mEventTv);
                         mEventTv.setOnClickListener(null);
                         mEventTv = null;
-                        showEventMapMark(false);
+                        //showEventMapMark(false);
                         break;
                 }
             }
         });
     }
 
-    private void showEventMapMark(boolean showAll){
-        Layer layer = mapWidget.getLayerById(5);
-        if(layer == null){
-            return;
-        }
-        int i = PreferenceUtils.getBackSchoolLevel(this);
-        int n = layer.getMapObjectCount();
-        for(int h = 0;h < n - 1;h++){
-            MapObject mapObject = layer.getMapObjectByIndex(h);
-            if(h == i || showAll){
-                mapObject.setVisible(true);
-            }else {
-                mapObject.setVisible(false);
-            }
-        }
-        if(i > 0){
-            MapObject mapObject = layer.getMapObjectByIndex(n - 1);
-            mapObject.setVisible(true);
-        }
-        mapWidget.invalidate();
-    }
-
     private void subscribeSearchChangedEvent() {
-        Subscription subscription = RxBus.getInstance()
+        Disposable subscription = RxBus.getInstance()
                 .toObservable(BackSchoolEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .subscribe(new Action1<BackSchoolEvent>() {
+                .subscribe(new Consumer<BackSchoolEvent>() {
                     @Override
-                    public void call(BackSchoolEvent event) {
-                        mPresenter.saveEvent(new NetaEvent(event.getPass()+"","BS"));
-                        showEventMapMark(false);
+                    public void accept(BackSchoolEvent backSchoolEvent) throws Exception {
+                        mPresenter.saveEvent(new NetaEvent(backSchoolEvent.getPass() + "", "BS"));
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });
@@ -502,235 +553,12 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     }
 
     @Override
-    public void onSnowmanSuccess(Object objectId,int mapX,int mapY) {
-        MapImgLayer layer = (MapImgLayer) mapWidget.getLayerById(233);
-        MapImage mapImage = layer.getMapImgObject(objectId);
-        layer.removeMapObject(objectId);
-        SnowShowEntity.removeFromCache(mapImage.getRealPos().x,mapImage.getRealPos().y);
-        mExplosionField.setPosition(mapX,mapY);
-        mExplosionField.explode(mapImage);
-        mapWidget.invalidate();
-    }
-
-    @Override
     public void checkBuildSuccess(BuildEntity s) {
-    }
-
-    private void initMapListeners(){
-        mapWidget.setOnMapTouchListener(new OnMapTouchListener() {
-            @Override
-            public void onTouch(MapWidget v, MapTouchedEvent event) {
-                List<ObjectTouchEvent> objectTouchEvents = event.getTouchedObjectEvents();
-                if(objectTouchEvents.size() == 0){
-                    if(mIsOut){
-                        imgIn();
-                        mIsOut = false;
-                    }else {
-                        imgOut();
-                        mIsOut = true;
-                    }
-                }
-                if(objectTouchEvents.size() == 1){
-                    int mapX = event.getScreenX();
-                    int mapY = event.getScreenY();
-
-                    ObjectTouchEvent objectTouchEvent = objectTouchEvents.get(0);
-                    long layerId = objectTouchEvent.getLayerId();
-                    Object objectId =  objectTouchEvent.getObjectId();
-                    if(layerId == 233){
-                        mExplosionField.clear();
-                        mPresenter.clickSnowman(objectId,mapX,mapY);
-                    }else {
-                        MapMarkEntity entity = mContainer.getMarkById((String) objectId);
-                        if(!TextUtils.isEmpty(entity.getSchema())){
-                            String temp = entity.getSchema();
-                            if(entity.getId().equals("恋爱讲座")){
-                                if(menuFragment == null){
-                                    ArrayList<MenuItem> items = new ArrayList<>();
-                                    MenuItem item = new MenuItem(0,"赤印");
-                                    items.add(item);
-                                    item = new MenuItem(1,"雪之本境");
-                                    items.add(item);
-                                    item = new MenuItem(2,"且听琴语");
-                                    items.add(item);
-                                    menuFragment = new BottomMenuFragment();
-                                    menuFragment.setShowTop(true);
-                                    menuFragment.setTopContent("选择听哪个故事呢？");
-                                    menuFragment.setMenuItems(items);
-                                    menuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
-                                    menuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
-                                        @Override
-                                        public void OnMenuItemClick(int itemId) {
-                                            String url = "";
-                                            if(itemId == 0){
-                                                url = "https://www.iqing.in/play/653";
-                                            }else if(itemId == 1){
-                                                url = "https://www.iqing.in/play/654";
-                                            }else if(itemId == 2){
-                                                url = "https://www.iqing.in/play/655";
-                                            }
-                                            WebViewActivity.startActivity(MapActivity.this,url,true);
-                                        }
-                                    });
-                                }
-                                menuFragment.show(getSupportFragmentManager(),"mapMenu");
-                            }else if(entity.getId().equals("扭蛋机抽奖")){
-                                if (DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
-                                    AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
-                                    try {
-                                        temp += "?user_id=" + authorInfo.getUserId()
-                                                + "&nickname=" + (TextUtils.isEmpty(authorInfo.getUserName())? "" : URLEncoder.encode(authorInfo.getUserName(),"UTF-8"))
-                                                + "&token=" + PreferenceUtils.getToken();
-                                        Uri uri = Uri.parse(temp);
-                                        IntentUtils.haveShareWeb(MapActivity.this, uri, v);
-                                    } catch (UnsupportedEncodingException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }else if(entity.getId().equals("返校-人物")){
-                                int level = PreferenceUtils.getBackSchoolLevel(MapActivity.this);
-                                if(level == 5){
-                                    if(!AppSetting.isShowBackSchoolAll) showEventDialog("是否回顾剧情",2);
-                                }else {
-                                    temp += "?token=" + PreferenceUtils.getToken()
-                                            + "&full_screen";
-                                    Uri uri = Uri.parse(temp);
-                                    IntentUtils.toActivityFromUri(MapActivity.this, uri, v);
-                                }
-                            }else {
-                                if(temp.contains("http://prize.moemoe.la:8000/mt")){
-                                    AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
-                                    temp +="?user_id=" + authorInfo.getUserId() + "&nickname="+authorInfo.getUserName();
-                                }
-                                if(temp.contains("http://prize.moemoe.la:8000/netaopera/chap")){
-                                    AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
-                                    temp +="?pass=" + PreferenceUtils.getPassEvent(MapActivity.this) + "&user_id=" + authorInfo.getUserId();
-                                }
-                                if(temp.contains("http://neta.facehub.me/")){
-                                    AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
-                                    temp +="?open_id=" + authorInfo.getUserId() + "&nickname=" + authorInfo.getUserName() + "&pay_way=alipay,wx,qq"+"&full_screen";
-                                }
-                                if(temp.contains("fanxiao/final.html")){
-                                    temp += "?token=" + PreferenceUtils.getToken()
-                                            + "&full_screen";
-                                }
-                                if(temp.contains("fanxiao/paihang.html")){
-                                    temp += "?token=" + PreferenceUtils.getToken();
-                                }
-                                Uri uri = Uri.parse(temp);
-                                IntentUtils.toActivityFromUri(MapActivity.this, uri, v);
-                            }
-                        }else {
-                            TextView textView = (TextView) LayoutInflater.from(MapActivity.this).inflate(R.layout.tooltip_textview, null);
-                            int viewHeight = mapWidget.getMapHeight();
-                            int type;
-                            if(entity.getY() < viewHeight / 2){
-                                type = Tooltip.BOTTOM;
-                            }else {
-                                type = Tooltip.TOP;
-                            }
-                            int x = xToScreenCoords(entity.getX());
-                            int y = yToScreenCoords(entity.getY());
-                            if(TextUtils.isEmpty(entity.getContent())){
-                                Random random = new Random();
-                                int i = random.nextInt(entity.getContents().size());
-                                ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContents().get(i),type,mapX,mapY,entity.getW(),entity.getH(),true,
-                                        TooltipAnimation.SCALE_AND_FADE,
-                                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                                        ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
-                                // showLocationsPopup(x,y,entity.getContents().get(i));
-                            }else {
-                                //  showLocationsPopup(x,y,entity.getContent());
-                                ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContent(),type, mapX,mapY,entity.getW(),entity.getH(),true,
-                                        TooltipAnimation.SCALE_AND_FADE,
-                                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                                        ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        mapWidget.addMapEventsListener(new MapEventsListener() {
-            @Override
-            public void onPreZoomIn() {
-            }
-
-            @Override
-            public void onPostZoomIn() {
-            }
-
-            @Override
-            public void onPreZoomOut() {
-            }
-
-            @Override
-            public void onPostZoomOut() {
-            }
-        });
-        mapWidget.setOnMapTilesFinishLoadingListener(new OnMapTilesFinishedLoadingListener() {
-            @Override
-            public void onMapTilesFinishedLoading() {
-
-            }
-        });
     }
 
     @Override
     protected void initListeners() {
-        initMapListeners();
-        live2DMgr.setOnSoundLoadListener(new Live2DManager.OnSoundLoadListener() {
-            @Override
-            public void OnStart() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mIvSoundLoad.setVisibility(View.VISIBLE);
-                        soundLoading();
-                    }
-                });
-            }
 
-            @Override
-            public void OnLoad(int count, int position) {
-
-            }
-
-            @Override
-            public void OnFinish() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mSoundLoadAnim != null) {
-                            mSoundLoadAnim.end();
-                            mSoundLoadAnim = null;
-                        }
-                        mIvSoundLoad.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
-        if(!TextUtils.isEmpty(mSchema)){
-            IntentUtils.toActivityFromUri(this, Uri.parse(mSchema),null);
-        }
-    }
-
-    private int xToScreenCoords(int mapCoord) {
-        return (int)(mapCoord *  mapWidget.getScale() - mapWidget.getScrollX());
-    }
-
-    private int yToScreenCoords(int mapCoord) {
-        return (int)(mapCoord *  mapWidget.getScale() - mapWidget.getScrollY());
-    }
-
-    private void soundLoading(){
-        mSoundLoadAnim = ObjectAnimator.ofFloat(mIvSoundLoad,"alpha",0.2f,1f).setDuration(300);
-        mSoundLoadAnim.setInterpolator(new LinearInterpolator());
-        mSoundLoadAnim.setRepeatMode(ValueAnimator.REVERSE);
-        mSoundLoadAnim.setRepeatCount(ValueAnimator.INFINITE);
-        mSoundLoadAnim.start();
     }
 
     @Override
@@ -784,17 +612,12 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     }
 
     @Override
-    public void onMapMarkLoaded(MapMarkContainer container) {
-        mContainer = container;
-    }
-
-    @Override
     public void onFailure(int code,String msg) {
         mIsSignPress = false;
         ErrorCodeUtils.showErrorMsgByCode(MapActivity.this,code,msg);
     }
 
-    @OnClick({R.id.iv_bag,R.id.iv_card,R.id.iv_live2d,R.id.iv_main,R.id.tv_exit_live2d,R.id.iv_select_deskmate,R.id.iv_select_fuku,R.id.iv_select_language,R.id.iv_sign})
+    @OnClick({R.id.iv_bag,R.id.iv_card,R.id.rl_main_list_root,R.id.iv_main,R.id.iv_sign,R.id.iv_create_dynamic,R.id.iv_create_wenzhang,R.id.iv_role})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_bag:
@@ -816,48 +639,16 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                     startActivity(i1);
                 }
                 break;
-            case R.id.iv_live2d:
-//                if(mLive2dView == null){
-//                    mLive2dView = live2DMgr.createView(this) ;
-//                    mLive2DLayout.addView(mLive2dView, 0, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//                }
-//                mLive2DLayout.setVisibility(View.VISIBLE);
-//                mExitLive2D.setVisibility(View.VISIBLE);
-//                mIvSelectMate.setVisibility(View.VISIBLE);
-//                mIvSelectFuku.setVisibility(View.VISIBLE);
-//                mIvSelectLanguage.setVisibility(View.VISIBLE);
-//                mIvGal.setVisibility(View.GONE);
-                Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
-                startActivity(i2);
+            case R.id.rl_main_list_root:
+                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
+                    Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+                    startActivity(i2);
+                }
                 break;
             case R.id.iv_main:
                 Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
                 startActivity(i3);
                 overridePendingTransition(R.anim.main_list_in,0);
-                break;
-            case R.id.tv_exit_live2d:
-//                mIvGal.setVisibility(View.VISIBLE);
-//                mLive2DLayout.setVisibility(View.GONE);
-//                mExitLive2D.setVisibility(View.GONE);
-//                mIvSelectMate.setVisibility(View.GONE);
-//                mIvSelectFuku.setVisibility(View.GONE);
-//                mIvSelectLanguage.setVisibility(View.GONE);
-//                mIvSoundLoad.setVisibility(View.GONE);
-//                Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
-//                startActivity(i2);
-                break;
-            case R.id.iv_select_deskmate:
-                Intent i4 = new Intent(MapActivity.this,SelectMateActivity.class);
-                startActivity(i4);
-                break;
-            case R.id.iv_select_fuku:
-                if(DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
-                    Intent i5 = new Intent(MapActivity.this,SelectFukuActivity.class);
-                    startActivityForResult(i5,REQ_SELECT_FUKU);
-                }
-                break;
-            case R.id.iv_select_language:
-                showToast(R.string.label_can_not_use);
                 break;
             case R.id.iv_sign:
                 if(DialogUtils.checkLoginAndShowDlg(MapActivity.this) && !mIsSignPress){
@@ -865,14 +656,56 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                     mPresenter.getDailyTask();
                 }
                 break;
-//            case R.id.iv_search:
-//                Intent i6 = new Intent(MapActivity.this,SearchActivity.class);
-//                startActivity(i6);
-//                break;
-//            case R.id.iv_shop:
-//                Intent i7 = new Intent(MapActivity.this,CoinShopActivity.class);
-//                startActivity(i7);
-//                break;
+            case R.id.iv_create_dynamic:
+                Intent i4 = new Intent(MapActivity.this,CreateDynamicActivity.class);
+                i4.putExtra("default_tag","广场");
+                startActivity(i4);
+                break;
+            case R.id.iv_create_wenzhang:
+                Intent intent = new Intent(MapActivity.this, CreateRichDocActivity.class);
+                intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
+                intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
+                intent.putExtra("from_name","书包");
+                intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");
+                startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
+                break;
+            case R.id.iv_role:
+                clickRole();
+                break;
+        }
+    }
+
+    private void clickRole(){
+        mIvRole.setSelected(!mIvRole.isSelected());
+        if(mIvRole.isSelected()){
+            mIvCreatDynamic.setVisibility(View.VISIBLE);
+            mIvCreateWen.setVisibility(View.VISIBLE);
+            mTvText.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mRoleRoot.setLayoutParams(lp);
+            mRoleRoot.setBackgroundColor(ContextCompat.getColor(MapActivity.this,R.color.alph_60));
+            mRoleRoot.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+
+                }
+            });
+            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lp1.addRule(RelativeLayout.ALIGN_PARENT_END);
+            mIvRole.setLayoutParams(lp1);
+        }else {
+            mIvCreatDynamic.setVisibility(View.GONE);
+            mIvCreateWen.setVisibility(View.GONE);
+            mTvText.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_END);
+            mRoleRoot.setLayoutParams(lp);
+            mRoleRoot.setBackgroundColor(ContextCompat.getColor(MapActivity.this,R.color.transparent));
+            mRoleRoot.setOnClickListener(null);
+            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mIvRole.setLayoutParams(lp1);
         }
     }
 
@@ -885,13 +718,9 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 .setPositiveListener(new SignDialog.OnPositiveListener() {
                     @Override
                     public void onClick(SignDialog dialog) {
-                      //  if (!mIsSign){
                         if(NetworkUtils.checkNetworkAndShowError(MapActivity.this)){
                             mPresenter.signToday(dialog);
                         }
-//                        }else {
-//                            showToast(R.string.label_signed);
-//                        }
                     }
                 }).show();
     }
@@ -901,21 +730,20 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",-mIvBag.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
-//        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",-mIvSearch.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
-//        searchAnimator.setInterpolator(new OvershootInterpolator());
-//        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",-mIvShop.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
-//        shopAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvMain,"translationY",mIvMain.getHeight(),0).setDuration(300);
         squareAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator galAnimator = ObjectAnimator.ofFloat(mIvGal,"translationY",mIvGal.getHeight(),0).setDuration(300);
-        galAnimator.setInterpolator(new OvershootInterpolator());
+        ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mPhoneRoot,"translationY",mPhoneRoot.getHeight(),0).setDuration(300);
+        phoneAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mIvSign,"translationX",mIvSign.getWidth() + DensityUtil.dip2px(this,14),0).setDuration(300);
         signAnimator.setInterpolator(new OvershootInterpolator());
+        ObjectAnimator roleAnimator = ObjectAnimator.ofFloat(mRoleRoot,"translationY",mRoleRoot.getHeight(),0).setDuration(300);
+        roleAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
         set.play(bagAnimator).with(squareAnimator);
-        set.play(squareAnimator).with(galAnimator);
-        set.play(galAnimator).with(signAnimator);
+        set.play(squareAnimator).with(phoneAnimator);
+        set.play(phoneAnimator).with(signAnimator);
+        set.play(signAnimator).with(roleAnimator);
         set.start();
     }
 
@@ -924,51 +752,45 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",0,-mIvBag.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
-//        ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"translationY",0,-mIvSearch.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
-//        searchAnimator.setInterpolator(new OvershootInterpolator());
-//        ObjectAnimator shopAnimator = ObjectAnimator.ofFloat(mIvShop,"translationY",0,-mIvShop.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
-//        shopAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvMain,"translationY",0,mIvMain.getHeight()).setDuration(300);
         squareAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator galAnimator = ObjectAnimator.ofFloat(mIvGal,"translationY",0,mIvGal.getHeight()).setDuration(300);
-        galAnimator.setInterpolator(new OvershootInterpolator());
+        ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mPhoneRoot,"translationY",0,mPhoneRoot.getHeight()).setDuration(300);
+        phoneAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mIvSign,"translationX",0,mIvSign.getWidth() + DensityUtil.dip2px(this,14)).setDuration(300);
         signAnimator.setInterpolator(new OvershootInterpolator());
+        ObjectAnimator roleAnimator = ObjectAnimator.ofFloat(mRoleRoot,"translationY",0,mRoleRoot.getHeight()).setDuration(300);
+        roleAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
         set.play(bagAnimator).with(squareAnimator);
-        set.play(squareAnimator).with(galAnimator);
-        set.play(galAnimator).with(signAnimator);
+        set.play(squareAnimator).with(phoneAnimator);
+        set.play(phoneAnimator).with(signAnimator);
+        set.play(signAnimator).with(roleAnimator);
         set.start();
     }
 
     private void showBtn(){
         mCardRoot.setVisibility(View.VISIBLE);
         mIvBag.setVisibility(View.VISIBLE);
-
         mIvMain.setVisibility(View.VISIBLE);
-        mIvGal.setVisibility(View.VISIBLE);
         mIvSign.setVisibility(View.VISIBLE);
+        mIvRole.setVisibility(View.VISIBLE);
+        mPhoneRoot.setVisibility(View.VISIBLE);
     }
 
     private void hideBtn(){
         mCardRoot.setVisibility(View.INVISIBLE);
         mIvBag.setVisibility(View.INVISIBLE);
-
         mIvMain.setVisibility(View.INVISIBLE);
-        mIvGal.setVisibility(View.INVISIBLE);
         mIvSign.setVisibility(View.INVISIBLE);
+        mIvRole.setVisibility(View.INVISIBLE);
+        mPhoneRoot.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onBackPressed() {
-        if(mIvGal.getVisibility() == View.GONE){
-            mIvGal.setVisibility(View.VISIBLE);
-            mLive2DLayout.setVisibility(View.GONE);
-            mExitLive2D.setVisibility(View.GONE);
-            mIvSelectMate.setVisibility(View.GONE);
-            mIvSelectFuku.setVisibility(View.GONE);
-            mIvSelectLanguage.setVisibility(View.GONE);
+        if(mIvRole.isSelected()){
+            clickRole();
             return;
         }
         long currentTime = System.currentTimeMillis();
@@ -982,29 +804,19 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQ_SELECT_FUKU && resultCode == SelectFukuActivity.RES_OK){
-            if(data != null) {
-                String fuku = data.getStringExtra("model");
-                if(!mFuku.equals(fuku)) {
-                    mFuku = fuku;
-                    live2DMgr.changeModel(fuku);
-                }
-            }
-        }
     }
 
     @Override
     protected void onDestroy() {
         if(mPresenter != null) mPresenter.release();
-        SnowShowEntity.onDestroy(this);
         if(isGisterReciver){
             unregisterReceiver(mReceiver);
             isGisterReciver = false;
         }
         RxBus.getInstance().unSubscribe(this);
         AppSetting.isRunning = false;
-        SoundManager.release();
-        FileManager.release();
+        RongIM.getInstance().removeUnReadMessageCountChangedObserver(this);
+        mUnityPlayer.quit();
         super.onDestroy();
     }
 
@@ -1029,7 +841,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     protected void restartApp() {
-       // super.restartApp();
         startActivity(new Intent(this, SplashActivity.class));
         finish();
     }
@@ -1042,6 +853,19 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             case AppStatusConstant.ACTION_RESTART_APP:
                 restartApp();
                 break;
+        }
+    }
+
+    @Override
+    public void onCountChanged(int i) {
+        if(i > 0){
+            mTvMsg.setText(i + "条新消息");
+            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this,R.drawable.ic_inform_reddot),null,null,null);
+            mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+        }else {
+            mTvMsg.setText("无新信息");
+            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+            mTvMsg.setCompoundDrawablePadding(0);
         }
     }
 }

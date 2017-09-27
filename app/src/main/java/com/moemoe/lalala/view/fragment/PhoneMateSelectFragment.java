@@ -12,8 +12,11 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPhoneMateComponent;
 import com.moemoe.lalala.di.modules.PhoneMateModule;
+import com.moemoe.lalala.event.MateBackPressEvent;
+import com.moemoe.lalala.event.MateLuyinEvent;
 import com.moemoe.lalala.model.entity.DeskMateEntity;
 import com.moemoe.lalala.model.entity.PhoneFukuEntity;
 import com.moemoe.lalala.model.entity.PhoneMateEntity;
@@ -69,6 +72,8 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
     ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
+    @BindView(R.id.tv_col_luyin)
+    TextView mTvCol;
 
     @Inject
     PhoneMatePresenter mPresenter;
@@ -164,7 +169,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
         ArrayList<Integer> list = new ArrayList<>();
         list.add(R.drawable.btn_deskmate_chose_len);
         list.add(R.drawable.btn_deskmate_chose_mei);
-        list.add(R.drawable.btn_deskmate_chose_sha);
+        list.add(R.drawable.btn_deskmate_chose_sari);
         mHaveMate = PreferenceUtils.getAuthorInfo().getDeskMateEntities();
         for(DeskMateEntity entity : mHaveMate){
             if(entity.isDeskmate()){
@@ -225,6 +230,12 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
                 }else {
                     ToastUtils.showShortToast(getContext(),"还未拥有角色");
                 }
+            }
+        });
+        mTvCol.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                RxBus.getInstance().post(new MateLuyinEvent(mCurSelect));
             }
         });
         mPresenter.loadMateInfo();
@@ -341,7 +352,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
             mTvSelectMate.setVisibility(View.VISIBLE);
             mTvTitle.setText("同桌");
         }else {
-            ((PhoneMainActivity)getContext()).finishCurFragment();
+            RxBus.getInstance().post(new MateBackPressEvent());
         }
     }
 

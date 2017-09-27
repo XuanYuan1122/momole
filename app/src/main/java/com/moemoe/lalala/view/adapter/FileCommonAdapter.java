@@ -1,14 +1,16 @@
 package com.moemoe.lalala.view.adapter;
 
+import android.content.Context;
+
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.entity.CommonFileEntity;
 import com.moemoe.lalala.model.entity.FolderType;
-import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 
-import zlc.season.rxdownload.RxDownload;
+import zlc.season.rxdownload2.RxDownload;
+
 
 /**
  *
@@ -21,7 +23,7 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
     private boolean isGrid;
     private RxDownload downloadSub;
 
-    public FileCommonAdapter(String folderType) {
+    public FileCommonAdapter(String folderType, Context context) {
         super(null);
         if(folderType.equals(FolderType.MH.toString())){
             setLayoutResId(R.layout.item_folder_manhua_2);
@@ -31,7 +33,7 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
             setLayoutResId(R.layout.item_file_common);
         }
         isSelect = false;
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(context)
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())

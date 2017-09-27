@@ -29,11 +29,9 @@ import com.moemoe.lalala.model.entity.NetaMsgEntity;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.PersonDocEntity;
 import com.moemoe.lalala.model.entity.PersonFollowEntity;
-import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 import com.moemoe.lalala.model.entity.ReplyEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.utils.DensityUtil;
-import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.GlideRoundTransform;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -45,17 +43,17 @@ import com.moemoe.lalala.view.activity.NewBagActivity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
 import com.moemoe.lalala.view.activity.TagControlActivity;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Locale;
 
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-import rx.Observable;
-import rx.Subscriber;
 
 /**
  * Created by yi on 2016/12/15.
@@ -172,8 +170,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
              return new SysMsgHolder(LayoutInflater.from(context).inflate(R.layout.item_msg_offical_detail,parent,false));
          }else if(mType == 11){
              return new BagItemViewHolder(LayoutInflater.from(context).inflate(R.layout.item_search_bag_dir,parent,false));
-         }else if(mType == 12){
-             return new MsgViewHolder(LayoutInflater.from(context).inflate(R.layout.item_message_new,parent,false));
          }
         return null;
     }
@@ -236,21 +232,26 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(entity.getUserLevelColor(), ContextCompat.getColor(context, R.color.main_cyan)));
             followViewHolder.ivLevelColor.setBackgroundDrawable(shapeDrawable1);
             Observable.range(0,3)
-                    .subscribe(new Subscriber<Integer>() {
+                    .subscribe(new Observer<Integer>() {
                         @Override
-                        public void onCompleted() {
+                        public void onSubscribe(@NonNull Disposable d) {
 
                         }
 
                         @Override
-                        public void onError(Throwable e) {
+                        public void onNext(@NonNull Integer integer) {
+                            followViewHolder.huiZhangTexts[integer].setVisibility(View.INVISIBLE);
+                            followViewHolder.huiZhangRoots[integer].setVisibility(View.INVISIBLE);
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
 
                         }
 
                         @Override
-                        public void onNext(Integer i) {
-                            followViewHolder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
-                            followViewHolder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
+                        public void onComplete() {
+
                         }
                     });
             if(entity.getBadgeList().size() > 0){
@@ -391,21 +392,26 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(commentEntity.getFromUserLevelColor(), ContextCompat.getColor(context, R.color.main_cyan)));
             commentHolder.ivLevelColor.setBackgroundDrawable(shapeDrawable1);
             Observable.range(0,3)
-                    .subscribe(new Subscriber<Integer>() {
+                    .subscribe(new Observer<Integer>() {
                         @Override
-                        public void onCompleted() {
+                        public void onSubscribe(@NonNull Disposable d) {
 
                         }
 
                         @Override
-                        public void onError(Throwable e) {
+                        public void onNext(@NonNull Integer integer) {
+                            commentHolder.huiZhangTexts[integer].setVisibility(View.INVISIBLE);
+                            commentHolder.huiZhangRoots[integer].setVisibility(View.INVISIBLE);
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
 
                         }
 
                         @Override
-                        public void onNext(Integer i) {
-                            commentHolder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
-                            commentHolder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
+                        public void onComplete() {
+
                         }
                     });
             if(commentEntity.getBadgeList().size() > 0){
@@ -586,32 +592,6 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     context.startActivity(i2);
                 }
             });
-        }else if(mType == 12){
-            PrivateMessageItemEntity bean = (PrivateMessageItemEntity) getItem(position);
-            MsgViewHolder msgViewHolder = (MsgViewHolder) holder;
-            String path;
-            if(bean.getIcon().startsWith("http")){
-                path = bean.getIcon();
-            }else {
-                path = ApiService.URL_QINIU + bean.getIcon();
-            }
-            Glide.with(context)
-                    .load(StringUtils.getUrl(context, path, DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50),false,false))
-                    .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
-                    .placeholder(R.drawable.bg_default_circle)
-                    .error(R.drawable.bg_default_circle)
-                    .bitmapTransform(new CropCircleTransformation(context))
-                    .into(msgViewHolder.ivAvatar);
-            msgViewHolder.tvName.setText(bean.getName());
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            msgViewHolder.tvDate.setText(StringUtils.timeFormate(simpleDateFormat.format(bean.getUpdateTime())));
-            msgViewHolder.tvContent.setText(bean.getContent());
-            if(bean.getDot() > 0){
-                msgViewHolder.tvDot.setVisibility(View.VISIBLE);
-                msgViewHolder.tvDot.setText(bean.getDot() + "");
-            }else {
-                msgViewHolder.tvDot.setVisibility(View.GONE);
-            }
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

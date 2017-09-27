@@ -46,20 +46,12 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
     View mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
-    @BindView(R.id.rv_future)
-    PullAndLoadView mFuturePv;
     @BindView(R.id.rv_past)
     PullAndLoadView mPastPv;
-    @BindView(R.id.tv_time)
-    TextView mTvTime;
-    @BindView(R.id.ll_time_root)
-    View mLlTimeRoot;
 
     @Inject
     ColumnPresenter mPresenter;
-    private ColumnDetailAdapter mFutureAdapter;
     private ColumnDetailAdapter mPastAdapter;
-    private boolean mIsPast = true;
     private String mBarId;
     private boolean mIsLoading = false;
 
@@ -85,21 +77,14 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
                 .inject(this);
         mTvTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTvTitle.setText(title);
-        mFuturePv.setLoadMoreEnabled(false);
-        mFuturePv.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mFuturePv.setLayoutManager(new LinearLayoutManager(this));
-        mFutureAdapter = new ColumnDetailAdapter(this);
-        mFuturePv.getRecyclerView().setAdapter(mFutureAdapter);
 
         mPastPv.setLoadMoreEnabled(true);
-        mPastPv.getSwipeRefreshLayout().setEnabled(false);
+        mPastPv.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mPastPv.setLayoutManager(new LinearLayoutManager(this));
         mPastAdapter = new ColumnDetailAdapter(this);
         mPastPv.getRecyclerView().setAdapter(mPastAdapter);
         mPastPv.getRecyclerView().addItemDecoration(new SimpleBorderDividerItemDecoration(getResources().getDimensionPixelOffset(R.dimen.size_7),0));
-        mFuturePv.setVisibility(View.GONE);
         mPastPv.setVisibility(View.VISIBLE);
-        mTvTime.setText(R.string.label_coming_soon);
     }
 
     @Override
@@ -141,53 +126,6 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
 
             }
         });
-        mFuturePv.setPullCallback(new PullCallback() {
-            @Override
-            public void onLoadMore() {
-
-            }
-
-            @Override
-            public void onRefresh() {
-                mIsLoading = true;
-                mPresenter.requestFutureFresh(mBarId,-mFutureAdapter.getDataCount()-1);
-            }
-
-            @Override
-            public boolean isLoading() {
-                return mIsLoading;
-            }
-
-            @Override
-            public boolean hasLoadedAllItems() {
-                return false;
-            }
-        });
-        mFutureAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                Object bean = mFutureAdapter.getItem(position);
-                String id = null;
-                if (bean instanceof CalendarDayItemEntity.CalendarData) {
-                    CalendarDayItemEntity.CalendarData doc = (CalendarDayItemEntity.CalendarData) bean;
-                    id = doc.getSchema();
-                }
-                if (!TextUtils.isEmpty(id)) {
-                    if(id.contains(getString(R.string.label_doc_path)) && !id.contains("uuid")){
-                        String begin = id.substring(0,id.indexOf("?") + 1);
-                        String uuid = id.substring(id.indexOf("?") + 1);
-                        id = begin + "uuid=" + uuid + "&from_name=" + mTvTitle.getText().toString();
-                    }
-                    Uri uri = Uri.parse(id);
-                    IntentUtils.toActivityFromUri(ColumnDetailActivity.this, uri,view);
-                }
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        });
         mPastPv.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
@@ -197,7 +135,8 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
 
             @Override
             public void onRefresh() {
-
+                mIsLoading = true;
+                mPresenter.requestPastFresh(mBarId,0);
             }
 
             @Override
@@ -210,35 +149,6 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
                 return false;
             }
         });
-
-        mLlTimeRoot.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                mIsPast = !mIsPast;
-                if(mIsPast){
-                    mPastPv.setVisibility(View.VISIBLE);
-                    mFuturePv.setVisibility(View.GONE);
-                    mTvTime.setText(R.string.label_coming_soon);
-                }else {
-                    mPastPv.setVisibility(View.GONE);
-                    mFuturePv.setVisibility(View.VISIBLE);
-                    mTvTime.setText(R.string.label_review_past);
-                    if(mFutureAdapter.getItemCount() == 0) mPresenter.requestFutureFresh(mBarId,-1);
-                }
-            }
-        });
-
-        mFuturePv.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(!isFinishing())Glide.with(ColumnDetailActivity.this).resumeRequests();
-                }else {
-                    if(!isFinishing())Glide.with(ColumnDetailActivity.this).pauseRequests();
-                }
-            }
-        });
-
         mPastPv.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -278,16 +188,8 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
     @Override
     public void onFailure(int code,String msg) {
         mIsLoading = false;
-        mFuturePv.setComplete();
         mPastPv.setComplete();
         ErrorCodeUtils.showErrorMsgByCode(ColumnDetailActivity.this,code,msg);
-    }
-
-    @Override
-    public void loadColumnFutureData(ArrayList<CalendarDayItemEntity> calendarDayItemEntities) {
-        mIsLoading = false;
-        mFuturePv.setComplete();
-        mFutureAdapter.setData(calendarDayItemEntities,true);
     }
 
     @Override

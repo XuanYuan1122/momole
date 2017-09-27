@@ -37,6 +37,8 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_INVITE_ADD;
+
 /**
  * Created by yi on 2016/11/29.
  */
@@ -219,6 +221,17 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQ_INVITE_ADD){
+            Intent i = new Intent(PhoneStateCheckActivity.this, MapActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            showToast(R.string.msg_login_success);
+            finish();
+        }
+    }
+
+    @Override
     public void onLoginSuccess(AuthorInfo info,LoginResultEntity entity) {
         finalizeDialog();
         info.setToken(entity.getToken());
@@ -236,10 +249,8 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
             info.setHeadPath(entity.getHeadPath());
         }
         PreferenceUtils.setAuthorInfo(info);
-        Intent i = new Intent(PhoneStateCheckActivity.this, MapActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        showToast(R.string.msg_login_success);
-        finish();
+        Intent i = new Intent(this,InviteAddActivity.class);
+        i.putExtra("type",0);
+        startActivityForResult(i,REQ_INVITE_ADD);
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,101 +8,39 @@
 
     <include layout="@layout/neta_bar"/>
 
-    <TextView
+    <ImageView
+        android:id="@+id/iv_cover"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black_1e1e1e"
-        android:textSize="20dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/y144"
-        android:text="请选择一个角色使用"/>
-
-    <TextView
-        android:id="@+id/tv_have"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/size_12"
-        android:textColor="@color/gray_929292"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/y8"
-        android:text="拥有0张鼓励券"/>
+        android:src="@drawable/len_guli"/>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/y80"
-        android:layout_gravity="center_horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/pink_fb7ba2">
 
-        <FrameLayout
-            android:id="@+id/rl_root_1"
+        <com.flyco.tablayout.CommonTabLayout
+            android:id="@+id/indicator_person_data"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/iv_1"
-                android:layout_width="@dimen/x160"
-                android:layout_height="@dimen/x160"
-                android:src="@drawable/btn_deskmate_ticket_mei"/>
+            android:layout_height="@dimen/y68"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/transparent"
+            app:tl_iconVisible="false"
+            app:tl_textBold="BOTH"
+            app:tl_tab_width="@dimen/x76"
+            app:tl_indicator_width="@dimen/x76"
+            app:tl_indicator_height="@dimen/y6"
+            app:tl_indicator_color="@color/white"
+            app:tl_textsize="@dimen/x30"
+            app:tl_textSelectColor="@color/white"
+            app:tl_textUnselectColor="@color/white_50"/>
 
-            <ImageView
-                android:id="@+id/iv_select_1"
-                android:layout_width="@dimen/x160"
-                android:layout_height="@dimen/x160"
-                android:src="@drawable/shape_rect_border_pink_no_background_x160"
-                android:visibility="gone"/>
-        </FrameLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager_person_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-        <FrameLayout
-            android:id="@+id/rl_root_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/x24"
-            android:layout_marginStart="@dimen/x24">
-            <ImageView
-                android:id="@+id/iv_2"
-                android:layout_width="@dimen/x160"
-                android:layout_height="@dimen/x160"
-                android:src="@drawable/btn_deskmate_ticket_len"/>
-
-            <ImageView
-                android:id="@+id/iv_select_2"
-                android:layout_width="@dimen/x160"
-                android:layout_height="@dimen/x160"
-                android:src="@drawable/shape_rect_border_pink_no_background_x160"
-                android:visibility="gone"/>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/rl_root_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/x24"
-            android:layout_marginStart="@dimen/x24">
-            <ImageView
-                android:id="@+id/iv_3"
-                android:layout_width="@dimen/x160"
-                android:layout_height="@dimen/x160"
-                android:src="@drawable/btn_deskmate_ticket_sha"/>
-
-            <ImageView
-                android:id="@+id/iv_select_3"
-                android:layout_width="@dimen/x160"
-                android:layout_height="@dimen/x160"
-                android:src="@drawable/shape_rect_border_pink_no_background_x160"
-                android:visibility="gone"/>
-        </FrameLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_done"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_mate_fuku"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/y80"
-        android:textColor="@color/white"
-        android:textSize="@dimen/size_15"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:text="@string/label_confirm"/>
 </LinearLayout>

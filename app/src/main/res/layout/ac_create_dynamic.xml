@@ -63,6 +63,11 @@
         app:line_spacing="7dp"
         app:label_spacing="7dp" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:background="@color/gray_e8e8e8"/>
+
     <com.moemoe.lalala.view.widget.view.KeyboardListenerLayout
         android:id="@+id/rl_ope_root"
         android:layout_width="match_parent"

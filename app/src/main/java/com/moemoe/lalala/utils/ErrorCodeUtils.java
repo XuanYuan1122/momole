@@ -4,10 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.greendao.gen.ChatContentDbEntityDao;
-import com.moemoe.lalala.greendao.gen.ChatUserEntityDao;
-import com.moemoe.lalala.greendao.gen.GroupUserEntityDao;
-import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 
 import cn.sharesdk.framework.Platform;
@@ -44,14 +40,6 @@ public class ErrorCodeUtils {
                                 p.removeAccount(true);
                             }
                         }
-                        PrivateMessageItemEntityDao privateMessageItemEntityDao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
-                        privateMessageItemEntityDao.deleteAll();
-                        ChatContentDbEntityDao chatContentDbEntityDao = GreenDaoManager.getInstance().getSession().getChatContentDbEntityDao();
-                        chatContentDbEntityDao.deleteAll();
-                        GroupUserEntityDao groupUserEntityDao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
-                        groupUserEntityDao.deleteAll();
-                        ChatUserEntityDao chatUserEntityDao = GreenDaoManager.getInstance().getSession().getChatUserEntityDao();
-                        chatUserEntityDao.deleteAll();
                     }catch (Exception e){
                         e.printStackTrace();
                     }finally {

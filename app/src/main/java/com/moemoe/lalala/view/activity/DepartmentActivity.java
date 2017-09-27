@@ -60,7 +60,7 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
     @BindView(R.id.rv_list)
     PullAndLoadView mListDocs;
     @BindView(R.id.rl_tv_menu_root)
-    View mTvMenuRoot;
+    LinearLayout mTvMenuRoot;
     @BindView(R.id.tv_menu)
     TextView mTvMenu;
 
@@ -116,9 +116,10 @@ public class DepartmentActivity extends BaseAppCompatActivity implements DepartC
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(DensityUtil.dip2px(this,60),DensityUtil.dip2px(this,26));
         lp.gravity = Gravity.CENTER_VERTICAL;
         lp.rightMargin = DensityUtil.dip2px(this,18);
+        mTvMenuRoot.setOrientation(LinearLayout.VERTICAL);
         mTvMenuRoot.setLayoutParams(lp);
         mTvMenuRoot.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_3);
-        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp1.gravity = Gravity.CENTER;
         mTvMenu.setLayoutParams(lp1);
         mTvMenu.setVisibility(View.VISIBLE);

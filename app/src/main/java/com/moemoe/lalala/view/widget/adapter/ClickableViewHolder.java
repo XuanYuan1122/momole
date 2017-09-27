@@ -1,5 +1,6 @@
 package com.moemoe.lalala.view.widget.adapter;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
@@ -16,8 +17,11 @@ import android.widget.TextView;
 
 public class ClickableViewHolder extends RecyclerView.ViewHolder{
 
+    protected Context context;
+
     public ClickableViewHolder(View itemView) {
         super(itemView);
+        context = itemView.getContext();
     }
 
     @SuppressWarnings("unchecked")

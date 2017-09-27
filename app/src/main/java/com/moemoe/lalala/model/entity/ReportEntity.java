@@ -10,6 +10,7 @@ public class ReportEntity {
     private String targetId;
     private String targetType;
     private String userId;
+    private String parentId;
 
     public ReportEntity(String reason, String reasonType, String targetId, String targetType) {
         this.reason = reason;
@@ -64,5 +65,13 @@ public class ReportEntity {
 
     public void setTargetType(String targetType) {
         this.targetType = targetType;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 }

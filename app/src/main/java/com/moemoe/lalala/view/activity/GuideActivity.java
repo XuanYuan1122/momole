@@ -70,7 +70,7 @@ public class GuideActivity extends BaseAppCompatActivity {
             if (mCurPosition == 6) {
                 if (Math.abs(e1.getX() - e2.getX()) > Math.abs(e1.getY() - e2.getY()) && (e1.getX() - e2.getX() <= (-13) || e1.getX() - e2.getX() >= 13)) {
                     if (e1.getX() - e2.getX() >= 13) {
-                        if(PreferenceUtils.isLogin(GuideActivity.this)){
+                        if(PreferenceUtils.isLogin()){
                             goToMain();
                         }else {
                             go2Login();
@@ -118,7 +118,7 @@ public class GuideActivity extends BaseAppCompatActivity {
                     if(i < mViewPager.getAdapter().getCount() - 1){
                         mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
                     }else {
-                        if(PreferenceUtils.isLogin(GuideActivity.this)){
+                        if(PreferenceUtils.isLogin()){
                             goToMain();
                         }else {
                             go2Login();

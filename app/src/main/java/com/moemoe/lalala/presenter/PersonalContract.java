@@ -11,7 +11,6 @@ public interface PersonalContract {
     interface Presenter extends BasePresenter{
         void requestUserInfo(String id);
         void followUser(String id,boolean isFollow);
-        void createPrivateMsg(String userId);
         void saveOrCancelBlackUser(String userId, boolean isSave);
     }
 
@@ -19,7 +18,6 @@ public interface PersonalContract {
         void onLoadUserInfo(UserInfo info);
         void onFollowSuccess(boolean isFollow);
         void onLoadUserInfoFail();
-        void onCreatePrivateMsgSuccess(CreatePrivateMsgEntity entity);
         void onSaveOrCancelBlackSuccess(boolean isSave);
     }
 }

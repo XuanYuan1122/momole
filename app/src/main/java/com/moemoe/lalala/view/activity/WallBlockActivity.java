@@ -1,15 +1,22 @@
 package com.moemoe.lalala.view.activity;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.flyco.tablayout.CommonTabLayout;
@@ -31,13 +38,11 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
-import com.moemoe.lalala.utils.StartActivityConstant;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
 import com.moemoe.lalala.view.fragment.BaseFragment;
-import com.moemoe.lalala.view.fragment.ClassMainFragment;
-import com.moemoe.lalala.view.fragment.DiscoveryMainFragment;
-import com.moemoe.lalala.view.fragment.FollowMainFragment;
+import com.moemoe.lalala.view.fragment.NewDiscoverMainFragment;
+import com.moemoe.lalala.view.fragment.NewFollowMainFragment;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
 import java.util.ArrayList;
@@ -46,6 +51,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+
+import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_DOC;
 
 /**
  * Created by yi on 2016/12/2.
@@ -59,19 +66,26 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     ViewPager mDataPager;
     @BindView(R.id.indicator_person_data)
     CommonTabLayout mPageIndicator;
-    @BindView(R.id.tv_simple_label)
-    TextView mSimpleLabel;
     @BindView(R.id.edt_comment_input)
     EditText mEdtCommentInput;
     @BindView(R.id.ll_comment_pannel)
     KeyboardListenerLayout mKlCommentBoard;
     @BindView(R.id.iv_comment_send)
     View mTvSendComment;
-    private DiscoveryMainFragment discoveryMainFragment;
-    private FollowMainFragment followMainFragment;
-    private ClassMainFragment classMainFragment;
-    private boolean mCurTag;
+    @BindView(R.id.iv_role)
+    ImageView mIvRole;
+    @BindView(R.id.iv_create_dynamic)
+    ImageView mIvCreatDynamic;
+    @BindView(R.id.iv_create_wenzhang)
+    ImageView mIvCreateWen;
+    @BindView(R.id.tv_show_text)
+    TextView mTvText;
+    @BindView(R.id.rl_role_root)
+    RelativeLayout mRoleRoot;
+
+    private NewFollowMainFragment classMainFragment;
     private TabFragmentPagerAdapter mAdapter;
+    private GestureDetector gestureDetector;
 
     @Inject
     WallPresenter mPresenter;
@@ -94,12 +108,10 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
-        followMainFragment = FollowMainFragment.newInstance();
-        discoveryMainFragment = DiscoveryMainFragment.newInstance();
-        classMainFragment = ClassMainFragment.newInstance();
+        classMainFragment = NewFollowMainFragment.newInstance("ground");
         List<BaseFragment> fragmentList = new ArrayList<>();
-        fragmentList.add(followMainFragment);
-        fragmentList.add(discoveryMainFragment);
+        fragmentList.add(NewFollowMainFragment.newInstance("follow"));
+        fragmentList.add(NewDiscoverMainFragment.newInstance("random"));
         fragmentList.add(classMainFragment);
         List<String> titles = new ArrayList<>();
         titles.add(getString(R.string.label_follow));
@@ -112,22 +124,43 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         }
         mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
         mDataPager.setAdapter(mAdapter);
-       // mDataPager.setOffscreenPageLimit(2);
         mDataPager.setCurrentItem(1);
         mPageIndicator.setTabData(mTabEntities);
         mPageIndicator.setCurrentTab(1);
-        mSimpleLabel.setVisibility(View.VISIBLE);
-        mSimpleLabel.setSelected(AppSetting.SUB_TAG);
-        mCurTag = AppSetting.SUB_TAG;
         if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
             Intent i = new Intent(this,MengXinActivity.class);
             startActivity(i);
         }
+        gestureDetector = new GestureDetector(this,onGestureListener);
     }
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
 
+    }
+
+    private static final int FLING_MIN_DISTANCE = 10;
+    private static final int FLING_MIN_VELOCITY = 0;
+
+    GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener(){
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                               float velocityY){
+            if (e1.getY()-e2.getY() > FLING_MIN_DISTANCE
+                    && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
+                hideRole();
+            } else if (e2.getY()-e1.getY() > FLING_MIN_DISTANCE
+                    && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
+                showRole();
+            }
+            return false;
+        }
+    };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        gestureDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -136,18 +169,6 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
             @Override
             public void onNoDoubleClick(View v) {
                 onBackPressed();
-            }
-        });
-        mSimpleLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AppSetting.SUB_TAG = !AppSetting.SUB_TAG;
-                mCurTag = AppSetting.SUB_TAG;
-                mSimpleLabel.setSelected(AppSetting.SUB_TAG);
-                PreferenceUtils.setSimpleLabel(WallBlockActivity.this,AppSetting.SUB_TAG);
-                if(discoveryMainFragment != null) discoveryMainFragment.changeLabelAdapter();
-                if(followMainFragment != null) followMainFragment.changeLabelAdapter();
-                if(classMainFragment != null) classMainFragment.changeLabelAdapter();
             }
         });
         mPageIndicator.setOnTabSelectListener(new OnTabSelectListener() {
@@ -218,6 +239,77 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                 }
             }
         });
+        mIvRole.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                clickRole();
+            }
+        });
+        mIvCreatDynamic.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                Intent i4 = new Intent(WallBlockActivity.this,CreateDynamicActivity.class);
+                i4.putExtra("default_tag","广场");
+                startActivity(i4);
+            }
+        });
+        mIvCreateWen.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                Intent intent = new Intent(WallBlockActivity.this, CreateRichDocActivity.class);
+                intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
+                intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
+                intent.putExtra("from_name","书包");
+                intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");
+                startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
+            }
+        });
+    }
+
+    public void hideRole(){
+        ObjectAnimator roleAnimator = ObjectAnimator.ofFloat(mRoleRoot,"translationY",0,mRoleRoot.getHeight()).setDuration(300);
+        roleAnimator.setInterpolator(new OvershootInterpolator());
+        roleAnimator.start();
+    }
+
+    public void showRole(){
+        ObjectAnimator roleAnimator = ObjectAnimator.ofFloat(mRoleRoot,"translationY",mRoleRoot.getHeight(),0).setDuration(300);
+        roleAnimator.setInterpolator(new OvershootInterpolator());
+        roleAnimator.start();
+    }
+
+    private void clickRole(){
+        mIvRole.setSelected(!mIvRole.isSelected());
+        if(mIvRole.isSelected()){
+            mIvCreatDynamic.setVisibility(View.VISIBLE);
+            mIvCreateWen.setVisibility(View.VISIBLE);
+            mTvText.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mRoleRoot.setLayoutParams(lp);
+            mRoleRoot.setBackgroundColor(ContextCompat.getColor(WallBlockActivity.this,R.color.alph_60));
+            mRoleRoot.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+
+                }
+            });
+            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lp1.addRule(RelativeLayout.ALIGN_PARENT_END);
+            mIvRole.setLayoutParams(lp1);
+        }else {
+            mIvCreatDynamic.setVisibility(View.GONE);
+            mIvCreateWen.setVisibility(View.GONE);
+            mTvText.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_END);
+            mRoleRoot.setLayoutParams(lp);
+            mRoleRoot.setBackgroundColor(ContextCompat.getColor(WallBlockActivity.this,R.color.transparent));
+            mRoleRoot.setOnClickListener(null);
+            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mIvRole.setLayoutParams(lp1);
+        }
     }
 
     private String tagDocId = "";
@@ -248,11 +340,6 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == CreateRichDocActivity.RESPONSE_CODE ||requestCode == StartActivityConstant.REQ_DOC_DETAIL_ACTIVITY){
-            if(classMainFragment != null){
-                classMainFragment.onActivityResult(requestCode,resultCode,data);
-            }
-        }
     }
 
     @Override
@@ -263,13 +350,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     @Override
     protected void onResume() {
         super.onResume();
-        if(mCurTag != AppSetting.SUB_TAG){
-            mSimpleLabel.setSelected(AppSetting.SUB_TAG);
-            if(discoveryMainFragment != null) discoveryMainFragment.changeLabelAdapter();
-            if(followMainFragment != null) followMainFragment.changeLabelAdapter();
-            if(classMainFragment != null) classMainFragment.changeLabelAdapter();
-            mCurTag = AppSetting.SUB_TAG;
-        }
+        ViewUtils.setRoleButton(mIvRole);
     }
 
     @Override
@@ -286,6 +367,10 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
 
     @Override
     public void onBackPressed() {
+        if(mIvRole.isSelected()){
+            clickRole();
+            return;
+        }
         finish();
         overridePendingTransition(0,R.anim.main_list_out);
     }

@@ -29,4 +29,8 @@
     <include
         android:id="@+id/set_change_address"
         layout="@layout/style_setting" />
+
+    <include
+        android:id="@+id/set_black_list"
+        layout="@layout/style_setting" />
 </LinearLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/y24"
+    android:layout_marginStart="@dimen/x24"
+    android:layout_marginEnd="@dimen/x24"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y210">
+
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y28"
+        android:layout_marginStart="@dimen/x24"
+        android:textStyle="bold"
+        android:textSize="@dimen/x30"
+        android:textColor="@color/white"/>
+
+    <LinearLayout
+        android:id="@+id/ll_pro_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title"
+        android:layout_alignStart="@+id/tv_title"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y28"
+            android:paddingStart="@dimen/x16"
+            android:paddingEnd="@dimen/x16"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x16"
+            android:gravity="center"
+            android:background="@drawable/shape_rect_border_white_background_y14"/>
+
+        <TextView
+            android:id="@+id/tv_juqing_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x20"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_user_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_pro_root"
+        android:layout_alignStart="@+id/tv_title"/>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x20"
+        android:layout_marginEnd="@dimen/x24"
+        android:maxLines="3"
+        android:layout_alignStart="@+id/tv_title"
+        android:layout_below="@+id/tv_user_progress"/>
+
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/x64"
+        android:textStyle="bold"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/y24"
+        android:layout_marginEnd="@dimen/x32"/>
+
+    <ImageView
+        android:id="@+id/iv_front"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_plot_complete_frame"
+        android:scaleType="fitXY"
+        android:visibility="gone"/>
+</RelativeLayout>

@@ -24,17 +24,42 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.os.SystemClock;
+import android.text.TextUtils;
 
 
 import com.moemoe.lalala.broadcast.AlarmClockBroadcast;
+import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
+import com.moemoe.lalala.model.entity.ApiResult;
+import com.moemoe.lalala.model.entity.BookInfo;
+import com.moemoe.lalala.model.entity.FolderType;
+import com.moemoe.lalala.model.entity.NewUploadEntity;
+import com.moemoe.lalala.model.entity.UploadResultEntity;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by zhangshaowen on 16/4/7.
@@ -249,5 +274,196 @@ public class Utils {
 
             return nextTime;
         }
+    }
+
+    public static void uploadFile(ApiService apiService, final String path, Observer<UploadResultEntity> callback){
+        final ArrayList<NewUploadEntity> entities = new ArrayList<>();
+        entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(path)),FileUtil.getExtensionName(path)));
+        apiService.checkMd5(entities)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(new Function<ApiResult<ArrayList<UploadResultEntity>>, ObservableSource<UploadResultEntity>>() {
+                    @Override
+                    public ObservableSource<UploadResultEntity> apply(@NonNull ApiResult<ArrayList<UploadResultEntity>> arrayListApiResult) throws Exception {
+                        final UploadResultEntity uploadResultEntity = arrayListApiResult.getData().get(0);
+                        final File file = new File(path);
+                        final UploadManager uploadManager = new UploadManager();
+                        return Observable.create(new ObservableOnSubscribe<UploadResultEntity>() {
+                            @Override
+                            public void subscribe(@NonNull final ObservableEmitter<UploadResultEntity> res) throws Exception {
+                                final UploadResultEntity entity = new UploadResultEntity();
+                                if(!uploadResultEntity.isSave()){
+                                    try {
+                                        uploadManager.put(file,uploadResultEntity.getPath(), uploadResultEntity.getUploadToken(), new UpCompletionHandler() {
+                                            @Override
+                                            public void complete(String key, ResponseInfo info, JSONObject response) {
+                                                if (info.isOK()) {
+                                                    entity.setFileName(file.getName());
+                                                    entity.setMd5(uploadResultEntity.getMd5());
+                                                    entity.setPath(uploadResultEntity.getPath());
+                                                    entity.setSave(uploadResultEntity.isSave());
+                                                    entity.setSize(file.length());
+                                                    entity.setType(uploadResultEntity.getType());
+                                                    res.onNext(entity);
+                                                    res.onComplete();
+                                                } else {
+                                                    res.onError(null);
+                                                }
+                                            }
+                                        }, null);
+                                    }catch (Exception e){
+                                        res.onError(e);
+                                    }
+                                }else {
+                                    entity.setAttr(uploadResultEntity.getAttr());
+                                    entity.setFileName(file.getName());
+                                    entity.setMd5(uploadResultEntity.getMd5());
+                                    entity.setPath(uploadResultEntity.getPath());
+                                    entity.setSave(uploadResultEntity.isSave());
+                                    entity.setSize(uploadResultEntity.getSize());
+                                    entity.setType(uploadResultEntity.getType());
+                                    res.onNext(entity);
+                                    res.onComplete();
+                                }
+                            }
+                        });
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(callback);
+    }
+
+    public static void uploadFiles(ApiService apiService, final ArrayList<Object> items, final String cover, final int coverSize, final String folderType, final String folderName,Observer<UploadResultEntity> callback){
+        final ArrayList<NewUploadEntity> entities = new ArrayList<>();
+        final ArrayList<Integer> range = new ArrayList<>();
+        if(!TextUtils.isEmpty(cover) && coverSize != -1){
+            entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(cover)), FileUtil.getExtensionName(cover)));
+            range.add(0);
+        }
+        for(Object o : items){
+            if (o instanceof String){
+                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File((String) o)),FileUtil.getExtensionName((String) o)));
+            }else if(o instanceof MusicLoader.MusicInfo){
+                MusicLoader.MusicInfo info = (MusicLoader.MusicInfo) o;
+                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(info.getUrl())),FileUtil.getExtensionName(info.getUrl())));
+            }else if(o instanceof BookInfo){
+                BookInfo entity = (BookInfo) o;
+                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
+            }
+            range.add(range.size());
+        }
+        apiService.checkMd5(entities)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .concatMap(new Function<ApiResult<ArrayList<UploadResultEntity>>, ObservableSource<UploadResultEntity>>() {
+                    @Override
+                    public ObservableSource<UploadResultEntity> apply(@NonNull ApiResult<ArrayList<UploadResultEntity>> arrayListApiResult) throws Exception {
+                        return Observable.zip(
+                                Observable.fromIterable(range),
+                                Observable.fromIterable(arrayListApiResult.getData()),
+                                new BiFunction<Integer, UploadResultEntity, UploadResultEntity>() {
+                                    @Override
+                                    public UploadResultEntity apply(@NonNull Integer integer, @NonNull UploadResultEntity uploadResultEntity) throws Exception {
+                                        if(integer == 0 && !TextUtils.isEmpty(cover) && coverSize != -1){
+                                            uploadResultEntity.setType("cover");
+                                            uploadResultEntity.setFilePath(cover);
+                                        }else {
+                                            Object o ;
+                                            if(!TextUtils.isEmpty(cover) && coverSize != -1){
+                                                o = items.get(integer - 1);
+                                            }else {
+                                                o = items.get(integer);
+                                            }
+                                            if(o instanceof String){
+                                                uploadResultEntity.setFilePath((String) o);
+                                                uploadResultEntity.setType("image");
+                                            }else if(o instanceof MusicLoader.MusicInfo){
+                                                uploadResultEntity.setFilePath(((MusicLoader.MusicInfo) o).getUrl());
+                                                uploadResultEntity.setType("music");
+                                                uploadResultEntity.setMusicTime(((MusicLoader.MusicInfo) o).getDuration());
+                                            }else if(o instanceof BookInfo){
+                                                uploadResultEntity.setFilePath(((BookInfo) o).getPath());
+                                                uploadResultEntity.setType("txt");
+                                            }
+                                        }
+                                        return uploadResultEntity;
+                                    }
+                                }
+                        );
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .concatMap(new Function<UploadResultEntity, ObservableSource<UploadResultEntity>>() {
+                    @Override
+                    public ObservableSource<UploadResultEntity> apply(@NonNull final UploadResultEntity uploadResultEntity) throws Exception {
+                        final File file = new File(uploadResultEntity.getFilePath());
+                        final UploadManager uploadManager = new UploadManager();
+                        return Observable.create(new ObservableOnSubscribe<UploadResultEntity>() {
+                            @Override
+                            public void subscribe(@NonNull final ObservableEmitter<UploadResultEntity> res) throws Exception {
+                                final UploadResultEntity entity = new UploadResultEntity();
+                                if(!uploadResultEntity.isSave()){
+                                    try {
+                                        uploadManager.put(file,uploadResultEntity.getPath(), uploadResultEntity.getUploadToken(), new UpCompletionHandler() {
+                                            @Override
+                                            public void complete(String key, ResponseInfo info, JSONObject response) {
+                                                if (info.isOK()) {
+                                                    entity.setFileName(file.getName());
+                                                    entity.setMd5(uploadResultEntity.getMd5());
+                                                    entity.setPath(uploadResultEntity.getPath());
+                                                    entity.setSave(uploadResultEntity.isSave());
+                                                    entity.setSize(file.length());
+                                                    entity.setType(uploadResultEntity.getType());
+                                                    if(uploadResultEntity.getType().equals("image")){
+                                                        try {
+                                                            String attr = "{\"h\":" + response.getInt("h") + ",\"w\":" + response.getInt("w") + "}";
+                                                            entity.setAttr(attr);
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }else if(uploadResultEntity.getType().equals("music")){
+                                                        String attr = "{\"timestamp\":" + uploadResultEntity.getMusicTime() + "}";
+                                                        entity.setAttr(attr);
+                                                    }else if(uploadResultEntity.getType().equals("txt")){
+                                                        String attr = "{\"size\":"+ file.length() +"}";
+                                                        entity.setAttr(attr);
+                                                        if(!TextUtils.isEmpty(folderType) && folderType.equals(FolderType.XS.toString())){
+                                                            entity.setNum((int)file.length());
+                                                            entity.setTitle(folderName);
+                                                            String content = FileUtil.readFileToString(file);
+                                                            if(content.length() > 100){
+                                                                content = content.substring(0,100);
+                                                            }
+                                                            entity.setContent(content);
+                                                        }
+                                                    }
+                                                    res.onNext(entity);
+                                                    res.onComplete();
+                                                } else {
+                                                    res.onError(null);
+                                                }
+                                            }
+                                        }, null);
+                                    }catch (Exception e){
+                                        res.onError(e);
+                                    }
+                                }else {
+                                    entity.setAttr(uploadResultEntity.getAttr());
+                                    entity.setFileName(file.getName());
+                                    entity.setMd5(uploadResultEntity.getMd5());
+                                    entity.setPath(uploadResultEntity.getPath());
+                                    entity.setSave(uploadResultEntity.isSave());
+                                    entity.setSize(uploadResultEntity.getSize());
+                                    entity.setType(uploadResultEntity.getType());
+                                    res.onNext(entity);
+                                    res.onComplete();
+                                }
+                            }
+
+                        });
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(callback);
     }
 }

@@ -18,11 +18,16 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.
@@ -47,14 +52,15 @@ public class EditAccountPresenter implements EditAccountContract.Presenter {
         apiService.requestQnFileKey(suffix)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<ApiResult<UploadEntity>, Observable<Image>>() {
+                .flatMap(new Function<ApiResult<UploadEntity>, ObservableSource<Image>>() {
                     @Override
-                    public Observable<Image> call(final ApiResult<UploadEntity> uploadEntityApiResult) {
+                    public ObservableSource<Image> apply(@NonNull final ApiResult<UploadEntity> uploadEntityApiResult) throws Exception {
+
                         final File file = new File(path);
                         final UploadManager uploadManager = new UploadManager();
-                        return Observable.create(new Observable.OnSubscribe<Image>() {
+                        return Observable.create(new ObservableOnSubscribe<Image>() {
                             @Override
-                            public void call(final Subscriber<? super Image> subscriber) {
+                            public void subscribe(@NonNull final ObservableEmitter<Image> res) throws Exception {
                                 try {
                                     uploadManager.put(file,uploadEntityApiResult.getData().getFilePath(), uploadEntityApiResult.getData().getUploadToken(), new UpCompletionHandler() {
                                         @Override
@@ -69,29 +75,36 @@ public class EditAccountPresenter implements EditAccountContract.Presenter {
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
-                                                subscriber.onNext(image);
-                                                subscriber.onCompleted();
+                                                res.onNext(image);
+                                                res.onComplete();
                                             } else {
-                                                subscriber.onError(null);
+                                                res.onError(null);
                                             }
                                         }
                                     }, null);
                                 }catch (Exception e){
-                                    subscriber.onError(e);
+                                    res.onError(e);
                                 }
                             }
                         });
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Image>() {
-                    @Override
-                    public void onCompleted() {
-                    }
+                .subscribe(new Observer<Image>() {
 
                     @Override
                     public void onError(Throwable e) {
                         if(view != null) view.uploadFail(type);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
                     }
 
                     @Override

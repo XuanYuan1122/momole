@@ -2,6 +2,8 @@ package com.moemoe.lalala.presenter;
 
 import com.moemoe.lalala.model.entity.AddressEntity;
 
+import java.util.Date;
+
 /**
  * Created by yi on 2016/11/29.
  */

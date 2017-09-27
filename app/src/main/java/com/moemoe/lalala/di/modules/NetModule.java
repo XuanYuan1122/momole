@@ -25,7 +25,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -59,7 +59,7 @@ public class NetModule {
                 .client(okHttpClient)
                 .baseUrl(BuildConfig.DEBUG ? TextUtils.isEmpty(PreferenceUtils.getIp(mContext))? BuildConfig.BASE_URL : PreferenceUtils.getIp(mContext): BuildConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
         return retrofit;
     }

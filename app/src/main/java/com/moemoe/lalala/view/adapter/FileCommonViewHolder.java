@@ -23,12 +23,14 @@ import com.moemoe.lalala.view.widget.longimage.LongImageView;
 
 import java.io.File;
 
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/8/20.
@@ -129,16 +131,22 @@ public class FileCommonViewHolder extends ClickableViewHolder {
                             downloadSub.download(ApiService.URL_QINIU + entity.getPath(),temp,null)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Subscriber<DownloadStatus>() {
+                                    .subscribe(new Observer<DownloadStatus>() {
+
                                         @Override
-                                        public void onCompleted() {
+                                        public void onError(Throwable e) {
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
                                             BitmapUtils.galleryAddPic(itemView.getContext(), longImage.getAbsolutePath());
                                             longCover.setImage(longImage.getAbsolutePath());
                                             adapter.notifyItemChanged(position);
                                         }
 
                                         @Override
-                                        public void onError(Throwable e) {
+                                        public void onSubscribe(@NonNull Disposable d) {
 
                                         }
 

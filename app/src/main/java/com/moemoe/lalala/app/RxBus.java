@@ -2,14 +2,14 @@ package com.moemoe.lalala.app;
 
 import java.util.HashMap;
 
-import rx.Observable;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
-import rx.subscriptions.CompositeSubscription;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 /**
  * Created by yi on 2017/3/2.
@@ -17,11 +17,11 @@ import rx.subscriptions.CompositeSubscription;
 
 public class RxBus {
     private static volatile RxBus mInstance;
-    private SerializedSubject<Object,Object> mSubject;
-    private HashMap<String,CompositeSubscription> mSubscriptionMap;
+    private Subject<Object> mSubject;
+    private HashMap<String,CompositeDisposable> mSubscriptionMap;
 
     private RxBus(){
-        mSubject = new SerializedSubject<>(PublishSubject.create());
+        mSubject = PublishSubject.create().toSerialized();
     }
 
     public static RxBus getInstance(){
@@ -69,7 +69,7 @@ public class RxBus {
      * @param <T>
      * @return
      */
-    public <T>Subscription doSubscribe(Class<T> type, Action1<T> next,Action1<Throwable> error){
+    public <T>Disposable doSubscribe(Class<T> type, Consumer<T> next, Consumer<Throwable> error){
         return toObservable(type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -81,7 +81,7 @@ public class RxBus {
      * @param o
      * @param subscription
      */
-    public void addSubscription(Object o,Subscription subscription){
+    public void addSubscription(Object o,Disposable subscription){
         if(mSubscriptionMap == null){
             mSubscriptionMap = new HashMap<>();
         }
@@ -89,7 +89,7 @@ public class RxBus {
         if(mSubscriptionMap.get(key) != null){
             mSubscriptionMap.get(key).add(subscription);
         }else {
-            CompositeSubscription compositeSubscription = new CompositeSubscription();
+            CompositeDisposable compositeSubscription = new CompositeDisposable();
             compositeSubscription.add(subscription);
             mSubscriptionMap.put(key,compositeSubscription);
         }
@@ -103,7 +103,7 @@ public class RxBus {
         if(mSubscriptionMap == null) return;
         String key = o.getClass().getName();
         if(!mSubscriptionMap.containsKey(key)) return;
-        if(mSubscriptionMap.get(key) != null) mSubscriptionMap.get(key).unsubscribe();
+        if(mSubscriptionMap.get(key) != null) mSubscriptionMap.get(key).dispose();
         mSubscriptionMap.remove(key);
     }
 }

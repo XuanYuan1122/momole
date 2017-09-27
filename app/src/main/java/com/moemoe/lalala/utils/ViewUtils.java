@@ -9,23 +9,28 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.BadgeEntity;
+import com.moemoe.lalala.model.entity.DeskMateEntity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import rx.Observable;
-import rx.Subscriber;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by yi on 2017/6/7.
@@ -246,15 +251,21 @@ public class ViewUtils {
      * @param list
      */
     public static void badge(Context context,final View[] huiZhangRoots, final TextView[] huiZhangTexts, ArrayList<BadgeEntity> list){
-        Observable.range(0,3)
-                .subscribe(new Subscriber<Integer>() {
+        Observable.range(0,huiZhangRoots.length)
+                .subscribe(new Observer<Integer>() {
+
                     @Override
-                    public void onCompleted() {
+                    public void onError(Throwable e) {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
@@ -265,8 +276,8 @@ public class ViewUtils {
                     }
                 });
         if(list.size() > 0){
-            int size = 3;
-            if(list.size() < 3){
+            int size = huiZhangRoots.length;
+            if(list.size() < huiZhangRoots.length){
                 size = list.size();
             }
             for (int i = 0;i < size;i++){
@@ -296,6 +307,70 @@ public class ViewUtils {
             Intent i = new Intent(context, NewPersonalActivity.class);
             i.putExtra("uuid",uuid);
             context.startActivity(i);
+        }
+    }
+
+    public static void setRoleButton(ImageView ivRole){
+        if(StringUtils.isyoru()){
+            if(PreferenceUtils.isLogin()){
+                ArrayList<DeskMateEntity> list = PreferenceUtils.getAuthorInfo().getDeskMateEntities();
+                String mate = "";
+                if(list != null){
+                    for (DeskMateEntity entity : list){
+                        if(entity.isDeskmate()){
+                            mate = entity.getRoleOf();
+                            break;
+                        }
+                    }
+                    if(!TextUtils.isEmpty(mate)){
+                        if("len".equals(mate)){
+                            ivRole.setImageResource(R.drawable.btn_len_sleep);
+                        }
+                        if("mei".equals(mate)){
+                            ivRole.setImageResource(R.drawable.btn_mei_sleep);
+                        }
+                        if("sari".equals(mate)){
+                            ivRole.setImageResource(R.drawable.btn_mei_sleep);
+                        }
+                    }else {
+                        ivRole.setImageResource(R.drawable.btn_len_sleep);
+                    }
+                }else {
+                    ivRole.setImageResource(R.drawable.btn_len_sleep);
+                }
+            }else {
+                ivRole.setImageResource(R.drawable.btn_len_sleep);
+            }
+        }else {
+            if(PreferenceUtils.isLogin()){
+                ArrayList<DeskMateEntity> list = PreferenceUtils.getAuthorInfo().getDeskMateEntities();
+                String mate = "";
+                if(list != null){
+                    for (DeskMateEntity entity : list){
+                        if(entity.isDeskmate()){
+                            mate = entity.getRoleOf();
+                            break;
+                        }
+                    }
+                    if(!TextUtils.isEmpty(mate)){
+                        if("len".equals(mate)){
+                            ivRole.setImageResource(R.drawable.btn_len_normal);//TODO 服装不同
+                        }
+                        if("mei".equals(mate)){
+                            ivRole.setImageResource(R.drawable.btn_len_normal);
+                        }
+                        if("sari".equals(mate)){
+                            ivRole.setImageResource(R.drawable.btn_len_normal);
+                        }
+                    }else {
+                        ivRole.setImageResource(R.drawable.btn_len_normal);
+                    }
+                }else {
+                    ivRole.setImageResource(R.drawable.btn_len_normal);
+                }
+            }else {
+                ivRole.setImageResource(R.drawable.btn_len_normal);
+            }
         }
     }
 }

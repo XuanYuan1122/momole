@@ -83,66 +83,23 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/ll_floor_jump_root"
-        android:layout_width="match_parent"
-        android:layout_height="38dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/size_12"
-        android:background="@color/white">
-
-        <TextView
-            android:id="@+id/tv_to_top"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="@dimen/size_12"
-            android:textColor="@color/main_cyan"
-            android:text="@string/label_to_top"/>
-
-        <View
-            android:layout_width="1px"
-            android:layout_height="28dp"
-            android:layout_gravity="center"
-            android:background="@color/gray_d7d7d7"/>
-
-        <TextView
-            android:id="@+id/tv_load_before"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="@dimen/size_12"
-            android:textColor="@color/main_cyan"
-            android:text="@string/label_load_before_floor"/>
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="34dp"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/size_12"
         android:background="@color/white">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/size_18"
-            android:layout_marginStart="@dimen/size_18"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_doc_comments"/>
-
         <TextView
-            android:id="@+id/tv_comment_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/size_8"
-            android:layout_marginLeft="@dimen/size_8"
-            android:textSize="@dimen/size_12"
-            android:textColor="@color/green_6fc93a"/>
+            android:layout_marginStart="@dimen/size_18"
+            android:drawableStart="@drawable/btn_feed_comment"
+            android:drawablePadding="@dimen/x10"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/green_6fc93a"
+            android:text="热门评论"/>
+
     </LinearLayout>
 
     <View

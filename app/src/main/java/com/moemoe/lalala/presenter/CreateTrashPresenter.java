@@ -18,11 +18,14 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.
@@ -64,14 +67,14 @@ public class CreateTrashPresenter implements CreateTrashContract.Presenter {
         apiService.requestQnFileKey(suffix)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<ApiResult<UploadEntity>, Observable<Image>>() {
+                .flatMap(new Function<ApiResult<UploadEntity>, ObservableSource<Image>>() {
                     @Override
-                    public Observable<Image> call(final ApiResult<UploadEntity> uploadEntityApiResult) {
+                    public ObservableSource<Image> apply(@NonNull final ApiResult<UploadEntity> uploadEntityApiResult) throws Exception {
                         final File file = new File(path);
                         final UploadManager uploadManager = new UploadManager();
-                        return Observable.create(new Observable.OnSubscribe<Image>() {
+                        return Observable.create(new ObservableOnSubscribe<Image>() {
                             @Override
-                            public void call(final Subscriber<? super Image> subscriber) {
+                            public void subscribe(@NonNull final ObservableEmitter<Image> res) throws Exception {
                                 try {
                                     uploadManager.put(file,uploadEntityApiResult.getData().getFilePath(), uploadEntityApiResult.getData().getUploadToken(), new UpCompletionHandler() {
                                         @Override
@@ -85,24 +88,24 @@ public class CreateTrashPresenter implements CreateTrashContract.Presenter {
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
-                                                subscriber.onNext(image);
-                                                subscriber.onCompleted();
+                                                res.onNext(image);
+                                                res.onComplete();
                                             } else {
-                                                subscriber.onError(null);
+                                                res.onError(null);
                                             }
                                         }
                                     }, null);
                                 }catch (Exception e){
-                                    subscriber.onError(e);
+                                    res.onError(e);
                                 }
                             }
                         });
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<Image, Observable<ApiResult>>() {
+                .flatMap(new Function<Image, ObservableSource<ApiResult>>() {
                     @Override
-                    public Observable<ApiResult> call(Image image) {
+                    public ObservableSource<ApiResult> apply(@NonNull Image image) throws Exception {
                         put.h = image.getH();
                         put.w = image.getW();
                         put.path = image.getPath();

@@ -27,7 +27,6 @@ import com.moemoe.lalala.broadcast.PushIntentService;
 import com.moemoe.lalala.broadcast.PushService;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
 import com.moemoe.lalala.di.modules.SimpleModule;
-import com.moemoe.lalala.model.entity.SnowShowEntity;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
 import com.moemoe.lalala.utils.EncoderUtils;
@@ -46,11 +45,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * 闪屏界面
@@ -74,7 +75,8 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.GET_ACCOUNTS
+            Manifest.permission.GET_ACCOUNTS,
+            Manifest.permission.RECORD_AUDIO
     };
 
     @Override
@@ -130,7 +132,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
         long lastTime = PreferenceUtils.getsLastLauncherTime(this);
         last.setTimeInMillis(lastTime);
-        SnowShowEntity.initFromCache(this);
         if (today.get(Calendar.YEAR) == last.get(Calendar.YEAR) && today.get(Calendar.MONTH) == last.get(Calendar.MONTH)
                 && today.get(Calendar.DAY_OF_MONTH) == last.get(Calendar.DAY_OF_MONTH)) {
             AppSetting.isFirstLauncherToday = false;
@@ -140,7 +141,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
             AppSetting.isShowBackSchoolAll = false;
             PreferenceUtils.setAllBackSchool(this,false);
             PreferenceUtils.setBackSchoolDialog(this,false);
-            SnowShowEntity.init();
         }
 
         long lastTime1 = PreferenceUtils.getLastEventTime(this);
@@ -150,7 +150,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         PreferenceUtils.setsLastLauncherTime(this,System.currentTimeMillis());
 
         AppSetting.IS_DOWNLOAD_LOW_IN_3G = PreferenceUtils.getLowIn3G(this);
-        AppSetting.SUB_TAG = PreferenceUtils.getSimpleLabel(this);
         mPresenter.doRequest(null,10);
         if(NetworkUtils.isNetworkAvailable(this)){
             mPresenter.doRequest(PushManager.getInstance().getClientid(this) + "@and",4);
@@ -160,22 +159,50 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         }
         if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
             Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                    .map(new Func1<Long, Object>() {
+                    .subscribe(new Observer<Long>() {
                         @Override
-                        public Object call(Long aLong) {
-                            goToGuide();
-                            return null;
+                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
                         }
-                    }).subscribe();
+
+                        @Override
+                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
+
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            goToGuide();
+                        }
+                    });
         }else {
             Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                    .map(new Func1<Long, Object>() {
+                    .subscribe(new Observer<Long>() {
                         @Override
-                        public Object call(Long aLong) {
-                            goToMain();
-                            return null;
+                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
                         }
-                    }).subscribe();
+
+                        @Override
+                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
+
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            goToMain();
+                        }
+                    });
         }
     }
 

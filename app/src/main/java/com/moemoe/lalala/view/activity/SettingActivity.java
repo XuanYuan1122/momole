@@ -18,10 +18,6 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSettingComponent;
 import com.moemoe.lalala.di.modules.SettingModule;
 import com.moemoe.lalala.dialog.AlertDialog;
-import com.moemoe.lalala.greendao.gen.ChatContentDbEntityDao;
-import com.moemoe.lalala.greendao.gen.ChatUserEntityDao;
-import com.moemoe.lalala.greendao.gen.GroupUserEntityDao;
-import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.presenter.SettingContract;
 import com.moemoe.lalala.presenter.SettingPresenter;
@@ -29,7 +25,6 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.CommonLoadingTask;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -79,7 +74,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
                 .build()
                 .inject(this);
         mTvTitle.setText(R.string.label_setting);
-        mIsLogin = PreferenceUtils.isLogin(this);
+        mIsLogin = PreferenceUtils.isLogin();
         if(mIsLogin){
             ViewStub personViewStub = (ViewStub) findViewById(R.id.stub_set_person);
             View personSettingView = personViewStub.inflate();
@@ -114,11 +109,11 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
     private void initPersonSetting(View parent){
         initStyleView(parent, R.id.set_change_psw);
         initStyleView(parent, R.id.set_change_address);
+        initStyleView(parent, R.id.set_black_list);
     }
 
     private void initSyetemSetting(View parent){
         initStyleView(parent, R.id.set_3g_pic);
-        initStyleView(parent, R.id.set_label);
         initStyleView(parent, R.id.set_version_update);
         initStyleView(parent, R.id.set_clear_cache);
         initStyleView(parent, R.id.set_about);
@@ -139,11 +134,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             funNameTv.setText(R.string.label_3g_pic);
             funIndicateIv.setImageResource(R.drawable.select_btn_3g);
             funIndicateIv.setSelected(AppSetting.IS_DOWNLOAD_LOW_IN_3G);
-        } else if(id == R.id.set_label){
-            funNameTv.setText(R.string.label_simple_label);
-            funIndicateIv.setImageResource(R.drawable.select_btn_3g);
-            funIndicateIv.setSelected(PreferenceUtils.getSimpleLabel(this));
-        }else if(id == R.id.set_version_update){
+        } else if(id == R.id.set_version_update){
             funNameTv.setText(R.string.label_version_update);
         } else if(id == R.id.set_clear_cache){
             funNameTv.setText(R.string.label_clear_cache);
@@ -152,6 +143,8 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             funNameTv.setText(R.string.label_about);
         } else if(id == R.id.set_change_address){
             funNameTv.setText(R.string.label_order_address);
+        }else if(id == R.id.set_black_list){
+            funNameTv.setText(R.string.label_user_reject_list);
         }
     }
 
@@ -198,12 +191,7 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             funIndicateIv.setSelected(!funIndicateIv.isSelected());
             AppSetting.IS_DOWNLOAD_LOW_IN_3G = funIndicateIv.isSelected();
             PreferenceUtils.setLowIn3G(SettingActivity.this,AppSetting.IS_DOWNLOAD_LOW_IN_3G);
-        }else if(id == R.id.set_label){
-            ImageView funIndicateIv = getFunIndicateIv(SettingActivity.this.findViewById(R.id.set_label));
-            funIndicateIv.setSelected(!funIndicateIv.isSelected());
-            AppSetting.SUB_TAG = funIndicateIv.isSelected();
-            PreferenceUtils.setSimpleLabel(SettingActivity.this,funIndicateIv.isSelected());
-        } else if(id == R.id.set_version_update){
+        }else if(id == R.id.set_version_update){
             checkVersion();
         } else if(id == R.id.set_clear_cache){
             clearCache();
@@ -220,6 +208,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
             }
         } else if(id == R.id.set_change_address){
             Intent i = new Intent(this, AddAddressActivity.class);
+            startActivity(i);
+        }else if(id == R.id.set_black_list){
+            Intent i = new Intent(SettingActivity.this,UserRejectListActivity.class);
             startActivity(i);
         }
     }
@@ -346,14 +337,6 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
                     p.removeAccount(true);
                 }
             }
-            PrivateMessageItemEntityDao privateMessageItemEntityDao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
-            privateMessageItemEntityDao.deleteAll();
-            ChatContentDbEntityDao chatContentDbEntityDao = GreenDaoManager.getInstance().getSession().getChatContentDbEntityDao();
-            chatContentDbEntityDao.deleteAll();
-            GroupUserEntityDao groupUserEntityDao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
-            groupUserEntityDao.deleteAll();
-            ChatUserEntityDao chatUserEntityDao = GreenDaoManager.getInstance().getSession().getChatUserEntityDao();
-            chatUserEntityDao.deleteAll();
         }catch (Exception e){
             e.printStackTrace();
         }finally {

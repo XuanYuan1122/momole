@@ -1,6 +1,5 @@
 package com.moemoe.lalala.presenter;
 
-import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
@@ -13,12 +12,14 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func3;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Function3;
+import io.reactivex.schedulers.Schedulers;
+
 
 /**
  * Created by yi on 2016/11/29.
@@ -41,9 +42,9 @@ public class ClubPostPresenter implements ClubPostContract.Presenter {
         apiService.requestTagNode(tagId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<ApiResult<TagNodeEntity>, String>() {
+                .map(new Function<ApiResult<TagNodeEntity>, String>() {
                     @Override
-                    public String call(ApiResult<TagNodeEntity> tagNodeEntityApiResult) {
+                    public String apply(@NonNull ApiResult<TagNodeEntity> tagNodeEntityApiResult) throws Exception {
                         if(tagNodeEntityApiResult.getState() == 200 && tagNodeEntityApiResult.getData() != null){
                             tagName = tagNodeEntityApiResult.getData().getName();
                             if(view!=null) view.bindClubViewData(tagNodeEntityApiResult.getData());
@@ -54,16 +55,16 @@ public class ClubPostPresenter implements ClubPostContract.Presenter {
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<String, Observable<ClubZipEntity>>() {
+                .flatMap(new Function<String, ObservableSource<ClubZipEntity>>() {
                     @Override
-                    public Observable<ClubZipEntity> call(String s) {
+                    public ObservableSource<ClubZipEntity> apply(@NonNull String s) throws Exception {
                         return Observable.zip(
                                 apiService.requestTopTagDocList(s),
                                 apiService.requestHotTagDocList(s),
-                                apiService.requestTagDocList(0,ApiService.LENGHT,s, AppSetting.SUB_TAG),
-                                new Func3<ApiResult<ArrayList<DocListEntity>>, ApiResult<ArrayList<DocListEntity>>, ApiResult<ArrayList<DocListEntity>>, ClubZipEntity>() {
+                                apiService.requestTagDocList(0,ApiService.LENGHT,s, false),
+                                new Function3<ApiResult<ArrayList<DocListEntity>>, ApiResult<ArrayList<DocListEntity>>, ApiResult<ArrayList<DocListEntity>>, ClubZipEntity>() {
                                     @Override
-                                    public ClubZipEntity call(ApiResult<ArrayList<DocListEntity>> arrayListApiResult, ApiResult<ArrayList<DocListEntity>> arrayListApiResult2, ApiResult<ArrayList<DocListEntity>> arrayListApiResult3) {
+                                    public ClubZipEntity apply(@NonNull ApiResult<ArrayList<DocListEntity>> arrayListApiResult, @NonNull ApiResult<ArrayList<DocListEntity>> arrayListApiResult2, @NonNull ApiResult<ArrayList<DocListEntity>> arrayListApiResult3) throws Exception {
                                         return new ClubZipEntity(arrayListApiResult,arrayListApiResult2,arrayListApiResult3);
                                     }
                                 }
@@ -71,27 +72,12 @@ public class ClubPostPresenter implements ClubPostContract.Presenter {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ClubZipEntity>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if(view != null) view.onFailure(-1,"");
-                    }
-
-                    @Override
-                    public void onNext(ClubZipEntity clubZipEntity) {
-                        if(view != null) view.bindListViewData(clubZipEntity);
-                    }
-                });
+                .subscribe();
     }
 
     @Override
     public void requestDocList(final int index) {
-        apiService.requestTagDocList(index,ApiService.LENGHT,tagName, AppSetting.SUB_TAG)
+        apiService.requestTagDocList(index,ApiService.LENGHT,tagName, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetResultSubscriber<ArrayList<DocListEntity>>() {

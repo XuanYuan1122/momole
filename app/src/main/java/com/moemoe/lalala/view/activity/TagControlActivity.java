@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.di.components.DaggerSimpleComponent;
-import com.moemoe.lalala.di.modules.SimpleModule;
+import com.moemoe.lalala.di.components.DaggerTagControlComponent;
+import com.moemoe.lalala.di.modules.TagControlModule;
 import com.moemoe.lalala.model.entity.DelTagEntity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
-import com.moemoe.lalala.presenter.SimpleContract;
-import com.moemoe.lalala.presenter.SimplePresenter;
+import com.moemoe.lalala.presenter.TagControlContract;
+import com.moemoe.lalala.presenter.TagControlPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
@@ -34,7 +34,7 @@ import butterknife.BindView;
  * Created by yi on 2017/2/10.
  */
 
-public class TagControlActivity extends BaseAppCompatActivity implements SimpleContract.View{
+public class TagControlActivity extends BaseAppCompatActivity implements TagControlContract.View{
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
@@ -45,11 +45,12 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
     @Inject
-    SimplePresenter mPresenter;
+    TagControlPresenter mPresenter;
     private PersonListAdapter mAdapter;
     private ArrayList<DocTagEntity> mDocTags;
     private ArrayList<String> mDelId;
     private String mDocId;
+    private boolean mNew;
 
     @Override
     protected int getLayoutId() {
@@ -58,19 +59,15 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
-        DaggerSimpleComponent.builder()
-                .simpleModule(new SimpleModule(this))
+        DaggerTagControlComponent.builder()
+                .tagControlModule(new TagControlModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mDocTags = getIntent().getParcelableArrayListExtra("tags");
         mDocId = getIntent().getStringExtra(UUID);
+        mNew = getIntent().getBooleanExtra("isNew",false);
         if(mDocTags == null || TextUtils.isEmpty(mDocId)){
             finish();
             return;
@@ -122,7 +119,7 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
             public void onNoDoubleClick(View v) {
                 DelTagEntity entity = new DelTagEntity(mDocId,mDelId);
                 createDialog();
-                mPresenter.doRequest(entity,7);
+                mPresenter.deleteTags(entity,mNew);
             }
         });
     }
@@ -144,18 +141,18 @@ public class TagControlActivity extends BaseAppCompatActivity implements SimpleC
     }
 
     @Override
-    public void onSuccess(Object o) {
+    public void onFailure(int code, String msg) {
+        finalizeDialog();
+        ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
+    }
+
+    @Override
+    public void onDeleteTagsSuccess() {
         finalizeDialog();
         showToast("删除成功");
         Intent i = new Intent();
         i.putParcelableArrayListExtra("tags",mDocTags);
         setResult(RESULT_OK,i);
         finish();
-    }
-
-    @Override
-    public void onFailure(int code, String msg) {
-        finalizeDialog();
-        ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
     }
 }

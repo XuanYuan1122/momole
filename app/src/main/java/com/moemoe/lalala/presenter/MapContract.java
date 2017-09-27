@@ -6,11 +6,11 @@ import com.moemoe.lalala.dialog.SignDialog;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
-import com.moemoe.lalala.model.entity.MapMarkContainer;
+import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
+import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
-import com.moemoe.lalala.view.widget.map.MapWidget;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,28 +23,29 @@ public interface MapContract {
     interface Presenter extends BasePresenter{
         void checkVersion();
         void signToday(SignDialog dialog);
-        void addDayMapMark(Context context, MapWidget map, float scale);
-        void addNightMapMark(Context context, MapWidget map, float scale);
-        void addNightEventMapMark(Context context, MapWidget map, float scale);
-        void clickSnowman(Object o,int mapX,int mapY);
         void getDailyTask();
         void requestPersonMain();
         void checkBuild(int buildVersion,int appVersion);
         void getEventList();
         void saveEvent(NetaEvent event);
         void getServerTime();
+        void getTrigger();
+        void getAllStory();
+        void checkStoryVersion();
     }
 
     interface View extends BaseView{
         void changeSignState(SignEntity entity, boolean sign);
         void showUpdateDialog(AppUpdateEntity entity);
-        void onMapMarkLoaded(MapMarkContainer container);
         void onDailyTaskLoad(DailyTaskEntity entity);
         void onPersonMainLoad(PersonalMainEntity entity);
-        void onSnowmanSuccess(Object objectId,int mapX,int mapY);
         void checkBuildSuccess(BuildEntity s);
         void getEventSuccess(ArrayList<NetaEvent> events);
         void saveEventSuccess();
         void onGetTimeSuccess(Date time);
+        void onGetTriggerSuccess(ArrayList<JuQingTriggerEntity> entities);
+        void onGetAllStorySuccess(ArrayList<JuQIngStoryEntity> entities);
+        void onCheckStoryVersionSuccess(int version);
+
     }
 }

@@ -60,11 +60,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2016/11/30.
@@ -156,7 +158,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
             mDelRoot.setVisibility(View.GONE);
             mEditRoot.setVisibility(View.GONE);
         }
-        mPlayer = Player.getInstance();
+        mPlayer = Player.getInstance(this);
         mPlayer.registerCallback(this);
         mFirstShowIndex = getIntent().getIntExtra(EXTRAS_KEY_FIRST_PHTOT_INDEX, 0);
         mPagerAdapter = new ImagePagerAdapter();
@@ -164,7 +166,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
         mViewPager.setCurrentItem(mFirstShowIndex);
         mTvTitle.setText(mItems.get(mFirstShowIndex).getFileName());
         mTvName.setText("上传者: " + mItems.get(mFirstShowIndex).getUserName());
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(this)
                     .maxThread(3)
                     .maxRetryCount(3)
                     .defaultSavePath(StorageUtils.getGalleryDirPath())
@@ -341,15 +343,21 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                         downloadSub.download(ApiService.URL_QINIU + fb.getPath(),temp,null)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Subscriber<DownloadStatus>() {
+                                .subscribe(new Observer<DownloadStatus>() {
+
                                     @Override
-                                    public void onCompleted() {
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
                                         BitmapUtils.galleryAddPic(FileDetailActivity.this, longImage.getAbsolutePath());
                                         imageView.setImage(longImage.getAbsolutePath());
                                     }
 
                                     @Override
-                                    public void onError(Throwable e) {
+                                    public void onSubscribe(@NonNull Disposable d) {
 
                                     }
 
@@ -640,9 +648,14 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
         downloadSub.download(ApiService.URL_QINIU + entity.getPath(),temp,path)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DownloadStatus>() {
+                .subscribe(new Observer<DownloadStatus>() {
                     @Override
-                    public void onCompleted() {
+                    public void onError(Throwable e) {
+                        finalizeDialog();
+                    }
+
+                    @Override
+                    public void onComplete() {
                         finalizeDialog();
                         if(entity.getType().equals("image")){
                             BitmapUtils.galleryAddPic(FileDetailActivity.this, file.getAbsolutePath());
@@ -654,8 +667,8 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-                        finalizeDialog();
+                    public void onSubscribe(@NonNull Disposable d) {
+
                     }
 
                     @Override

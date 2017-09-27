@@ -20,10 +20,6 @@
         layout="@layout/style_setting" />
 
     <include
-        android:id="@+id/set_label"
-        layout="@layout/style_setting" />
-
-    <include
         android:id="@+id/set_version_update"
         layout="@layout/style_setting" />
 

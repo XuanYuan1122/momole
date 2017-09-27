@@ -181,21 +181,6 @@
                 android:layout_marginTop="@dimen/status_bar_height"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
 
-                <TextView
-                    android:id="@+id/tv_simple_label"
-                    android:layout_width="50dp"
-                    android:layout_height="20dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/size_18"
-                    android:layout_marginEnd="@dimen/size_18"
-                    android:gravity="center"
-                    android:layout_gravity="right"
-                    android:text="标签精简"
-                    android:textColor="@color/txt_cyan_white"
-                    android:textStyle="bold"
-                    android:textSize="9dp"
-                    android:background="@drawable/btn_only_host_new"
-                    android:visibility="visible" />
             </android.support.v7.widget.Toolbar>
 
             <TextView

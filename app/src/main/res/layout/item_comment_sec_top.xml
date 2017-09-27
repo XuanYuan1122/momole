@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/item_new_comment"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y88"
+        android:background="@color/white"
+        android:layout_marginTop="@dimen/y24">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_1_px"
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray_e8e8e8"/>
+
+        <TextView
+            android:id="@+id/tv_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="@dimen/x22"
+            android:drawablePadding="@dimen/x6"
+            android:drawableEnd="@drawable/icon_doc_comment_sort"
+            android:textColor="@color/main_cyan"
+            android:textSize="@dimen/x24"
+            android:text="热门排序"/>
+
+    </RelativeLayout>
+</LinearLayout>

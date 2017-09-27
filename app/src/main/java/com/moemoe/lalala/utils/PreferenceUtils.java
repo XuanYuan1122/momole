@@ -7,12 +7,8 @@ import android.text.TextUtils;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.galgame.Live2DDefine;
 import com.moemoe.lalala.greendao.gen.AuthorInfoDao;
 import com.moemoe.lalala.model.entity.AuthorInfo;
-import com.moemoe.lalala.model.entity.SnowShowEntity;
-
-import java.util.ArrayList;
 
 /**
  * Created by yi on 2016/11/28.
@@ -89,7 +85,7 @@ public class PreferenceUtils {
 
     public static String getUUid(){ return  sAuthorInfo == null ? "" : TextUtils.isEmpty(sAuthorInfo.getUserId()) ? "" : sAuthorInfo.getUserId(); }
 
-    public static boolean isLogin(Context context){
+    public static boolean isLogin(){
         if(sAuthorInfo == null){
             return false;
         }
@@ -107,6 +103,19 @@ public class PreferenceUtils {
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME,Activity.MODE_PRIVATE);
         return sp.getLong("last_launcher_time",0);
+    }
+
+    public static void setJuQingVersion(Context context,int version){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putLong("juqing_version", version);
+        ed.commit();
+    }
+
+    public static int getJuQingVersion(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getInt("juqing_version",0);
     }
 
     public static void setMessageDot(Context context,String type,boolean isNew){
@@ -187,54 +196,6 @@ public class PreferenceUtils {
         return sp.getInt("last_trash_time_" + type,0);
     }
 
-    public static void setSnowTemp(Context context,ArrayList<SnowShowEntity.PositionInfo> infos){
-        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,Activity.MODE_PRIVATE);
-        SharedPreferences.Editor ed = sp.edit();
-        for (int i = 0;i < infos.size();i++){
-            SnowShowEntity.PositionInfo info = infos.get(i);
-            ed.putInt("temp_snow_x_" + i,info.x);
-            ed.putInt("temp_snow_y_" + i,info.y);
-        }
-        ed.putInt("temp_snow_size",infos.size());
-        ed.commit();
-    }
-
-    public static ArrayList<SnowShowEntity.PositionInfo> getSnowTemp(Context context){
-        SharedPreferences sp = context.getSharedPreferences(
-                FILE_NAME,Activity.MODE_PRIVATE);
-        ArrayList<SnowShowEntity.PositionInfo> infos = new ArrayList<>();
-        int size = sp.getInt("temp_snow_size",0);
-        for(int i = 0;i < size;i++ ){
-            SnowShowEntity.PositionInfo info = new SnowShowEntity.PositionInfo(sp.getInt("temp_snow_x_" + i,0),sp.getInt("temp_snow_y_" + i,0));
-            infos.add(info);
-        }
-        return infos;
-    }
-
-    public static void setSnowCache(Context context,ArrayList<SnowShowEntity.PositionInfo> infos){
-        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,Activity.MODE_PRIVATE);
-        SharedPreferences.Editor ed = sp.edit();
-        for (int i = 0;i < infos.size();i++){
-            SnowShowEntity.PositionInfo info = infos.get(i);
-            ed.putInt("cache_snow_x_" + i,info.x);
-            ed.putInt("cache_snow_y_" + i,info.y);
-        }
-        ed.putInt("cache_snow_size",infos.size());
-        ed.commit();
-    }
-
-    public static ArrayList<SnowShowEntity.PositionInfo> getSnowCache(Context context){
-        SharedPreferences sp = context.getSharedPreferences(
-                FILE_NAME,Activity.MODE_PRIVATE);
-        ArrayList<SnowShowEntity.PositionInfo> infos = new ArrayList<>();
-        int size = sp.getInt("cache_snow_size",0);
-        for(int i = 0;i < size;i++ ){
-            SnowShowEntity.PositionInfo info = new SnowShowEntity.PositionInfo(sp.getInt("cache_snow_x_" + i,0),sp.getInt("cache_snow_y_" + i,0));
-            infos.add(info);
-        }
-        return infos;
-    }
-
     public static void setLastEventTime(Context context, long time){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME,Activity.MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
@@ -272,20 +233,6 @@ public class PreferenceUtils {
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME,Activity.MODE_PRIVATE);
         return sp.getBoolean("back_school_dialog",false);
-    }
-
-    public static void setSimpleLabel(Context context,boolean isLow){
-        SharedPreferences sp = context.getSharedPreferences(
-                FILE_NAME, Activity.MODE_PRIVATE);
-        SharedPreferences.Editor ed = sp.edit();
-        ed.putBoolean("simple_label", isLow);
-        ed.commit();
-    }
-
-    public static boolean getSimpleLabel(Context context){
-        SharedPreferences sp = context.getSharedPreferences(
-                FILE_NAME, Activity.MODE_PRIVATE);
-        return sp.getBoolean("simple_label", false);
     }
 
     public static void setLowIn3G(Context context,boolean isLow){
@@ -340,20 +287,6 @@ public class PreferenceUtils {
         SharedPreferences.Editor ed = sp.edit();
         ed.putBoolean("is_version2", is);
         ed.commit();
-    }
-
-    public static void saveSelectFuku(Context context,String model){
-        SharedPreferences sp = context.getSharedPreferences(
-                FILE_NAME, Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("live2d_model_new", model);
-        editor.commit();
-    }
-
-    public static String getSelectFuku(Context context){
-        SharedPreferences sp = context.getSharedPreferences(
-                FILE_NAME, Activity.MODE_PRIVATE);
-        return sp.getString("live2d_model_new", Live2DDefine.MODEL_LEN);
     }
 
     public static void saveHaveGameFuku(Context context,boolean have){

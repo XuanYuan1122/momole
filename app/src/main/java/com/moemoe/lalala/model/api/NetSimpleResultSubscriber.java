@@ -2,21 +2,32 @@ package com.moemoe.lalala.model.api;
 
 import com.moemoe.lalala.model.entity.ApiResult;
 
-import rx.Subscriber;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by yi on 2016/11/29.
  */
 
-public abstract class NetSimpleResultSubscriber extends Subscriber<ApiResult> {
+public abstract class NetSimpleResultSubscriber implements Observer<ApiResult> {
+
+    private Disposable mDisposable;
+
     @Override
-    public void onCompleted() {
+    public void onSubscribe(@NonNull Disposable d) {
+        mDisposable = d;
+    }
+
+    @Override
+    public void onComplete() {
 
     }
 
     @Override
     public void onError(Throwable e) {
         onFail(-1,"");
+        mDisposable.dispose();
     }
 
     @Override

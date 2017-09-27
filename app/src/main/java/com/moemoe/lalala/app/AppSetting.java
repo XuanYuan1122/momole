@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 
 public class AppSetting {
     public static boolean IS_DOWNLOAD_LOW_IN_3G = true;
-    public static boolean SUB_TAG = false;
     public static boolean IS_EDITOR_VERSION = false;
     public static boolean OpenUmeng = true;
     public static boolean isRunning = false;

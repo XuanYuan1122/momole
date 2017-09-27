@@ -123,16 +123,26 @@ public class BitmapUtils {
         return b;
     }
 
-    public static int[] getDocIconSize(int width, int height, int widthLimit){
+    public static int[] getDocIconSizeFromW(int width, int height, int widthLimit){
         int[] res = new int[2];
-        int scale = 2;
-       // width = width * scale;
-       // height = height * scale;
 
         if(width > widthLimit){
             res[0] = widthLimit;
             res[1] = height * widthLimit / width;
         }else{
+            res[0] = width;
+            res[1] = height;
+        }
+        return res;
+    }
+
+    public static int[] getDocIconSizeFromH(int width, int height, int heightLimit){
+        int[] res = new int[2];
+
+        if(height > heightLimit){
+            res[1] = heightLimit;
+            res[0] = width * heightLimit / height;
+        }else {
             res[0] = width;
             res[1] = height;
         }

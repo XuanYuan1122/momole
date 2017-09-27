@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_normal_white_btn"
+    android:descendantFocusability="blocksDescendants"
+    android:paddingBottom="@dimen/y30">
+
+    <FrameLayout
+        android:id="@+id/fl_avatar_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y24"
+        android:layout_marginStart="@dimen/x24">
+        
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/x72"
+            android:layout_height="@dimen/x72" />
+
+        <ImageView
+            android:id="@+id/iv_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_name_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_toEndOf="@+id/fl_avatar_root"
+        android:layout_marginTop="@dimen/y30"
+        android:layout_marginStart="@dimen/x16"
+        android:layout_marginEnd="@dimen/x24"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_1e1e1e"
+            android:textSize="@dimen/x30"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_level"
+            android:layout_width="@dimen/x52"
+            android:layout_height="@dimen/y26"
+            android:textColor="@color/white"
+            android:layout_marginStart="@dimen/x12"
+            android:textStyle="italic"/>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:drawableEnd="@drawable/btn_comment_favorite"
+                android:drawablePadding="@dimen/x8"
+                android:textColor="@color/txt_gray_929292_main"
+                android:textSize="@dimen/x20"
+                android:gravity="bottom"
+                android:includeFontPadding="false"
+                android:maxLines="1" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_name_root"
+        android:layout_marginTop="@dimen/y8"
+        android:layout_marginEnd="@dimen/x36"
+        android:layout_alignStart="@+id/ll_name_root"
+        android:textColor="@color/gray_444444"
+        android:textSize="@dimen/x24" />
+
+    <LinearLayout
+        android:id="@+id/ll_comment_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_comment"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:layout_alignStart="@+id/ll_name_root"
+        android:layout_marginEnd="@dimen/x36"
+        android:visibility="gone">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_comment_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_comment_img"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x20"
+        android:paddingTop="@dimen/y24"
+        android:paddingBottom="@dimen/y24"
+        android:orientation="vertical"
+        android:background="@color/gray_e8e8e8"
+        android:visibility="gone">
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_comment_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/ll_name_root"
+        android:layout_below="@+id/ll_comment_root"
+        android:layout_marginTop="@dimen/y24"
+        android:textColor="@color/gray_929292"
+        android:textSize="@dimen/x20" />
+</RelativeLayout>

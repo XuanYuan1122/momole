@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_root"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/y120"
+    android:layout_marginTop="@dimen/y24"
+    android:layout_marginStart="@dimen/x24"
+    android:layout_marginEnd="@dimen/x24"
+    android:background="@drawable/shape_rect_white_background_y12">
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_phone_tape"
+        android:layout_marginTop="@dimen/y20"
+        android:layout_marginStart="@dimen/x24"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/x30"
+        android:textStyle="bold"
+        android:textColor="@color/black_1e1e1e"
+        android:layout_marginTop="@dimen/y28"
+        android:layout_toEndOf="@+id/iv_cover"
+        android:layout_marginStart="@dimen/x24"/>
+
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/x24"
+        android:layout_alignStart="@+id/tv_title"
+        android:layout_below="@+id/tv_title"
+        android:layout_marginTop="@dimen/y8"/>
+
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/x36"
+        android:layout_marginTop="@dimen/y20"
+        android:src="@drawable/btn_phone_music_play"/>
+
+   <SeekBar
+       android:id="@+id/seek_music"
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/y12"
+       android:layout_below="@+id/iv_cover"
+       android:layout_marginTop="@dimen/y40"
+       android:layout_marginBottom="@dimen/y30"
+       android:layout_marginStart="@dimen/x24"
+       android:layout_marginEnd="@dimen/x132"
+       android:progressDrawable="@drawable/phone_music_seekbar"
+       android:progress="50"
+       android:paddingStart="0dp"
+       android:paddingLeft="0dp"
+       android:paddingRight="0dp"
+       android:paddingEnd="0dp"
+       android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/y20"
+        android:layout_marginEnd="@dimen/x56"
+        android:src="@drawable/btn_phone_tape_forward"
+        android:visibility="gone"/>
+</RelativeLayout>

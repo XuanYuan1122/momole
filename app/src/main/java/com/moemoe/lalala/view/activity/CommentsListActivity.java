@@ -71,12 +71,6 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .keyboardEnable(true)
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
         DaggerCommentListComponent.builder()

@@ -64,6 +64,8 @@ public class DocDetailEntity {
     private boolean coinComment;
     @SerializedName("followUser")
     private boolean followUser;
+    @SerializedName("cover")
+    private String cover;
 
     public class Detail<T>{
         @SerializedName("type")
@@ -462,5 +464,13 @@ public class DocDetailEntity {
 
     public void setFollowUser(boolean followUser) {
         this.followUser = followUser;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }

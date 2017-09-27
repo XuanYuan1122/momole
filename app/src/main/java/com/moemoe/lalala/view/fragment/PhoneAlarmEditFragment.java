@@ -494,7 +494,7 @@ public class PhoneAlarmEditFragment extends BaseFragment{
         }
     }
 
-    public void sendAlarmEvent(){
-        RxBus.getInstance().post(new AlarmEvent(mAlarmClock,1));
+    public void sendAlarmEvent(boolean isUpdate){
+        RxBus.getInstance().post(new AlarmEvent(mAlarmClock,isUpdate?3:1));
     }
 }

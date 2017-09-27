@@ -121,14 +121,28 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tv_set_mate"
+                android:id="@+id/tv_col_luyin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_15"
+                android:layout_marginTop="@dimen/y12"
+                android:layout_below="@+id/ll_fuku_root"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="录音收集"
+                android:background="@drawable/btn_mate_fuku"/>
+
+            <TextView
+                android:id="@+id/tv_set_mate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x30"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:layout_below="@+id/ll_fuku_root"
+                android:layout_below="@+id/tv_col_luyin"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/btn_mate_select"
                 android:layout_marginTop="@dimen/y12"

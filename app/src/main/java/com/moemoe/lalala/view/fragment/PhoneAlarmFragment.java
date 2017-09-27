@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2017/9/4.
@@ -54,6 +54,7 @@ public class PhoneAlarmFragment extends BaseFragment{
     private PhoneAlarmAdapter mAdapter;
     private PhoneAlarmEditFragment mPhoneAlarmEditFragment;
     private ArrayList<AlarmClockEntity> mAlarmClockList;
+    private boolean isUpdate;
 
     public static PhoneAlarmFragment newInstance(){
         return new PhoneAlarmFragment();
@@ -91,8 +92,9 @@ public class PhoneAlarmFragment extends BaseFragment{
                     mPhoneAlarmEditFragment = PhoneAlarmEditFragment.newInstance();
                     mFragmentTransaction.add(R.id.container,mPhoneAlarmEditFragment,PhoneAlarmEditFragment.TAG);
                     mFragmentTransaction.commit();
+                    isUpdate = false;
                 }else {
-                    mPhoneAlarmEditFragment.sendAlarmEvent();
+                    mPhoneAlarmEditFragment.sendAlarmEvent(isUpdate);
                     onBackPressed();
                 }
             }
@@ -108,6 +110,7 @@ public class PhoneAlarmFragment extends BaseFragment{
             @Override
             public void onItemClick(View view, int position) {
                 if(mPhoneAlarmEditFragment == null){
+                    mIvAdd.setImageResource(R.drawable.btn_alarm_save);
                     AlarmClockEntity entity = mAlarmClockList.get(position);
                     mFragRoot.setVisibility(View.VISIBLE);
                     mListDocs.setVisibility(View.GONE);
@@ -115,6 +118,7 @@ public class PhoneAlarmFragment extends BaseFragment{
                     mPhoneAlarmEditFragment = PhoneAlarmEditFragment.newInstance(entity);
                     mFragmentTransaction.add(R.id.container,mPhoneAlarmEditFragment,PhoneAlarmEditFragment.TAG);
                     mFragmentTransaction.commit();
+                    isUpdate = true;
                 }
             }
 
@@ -172,33 +176,34 @@ public class PhoneAlarmFragment extends BaseFragment{
     }
 
     private void subscribeAlarmEvent() {
-        Subscription subscription = RxBus.getInstance()
+        Disposable subscription = RxBus.getInstance()
                 .toObservable(AlarmEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .subscribe(new Action1<AlarmEvent>() {
+                .subscribe(new Consumer<AlarmEvent>() {
                     @Override
-                    public void call(AlarmEvent event) {
-                        if(event.getType() == 1){
-                            GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().insertOrReplace(event.getEntity());
-                            addList(event.getEntity());
-                        }else if(event.getType() == 2){
-                            GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().delete(event.getEntity());
-                            Utils.cancelAlarmClock(getContext(), (int) event.getEntity().getId());
+                    public void accept(AlarmEvent alarmEvent) throws Exception {
+                        if(alarmEvent.getType() == 1){
+                            GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().insertOrReplace(alarmEvent.getEntity());
+                            addList(alarmEvent.getEntity());
+                        }else if(alarmEvent.getType() == 2){
+                            GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().delete(alarmEvent.getEntity());
+                            Utils.cancelAlarmClock(getContext(), (int) alarmEvent.getEntity().getId());
                             NotificationManager notificationManager = (NotificationManager) getContext()
                                     .getSystemService(Activity.NOTIFICATION_SERVICE);
                             // 取消下拉列表通知消息
-                            notificationManager.cancel((int) event.getEntity().getId());
+                            notificationManager.cancel((int) alarmEvent.getEntity().getId());
                             onBackPressed();
                             deleteList();
                         }else {
                             updateList();
                         }
                     }
-                }, new Action1<Throwable>() {
+
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });

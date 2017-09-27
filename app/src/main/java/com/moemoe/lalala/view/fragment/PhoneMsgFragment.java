@@ -13,10 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.model.entity.DeskMateEntity;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.di.components.DaggerPhoneMsgComponent;
+import com.moemoe.lalala.di.modules.PhoneMsgModule;
+import com.moemoe.lalala.presenter.PhoneMsgContract;
+import com.moemoe.lalala.presenter.PhoneMsgPresenter;
+import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
-import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.view.activity.MapActivity;
 import com.moemoe.lalala.view.activity.PhoneMainActivity;
 import com.moemoe.lalala.view.activity.SplashActivity;
 import com.moemoe.lalala.view.adapter.ConversationListAdapterEx;
@@ -24,6 +29,10 @@ import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import io.rong.imkit.RongContext;
@@ -39,7 +48,7 @@ import io.rong.imlib.model.Conversation;
  */
 
 @SuppressWarnings("deprecation")
-public class PhoneMsgFragment extends BaseFragment implements RongIM.ConversationListBehaviorListener{
+public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.View,RongIM.ConversationListBehaviorListener{
 
     public static final String TAG = "PhoneMsgFragment";
 
@@ -49,6 +58,9 @@ public class PhoneMsgFragment extends BaseFragment implements RongIM.Conversatio
     TextView mTvTitle;
     @BindView(R.id.iv_menu_list)
     ImageView mIvMenu;
+
+    @Inject
+    PhoneMsgPresenter mPresenter;
 
     private Fragment mCurFragment;
     private ConversationListFragment conversationListFragment;
@@ -76,6 +88,11 @@ public class PhoneMsgFragment extends BaseFragment implements RongIM.Conversatio
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        DaggerPhoneMsgComponent.builder()
+                .phoneMsgModule(new PhoneMsgModule(this))
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
+                .build()
+                .inject(this);
         mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -115,16 +132,20 @@ public class PhoneMsgFragment extends BaseFragment implements RongIM.Conversatio
             if(uri != null){
                 if(uri.getPath().equals("/conversation/private")){
                     String targetId = uri.getQueryParameter("targetId");
-                    FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
-                    conversationFragment = enterCoversationFragment("private",targetId);
-                    fragmentTransaction.hide(mCurFragment).add(R.id.container,conversationFragment,"ConversationFragment");
-                    fragmentTransaction.commit();
-                    mCurFragment = conversationFragment;
-                    mCurId = targetId;
-                    if(uri.getQueryParameter("isFromPush") != null && uri.getQueryParameter("isFromPush").equals("true")){
-                        isFromPush = true;
+                    if(targetId.equals("juqing")){
+
+                    }else {
+                        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+                        conversationFragment = enterCoversationFragment("private",targetId);
+                        fragmentTransaction.hide(mCurFragment).add(R.id.container,conversationFragment,"ConversationFragment");
+                        fragmentTransaction.commit();
+                        mCurFragment = conversationFragment;
+                        mCurId = targetId;
+                        if(uri.getQueryParameter("isFromPush") != null && uri.getQueryParameter("isFromPush").equals("true")){
+                            isFromPush = true;
+                        }
+                        mIvMenu.setVisibility(View.VISIBLE);
                     }
-                    mIvMenu.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -246,6 +267,21 @@ public class PhoneMsgFragment extends BaseFragment implements RongIM.Conversatio
             }else {
                 ((PhoneMainActivity)getContext()).finishCurFragment();
             }
+        }
+    }
+
+    @Override
+    public void onFailure(int code, String msg) {
+
+    }
+
+    @Override
+    public void onGetTimeSuccess(Date time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(time);
+        String id = JuQingUtil.checkJuQing(calendar);
+        if(!TextUtils.isEmpty(id)){
+
         }
     }
 }

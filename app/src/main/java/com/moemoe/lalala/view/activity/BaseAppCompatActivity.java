@@ -49,7 +49,6 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
                 restartApp();
                 break;
             case AppStatusConstant.STATUS_NORMAL:
-              //  this.setContentView(LayoutInflater.from(this).inflate(this.getLayoutId(),null,false),new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DensityUtil.getScreenHeight(this)));
                 this.setContentView(this.getLayoutId());
                 bind = ButterKnife.bind(this);
                 this.initViews(savedInstanceState);

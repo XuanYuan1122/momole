@@ -40,11 +40,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/3/28.
@@ -98,9 +100,6 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), null);
         DaggerFileComponent.builder()
                 .fileModule(new FileModule(this))
@@ -134,15 +133,8 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
         float progress = (float) a / b * 100;
         mSeekBarRead.setProgress((int) progress);
 
-        //init pagerWidget
         mPageWidget = new OverlappedWidget(this, mBookId, new ReadListener());
         registerReceiver(receiver, intentFilter);
-//        boolean isNight = PreferenceUtils.isNight(this);
-//        if(isNight){
-//            mPageWidget.setTextColor(ContextCompat.getColor(this, R.color.chapter_content_night),
-//                    ContextCompat.getColor(this, R.color.chapter_content_night));
-//        }
-        //mTvNight.setSelected(!isNight);
         mFlReadWidget.removeAllViews();
         mFlReadWidget.addView(mPageWidget);
 
@@ -152,8 +144,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
             //目前没做网络阅读
             finish();
         }
-        //ToastUtils.showTopTv(this,mBook.getTitle());
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(this)
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getNovRootPath())
@@ -405,9 +396,16 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                                 downloadSub.download(ApiService.URL_QINIU +  bookList.get(0).getPath(),temp,StorageUtils.getNovRootPath() + bookList.get(0).getId())
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Subscriber<DownloadStatus>() {
+                                        .subscribe(new Observer<DownloadStatus>() {
                                             @Override
-                                            public void onCompleted() {
+                                            public void onError(Throwable e) {
+                                                dialog.dismiss();
+                                                FileUtil.deleteFile(StorageUtils.getNovRootPath() + bookList.get(0).getTitle());
+                                                showToast("下载失败");
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
                                                 dialog.dismiss();
                                                 mBook = bookList.get(0);
                                                 mBookId = bookList.get(0).getId();
@@ -425,10 +423,8 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                                             }
 
                                             @Override
-                                            public void onError(Throwable e) {
-                                                dialog.dismiss();
-                                                FileUtil.deleteFile(StorageUtils.getNovRootPath() + bookList.get(0).getTitle());
-                                                showToast("下载失败");
+                                            public void onSubscribe(@NonNull Disposable d) {
+
                                             }
 
                                             @Override

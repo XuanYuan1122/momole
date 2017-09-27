@@ -11,8 +11,8 @@ import com.moemoe.lalala.view.activity.PhoneStateCheckActivity;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.

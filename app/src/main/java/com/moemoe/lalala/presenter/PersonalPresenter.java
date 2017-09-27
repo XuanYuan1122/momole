@@ -8,8 +8,8 @@ import com.moemoe.lalala.model.entity.UserInfo;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.
@@ -77,24 +77,6 @@ public class PersonalPresenter implements PersonalContract.Presenter {
                         }
                     });
         }
-    }
-
-    @Override
-    public void createPrivateMsg(String userId) {
-        apiService.createPrivateMsg(userId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetResultSubscriber<CreatePrivateMsgEntity>() {
-                    @Override
-                    public void onSuccess(CreatePrivateMsgEntity entity) {
-                        if(view != null) view.onCreatePrivateMsgSuccess(entity);
-                    }
-
-                    @Override
-                    public void onFail(int code, String msg) {
-                        if(view != null) view.onFailure(code,msg);
-                    }
-                });
     }
 
     @Override

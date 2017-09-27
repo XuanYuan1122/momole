@@ -59,10 +59,18 @@ public class TagControl {
         BaseTag tag = new BaseTag();
         tag.setTag("at_user");
         tag.setSpan(new UserUrlSpan(context,tag));
+        HashMap<String,String> attrs = new HashMap<>();
+        attrs.put("user_id","");
+        tag.setAttrs(attrs);
         tags.add(tag);
         tag = new BaseTag();
         tag.setTag("kira_img");
         tag.setSpan(new ImageUrlSpan(context,tag));
+        attrs = new HashMap<>();
+        attrs.put("path","");
+        attrs.put("w","");
+        attrs.put("h","");
+        tag.setAttrs(attrs);
         tags.add(tag);
     }
 
@@ -219,7 +227,7 @@ public class TagControl {
      * @param sequence
      * @return
      */
-    public static Set<HashMap<String,String>> getAttr(String tag,CharSequence sequence){
+    public Set<HashMap<String,String>> getAttr(String tag,CharSequence sequence){
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(sequence);
         BaseUrlSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),BaseUrlSpan.class);
         Set<HashMap<String,String>> res = new HashSet<>();

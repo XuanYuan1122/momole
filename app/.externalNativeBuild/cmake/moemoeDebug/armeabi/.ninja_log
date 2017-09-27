@@ -1,0 +1,5 @@
+# ninja log v5
+1	1761	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	617cade1fa3fd24d
+1762	2167	0	../../../../libs/armeabi/libkira.so	95b2384a90c0e
+2	463	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	617cade1fa3fd24d
+463	872	0	../../../../libs/armeabi/libkira.so	95b2384a90c0e

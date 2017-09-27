@@ -1,14 +1,8 @@
 package com.moemoe.lalala.view.adapter;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.model.entity.CommonFileEntity;
-import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ManHua2Entity;
-import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
-
-import zlc.season.rxdownload.RxDownload;
 
 /**
  *

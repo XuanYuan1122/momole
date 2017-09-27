@@ -313,11 +313,9 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                 showToast(R.string.msg_name_cannot_null);
                 return;
             }
-            if(mFolderType.equals(FolderType.XS.toString())){
-                if(TextUtils.isEmpty(mBgPath)){
-                    showToast("封面不能为空");
-                    return;
-                }
+            if(TextUtils.isEmpty(mBgPath)){
+                showToast("封面不能为空");
+                return;
             }
         }
         if (mZipInfo == null){

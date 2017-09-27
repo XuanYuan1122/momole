@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,17 +21,9 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPersonalComponent;
 import com.moemoe.lalala.di.modules.PersonalModule;
-import com.moemoe.lalala.event.PrivateMessageEvent;
 import com.moemoe.lalala.event.SystemMessageEvent;
-import com.moemoe.lalala.greendao.gen.ChatUserEntityDao;
-import com.moemoe.lalala.greendao.gen.GroupUserEntityDao;
-import com.moemoe.lalala.greendao.gen.PrivateMessageItemEntityDao;
 import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.entity.ChatUserEntity;
-import com.moemoe.lalala.model.entity.CreatePrivateMsgEntity;
-import com.moemoe.lalala.model.entity.GroupUserEntity;
 import com.moemoe.lalala.model.entity.Image;
-import com.moemoe.lalala.model.entity.PrivateMessageItemEntity;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.presenter.PersonalContract;
@@ -39,29 +32,29 @@ import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.GlideCircleTransform;
-import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
-import com.moemoe.lalala.view.adapter.PersonalPagerAdapter;
+import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
+import com.moemoe.lalala.view.fragment.BaseFragment;
+import com.moemoe.lalala.view.fragment.NewFollowMainFragment;
 import com.moemoe.lalala.view.fragment.PersonalMainFragment;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.rong.imkit.RongIM;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  *
@@ -100,19 +93,27 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     ViewPager mViewPager;
     @BindView(R.id.iv_edit)
     ImageView mEdit;
-    @BindView(R.id.iv_bag)
-    ImageView mIvBag;
     @BindView(R.id.iv_menu_list)
     ImageView mMenuList;
+    @BindView(R.id.iv_red_msg)
+    ImageView mIvRedMsg;
+    @BindView(R.id.tv_kira_num)
+    TextView mTvKiraNum;
+    @BindView(R.id.iv_msg)
+    ImageView mIvMsg;
+    @BindView(R.id.tv_huiyuan)
+    TextView mTvHuiYuan;
+    @BindView(R.id.fl_avatar)
+    FrameLayout mAvatarRoot;
 
     @Inject
     PersonalPresenter mPresenter;
-    private PersonalPagerAdapter mAdapter;
+    private TabFragmentPagerAdapter mAdapter;
     private boolean mIsSelf;
     private String mUserId;
     private UserInfo mInfo;
     private BottomMenuFragment bottomMenuFragment;
-    private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
+    private PersonalMainFragment mainFragment;
 
     @Override
     protected int getLayoutId() {
@@ -133,68 +134,66 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
             return;
         }
         mIsSelf = mUserId.equals(PreferenceUtils.getUUid());
-        mIvBag.setVisibility(View.GONE);
         mPresenter.requestUserInfo(mUserId);
         mMenuList.setVisibility(View.VISIBLE);
-        if(mIsSelf) {
-            subscribeEvent();
+
+        List<BaseFragment> fragmentList = new ArrayList<>();
+        mainFragment = PersonalMainFragment.newInstance(mUserId);
+        fragmentList.add(mainFragment);
+        fragmentList.add(NewFollowMainFragment.newInstance("my"));
+        String[] mTitles = {getString(R.string.label_home_page), "动态"};
+        List<String> titles = new ArrayList<>();
+        titles.add(getString(R.string.label_home_page));
+        titles.add("动态");
+        ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
+        for (String str: mTitles) {
+            mTabEntities.add(new TabEntity(str, R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
         }
-    }
+        mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
+        mViewPager.setAdapter(mAdapter);
+        mTabLayout.setTabData(mTabEntities);
+        mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                mViewPager.setCurrentItem(position);
+            }
 
-    private void subscribeEvent() {
-        Subscription subscription = RxBus.getInstance()
-                .toObservable(PrivateMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Action1<PrivateMessageEvent>() {
-                    @Override
-                    public void call(PrivateMessageEvent event) {
-                        if(mTabLayout.getTabCount() == 7){
-                            if(event.isShow()){
-                                mTabLayout.showDot(5);
-                            }else {
-                                mTabLayout.hideMsg(5);
-                            }
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+            @Override
+            public void onTabReselect(int position) {
+            }
+        });
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-                    }
-                });
-        Subscription sysSubscription = RxBus.getInstance()
-                .toObservable(SystemMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Action1<SystemMessageEvent>() {
-                    @Override
-                    public void call(SystemMessageEvent event) {
-                        if(mTabLayout.getTabCount() == 7){
-                            if(PreferenceUtils.getMessageDot(NewPersonalActivity.this,"neta") || PreferenceUtils.getMessageDot(NewPersonalActivity.this,"system") || PreferenceUtils.getMessageDot(NewPersonalActivity.this,"at_user")){
-                                mTabLayout.showDot(6);
-                            }else {
-                                mTabLayout.hideMsg(6);
-                            }
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+            }
 
-                    }
-                });
-        RxBus.getInstance().addSubscription(this, subscription);
-        RxBus.getInstance().addSubscription(this, sysSubscription);
+            @Override
+            public void onPageSelected(int position) {
+                mTabLayout.setCurrentTab(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        if(mIsSelf){
+            subscribeEvent();
+            mIvMsg.setVisibility(View.VISIBLE);
+            mAvatarRoot.setPadding(0, (int) getResources().getDimension(R.dimen.y90),0,0);
+        }else {
+            mIvMsg.setVisibility(View.GONE);
+            mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y40),0,0);
+        }
+
     }
 
     @Override
     protected void onDestroy() {
         if(mPresenter != null)mPresenter.release();
-        RxBus.getInstance().unSubscribe(this);
         if(mAdapter != null)mAdapter.release();
+        RxBus.getInstance().unSubscribe(this);
         super.onDestroy();
     }
 
@@ -218,6 +217,33 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
 
     }
 
+    private void subscribeEvent() {
+        Disposable sysSubscription = RxBus.getInstance()
+                .toObservable(SystemMessageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Consumer<SystemMessageEvent>() {
+                    @Override
+                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
+                        if(mIsSelf){
+                            if(PreferenceUtils.getMessageDot(NewPersonalActivity.this,"neta") || PreferenceUtils.getMessageDot(NewPersonalActivity.this,"system") || PreferenceUtils.getMessageDot(NewPersonalActivity.this,"at_user")){
+                                mIvRedMsg.setVisibility(View.VISIBLE);
+                            }else {
+                                mIvRedMsg.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        RxBus.getInstance().addSubscription(this, sysSubscription);
+    }
+
     private void initPopupMenus() {
         bottomMenuFragment = new BottomMenuFragment();
         ArrayList<MenuItem> items = new ArrayList<>();
@@ -228,7 +254,11 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
             items.add(item);
             item = new MenuItem(3, getString(R.string.label_doc_history));
             items.add(item);
-            item = new MenuItem(5, getString(R.string.label_user_reject_list));
+            item = new MenuItem(5, "收藏动态");
+            items.add(item);
+            item = new MenuItem(6, "我的邀请码");
+            items.add(item);
+            item = new MenuItem(7, "填写邀请码");
             items.add(item);
         }else {
             if(mInfo.isBlack()){
@@ -264,7 +294,18 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                     }
                 }
                 if(itemId == 5){
-                    Intent i = new Intent(NewPersonalActivity.this,UserRejectListActivity.class);
+                    Intent i = new Intent(NewPersonalActivity.this,PersonalFavoriteDynamicActivity.class);
+                    startActivity(i);
+                }
+                if(itemId == 6){
+                    Intent i = new Intent(NewPersonalActivity.this,InviteActivity.class);
+                    i.putExtra("id",mInfo.getUserNo());
+                //    i.putExtra("name",mInfo.getInviteUserName());
+                    startActivity(i);
+                }
+                if(itemId == 7){
+                    Intent i = new Intent(NewPersonalActivity.this,InviteAddActivity.class);
+                    i.putExtra("type",1);
                     startActivity(i);
                 }
             }
@@ -283,7 +324,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         }
     }
 
-    @OnClick({R.id.tv_follow,R.id.iv_edit,R.id.iv_menu_list,R.id.iv_avatar,R.id.iv_bag,R.id.tv_private_msg})
+    @OnClick({R.id.tv_follow,R.id.iv_edit,R.id.iv_menu_list,R.id.iv_avatar,R.id.tv_private_msg,R.id.iv_msg})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.tv_follow:
@@ -313,13 +354,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                     startActivity(intent);
                 }
                 break;
-            case R.id.iv_bag:
-                Intent i2 = new Intent(NewPersonalActivity.this,NewBagActivity.class);
-                i2.putExtra(UUID,mUserId);
-                startActivity(i2);
-                break;
             case R.id.tv_private_msg:
-                //goToChat();
                 if(DialogUtils.checkLoginAndShowDlg(NewPersonalActivity.this)){
                     if(!TextUtils.isEmpty(PreferenceUtils.getAuthorInfo().getRcToken()) && !TextUtils.isEmpty(mInfo.getRcTargetId())){
                         RongIM.getInstance().startPrivateChat(NewPersonalActivity.this, mInfo.getRcTargetId(), mInfo.getUserName());
@@ -328,77 +363,12 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                     }
                 }
                 break;
+            case R.id.iv_msg:
+                if(DialogUtils.checkLoginAndShowDlg(this)){
+                    PersonalMsgActivity.startActivity(this,mUserId);
+                }
+                break;
         }
-    }
-
-//    private void goToChat() {
-//        if(mInfo != null){
-//            GroupUserEntityDao dao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
-//            List<GroupUserEntity> list = dao.queryBuilder()
-//                    .where(GroupUserEntityDao.Properties.UserId.eq(mUserId))
-//                    .limit(1)
-//                    .list();
-//            if(list.size() == 1){
-//                //存在  直接跳转
-//                Intent i = new Intent(this, ChatActivity.class);
-//                i.putExtra("talkId",list.get(0).getTalkId());
-//                i.putExtra("title",mInfo.getUserName());
-//                startActivity(i);
-//            }else {
-//                mPresenter.createPrivateMsg(mUserId);
-//            }
-//        }
-//    }
-
-    @Override
-    public void onCreatePrivateMsgSuccess(CreatePrivateMsgEntity entity) {
-        //私信列表
-        PrivateMessageItemEntityDao messageItemEntityDao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
-
-        PrivateMessageItemEntity privateMessageItemEntity = new PrivateMessageItemEntity();
-        privateMessageItemEntity.setDot(0);
-        privateMessageItemEntity.setUpdateTime(new Date(System.currentTimeMillis()));
-        privateMessageItemEntity.setName(mInfo.getUserName());
-        privateMessageItemEntity.setIcon(mInfo.getHeadPath());
-        privateMessageItemEntity.setContent("");
-        privateMessageItemEntity.setTalkId(entity.getTalkId());
-        privateMessageItemEntity.setNew(true);
-        privateMessageItemEntity.setState(entity.isIgnore());
-        messageItemEntityDao.insertOrReplace(privateMessageItemEntity);
-        RxBus.getInstance().post(new PrivateMessageEvent(false,entity.getTalkId(),false));
-        //列表与用户中间表
-        GroupUserEntityDao dao = GreenDaoManager.getInstance().getSession().getGroupUserEntityDao();
-        //他人
-        GroupUserEntity groupUserEntity = new GroupUserEntity();
-        groupUserEntity.setId(null);
-        groupUserEntity.setTalkId(entity.getTalkId());
-        groupUserEntity.setUserId(mUserId);
-        dao.insertOrReplace(groupUserEntity);
-        //自己
-        GroupUserEntity groupUserEntity1 = new GroupUserEntity();
-        groupUserEntity1.setId(null);
-        groupUserEntity1.setTalkId(entity.getTalkId());
-        groupUserEntity1.setUserId(PreferenceUtils.getUUid());
-        dao.insertOrReplace(groupUserEntity1);
-        //用户表
-        ChatUserEntityDao chatUserEntityDao = GreenDaoManager.getInstance().getSession().getChatUserEntityDao();
-        //他人
-        ChatUserEntity userEntity = new ChatUserEntity();
-        userEntity.setUserIcon(mInfo.getHeadPath());
-        userEntity.setUserName(mInfo.getUserName());
-        userEntity.setUserId(mUserId);
-        chatUserEntityDao.insertOrReplace(userEntity);
-        //自己
-        ChatUserEntity userEntity1 = new ChatUserEntity();
-        userEntity1.setUserIcon(PreferenceUtils.getAuthorInfo().getHeadPath());
-        userEntity1.setUserName(PreferenceUtils.getAuthorInfo().getUserName());
-        userEntity1.setUserId(PreferenceUtils.getUUid());
-        chatUserEntityDao.insertOrReplace(userEntity1);
-        Intent i = new Intent(this, ChatActivity.class);
-        i.putExtra("talkId",entity.getTalkId());
-        i.putExtra("title",mInfo.getUserName());
-        i.putExtra("isNew",false);
-        startActivity(i);
     }
 
     @Override
@@ -437,15 +407,11 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         }
         io.rong.imlib.model.UserInfo rcInfo = new io.rong.imlib.model.UserInfo(info.getUserId(),info.getUserName(), Uri.parse(info.getHeadPath()));
         RongIM.getInstance().refreshUserInfoCache(rcInfo);
-        if(!mIsSelf && info.isOpenBag()){
-            mIvBag.setVisibility(View.VISIBLE);
-        }else {
-            mIvBag.setVisibility(View.GONE);
-        }
         mInfo = info;
         if(bottomMenuFragment == null){
             initPopupMenus();
         }
+        mainFragment.setOpenBag(info.isOpenBag());
         mTvTitle.setText(info.getUserName());
         Glide.with(this)
                 .load(StringUtils.getUrl(this,ApiService.URL_QINIU + info.getBackground(), DensityUtil.getScreenWidth(this),DensityUtil.dip2px(this,230),false,true))
@@ -461,6 +427,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 .bitmapTransform(new GlideCircleTransform(this,DensityUtil.dip2px(this,3)))
                 .into(mIvAvatar);
         mTvName.setText(info.getUserName());
+        mTvKiraNum.setText("kira号: " + info.getUserNo());
         if("F".equals(info.getSex())){
             mIvGender.setImageResource(R.drawable.ic_boy);
             mIvGender.setVisibility(View.VISIBLE);
@@ -471,88 +438,23 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
             mIvGender.setVisibility(View.GONE);
         }
         mFanNum.setText(String.valueOf(info.getFollowers()));
-        mDocNum.setText(String.valueOf(info.getDocCount()));
+        mDocNum.setText(String.valueOf(info.getFollowCount()));
         mCoinNum.setText(String.valueOf(info.getCoin()));
         if(mIsSelf){
             mFollowRoot.setVisibility(View.GONE);
             mEdit.setVisibility(View.VISIBLE);
+            mTvHuiYuan.setVisibility(View.VISIBLE);
+           // if(!TextUtils.isEmpty(info.getVipTime())) {
+              //  mTvHuiYuan.setText("会员到期日: "+info.getVipTime());
+         //   }else {
+                mTvHuiYuan.setVisibility(View.GONE);
+         //   }
         }else {
             mEdit.setVisibility(View.GONE);
             mFollowRoot.setVisibility(View.VISIBLE);
             mFollow.setSelected(info.isFollowing());
+            mTvHuiYuan.setVisibility(View.GONE);
             mFollow.setText(info.isFollowing() ? getString(R.string.label_followed) : getString(R.string.label_follow));
-        }
-        if(mAdapter == null){
-            mAdapter = new PersonalPagerAdapter(getSupportFragmentManager(),this,mIsSelf,mUserId,info.isShowFavorite(),info.isShowFollow(),info.isShowFans());
-            mViewPager.setAdapter(mAdapter);
-            String[] mTitles = {getString(R.string.label_home_page), getString(R.string.label_doc), getString(R.string.label_favorite), getString(R.string.label_fans),getString(R.string.label_follow),getString(R.string.label_chat),getString(R.string.label_msg)};
-            int len;
-            if(mIsSelf){
-                len = mTitles.length;
-            }else {
-                len = mTitles.length - 2;
-            }
-            for (int i = 0; i < len; i++) {
-                mTabEntities.add(new TabEntity(mTitles[i], R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
-            }
-            mTabLayout.setTabData(mTabEntities);
-            mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
-                @Override
-                public void onTabSelect(int position) {
-                    mViewPager.setCurrentItem(position);
-                }
-
-                @Override
-                public void onTabReselect(int position) {
-                }
-            });
-
-            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    mTabLayout.setCurrentTab(position);
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-            String type = getIntent().getStringExtra("tab");
-            if(!TextUtils.isEmpty(type)){
-                if(type.equals("notify")){
-                    mViewPager.setCurrentItem(6);
-                    mTabLayout.setCurrentTab(6);
-                }else if(type.equals("fans")){
-                    mViewPager.setCurrentItem(3);
-                    mTabLayout.setCurrentTab(3);
-                }
-            }
-        }
-        PrivateMessageItemEntityDao dao = GreenDaoManager.getInstance().getSession().getPrivateMessageItemEntityDao();
-        List<PrivateMessageItemEntity> list = dao.queryBuilder().list();
-        boolean showDot = false;
-        for(PrivateMessageItemEntity entity : list){
-            if(entity.getDot() > 0){
-                showDot = true;
-                break;
-            }
-        }
-        if(showDot){
-            mTabLayout.showDot(5);
-        }else {
-            mTabLayout.hideMsg(5);
-        }
-
-        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user")){
-            mTabLayout.showDot(6);
-        }else {
-            mTabLayout.hideMsg(6);
         }
     }
 
@@ -574,7 +476,6 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         int temp = (int) (DensityUtil.dip2px(this,146) - getResources().getDimension(R.dimen.status_bar_height));
         float percent = (float)Math.abs(verticalOffset) / temp;
-
         if(percent > 0.4){
             if(!isChanged){
                 mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);

@@ -49,6 +49,7 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         sSupportSchame.add(context.getResources().getString(R.string.label_blackboard_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_talk_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_folder_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_bag_action));
         sSupportSchame.add("event_1.0");
     }
 
@@ -82,6 +83,9 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
             String path = uri.getPath();
             if(path.startsWith("/")){
                 path = path.substring(1);
+            }
+            if(path.equals(context.getResources().getString(R.string.label_tag_action))){
+                return;
             }
             if(sSupportSchame.contains(path)){
                 if(path.equals("event_1.0")){

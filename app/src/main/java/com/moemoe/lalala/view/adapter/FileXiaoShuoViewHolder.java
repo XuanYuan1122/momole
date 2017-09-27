@@ -1,36 +1,16 @@
 package com.moemoe.lalala.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.entity.CommonFileEntity;
 import com.moemoe.lalala.model.entity.FileXiaoShuoEntity;
-import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
-import com.moemoe.lalala.utils.EncoderUtils;
-import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
-import com.moemoe.lalala.utils.Utils;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
-import com.moemoe.lalala.view.widget.longimage.LongImageView;
-
-import java.io.File;
-
-import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/8/20.

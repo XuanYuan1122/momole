@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rl_coin_root"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/iv_left"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/icon_doc_givecoins_len_give"/>
+
+        <TextView
+            android:id="@+id/tv_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_left"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_16"
+            android:textColor="@color/pink_fb7ba2"
+            android:text="@string/label_accept_my_coin"/>
+
+        <TextView
+            android:id="@+id/tv_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_top"
+            android:layout_toRightOf="@+id/iv_left"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/pink_fb7ba2"
+            android:text="已收到"/>
+
+        <TextView
+            android:id="@+id/tv_got_coin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_top"
+            android:layout_toRightOf="@+id/tv_left"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="4dp"
+            android:textStyle="bold"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/pink_fb7ba2"
+            android:text="@string/label_got_coin"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_top"
+            android:layout_toRightOf="@+id/tv_got_coin"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginStart="2dp"
+            android:textSize="@dimen/size_12"
+            android:textColor="@color/pink_fb7ba2"
+            android:text="节操"/>
+
+        <ImageView
+            android:id="@+id/iv_give_coin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="22dp"
+            android:layout_marginEnd="22dp"
+            android:src="@drawable/btn_give_coin"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y88"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/size_12"
+        android:background="@color/white">
+
+        <com.flyco.tablayout.CommonTabLayout
+            android:id="@+id/indicator_person_data"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/x10"
+            android:background="@color/white"
+            app:tl_iconVisible="false"
+            app:tl_tab_padding="@dimen/x15"
+            app:tl_indicator_height="@dimen/y8"
+            app:tl_indicator_color="@color/main_cyan"
+            app:tl_textsize="@dimen/x24"
+            app:tl_textSelectColor="@color/main_cyan"
+            app:tl_textUnselectColor="@color/gray_d7d7d7"/>
+
+        <TextView
+            android:id="@+id/tv_sort"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="@dimen/x22"
+            android:drawablePadding="@dimen/x6"
+            android:drawableEnd="@drawable/icon_doc_comment_sort"
+            android:textColor="@color/main_cyan"
+            android:textSize="@dimen/x24"
+            android:text="热门排序"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:background="@color/gray_e8e8e8"/>
+
+</LinearLayout>

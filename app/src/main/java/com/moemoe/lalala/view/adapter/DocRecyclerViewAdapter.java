@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -12,12 +13,16 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -30,14 +35,19 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.BagDirEntity;
+import com.moemoe.lalala.model.entity.CommentV2Entity;
+import com.moemoe.lalala.model.entity.CommentV2SecEntity;
 import com.moemoe.lalala.model.entity.DocDetailEntity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.NewDocType;
 import com.moemoe.lalala.model.entity.REPORT;
+import com.moemoe.lalala.model.entity.ShareArticleEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
+import com.moemoe.lalala.model.entity.UserTopEntity;
+import com.moemoe.lalala.model.entity.tag.UserUrlSpan;
 import com.moemoe.lalala.netamusic.data.model.PlayList;
 import com.moemoe.lalala.netamusic.data.model.Song;
 import com.moemoe.lalala.netamusic.player.IPlayBack;
@@ -49,6 +59,7 @@ import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.GlideRoundTransform;
+import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -56,7 +67,13 @@ import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
+import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
+import com.moemoe.lalala.view.activity.CommentListActivity;
+import com.moemoe.lalala.view.activity.CommentSecListActivity;
+import com.moemoe.lalala.view.activity.CreateCommentActivity;
+import com.moemoe.lalala.view.activity.CreateForwardActivity;
+import com.moemoe.lalala.view.activity.DynamicActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.activity.JuBaoActivity;
 import com.moemoe.lalala.view.activity.NewDocDetailActivity;
@@ -71,13 +88,14 @@ import com.moemoe.lalala.view.widget.view.DocLabelView;
 import java.io.File;
 import java.util.ArrayList;
 
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 
 /**
@@ -99,23 +117,9 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_FLOOR = 11;
     private static final int TYPE_FOLDER = 12;
     private static final int TYPE_TITLE = 13;
-    private static final long LONG_PRESS_TIME = 500;
+    private static final int TYPE_SHOW_ALL = 14;
 
     private static final long UPDATE_PROGRESS_INTERVAL = 1000;
-    /**
-     * 当前触摸点相对于屏幕的坐标
-     */
-    private int mCurrentInScreenX;
-    private int mCurrentInScreenY;
-    /**
-     * 触摸点按下时的相对于屏幕的坐标
-     */
-    private int mDownInScreenX;
-    private int mDownInScreenY;
-    /**
-     * 当前点击时间
-     */
-    private long mCurrentClickTime;
     private RxDownload downloadSub;
     private LayoutInflater mLayoutInflater;
     private Context mContext;
@@ -125,14 +129,12 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private Song mMusicInfo;
     private int mTagsPosition = -1;
     private DocDetailEntity mDocBean;
-    private ArrayList<NewCommentEntity> mComments;
+    private ArrayList<CommentV2Entity> mComments;
     private ArrayList<DocTagEntity> mTags;
-    private PopupWindow mPop;
-    private int mCurFirstFloor = 0;
-    private boolean mTargetId;
     private OnItemClickListener onItemClickListener;
     private BottomMenuFragment fragment;
     private Handler mHandler = new Handler();
+    private boolean showAll;
     private Runnable mProgressCallback = new Runnable() {
         @Override
         public void run() {
@@ -152,6 +154,10 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     };
 
+    public void setShowAll(boolean showAll){
+        this.showAll = showAll;
+    }
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
         this.onItemClickListener = onItemClickListener;
     }
@@ -161,10 +167,10 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         mLayoutInflater = LayoutInflater.from(context);
         mComments = new ArrayList<>();
         mTags = new ArrayList<>();
-        mPlayer = Player.getInstance();
+        mPlayer = Player.getInstance(mContext);
         mPlayer.registerCallback(this);
         fragment = new BottomMenuFragment();
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(mContext)
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
@@ -226,7 +232,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             case TYPE_LABEL:
                 return new LabelHolder(mLayoutInflater.inflate(R.layout.item_new_doc_label,parent,false));
             case TYPE_COMMENT:
-                return new CommentHolder(mLayoutInflater.inflate(R.layout.item_post_comment,parent,false));
+                return new CommentHolder(mLayoutInflater.inflate(R.layout.item_new_comment,parent,false));
             case TYPE_COIN:
                 return new CoinHideViewHolder(mLayoutInflater.inflate(R.layout.item_new_doc_hide_top,parent,false));
             case TYPE_COIN_TEXT:
@@ -239,6 +245,8 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 return new BagFavoriteHolder(mLayoutInflater.inflate(R.layout.item_bag_get,parent,false));
             case TYPE_TITLE:
                 return new TextHolder(mLayoutInflater.inflate(R.layout.item_new_doc_text,parent,false));
+            case TYPE_SHOW_ALL:
+                return new ShowAllHolder(mLayoutInflater.inflate(R.layout.item_doc_show_all,parent,false));
             default:
                 return new EmptyViewHolder(mLayoutInflater.inflate(R.layout.item_empty,parent,false));
         }
@@ -351,6 +359,9 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }else if(holder instanceof BagFavoriteHolder){
             BagFavoriteHolder bagFavoriteHolder = (BagFavoriteHolder) holder;
             createFolderItem(bagFavoriteHolder,position);
+        }else if(holder instanceof ShowAllHolder){
+            ShowAllHolder showAllHolder = (ShowAllHolder) holder;
+            createShowAll(showAllHolder,position);
         }
     }
 
@@ -369,8 +380,13 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if(mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
                 size++;
             }
+            size++;
         }
         return size;
+    }
+
+    public ArrayList<CommentV2Entity> getmComments(){
+        return mComments;
     }
 
     public Object getItem(int position){
@@ -399,6 +415,8 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }else if(position == mTagsPosition){
             return mDocBean.getTags();
         }else if(position == mTagsPosition + 1){
+            return "";
+        }else if(position == getItemCount() - 1){
             return "";
         }else {
             if(mDocBean.getCoin() > 0 && mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
@@ -435,63 +453,12 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         notifyDataSetChanged();
     }
 
-    public int getTagsPosition(){
-        return mTagsPosition;
-    }
-
-    public void setComment(ArrayList<NewCommentEntity> beans,boolean targetId){
-        if(beans.size() > 0){
-            int bgSize = getItemCount() - mComments.size();
-            int bfSize = mComments.size();
-            this.mComments.clear();
-            mComments.addAll(beans);
-            mTargetId = targetId;
-            int afSize = mComments.size();
-            int btSize = afSize - bfSize;
-            mCurFirstFloor = mComments.get(0).getIdx();
-            notifyItemChanged(mTagsPosition + 1);
-            if(btSize > 0){
-                notifyItemRangeChanged(bgSize,bfSize);
-                notifyItemRangeInserted(bgSize + bfSize,btSize);
-            }else {
-                notifyItemRangeChanged(bgSize,afSize);
-                notifyItemRangeRemoved(bgSize + afSize,-btSize);
-            }
-        }else {
-            int bgSize = getItemCount() - mComments.size();
-            int bfSize = mComments.size();
-            this.mComments.clear();
-            mCurFirstFloor = 0;
-            notifyItemChanged(mTagsPosition + 1);
-            notifyItemRangeRemoved(bgSize,bfSize);
-        }
-    }
-
-    public void addComment(ArrayList<NewCommentEntity> beans, boolean targetId,boolean addBefore){
-        int bgSize;
-        int bfSize = mComments.size();
-        if(addBefore){
-            bgSize = getItemCount() - bfSize;
-            this.mComments.addAll(0,beans);
-        }else {
-            bgSize = getItemCount();
-            this.mComments.addAll(beans);
-        }
-        int afSize = mComments.size();
-        int btSize = afSize - bfSize;
-        mTargetId = targetId;
-        if(afSize > 0){
-            mCurFirstFloor = mComments.get(0).getIdx();
-        }else {
-            mCurFirstFloor = 0;
-        }
-        if(addBefore){
-            if(btSize < ApiService.LENGHT){
-                mCurFirstFloor = 0;
-            }
-        }
-        notifyItemChanged(mTagsPosition + 1);
-        notifyItemRangeInserted(bgSize,btSize);
+    public void setComment(ArrayList<CommentV2Entity> beans){
+        int position = getItemCount() - 2;
+        this.mComments.clear();
+        mComments.addAll(beans);
+        notifyItemRangeInserted(position,beans.size());
+        notifyItemChanged(getItemCount() - 1);
     }
 
     @Override
@@ -524,6 +491,8 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return TYPE_LABEL;
         } else if(position == mTagsPosition + 1){
             return TYPE_FLOOR;
+        }else if(position == getItemCount() - 1){
+            return TYPE_SHOW_ALL;
         }else {
             return TYPE_COMMENT;
         }
@@ -632,6 +601,43 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         ViewUtils.badge(mContext,holder.huiZhangRoots,holder.huiZhangTexts,mDocBean.getBadgeList());
     }
 
+    private static class ShowAllHolder extends RecyclerView.ViewHolder{
+
+        TextView mTvText;
+
+        ShowAllHolder(View itemView) {
+            super(itemView);
+            mTvText = (TextView) itemView.findViewById(R.id.tv_doc_content);
+        }
+    }
+
+    private void createShowAll(ShowAllHolder holder,int position){
+        if(showAll){
+            holder.mTvText.setGravity(Gravity.CENTER);
+            holder.mTvText.setPadding(0,0,0,0);
+            holder.mTvText.setTextColor(ContextCompat.getColor(mContext,R.color.main_cyan));
+            holder.mTvText.setText(StringUtils.getNumberInLengthLimit(mDocBean.getComments(),3));
+            holder.itemView.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    CommentListActivity.startActivity(mContext,mDocBean.getId(),mDocBean.getUserId());
+                }
+            });
+        }else {
+            holder.mTvText.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
+            holder.mTvText.setPadding((int) mContext.getResources().getDimension(R.dimen.x24),0,0,0);
+            holder.mTvText.setTextColor(ContextCompat.getColor(mContext,R.color.gray_d7d7d7));
+            holder.mTvText.setText("输入评论...");
+            holder.itemView.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    CreateCommentActivity.startActivity(mContext,mDocBean.getId(),false,"");
+                }
+            });
+        }
+    }
+
+
     private static class TextHolder extends RecyclerView.ViewHolder{
 
         TextView mTvText;
@@ -693,7 +699,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.mIvImage.setVisibility(View.GONE);
             holder.mIvLongImage.setVisibility(View.GONE);
         }else {
-            final int[] wh = BitmapUtils.getDocIconSize(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
+            final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
             if(wh[1] > 2048){
                 holder.mIvImage.setVisibility(View.GONE);
                 holder.mIvLongImage.setVisibility(View.VISIBLE);
@@ -709,16 +715,22 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<DownloadStatus>() {
+                            .subscribe(new Observer<DownloadStatus>() {
+
                                 @Override
-                                public void onCompleted() {
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
                                     BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                     notifyItemChanged(position);
                                 }
 
                                 @Override
-                                public void onError(Throwable e) {
+                                public void onSubscribe(@NonNull Disposable d) {
 
                                 }
 
@@ -780,7 +792,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.mIvImage.setVisibility(View.GONE);
             holder.mIvLongImage.setVisibility(View.GONE);
         }else {
-            final int[] wh = BitmapUtils.getDocIconSize(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
+            final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
             if(wh[1] > 4000){
                 holder.mIvImage.setVisibility(View.GONE);
                 holder.mIvLongImage.setVisibility(View.VISIBLE);
@@ -796,16 +808,22 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Subscriber<DownloadStatus>() {
+                            .subscribe(new Observer<DownloadStatus>() {
+
                                 @Override
-                                public void onCompleted() {
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
                                     BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                     notifyItemChanged(position);
                                 }
 
                                 @Override
-                                public void onError(Throwable e) {
+                                public void onSubscribe(@NonNull Disposable d) {
 
                                 }
 
@@ -907,7 +925,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 mMusicHolder.mIvImage.setVisibility(View.GONE);
                 mMusicHolder.mIvLongImage.setVisibility(View.GONE);
             }else {
-                final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,20));
+                final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,20));
                 if(wh[1] > 4000){
                     mMusicHolder.mIvImage.setVisibility(View.GONE);
                     mMusicHolder.mIvLongImage.setVisibility(View.VISIBLE);
@@ -923,16 +941,21 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Subscriber<DownloadStatus>() {
+                                .subscribe(new Observer<DownloadStatus>() {
                                     @Override
-                                    public void onCompleted() {
+                                    public void onError(Throwable e) {
+
+                                    }
+
+                                    @Override
+                                    public void onComplete() {
                                         BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                         mMusicHolder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                         notifyItemChanged(position);
                                     }
 
                                     @Override
-                                    public void onError(Throwable e) {
+                                    public void onSubscribe(@NonNull Disposable d) {
 
                                     }
 
@@ -1115,11 +1138,24 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         DocLabelView mDvLabel;
         NewDocLabelAdapter docLabelAdapter;
+        TextView tvForward;
+        TextView tvComment;
+        TextView tvTag;
+        View fRoot;
+        View cRoot;
+        View tRoot;
+
 
         LabelHolder(View itemView) {
             super(itemView);
             mDvLabel = (DocLabelView) itemView.findViewById(R.id.dv_doc_label_root);
             docLabelAdapter = new NewDocLabelAdapter(itemView.getContext(),false);
+            tvForward = (TextView) itemView.findViewById(R.id.tv_forward_num);
+            tvComment = (TextView) itemView.findViewById(R.id.tv_comment_num);
+            tvTag = (TextView) itemView.findViewById(R.id.tv_tag_num);
+            fRoot = itemView.findViewById(R.id.fl_forward_root);
+            cRoot = itemView.findViewById(R.id.fl_comment_root);
+            tRoot = itemView.findViewById(R.id.fl_tag_root);
         }
     }
 
@@ -1132,6 +1168,41 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             @Override
             public void itemClick(int position) {
                 addlabel(position);
+            }
+        });
+
+        mLabelHolder.tvForward.setCompoundDrawablePadding(0);
+        mLabelHolder.tvComment.setCompoundDrawablePadding(0);
+        mLabelHolder.tvTag.setCompoundDrawablePadding(0);
+        mLabelHolder.fRoot.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ShareArticleEntity entity = new ShareArticleEntity();
+                entity.setDocId(mDocBean.getId());
+                entity.setTitle(mDocBean.getShare().getTitle());
+                entity.setContent(mDocBean.getShare().getDesc());
+                entity.setCover(mDocBean.getCover());
+                entity.setCreateTime(mDocBean.getCreateTime());
+                UserTopEntity entity2 = new UserTopEntity();
+                if(mDocBean.getBadgeList().size() > 0){
+                    entity2.setBadge(mDocBean.getBadgeList().get(0));
+                }else {
+                    entity2.setBadge(null);
+                }
+                entity2.setHeadPath(mDocBean.getUserIcon());
+                entity2.setLevel(mDocBean.getUserLevel());
+                entity2.setLevelColor(mDocBean.getUserLevelColor());
+                entity2.setSex(mDocBean.getUserSex());
+                entity2.setUserId(mDocBean.getUserId());
+                entity2.setUserName(mDocBean.getUserName());
+                entity.setDocCreateUser(entity2);
+                CreateForwardActivity.startActivity(mContext,entity);
+            }
+        });
+        mLabelHolder.cRoot.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                CreateCommentActivity.startActivity(mContext,mDocBean.getId(),false,"");
             }
         });
     }
@@ -1160,50 +1231,18 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         ImageView mIvGiveCoin;
         TextView mTvCoinNum;
-        TextView mGoTop;
-        TextView mLoadBefore;
         TextView mCommentNum;
-        View lLFloorRoot;
-
-
+        
         FloorHolder(View itemView) {
             super(itemView);
             mIvGiveCoin = (ImageView) itemView.findViewById(R.id.iv_give_coin);
             mTvCoinNum = (TextView) itemView.findViewById(R.id.tv_got_coin);
-            lLFloorRoot = itemView.findViewById(R.id.ll_floor_jump_root);
-            mGoTop = (TextView) itemView.findViewById(R.id.tv_to_top);
-            mLoadBefore = (TextView) itemView.findViewById(R.id.tv_load_before);
             mCommentNum = (TextView) itemView.findViewById(R.id.tv_comment_num);
         }
     }
 
     private void createFloor(FloorHolder holder){
-        if (mCurFirstFloor > 1){
-            holder.lLFloorRoot.setVisibility(View.VISIBLE);
-        }else {
-            holder.lLFloorRoot.setVisibility(View.GONE);
-        }
-        holder.mGoTop.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                ((NewDocDetailActivity)mContext).createDialog();
-                ((NewDocDetailActivity)mContext).requestCommentsByFloor(1,mTargetId,true,false);
-            }
-        });
         holder.mCommentNum.setText(mContext.getString(R.string.label_comment_num,mComments.size()));
-        holder.mLoadBefore.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                int floor = 1;
-                int length = mCurFirstFloor - 1;
-                if (mCurFirstFloor > ApiService.LENGHT){
-                    floor = mCurFirstFloor - ApiService.LENGHT ;
-                    length = ApiService.LENGHT;
-                }
-                ((NewDocDetailActivity)mContext).createDialog();
-                ((NewDocDetailActivity)mContext).requestCommentsByFloor(floor,mTargetId,false,true,length,false);
-            }
-        });
         holder.mTvCoinNum.setText(mContext.getString(R.string.label_got_coin,mDocBean.getCoinPays()));
         if(mDocBean.getUserId().equals(PreferenceUtils.getUUid())){
             holder.mIvGiveCoin.setImageResource(R.drawable.btn_doc_givecoins_given_enabel);
@@ -1244,201 +1283,157 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private static class CommentHolder extends RecyclerView.ViewHolder{
 
-        ImageView mIvCreator;
-        TextView mTvCreatorName;
-        TextView mTvTime;
-        TextView mTvContent;
-        View mIvLevelColor;
-        TextView mTvLevel;
-        TextView mFloor;
+        ImageView avatar;
+        TextView userName;
+        TextView time;
+        TextView content;
+        TextView level;
+        TextView favorite;
         LinearLayout llImg;
-        View rlHuiZhang1;
-        View rlHuiZhang2;
-        View rlHuiZhang3;
-        TextView tvHuiZhang1;
-        TextView tvHuiZhang2;
-        TextView tvHuiZhang3;
-        View[] huiZhangRoots;
-        TextView[] huiZhangTexts;
+        LinearLayout llComment;
 
         CommentHolder(View itemView) {
             super(itemView);
-            mIvCreator = (ImageView) itemView.findViewById(R.id.iv_comment_creator);
-            mTvCreatorName = (TextView) itemView.findViewById(R.id.tv_comment_creator_name);
-            mTvTime = (TextView) itemView.findViewById(R.id.tv_comment_time);
-            mTvContent = (TextView) itemView.findViewById(R.id.tv_comment);
-            mIvLevelColor = itemView.findViewById(R.id.rl_level_bg);
-            mTvLevel = (TextView)itemView.findViewById(R.id.tv_level);
-            mFloor = (TextView)itemView.findViewById(R.id.tv_floor);
+            avatar = (ImageView) itemView.findViewById(R.id.iv_avatar);
+            userName = (TextView) itemView.findViewById(R.id.tv_name);
+            level = (TextView)itemView.findViewById(R.id.tv_level);
+            favorite = (TextView)itemView.findViewById(R.id.tv_favorite);
+            content = (TextView) itemView.findViewById(R.id.tv_comment);
             llImg = (LinearLayout) itemView.findViewById(R.id.ll_comment_img);
-            llImg.setVisibility(View.GONE);
-            tvHuiZhang1 = (TextView)itemView.findViewById(R.id.tv_huizhang_1);
-            tvHuiZhang2 = (TextView)itemView.findViewById(R.id.tv_huizhang_2);
-            tvHuiZhang3 = (TextView)itemView.findViewById(R.id.tv_huizhang_3);
-            rlHuiZhang1 = itemView.findViewById(R.id.fl_huizhang_1);
-            rlHuiZhang2 = itemView.findViewById(R.id.fl_huizhang_2);
-            rlHuiZhang3 = itemView.findViewById(R.id.fl_huizhang_3);
-            huiZhangRoots = new View[]{rlHuiZhang1,rlHuiZhang2,rlHuiZhang3};
-            huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
+            llComment = (LinearLayout) itemView.findViewById(R.id.ll_comment_root);
+            time = (TextView) itemView.findViewById(R.id.tv_comment_time);
         }
     }
-
 
     private void createComment(final CommentHolder holder, final int position){
-        final NewCommentEntity bean = (NewCommentEntity)getItem(position);
+        final CommentV2Entity entity = (CommentV2Entity) getItem(position);
+        int size = (int) mContext.getResources().getDimension(R.dimen.x72);
         Glide.with(mContext)
-                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + bean.getFromUserIcon().getPath(), DensityUtil.dip2px(mContext,36), DensityUtil.dip2px(mContext,36), false, false))
-                .placeholder(R.drawable.bg_default_circle)
+                .load(StringUtils.getUrl(mContext,entity.getCreateUser().getHeadPath(),size,size,false,true))
                 .error(R.drawable.bg_default_circle)
+                .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(mContext))
-                .into(holder.mIvCreator);
-        holder.mTvCreatorName.setText(bean.getFromUserName());
-        holder.mTvTime.setText(StringUtils.timeFormate(bean.getCreateTime()));
-        if(bean.isDeleteFlag()){
-            holder.mTvContent.setText(mContext.getString(R.string.label_comment_already));
-            holder.llImg.setVisibility(View.GONE);
-        }else {
-            String comm;
-            if (!TextUtils.isEmpty(bean.getToUserName()) ) {
-                comm = "回复 " + (TextUtils.isEmpty(bean.getToUserName()) ? "" :bean.getToUserName()) + ": "
-                        + bean.getContent();
-            } else {
-                comm = bean.getContent();
+                .into(holder.avatar);
+        holder.userName.setText(entity.getCreateUser().getUserName());
+        LevelSpan levelSpan = new LevelSpan(ContextCompat.getColor(mContext,R.color.white),mContext.getResources().getDimension(R.dimen.x12));
+        final String content = "LV" + entity.getCreateUser().getLevel();
+        String colorStr = "LV";
+        SpannableStringBuilder style = new SpannableStringBuilder(content);
+        style.setSpan(levelSpan, content.indexOf(colorStr), content.indexOf(colorStr) + colorStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        holder.level.setText(style);
+        float radius2 = mContext.getResources().getDimension(R.dimen.y4);
+        float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
+        RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
+        ShapeDrawable shapeDrawable2 = new ShapeDrawable();
+        shapeDrawable2.setShape(roundRectShape2);
+        shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
+        shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(entity.getCreateUser().getLevelColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
+        holder.level.setBackgroundDrawable(shapeDrawable2);
+        holder.favorite.setSelected(entity.isLike());
+        holder.favorite.setText(entity.getLikes() + "");
+        holder.favorite.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ((NewDocDetailActivity) mContext).favoriteComment(entity.getCommentId(),entity.isLike(),position);
             }
-            holder.mTvContent.setText(StringUtils.getUrlClickableText(mContext, comm));
-            holder.mTvContent.setMovementMethod(LinkMovementMethod.getInstance());
-            if(bean.getImages().size() > 0 && !bean.isNewDeleteFlag()){
-                holder.llImg.setVisibility(View.VISIBLE);
-                holder.llImg.removeAllViews();
-                for (int i = 0;i < bean.getImages().size();i++){
-                    final int pos = i;
-                    Image image = bean.getImages().get(i);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.topMargin = DensityUtil.dip2px(mContext,5);
-                    if(FileUtil.isGif(image.getPath())){
-                        ImageView imageView = new ImageView(mContext);
-                        setGif(image, imageView,params);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(mContext, ImageBigSelectActivity.class);
-                                intent.putExtra(ImageBigSelectActivity.EXTRA_KEY_FILEBEAN, bean.getImages());
-                                intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX,
-                                        pos);
-                                // 以后可选择 有返回数据
-                                mContext.startActivity(intent);
-                            }
-                        });
-                        holder.llImg.addView(imageView,holder.llImg.getChildCount(),params);
-                    }else {
-                        ImageView imageView = new ImageView(mContext);
-                        setImage(image, imageView,params);
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(mContext, ImageBigSelectActivity.class);
-                                intent.putExtra(ImageBigSelectActivity.EXTRA_KEY_FILEBEAN, bean.getImages());
-                                intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX,
-                                        pos);
-                                // 以后可选择 有返回数据
-                                mContext.startActivity(intent);
-                            }
-                        });
-                        holder.llImg.addView(imageView,holder.llImg.getChildCount(),params);
-                    }
+        });
+        holder.content.setText(TagControl.getInstance().paresToSpann(mContext,entity.getContent()));
+        holder.content.setMovementMethod(LinkMovementMethod.getInstance());
+        if(entity.getImages().size() > 0){
+            holder.llImg.setVisibility(View.VISIBLE);
+            holder.llImg.removeAllViews();
+            for (int i = 0;i < entity.getImages().size();i++){
+                final int pos = i;
+                Image image = entity.getImages().get(i);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.topMargin = (int) mContext.getResources().getDimension(R.dimen.y10);
+                if(FileUtil.isGif(image.getPath())){
+                    ImageView imageView = new ImageView(mContext);
+                    setGif(image, imageView,params);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(mContext, ImageBigSelectActivity.class);
+                            intent.putExtra(ImageBigSelectActivity.EXTRA_KEY_FILEBEAN, entity.getImages());
+                            intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX,
+                                    pos);
+                            mContext.startActivity(intent);
+                        }
+                    });
+                    holder.llImg.addView(imageView,holder.llImg.getChildCount(),params);
+                }else {
+                    ImageView imageView = new ImageView(mContext);
+                    setImage(image, imageView,params);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(mContext, ImageBigSelectActivity.class);
+                            intent.putExtra(ImageBigSelectActivity.EXTRA_KEY_FILEBEAN, entity.getImages());
+                            intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX,
+                                    pos);
+                            mContext.startActivity(intent);
+                        }
+                    });
+                    holder.llImg.addView(imageView,holder.llImg.getChildCount(),params);
                 }
-            }else {
-                holder.llImg.setVisibility(View.GONE);
             }
+        }else {
+            holder.llImg.setVisibility(View.GONE);
         }
-        holder.mTvLevel.setText(String.valueOf(bean.getFromUserLevel()));
-        int radius1 = DensityUtil.dip2px(mContext,5);
-        float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
-        RoundRectShape roundRectShape1 = new RoundRectShape(outerR1, null, null);
-        ShapeDrawable shapeDrawable1 = new ShapeDrawable();
-        shapeDrawable1.setShape(roundRectShape1);
-        shapeDrawable1.getPaint().setStyle(Paint.Style.FILL);
-        shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(bean.getFromUserLevelColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
-        holder.mIvLevelColor.setBackgroundDrawable(shapeDrawable1);
-        Observable.range(0,3)
-                .subscribe(new Subscriber<Integer>() {
+        holder.time.setText(StringUtils.timeFormate(entity.getCreateTime()));
+        //sec comment
+        if(entity.getHotComments() != null && entity.getHotComments().size() > 0){
+            holder.llComment.setVisibility(View.VISIBLE);
+            holder.llComment.removeAllViews();
+            for(CommentV2SecEntity secEntity : entity.getHotComments()){
+                TextView tv = new TextView(mContext);
+                tv.setTextColor(ContextCompat.getColor(mContext,R.color.gray_444444));
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,mContext.getResources().getDimension(R.dimen.x20));
+
+                String retweetContent = "@" + secEntity.getCreateUser().getUserName();
+                if(!TextUtils.isEmpty(secEntity.getCommentTo())){
+                    retweetContent += " 回复 " + "@" + secEntity.getCommentToName();
+                }
+                retweetContent += ": " + secEntity.getContent();
+                String retweetColorStr = "@" + secEntity.getCreateUser().getUserName();
+                SpannableStringBuilder style1 = new SpannableStringBuilder(retweetContent);
+                UserUrlSpan span = new UserUrlSpan(mContext,secEntity.getCreateUser().getUserId(),null);
+                style1.setSpan(span, retweetContent.indexOf(retweetColorStr), retweetContent.indexOf(retweetColorStr) + retweetColorStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                if(!TextUtils.isEmpty(secEntity.getCommentTo())){
+                    String retweetColorStr1 = "@" + secEntity.getCommentToName();
+                    UserUrlSpan span1 = new UserUrlSpan(mContext,secEntity.getCommentTo(),null);
+                    style1.setSpan(span1, retweetContent.indexOf(retweetColorStr1), retweetContent.indexOf(retweetColorStr1) + retweetColorStr1.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                tv.setText(style1);
+                tv.setMovementMethod(LinkMovementMethod.getInstance());
+                holder.llImg.addView(tv);
+            }
+            if(entity.getComments() > entity.getHotComments().size()){
+                TextView tv = new TextView(mContext);
+                tv.setTextColor(ContextCompat.getColor(mContext,R.color.main_cyan));
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,mContext.getResources().getDimension(R.dimen.x20));
+                tv.setText("全部" + StringUtils.getNumberInLengthLimit(entity.getComments(),3) + "条回复");
+                tv.setOnClickListener(new NoDoubleClickListener() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer i) {
-                        holder.huiZhangTexts[i].setVisibility(View.INVISIBLE);
-                        holder.huiZhangRoots[i].setVisibility(View.INVISIBLE);
+                    public void onNoDoubleClick(View v) {
+                        CommentSecListActivity.startActivity(mContext,entity,mDocBean.getId());
                     }
                 });
-        if(bean.getBadgeList().size() > 0){
-            int size = 3;
-            if(bean.getBadgeList().size() < 3){
-                size = bean.getBadgeList().size();
+                holder.llComment.addView(tv);
             }
-            for (int i = 0;i < size;i++){
-                holder.huiZhangTexts[i].setVisibility(View.VISIBLE);
-                holder.huiZhangRoots[i].setVisibility(View.VISIBLE);
-                BadgeEntity badgeEntity = bean.getBadgeList().get(i);
-                TextView tv = holder.huiZhangTexts[i];
-                tv.setText(badgeEntity.getTitle());
-                tv.setText(badgeEntity.getTitle());
-                tv.setBackgroundResource(R.drawable.bg_badge_cover);
-                int px = DensityUtil.dip2px(mContext,4);
-                tv.setPadding(px,0,px,0);
-                int radius2 = DensityUtil.dip2px(mContext,2);
-                float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
-                RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
-                ShapeDrawable shapeDrawable2 = new ShapeDrawable();
-                shapeDrawable2.setShape(roundRectShape2);
-                shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
-                shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(badgeEntity.getColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
-                holder.huiZhangRoots[i].setBackgroundDrawable(shapeDrawable2);
+        }else {
+            holder.llComment.setVisibility(View.GONE);
+        }
+        holder.itemView.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                showMenu(entity, position);
             }
-        }
-        if(!mTargetId) {
-            holder.mFloor.setVisibility(View.VISIBLE);
-            holder.mFloor.setText(mContext.getString(R.string.label_comment_floor,bean.getIdx()));
-        }else {
-            holder.mFloor.setVisibility(View.GONE);
-        }
-        holder.mIvCreator.setTag(R.id.id_creator_uuid, bean.getFromUserId());
-        if(!bean.isNewDeleteFlag()){
-            holder.mTvContent.setTextColor(ContextCompat.getColor(mContext,R.color.gray_595e64));
-            holder.itemView.setOnClickListener(new NoDoubleClickListener() {
-                @Override
-                public void onNoDoubleClick(View v) {
-                    showMenu(bean, position);
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    String content = bean.getContent();
-                    ClipboardManager cmb = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData mClipData = ClipData.newPlainText("回复内容", content);
-                    cmb.setPrimaryClip(mClipData);
-                    ToastUtils.showShortToast(mContext, mContext.getString(R.string.label_level_copy_success));
-                    return false;
-                }
-            });
-        }else {
-            holder.mTvContent.setTextColor(ContextCompat.getColor(mContext,R.color.gray_d7d7d7));
-            holder.itemView.setOnTouchListener(null);
-            holder.itemView.setOnLongClickListener(null);
-        }
-        holder.mIvCreator.setOnClickListener(mAvatarListener);
+        });
     }
 
-    private void showMenu(final NewCommentEntity bean, final int position){
+    private void showMenu(final CommentV2Entity bean, final int position){
         ArrayList<MenuItem> items = new ArrayList<>();
         MenuItem item;
         item = new MenuItem(0,mContext.getString(R.string.label_reply));
@@ -1450,7 +1445,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         item = new MenuItem(2,mContext.getString(R.string.label_jubao));
         items.add(item);
 
-        if(TextUtils.equals(PreferenceUtils.getUUid(), bean.getFromUserId()) ){
+        if(TextUtils.equals(PreferenceUtils.getUUid(), bean.getCreateUser().getUserId()) ){
             item = new MenuItem(3,mContext.getString(R.string.label_delete));
             items.add(item);
         }else if( TextUtils.equals(PreferenceUtils.getUUid(), mDocBean.getUserId())){
@@ -1466,16 +1461,17 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             @Override
             public void OnMenuItemClick(int itemId) {
                 if (itemId == 0) {
-                    ((NewDocDetailActivity)mContext).reply(bean);
+                    CreateCommentActivity.startActivity(mContext,bean.getCommentId(),true,"");
                 } else if (itemId == 2) {
                     Intent intent = new Intent(mContext, JuBaoActivity.class);
-                    intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getFromUserName());
+                    intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getCreateUser().getUserName());
                     intent.putExtra(JuBaoActivity.EXTRA_CONTENT, bean.getContent());
-                    intent.putExtra(JuBaoActivity.UUID,bean.getId());
-                    intent.putExtra(JuBaoActivity.EXTRA_TARGET, REPORT.DOC_COMMENT.toString());
+                    intent.putExtra(JuBaoActivity.EXTRA_TYPE, 4);
+                    intent.putExtra(JuBaoActivity.UUID,bean.getCommentId());
+                    intent.putExtra(JuBaoActivity.EXTRA_TARGET, "COMMENT");
                     mContext.startActivity(intent);
                 } else if (itemId == 3) {
-                    deleteComment(bean,position);
+                    ((NewDocDetailActivity)mContext).deleteComment(mDocBean.getId(),bean.getCommentId(),position);
                 }else if(itemId == 1){
                     String content = bean.getContent();
                     ClipboardManager cmb = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -1483,19 +1479,11 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     cmb.setPrimaryClip(mClipData);
                     ToastUtils.showShortToast(mContext, mContext.getString(R.string.label_level_copy_success));
                 }else if(itemId == 4){
-                    Intent intent = new Intent(mContext, JuBaoActivity.class);
-                    intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getFromUserName());
-                    intent.putExtra(JuBaoActivity.EXTRA_CONTENT, bean.getContent());
-                    intent.putExtra(JuBaoActivity.UUID,bean.getId());
-                    intent.putExtra(JuBaoActivity.EXTRA_TYPE,2);
-                    intent.putExtra(JuBaoActivity.EXTRA_POSITION,position);
-                    intent.putExtra(JuBaoActivity.EXTRA_DOC_ID,mDocBean.getId());
-                    intent.putExtra(JuBaoActivity.EXTRA_TARGET, REPORT.DOC_COMMENT.toString());
-                    ((NewDocDetailActivity)mContext).startActivityForResult(intent,6666);
+                    ((NewDocDetailActivity)mContext).deleteComment(mDocBean.getId(),bean.getCommentId(),position);
                 }
             }
         });
-        fragment.show(((NewDocDetailActivity)mContext).getSupportFragmentManager(),"CommentMenu");
+        fragment.show(((BaseAppCompatActivity)mContext).getSupportFragmentManager(),"DocComment");
     }
 
      private static class CoinHideViewHolder extends RecyclerView.ViewHolder{
@@ -1515,7 +1503,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void setGif(Image image, ImageView gifImageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
+        final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(mContext)
@@ -1528,7 +1516,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void setImage(Image image, final ImageView imageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
+        final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,84));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(mContext)
@@ -1600,18 +1588,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         tag.setName(name);
         mTags.add(tag);
         mLabelHolder.mDvLabel.notifyAdapter();
-    }
-
-    private void deleteComment(final NewCommentEntity bean,final int position) {
-        if (!NetworkUtils.checkNetworkAndShowError(mContext)) {
-            return;
-        }
-        ((NewDocDetailActivity)mContext).deleteComment(bean,position);
-    }
-
-    public void deleteCommentSuccess(NewCommentEntity entity,int position){
-        entity.setDeleteFlag(true);
-        notifyItemChanged(position);
     }
 
     public void ownerDelSuccess(int position){

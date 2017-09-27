@@ -8,15 +8,16 @@ import java.util.Set;
  * Created by Haru on 2016/7/11 0011.
  */
 public class DocPut {
+    public String bagFolderId;
+    public DocPutCoin coin;
+    public ArrayList<DocDetail> details;
     public String title;
     public ArrayList<String> tags;
-    public ArrayList<DocDetail> details;
-    public DocPutCoin coin;
-    public String bagFolderId;
     public String docType;
     public String docTypeSchema;
     public boolean coinComment;
     public Set<String> userIds;
+    public String cover;
 
     public DocPut(){
         tags = new ArrayList<>();

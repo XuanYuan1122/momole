@@ -9,23 +9,17 @@ import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.model.entity.CodeEntity;
 import com.moemoe.lalala.model.entity.CommentDetailEntity;
 import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
-import com.moemoe.lalala.model.entity.DelCommentEntity;
-import com.moemoe.lalala.model.entity.DelTagEntity;
 import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
-import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.model.entity.ThirdLoginEntity;
-import com.moemoe.lalala.utils.Constant;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 
 import javax.inject.Inject;
 
-import cn.sharesdk.sina.weibo.SinaWeibo;
-import cn.sharesdk.wechat.friends.Wechat;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.
@@ -65,21 +59,6 @@ public class SimplePresenter implements SimpleContract.Presenter {
             CodeEntity entity = new CodeEntity();
             entity.mobile = (String) data;
             apiService.requestRegisterCode(entity)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetSimpleResultSubscriber() {
-                        @Override
-                        public void onSuccess() {
-                            if(view != null) view.onSuccess(null);
-                        }
-
-                        @Override
-                        public void onFail(int code,String msg) {
-                            if(view != null) view.onFailure(code,msg);
-                        }
-                    });
-        }else if(type == 3){//jubao
-            apiService.report((ReportEntity) data)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetSimpleResultSubscriber() {
@@ -161,51 +140,6 @@ public class SimplePresenter implements SimpleContract.Presenter {
                             }
                         });
             }
-        }else if(type == 5){
-            apiService.delCommentByOwner((DelCommentEntity) data)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetSimpleResultSubscriber() {
-                        @Override
-                        public void onSuccess() {
-                            if(view != null) view.onSuccess(null);
-                        }
-
-                        @Override
-                        public void onFail(int code, String msg) {
-                            if(view != null) view.onFailure(code,msg);
-                        }
-                    });
-        }else if(type == 6){
-            apiService.reportBag((ReportEntity) data)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetSimpleResultSubscriber() {
-                        @Override
-                        public void onSuccess() {
-                            if(view != null) view.onSuccess(null);
-                        }
-
-                        @Override
-                        public void onFail(int code,String msg) {
-                            if(view != null) view.onFailure(code,msg);
-                        }
-                    });
-        }else if (type == 7){
-            apiService.delTags((DelTagEntity) data)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetSimpleResultSubscriber() {
-                        @Override
-                        public void onSuccess() {
-                            if(view != null) view.onSuccess(null);
-                        }
-
-                        @Override
-                        public void onFail(int code,String msg) {
-                            if(view != null) view.onFailure(code,msg);
-                        }
-                    });
         }else if(type == 8){
             apiService.getCommentDetail((CommentDetailRqEntity) data)
                     .subscribeOn(Schedulers.io())

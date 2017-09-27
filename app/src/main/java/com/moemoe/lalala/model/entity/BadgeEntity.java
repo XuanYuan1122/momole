@@ -11,25 +11,15 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class BadgeEntity implements Parcelable{
-    @SerializedName("buy")
     private boolean buy;
-    @SerializedName("coin")
     private int coin;
-    @SerializedName("color")
     private String color;
-    @SerializedName("desc")
     private String desc;
-    @SerializedName("have")
     private boolean have;
-    @SerializedName("id")
     private String id;
-    @SerializedName("img")
     private String img;
-    @SerializedName("name")
     private String name;
-    @SerializedName("rank")
     private int rank;
-    @SerializedName("title")
     private String title;
 
     public boolean isBuy() {

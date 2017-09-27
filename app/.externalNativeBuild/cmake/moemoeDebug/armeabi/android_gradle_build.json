@@ -1,0 +1,38 @@
+
+{
+	"buildFiles" : [ "D:/Neta-Android/app/CMakeLists.txt" ],
+	"cleanCommands" : 
+	[
+		"E:\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Neta-Android\\app\\.externalNativeBuild\\cmake\\moemoeDebug\\armeabi --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"kira-Debug-armeabi" : 
+		{
+			"abi" : "armeabi",
+			"artifactName" : "kira",
+			"buildCommand" : "E:\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Neta-Android\\app\\.externalNativeBuild\\cmake\\moemoeDebug\\armeabi --target kira",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=armv5te-none-linux-androideabi --gcc-toolchain=E:/android-sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64 --sysroot=E:/android-sdk/ndk-bundle/sysroot  -Dkira_EXPORTS -isystem E:\\android-sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include -isystem E:\\android-sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\libs\\armeabi\\include -isystem E:\\android-sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include\\backward  -isystem E:/android-sdk/ndk-bundle/sysroot/usr/include/arm-linux-androideabi -D__ANDROID_API__=17 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -march=armv5te -mtune=xscale -msoft-float -fno-integrated-as -mthumb -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "D:/Neta-Android/app/src/main/cpp/kira.cpp",
+					"workingDirectory" : "D:/Neta-Android/app/.externalNativeBuild/cmake/moemoeDebug/armeabi"
+				}
+			],
+			"output" : "D:/Neta-Android/app/libs/armeabi/libkira.so",
+			"toolchain" : "3827254813"
+		}
+	},
+	"toolchains" : 
+	{
+		"3827254813" : 
+		{
+			"cCompilerExecutable" : "E:/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
+			"cppCompilerExecutable" : "E:/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+		}
+	}
+}

@@ -77,8 +77,6 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     View mHeadRoot;
     @BindView(R.id.dv_label_root)
     DocLabelView mDocLabel;
-    @BindView(R.id.tv_simple_label)
-    TextView mSimpleLabel;
     @BindView(R.id.tv_follow)
     TextView mTvFollow;
     @BindView(R.id.rl_follow_root)
@@ -120,16 +118,12 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         mTagName = "";
         mIsFollow = -1;
         mHeadRoot.setVisibility(View.INVISIBLE);
-//        mDocNum.setText(getString(R.string.label_doc_num, 0));
-//        mLikesNum.setText(getString(R.string.label_like_num, 0));
         mTvBrief.setText("社员 0");
         mListPost.setLoadMoreEnabled(false);
         mListPost.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListPost.setLayoutManager(new LinearLayoutManager(this));
         mDocAdapter = new DocListAdapter(this,true);
         mListPost.getRecyclerView().setAdapter(mDocAdapter);
-        mSimpleLabel.setVisibility(View.VISIBLE);
-        mSimpleLabel.setSelected(AppSetting.SUB_TAG);
         mTvTitle.setAlpha(0);
     }
 
@@ -150,15 +144,6 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
             @Override
             public void onNoDoubleClick(View v) {
                 go2CreateDoc();
-            }
-        });
-        mSimpleLabel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AppSetting.SUB_TAG = !AppSetting.SUB_TAG;
-                mSimpleLabel.setSelected(AppSetting.SUB_TAG);
-                PreferenceUtils.setSimpleLabel(ClubPostListActivity.this,AppSetting.SUB_TAG);
-                changeLabelAdapter();
             }
         });
         mListPost.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -462,7 +447,6 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
             }
             mToolbar.setAlpha(1 - percent);
         }
-        mSimpleLabel.setAlpha(percent);
         mTvTitle.setAlpha(percent);
     }
 }

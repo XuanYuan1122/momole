@@ -25,12 +25,17 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.
@@ -102,11 +107,11 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                     });
         }else {
             final ArrayList<Image> images = new ArrayList<>();
-            Observable.from(paths)
+            Observable.fromIterable(paths)
                     .observeOn(Schedulers.io())
-                    .concatMap(new Func1<String, Observable<UploadEntity>>() {
+                    .concatMap(new Function<String, ObservableSource<UploadEntity>>() {
                         @Override
-                        public Observable<UploadEntity> call(String s) {
+                        public ObservableSource<UploadEntity> apply(@NonNull String s) throws Exception {
                             String temp = FileUtil.getExtensionName(s);
                             if(TextUtils.isEmpty(temp)){
                                 temp = "jpg";
@@ -114,25 +119,26 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                             return Observable.zip(
                                     apiService.requestQnFileKey(temp),
                                     Observable.just(s),
-                                    new Func2<ApiResult<UploadEntity>, String, UploadEntity>() {
+                                    new BiFunction<ApiResult<UploadEntity>, String, UploadEntity>() {
                                         @Override
-                                        public UploadEntity call(ApiResult<UploadEntity> uploadEntityApiResult, String s) {
+                                        public UploadEntity apply(@NonNull ApiResult<UploadEntity> uploadEntityApiResult, @NonNull String s) throws Exception {
                                             uploadEntityApiResult.getData().setLocalPath(s);
                                             return uploadEntityApiResult.getData();
                                         }
                                     }
                             );
                         }
+
                     })
                     .observeOn(Schedulers.io())
-                    .concatMap(new Func1<UploadEntity, Observable<Image>>() {
+                    .concatMap(new Function<UploadEntity, ObservableSource<Image>>() {
                         @Override
-                        public Observable<Image> call(final UploadEntity uploadEntity) {
+                        public ObservableSource<Image> apply(@NonNull final UploadEntity uploadEntity) throws Exception {
                             final File file = new File(uploadEntity.getLocalPath());
                             final UploadManager uploadManager = new UploadManager();
-                            return Observable.create(new Observable.OnSubscribe<Image>() {
+                            return Observable.create(new ObservableOnSubscribe<Image>() {
                                 @Override
-                                public void call(final Subscriber<? super Image> subscriber) {
+                                public void subscribe(@NonNull final ObservableEmitter<Image> res) throws Exception {
                                     try {
                                         uploadManager.put(file,uploadEntity.getFilePath(), uploadEntity.getUploadToken(), new UpCompletionHandler() {
                                             @Override
@@ -146,24 +152,32 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
                                                     }
-                                                    subscriber.onNext(image);
-                                                    subscriber.onCompleted();
+                                                    res.onNext(image);
+                                                    res.onComplete();
                                                 } else {
-                                                    subscriber.onError(null);
+                                                    res.onError(null);
                                                 }
                                             }
                                         }, null);
                                     }catch (Exception e){
-                                        subscriber.onError(e);
+                                        res.onError(e);
                                     }
                                 }
+
                             });
                         }
+
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Image>() {
+                    .subscribe(new Observer<Image>() {
+
                         @Override
-                        public void onCompleted() {
+                        public void onError(Throwable e) {
+                            if(view != null) view.onFailure(-1,"");
+                        }
+
+                        @Override
+                        public void onComplete() {
                             entity.images = images;
                             apiService.sendNewComment(entity)
                                     .subscribeOn(Schedulers.io())
@@ -182,8 +196,8 @@ public class CommentDetailPresenter implements CommentDetailContract.Presenter {
                         }
 
                         @Override
-                        public void onError(Throwable e) {
-                            if(view != null) view.onFailure(-1,"");
+                        public void onSubscribe(@NonNull Disposable d) {
+
                         }
 
                         @Override

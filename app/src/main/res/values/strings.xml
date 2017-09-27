@@ -52,6 +52,8 @@
     <string name="label_talk_action">talk_1.0</string>
     <string name="label_folder_path">/folder_1.0</string>
     <string name="label_folder_action">folder_1.0</string>
+    <string name="label_bag_path">/bag_2.0</string>
+    <string name="label_bag_action">bag_2.0</string>
 
     <string name="label_can_not_use">施工中,敬请期待......</string>
     <string name="label_signed">今天已经签过啦</string>

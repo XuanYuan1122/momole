@@ -32,7 +32,9 @@ import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ManHua2Entity;
 import com.moemoe.lalala.model.entity.NewFolderEntity;
 import com.moemoe.lalala.model.entity.REPORT;
+import com.moemoe.lalala.model.entity.ShareFolderEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
+import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.NewFolderItemContract;
 import com.moemoe.lalala.presenter.NewFolderItemPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -59,14 +61,16 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_CREATE_FOLDER;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_DETAIL_FILES;
@@ -159,7 +163,7 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                 .build()
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(this)
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getNovRootPath())
@@ -179,7 +183,7 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
         }
         mTvTop.setText("置顶");
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mAdapter = new FileCommonAdapter(mFolderType);
+        mAdapter = new FileCommonAdapter(mFolderType,this);
         mAdapter.setGrid(true);
         mItemDecoration = new FileItemDecoration();
         mListDocs.setLayoutManager(new GridLayoutManager(this,3));
@@ -292,6 +296,9 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
             items.add(item);
         }
 
+        MenuItem item = new MenuItem(4, "转发");
+        items.add(item);
+
         bottomMenuFragment.setMenuItems(items);
         bottomMenuFragment.setShowTop(false);
         bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
@@ -325,6 +332,23 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                     startActivity(intent);
                 }else if(itemId == 3){
                     if(mFolderInfo != null) NewFolderEditActivity.startActivityForResult(NewFileCommonActivity.this,"modify",mFolderType,mFolderInfo);
+                }else if(itemId == 4){
+                    if(mFolderInfo == null) return;
+                    ShareFolderEntity entity = new ShareFolderEntity();
+                    entity.setFolderCover(mFolderInfo.getCover());
+                    entity.setFolderId(mFolderInfo.getFolderId());
+                    entity.setFolderName(mFolderInfo.getFolderName());
+                    entity.setFolderTags(mFolderInfo.getTexts());
+                    entity.setFolderType(mFolderInfo.getType());
+                    entity.setUpdateTime(mFolderInfo.getCreateTime());
+                    UserTopEntity entity1 = new UserTopEntity();
+                    entity1.setUserName(mFolderInfo.getCreateUserName());
+                    entity1.setUserId(mFolderInfo.getCreateUserId());
+                    entity1.setSex("N");
+                    entity1.setBadge(null);
+                    entity1.setHeadPath(mFolderInfo.getUserIcon().getPath());
+                    entity.setCreateUser(entity1);
+                    CreateForwardActivity.startActivity(NewFileCommonActivity.this,entity);
                 }
             }
         });
@@ -352,18 +376,23 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                                 downloadSub.download(ApiService.URL_QINIU +  mCurList.get(position).getPath(),temp,StorageUtils.getNovRootPath() + mCurList.get(position).getFileId())
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Subscriber<DownloadStatus>() {
-                                            @Override
-                                            public void onCompleted() {
-                                                dialog.dismiss();
-                                                goToRead(mCurList.get(position));
-                                            }
-
+                                        .subscribe(new Observer<DownloadStatus>() {
                                             @Override
                                             public void onError(Throwable e) {
                                                 dialog.dismiss();
                                                 FileUtil.deleteFile(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
                                                 showToast("下载失败");
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
+                                                dialog.dismiss();
+                                                goToRead(mCurList.get(position));
+                                            }
+
+                                            @Override
+                                            public void onSubscribe(@NonNull Disposable d) {
+
                                             }
 
                                             @Override
@@ -475,7 +504,7 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
             public void onNoDoubleClick(View v) {
                 mIsGrid = !mIsGrid;
                 mIvMenu2.setImageResource(mIsGrid?R.drawable.btn_bag_pic_big_noraml:R.drawable.btn_bag_pic_mini_noraml);
-                mAdapter = new FileCommonAdapter(mFolderType);
+                mAdapter = new FileCommonAdapter(mFolderType,NewFileCommonActivity.this);
                 if(!mIsGrid){
                     mListDocs.setPadding(0,0,0,0);
                     mListDocs.setLayoutManager(new LinearLayoutManager(NewFileCommonActivity.this));

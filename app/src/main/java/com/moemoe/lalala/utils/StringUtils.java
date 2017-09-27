@@ -191,6 +191,18 @@ public class StringUtils {
         return time;
     }
 
+    public static long parseSentenceTimeSec(String timeStr){
+        long time = 0;
+        if(!TextUtils.isEmpty(timeStr)){
+            String[] part = timeStr.split(":");
+            int h = Integer.valueOf(part[0]);
+            int m = Integer.valueOf(part[1]);
+            int s = Integer.valueOf(part[2]);
+            time = h * 3600 + m * 60 + s;
+        }
+        return time;
+    }
+
     public static boolean matchCurrentTime(long start, long end){
         boolean res = false;
         Calendar time = Calendar.getInstance();
@@ -203,7 +215,7 @@ public class StringUtils {
 
     public static boolean isyoru(){
         boolean res = false;
-        boolean a = matchCurrentTime(parseSentenceTime("18:00"), parseSentenceTime("24:00"));
+        boolean a = matchCurrentTime(parseSentenceTime("22:00"), parseSentenceTime("24:00"));
         boolean b = matchCurrentTime(parseSentenceTime("00:00"),parseSentenceTime("06:00"));
         if(a || b){
             res = true;
@@ -224,16 +236,47 @@ public class StringUtils {
     }
 
     public static boolean matchCurrentTime(String startTime,String endTime){
-        long start = parseSentenceTime(startTime);
-        long end = parseSentenceTime(endTime);
+        long start = parseSentenceTimeSec(startTime);
+        long end = parseSentenceTimeSec(endTime);
         boolean res = false;
         Calendar time = Calendar.getInstance();
-        int t = time.get(Calendar.HOUR_OF_DAY) * 3600 + time.get(Calendar.MINUTE) * 60;
+        int t = time.get(Calendar.HOUR_OF_DAY) * 3600 + time.get(Calendar.MINUTE) * 60 + time.get(Calendar.SECOND);
         if(t < end && t >= start){
             res = true;
         }
         return res;
     }
+
+    public static boolean matchCurrentTime(Calendar time,String startTime,String endTime){
+        long start = parseSentenceTimeSec(startTime);
+        long end = parseSentenceTimeSec(endTime);
+        boolean res = false;
+        int t = time.get(Calendar.HOUR_OF_DAY) * 3600 + time.get(Calendar.MINUTE) * 60 + time.get(Calendar.SECOND);
+        if(t < end && t >= start){
+            res = true;
+        }
+        return res;
+    }
+
+    public static boolean matchYear(int start,int end){
+        boolean res = false;
+        Calendar time = Calendar.getInstance();
+        int year = time.get(Calendar.YEAR);
+        if(year < end && year > start){
+            res = true;
+        }
+        return res;
+    }
+
+    public static boolean matchYear(Calendar time,int start,int end){
+        boolean res = false;
+        int year = time.get(Calendar.YEAR);
+        if(year < end && year > start){
+            res = true;
+        }
+        return res;
+    }
+
 
     /**
      * 文本增加网址监听

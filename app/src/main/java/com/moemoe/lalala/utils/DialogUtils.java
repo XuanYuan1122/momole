@@ -207,7 +207,7 @@ public class DialogUtils {
      */
     public static boolean checkLoginAndShowDlg(final Context context) {
         boolean res = false;
-        if (PreferenceUtils.isLogin(context)) {
+        if (PreferenceUtils.isLogin()) {
             res = true;
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);

@@ -59,9 +59,11 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import rx.Observable;
-import rx.Subscriber;
 
 /**
  * Created by yi on 2017/2/13.
@@ -476,14 +478,20 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
         shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(mCommentEntity.getFromUserLevelColor(), ContextCompat.getColor(this, R.color.main_cyan)));
         mIvLevelColor.setBackgroundDrawable(shapeDrawable1);
         Observable.range(0,3)
-                .subscribe(new Subscriber<Integer>() {
+                .subscribe(new Observer<Integer>() {
+
                     @Override
-                    public void onCompleted() {
+                    public void onError(Throwable e) {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
@@ -566,7 +574,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
     }
 
     private void setGif(Image image, ImageView gifImageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,66));
+        final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,66));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(this)
@@ -579,7 +587,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
     }
 
     private void setImage(Image image, final ImageView imageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSize(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,66));
+        final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,66));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(this)

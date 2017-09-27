@@ -2,7 +2,6 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/bg_f6f6f6">
 
     <LinearLayout
@@ -276,6 +275,66 @@
                     android:layout_gravity="center_vertical|right"
                     android:src="@drawable/ic_array_right_gray"/>
             </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_bag_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/size_10"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_48"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="46dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="@dimen/size_10"
+                    android:gravity="center"
+                    android:layout_marginStart="@dimen/size_10"
+                    android:background="@drawable/shape_rect_label_gray_6"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/size_15"
+                    android:textStyle="bold"
+                    android:text="书包"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/gray_929292"
+                    android:layout_marginStart="@dimen/size_8"
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:id="@+id/tv_more_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/main_cyan"
+                    android:textSize="@dimen/size_12"
+                    android:drawableEnd="@drawable/ic_bag_more"
+                    android:drawablePadding="@dimen/size_4"
+                    android:layout_marginEnd="@dimen/size_12"
+                    android:text="显示全部"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_folder_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/size_18"
+                android:paddingRight="@dimen/size_12"
+                android:paddingLeft="@dimen/size_12"
+                android:visibility="gone">
+
+            </LinearLayout>
+
         </LinearLayout>
 
          <LinearLayout

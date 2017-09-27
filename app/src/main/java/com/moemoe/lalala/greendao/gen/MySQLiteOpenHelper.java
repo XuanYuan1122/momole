@@ -3,6 +3,9 @@ package com.moemoe.lalala.greendao.gen;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
+import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
+import com.moemoe.lalala.utils.JuQingDoneEntity;
 import com.moemoe.lalala.utils.MigrationHelper;
 
 
@@ -19,7 +22,12 @@ public class MySQLiteOpenHelper extends DaoMaster.OpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         try {
-            MigrationHelper.migrate(db, AuthorInfoDao.class,PrivateMessageItemEntityDao.class,ChatContentDbEntityDao.class,ChatUserEntityDao.class,GroupUserEntityDao.class);
+            MigrationHelper.migrate(db, AuthorInfoDao.class,
+                    NetaDbDao.class,
+                    AlarmClockEntityDao.class,
+                    JuQingDoneEntityDao.class,
+                    JuQingTriggerEntityDao.class,
+                    JuQIngStoryEntityDao.class);
         }catch (Exception e){
             e.printStackTrace();
         }

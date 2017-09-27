@@ -8,17 +8,13 @@ import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.BagEntity;
 import com.moemoe.lalala.model.entity.BagFolderInfo;
 import com.moemoe.lalala.model.entity.BagModifyEntity;
-import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FileEntity;
-import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
-import com.moemoe.lalala.model.entity.NewUploadEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.UploadEntity;
 import com.moemoe.lalala.model.entity.UploadResultEntity;
 import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.MusicLoader;
-import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.Utils;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -31,12 +27,16 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.
@@ -76,14 +76,14 @@ public class BagPresenter implements BagContract.Presenter {
             apiService.requestQnFileKey(suffix)
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<ApiResult<UploadEntity>, Observable<Image>>() {
+                    .flatMap(new Function<ApiResult<UploadEntity>, ObservableSource<Image>>() {
                         @Override
-                        public Observable<Image> call(final ApiResult<UploadEntity> uploadEntityApiResult) {
+                        public ObservableSource<Image> apply(@NonNull final ApiResult<UploadEntity> uploadEntityApiResult) throws Exception {
                             final File file = new File(image.getPath());
                             final UploadManager uploadManager = new UploadManager();
-                            return Observable.create(new Observable.OnSubscribe<Image>() {
+                            return Observable.create(new ObservableOnSubscribe<Image>() {
                                 @Override
-                                public void call(final Subscriber<? super Image> subscriber) {
+                                public void subscribe(@NonNull final ObservableEmitter<Image> res) throws Exception {
                                     try {
                                         uploadManager.put(file,uploadEntityApiResult.getData().getFilePath(), uploadEntityApiResult.getData().getUploadToken(), new UpCompletionHandler() {
                                             @Override
@@ -97,31 +97,30 @@ public class BagPresenter implements BagContract.Presenter {
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
                                                     }
-                                                    subscriber.onNext(image);
-                                                    subscriber.onCompleted();
+                                                    res.onNext(image);
+                                                    res.onComplete();
                                                 } else {
-                                                    subscriber.onError(null);
+                                                    res.onError(null);
                                                 }
                                             }
                                         }, null);
                                     }catch (Exception e){
-                                        subscriber.onError(e);
+                                        res.onError(e);
                                     }
                                 }
                             });
                         }
                     })
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<Image, Observable<ApiResult>>() {
+                    .flatMap(new Function<Image, ObservableSource<ApiResult>>() {
                         @Override
-                        public Observable<ApiResult> call(Image image) {
+                        public ObservableSource<ApiResult> apply(@NonNull Image image) throws Exception {
                             BagModifyEntity entity = new BagModifyEntity(image.getPath(),name);
                             if(type == 0){
                                 return apiService.openBag(entity);
                             }else {
                                 return apiService.updateBag(entity);
                             }
-
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
@@ -177,155 +176,47 @@ public class BagPresenter implements BagContract.Presenter {
 
     @Override
     public void createFolder(final String folderName, final int coin, final Image cover, final ArrayList<Object> items, final String readType) {
-        final ArrayList<NewUploadEntity> entities = new ArrayList<>();
-        final ArrayList<Integer> range = new ArrayList<>();
         final ArrayList<UploadResultEntity> resList = new ArrayList<>();
         final BagFolderInfo resFolder = new BagFolderInfo();
-        entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(cover.getPath())),FileUtil.getExtensionName(cover.getPath())));
-        range.add(0);
-        for(Object o : items){
-            if (o instanceof Image){
-                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(((Image) o).getPath())),FileUtil.getExtensionName(((Image) o).getPath())));
-            }else if(o instanceof MusicLoader.MusicInfo){
-                MusicLoader.MusicInfo info = (MusicLoader.MusicInfo) o;
-                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(info.getUrl())),FileUtil.getExtensionName(info.getUrl())));
-            }else if(o instanceof BookInfo){
-                BookInfo entity = (BookInfo) o;
-                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
+        Utils.uploadFiles(apiService,items,cover.getPath(),0,"","",new Observer<UploadResultEntity>() {
+            @Override
+            public void onError(Throwable e) {
+                if(view != null) view.onFailure(-1,"");
             }
-            range.add(range.size());
-        }
-        apiService.checkMd5(entities)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .concatMap(new Func1<ApiResult<ArrayList<UploadResultEntity>>, Observable<UploadResultEntity>>() {
-                    @Override
-                    public Observable<UploadResultEntity> call(ApiResult<ArrayList<UploadResultEntity>> arrayListApiResult) {
-                        return Observable.zip(
-                                Observable.from(range),
-                                Observable.from(arrayListApiResult.getData()),
-                                new Func2<Integer, UploadResultEntity, UploadResultEntity>() {
-                                    @Override
-                                    public UploadResultEntity call(Integer integer, final UploadResultEntity uploadResultEntity) {
-                                        if(integer == 0){
-                                            uploadResultEntity.setType("cover");
-                                            uploadResultEntity.setFilePath(cover.getPath());
-                                        }else {
-                                            Object o = items.get(integer - 1);
-                                            if(o instanceof Image){
-                                                uploadResultEntity.setFilePath(((Image) o).getPath());
-                                                uploadResultEntity.setType("image");
-                                            }else if(o instanceof MusicLoader.MusicInfo){
-                                                uploadResultEntity.setFilePath(((MusicLoader.MusicInfo) o).getUrl());
-                                                uploadResultEntity.setType("music");
-                                                uploadResultEntity.setMusicTime(((MusicLoader.MusicInfo) o).getDuration());
-                                            }else if(o instanceof BookInfo){
-                                                uploadResultEntity.setFilePath(((BookInfo) o).getPath());
-                                                uploadResultEntity.setType("txt");
-                                            }
-                                        }
-                                        return uploadResultEntity;
-                                    }
-                                }
-                        );
-                    }
-                })
-                .observeOn(Schedulers.io())
-                .concatMap(new Func1<UploadResultEntity, Observable<UploadResultEntity>>() {
-                    @Override
-                    public Observable<UploadResultEntity> call(final UploadResultEntity uploadResultEntity) {
-                        final File file = new File(uploadResultEntity.getFilePath());
-                        final UploadManager uploadManager = new UploadManager();
-                        return Observable.create(new Observable.OnSubscribe<UploadResultEntity>() {
+
+            @Override
+            public void onComplete() {
+                resFolder.setFiles(resList);
+                apiService.createFolder(resFolder)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new NetSimpleResultSubscriber() {
                             @Override
-                            public void call(final Subscriber<? super UploadResultEntity> subscriber) {
-                                final UploadResultEntity entity = new UploadResultEntity();
-                                if(!uploadResultEntity.isSave()){
-                                    try {
-                                        uploadManager.put(file,uploadResultEntity.getPath(), uploadResultEntity.getUploadToken(), new UpCompletionHandler() {
-                                            @Override
-                                            public void complete(String key, ResponseInfo info, JSONObject response) {
-                                                if (info.isOK()) {
-                                                    entity.setFileName(file.getName());
-                                                    entity.setMd5(uploadResultEntity.getMd5());
-                                                    entity.setPath(uploadResultEntity.getPath());
-                                                    entity.setSave(uploadResultEntity.isSave());
-                                                    entity.setSize(file.length());
-                                                    entity.setType(uploadResultEntity.getType());
-                                                    if(uploadResultEntity.getType().equals("image")){
-                                                        try {
-                                                            String attr = "{\"h\":" + response.getInt("h") + ",\"w\":" + response.getInt("w") + "}";
-                                                            entity.setAttr(attr);
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }else if(uploadResultEntity.getType().equals("music")){
-                                                        String attr = "{\"timestamp\":" + uploadResultEntity.getMusicTime() + "}";
-                                                        entity.setAttr(attr);
-                                                    }else if(uploadResultEntity.getType().equals("txt")){
-                                                        String attr = "{\"size\":"+ file.length() +"}";
-                                                        entity.setAttr(attr);
-                                                    }
-                                                    subscriber.onNext(entity);
-                                                    subscriber.onCompleted();
-                                                } else {
-                                                    subscriber.onError(null);
-                                                }
-                                            }
-                                        }, null);
-                                    }catch (Exception e){
-                                        subscriber.onError(e);
-                                    }
-                                }else {
-                                    entity.setAttr(uploadResultEntity.getAttr());
-                                    entity.setFileName(file.getName());
-                                    entity.setMd5(uploadResultEntity.getMd5());
-                                    entity.setPath(uploadResultEntity.getPath());
-                                    entity.setSave(uploadResultEntity.isSave());
-                                    entity.setSize(uploadResultEntity.getSize());
-                                    entity.setType(uploadResultEntity.getType());
-                                    subscriber.onNext(entity);
-                                    subscriber.onCompleted();
-                                }
+                            public void onSuccess() {
+                                if(view != null) view.createFolderSuccess();
+                            }
+
+                            @Override
+                            public void onFail(int code, String msg) {
+                                if(view != null) view.onFailure(code, msg);
                             }
                         });
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<UploadResultEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        resFolder.setFiles(resList);
-                        apiService.createFolder(resFolder)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new NetSimpleResultSubscriber() {
-                                    @Override
-                                    public void onSuccess() {
-                                        if(view != null) view.createFolderSuccess();
-                                    }
+            }
 
-                                    @Override
-                                    public void onFail(int code, String msg) {
-                                        if(view != null) view.onFailure(code, msg);
-                                    }
-                                });
-                    }
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        if(view != null) view.onFailure(-1,"");
-                    }
+            }
 
-                    @Override
-                    public void onNext(UploadResultEntity uploadResultEntity) {
-                        if(uploadResultEntity.getType().equals("cover")){
-                            resFolder.setFolderInfo(new BagFolderInfo.FolderInfo(coin,uploadResultEntity.getPath(),folderName,uploadResultEntity.getSize(),readType));
-                        }else {
-                            resList.add(uploadResultEntity);
-                        }
-                    }
-                });
+            @Override
+            public void onNext(UploadResultEntity uploadResultEntity) {
+                if(uploadResultEntity.getType().equals("cover")){
+                    resFolder.setFolderInfo(new BagFolderInfo.FolderInfo(coin,uploadResultEntity.getPath(),folderName,uploadResultEntity.getSize(),readType));
+                }else {
+                    resList.add(uploadResultEntity);
+                }
+            }
+        });
     }
 
     @Override
@@ -352,231 +243,86 @@ public class BagPresenter implements BagContract.Presenter {
                         }
                     });
         }else {
-            final ArrayList<NewUploadEntity> entities = new ArrayList<>();
-            entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(cover.getPath())),FileUtil.getExtensionName(cover.getPath())));
             final BagFolderInfo.FolderInfo info = new BagFolderInfo.FolderInfo();
-            apiService.checkMd5(entities)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .flatMap(new Func1<ApiResult<ArrayList<UploadResultEntity>>, Observable<UploadResultEntity>>() {
-                        @Override
-                        public Observable<UploadResultEntity> call(final ApiResult<ArrayList<UploadResultEntity>> arrayListApiResult) {
-                            final UploadResultEntity uploadResultEntity = arrayListApiResult.getData().get(0);
-                            final File file = new File(cover.getPath());
-                            final UploadManager uploadManager = new UploadManager();
-                            return Observable.create(new Observable.OnSubscribe<UploadResultEntity>() {
+            Utils.uploadFile(apiService,cover.getPath(),new Observer<UploadResultEntity>() {
+                @Override
+                public void onError(Throwable e) {
+                    if(view != null) view.onFailure(-1,"");
+                }
+
+                @Override
+                public void onComplete() {
+                    apiService.modifyFolder(folderId,info)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new NetSimpleResultSubscriber() {
                                 @Override
-                                public void call(final Subscriber<? super UploadResultEntity> subscriber) {
-                                    final UploadResultEntity entity = new UploadResultEntity();
-                                    if(!uploadResultEntity.isSave()){
-                                        try {
-                                            uploadManager.put(file,uploadResultEntity.getPath(), uploadResultEntity.getUploadToken(), new UpCompletionHandler() {
-                                                @Override
-                                                public void complete(String key, ResponseInfo info, JSONObject response) {
-                                                    if (info.isOK()) {
-                                                        entity.setFileName(file.getName());
-                                                        entity.setMd5(uploadResultEntity.getMd5());
-                                                        entity.setPath(uploadResultEntity.getPath());
-                                                        entity.setSave(uploadResultEntity.isSave());
-                                                        entity.setSize(file.length());
-                                                        entity.setType(uploadResultEntity.getType());
-                                                        subscriber.onNext(entity);
-                                                        subscriber.onCompleted();
-                                                    } else {
-                                                        subscriber.onError(null);
-                                                    }
-                                                }
-                                            }, null);
-                                        }catch (Exception e){
-                                            subscriber.onError(e);
-                                        }
-                                    }else {
-                                        entity.setAttr(uploadResultEntity.getAttr());
-                                        entity.setFileName(file.getName());
-                                        entity.setMd5(uploadResultEntity.getMd5());
-                                        entity.setPath(uploadResultEntity.getPath());
-                                        entity.setSave(uploadResultEntity.isSave());
-                                        entity.setSize(uploadResultEntity.getSize());
-                                        entity.setType(uploadResultEntity.getType());
-                                        subscriber.onNext(entity);
-                                        subscriber.onCompleted();
-                                    }
+                                public void onSuccess() {
+                                    if(view != null) view.modifyFolderSuccess();
+                                }
+
+                                @Override
+                                public void onFail(int code, String msg) {
+                                    if(view != null) view.onFailure(code, msg);
                                 }
                             });
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<UploadResultEntity>() {
-                        @Override
-                        public void onCompleted() {
-                            apiService.modifyFolder(folderId,info)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new NetSimpleResultSubscriber() {
-                                        @Override
-                                        public void onSuccess() {
-                                            if(view != null) view.modifyFolderSuccess();
-                                        }
+                }
 
-                                        @Override
-                                        public void onFail(int code, String msg) {
-                                            if(view != null) view.onFailure(code, msg);
-                                        }
-                                    });
-                        }
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
 
-                        @Override
-                        public void onError(Throwable e) {
-                            if(view != null) view.onFailure(-1,"");
-                        }
+                }
 
-                        @Override
-                        public void onNext(UploadResultEntity uploadResultEntity) {
-                            info.size = uploadResultEntity.getSize();
-                            info.coin = coin;
-                            info.cover = uploadResultEntity.getPath();
-                            info.name = folderName;
-                            info.readType = readType;
-                        }
-                    });
+                @Override
+                public void onNext(UploadResultEntity uploadResultEntity) {
+                    info.size = uploadResultEntity.getSize();
+                    info.coin = coin;
+                    info.cover = uploadResultEntity.getPath();
+                    info.name = folderName;
+                    info.readType = readType;
+                }
+            });
         }
     }
 
     @Override
     public void uploadFilesToFolder(final String folderId, final ArrayList<Object> items) {
-        final ArrayList<NewUploadEntity> entities = new ArrayList<>();
         final ArrayList<UploadResultEntity> resList = new ArrayList<>();
-        for(Object o : items){
-            if (o instanceof Image){
-                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(((Image) o).getPath())),FileUtil.getExtensionName(((Image) o).getPath())));
-            }else if(o instanceof MusicLoader.MusicInfo){
-                MusicLoader.MusicInfo info = (MusicLoader.MusicInfo) o;
-                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(info.getUrl())),FileUtil.getExtensionName(info.getUrl())));
-            }else if(o instanceof BookInfo){
-                BookInfo entity = (BookInfo) o;
-                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
+        Utils.uploadFiles(apiService,items,"",-1,"","",new Observer<UploadResultEntity>() {
+
+            @Override
+            public void onError(Throwable e) {
+                if(view != null) view.onFailure(-1,"");
             }
-        }
-        apiService.checkMd5(entities)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .concatMap(new Func1<ApiResult<ArrayList<UploadResultEntity>>, Observable<UploadResultEntity>>() {
-                    @Override
-                    public Observable<UploadResultEntity> call(ApiResult<ArrayList<UploadResultEntity>> arrayListApiResult) {
-                        return Observable.zip(
-                                Observable.from(items),
-                                Observable.from(arrayListApiResult.getData()),
-                                new Func2<Object, UploadResultEntity, UploadResultEntity>() {
-                                    @Override
-                                    public UploadResultEntity call(Object o, final UploadResultEntity uploadResultEntity) {
-                                        if(o instanceof Image){
-                                            uploadResultEntity.setFilePath(((Image) o).getPath());
-                                            uploadResultEntity.setType("image");
-                                        }else if(o instanceof MusicLoader.MusicInfo){
-                                            uploadResultEntity.setFilePath(((MusicLoader.MusicInfo) o).getUrl());
-                                            uploadResultEntity.setType("music");
-                                            uploadResultEntity.setMusicTime(((MusicLoader.MusicInfo) o).getDuration());
-                                        }else if(o instanceof BookInfo){
-                                            uploadResultEntity.setFilePath(((BookInfo) o).getPath());
-                                            uploadResultEntity.setType("txt");
-                                        }
-                                        return uploadResultEntity;
-                                    }
-                                }
-                        );
-                    }
-                })
-                .observeOn(Schedulers.io())
-                .concatMap(new Func1<UploadResultEntity, Observable<UploadResultEntity>>() {
-                    @Override
-                    public Observable<UploadResultEntity> call(final UploadResultEntity uploadResultEntity) {
-                        final File file = new File(uploadResultEntity.getFilePath());
-                        final UploadManager uploadManager = new UploadManager();
-                        return Observable.create(new Observable.OnSubscribe<UploadResultEntity>() {
+
+            @Override
+            public void onComplete() {
+                apiService.uploadFolder(folderId,resList)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new NetSimpleResultSubscriber() {
                             @Override
-                            public void call(final Subscriber<? super UploadResultEntity> subscriber) {
-                                final UploadResultEntity entity = new UploadResultEntity();
-                                if(!uploadResultEntity.isSave()){
-                                    try {
-                                        uploadManager.put(file,uploadResultEntity.getPath(), uploadResultEntity.getUploadToken(), new UpCompletionHandler() {
-                                            @Override
-                                            public void complete(String key, ResponseInfo info, JSONObject response) {
-                                                if (info.isOK()) {
-                                                    entity.setFileName(file.getName());
-                                                    entity.setMd5(uploadResultEntity.getMd5());
-                                                    entity.setPath(uploadResultEntity.getPath());
-                                                    entity.setSave(uploadResultEntity.isSave());
-                                                    entity.setSize(file.length());
-                                                    entity.setType(uploadResultEntity.getType());
-                                                    if(uploadResultEntity.getType().equals("image")){
-                                                        try {
-                                                            String attr = "{\"h\":" + response.getInt("h") + ",\"w\":" + response.getInt("w") + "}";
-                                                            entity.setAttr(attr);
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }else if(uploadResultEntity.getType().equals("music")){
-                                                        String attr = "{\"timestamp\":" + uploadResultEntity.getMusicTime() + "}";
-                                                        entity.setAttr(attr);
-                                                    }else if(uploadResultEntity.getType().equals("txt")){
-                                                        String attr = "{\"size\":"+ file.length() +"}";
-                                                        entity.setAttr(attr);
-                                                    }
-                                                    subscriber.onNext(entity);
-                                                    subscriber.onCompleted();
-                                                } else {
-                                                    subscriber.onError(null);
-                                                }
-                                            }
-                                        }, null);
-                                    }catch (Exception e){
-                                        subscriber.onError(e);
-                                    }
-                                }else {
-                                    entity.setAttr(uploadResultEntity.getAttr());
-                                    entity.setFileName(file.getName());
-                                    entity.setMd5(uploadResultEntity.getMd5());
-                                    entity.setPath(uploadResultEntity.getPath());
-                                    entity.setSave(uploadResultEntity.isSave());
-                                    entity.setSize(uploadResultEntity.getSize());
-                                    entity.setType(uploadResultEntity.getType());
-                                    subscriber.onNext(entity);
-                                    subscriber.onCompleted();
-                                }
+                            public void onSuccess() {
+                                if(view != null) view.uploadFolderSuccess();
+                            }
+
+                            @Override
+                            public void onFail(int code, String msg) {
+                                if(view != null) view.onFailure(code, msg);
                             }
                         });
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<UploadResultEntity>() {
-                    @Override
-                    public void onCompleted() {
-                        apiService.uploadFolder(folderId,resList)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new NetSimpleResultSubscriber() {
-                                    @Override
-                                    public void onSuccess() {
-                                        if(view != null) view.uploadFolderSuccess();
-                                    }
+            }
 
-                                    @Override
-                                    public void onFail(int code, String msg) {
-                                        if(view != null) view.onFailure(code, msg);
-                                    }
-                                });
-                    }
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        if(view != null) view.onFailure(-1,"");
-                    }
+            }
 
-                    @Override
-                    public void onNext(UploadResultEntity uploadResultEntity) {
-                        resList.add(uploadResultEntity);
-                    }
-                });
+            @Override
+            public void onNext(UploadResultEntity uploadResultEntity) {
+                resList.add(uploadResultEntity);
+            }
+        });
     }
 
     @Override

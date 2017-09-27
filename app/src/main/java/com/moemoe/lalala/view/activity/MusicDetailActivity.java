@@ -43,16 +43,12 @@ public class MusicDetailActivity extends BaseAppCompatActivity implements IPlayB
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         if (getIntent() == null) {
             finish();
             return;
         }
-        mPlayer = Player.getInstance();
+        mPlayer = Player.getInstance(this);
         mPlayer.registerCallback(this);
         Song mMusicInfo = mPlayer.getPlayingSong();
         if (mMusicInfo == null) {

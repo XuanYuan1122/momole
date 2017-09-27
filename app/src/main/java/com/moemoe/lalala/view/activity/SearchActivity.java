@@ -36,10 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2017/3/1.
@@ -254,23 +254,24 @@ public class SearchActivity extends BaseAppCompatActivity {
     }
 
     private void subscribeChangedEvent() {
-        Subscription subscription = RxBus.getInstance()
+        Disposable subscription = RxBus.getInstance()
                 .toObservable(AtUserEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .subscribe(new Action1<AtUserEvent>() {
+                .subscribe(new Consumer<AtUserEvent>() {
                     @Override
-                    public void call(AtUserEvent event) {
+                    public void accept(AtUserEvent atUserEvent) throws Exception {
                         Intent i = new Intent();
-                        i.putExtra("user_id",event.getUserId());
-                        i.putExtra("user_name",event.getUserName());
+                        i.putExtra("user_id",atUserEvent.getUserId());
+                        i.putExtra("user_name",atUserEvent.getUserName());
                         setResult(RESULT_OK,i);
                         finish();
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
+
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });

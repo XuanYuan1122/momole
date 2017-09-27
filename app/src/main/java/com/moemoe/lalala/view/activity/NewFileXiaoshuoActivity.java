@@ -31,7 +31,9 @@ import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ManHua2Entity;
 import com.moemoe.lalala.model.entity.NewFolderEntity;
 import com.moemoe.lalala.model.entity.REPORT;
+import com.moemoe.lalala.model.entity.ShareFolderEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
+import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.NewFolderItemContract;
 import com.moemoe.lalala.presenter.NewFolderItemPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -57,14 +59,16 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import zlc.season.rxdownload.RxDownload;
-import zlc.season.rxdownload.entity.DownloadStatus;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_FILE_UPLOAD;
 
@@ -161,7 +165,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
         }else {
             mIvAdd.setImageResource(R.drawable.btn_follow_folder_item);
         }
-        downloadSub = RxDownload.getInstance()
+        downloadSub = RxDownload.getInstance(this)
                 .maxThread(3)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getNovRootPath())
@@ -190,18 +194,24 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                             downloadSub.download(ApiService.URL_QINIU + entity.getPath(), entity.getFileName(), StorageUtils.getNovRootPath() + entity.getFileId())
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Subscriber<DownloadStatus>() {
-                                        @Override
-                                        public void onCompleted() {
-                                            dialog.dismiss();
-                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoshuoActivity.this, mAdapter.getList(), mUserId, position);
-                                        }
+                                    .subscribe(new Observer<DownloadStatus>() {
 
                                         @Override
                                         public void onError(Throwable e) {
                                             dialog.dismiss();
                                             FileUtil.deleteFile(StorageUtils.getNovRootPath() + entity.getFileId());
                                             showToast("下载失败");
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+                                            dialog.dismiss();
+                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoshuoActivity.this, mAdapter.getList(), mUserId, position);
+                                        }
+
+                                        @Override
+                                        public void onSubscribe(@NonNull Disposable d) {
+
                                         }
 
                                         @Override
@@ -313,6 +323,8 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
             MenuItem item = new MenuItem(2, "举报");
             items.add(item);
         }
+        MenuItem item = new MenuItem(4, "转发");
+        items.add(item);
         bottomMenuFragment.setMenuItems(items);
         bottomMenuFragment.setShowTop(false);
         bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
@@ -346,6 +358,23 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     startActivity(intent);
                 }else if(itemId == 3){
                     NewFolderEditActivity.startActivity(NewFileXiaoshuoActivity.this,"modify",mFolderType,mFolderInfo);
+                }else if(itemId == 4){
+                    if(mFolderInfo == null) return;
+                    ShareFolderEntity entity = new ShareFolderEntity();
+                    entity.setFolderCover(mFolderInfo.getCover());
+                    entity.setFolderId(mFolderInfo.getFolderId());
+                    entity.setFolderName(mFolderInfo.getFolderName());
+                    entity.setFolderTags(mFolderInfo.getTexts());
+                    entity.setFolderType(mFolderInfo.getType());
+                    entity.setUpdateTime(mFolderInfo.getCreateTime());
+                    UserTopEntity entity1 = new UserTopEntity();
+                    entity1.setUserName(mFolderInfo.getCreateUserName());
+                    entity1.setUserId(mFolderInfo.getCreateUserId());
+                    entity1.setSex("N");
+                    entity1.setBadge(null);
+                    entity1.setHeadPath(mFolderInfo.getUserIcon().getPath());
+                    entity.setCreateUser(entity1);
+                    CreateForwardActivity.startActivity(NewFileXiaoshuoActivity.this,entity);
                 }
             }
         });
@@ -779,7 +808,9 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
         finalizeDialog();
         for (Integer i : mSelectMap.keySet()){
             mAdapter.getList().get(i).setSelect(false);
-            mAdapter.notifyItemChanged(i);
+            FileXiaoShuoEntity entity = mAdapter.getList().remove((int)i);
+            mAdapter.getList().add(0,entity);
+            mAdapter.notifyItemRangeChanged(0,i + 1);
         }
         mSelectMap.clear();
     }

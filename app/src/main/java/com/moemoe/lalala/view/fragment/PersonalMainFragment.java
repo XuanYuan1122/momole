@@ -10,13 +10,16 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,8 +29,10 @@ import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BadgeEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.NewCommentEntity;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.PersonaListPresenter;
 import com.moemoe.lalala.presenter.PersonalListContract;
 import com.moemoe.lalala.utils.DensityUtil;
@@ -38,6 +43,10 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.BadgeActivity;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.CommentsListActivity;
+import com.moemoe.lalala.view.activity.NewBagActivity;
+import com.moemoe.lalala.view.activity.NewFileCommonActivity;
+import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
+import com.moemoe.lalala.view.activity.NewFileXiaoshuoActivity;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
 import com.moemoe.lalala.view.activity.PersonalLevelActivity;
 
@@ -47,9 +56,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import rx.Observable;
-import rx.Subscriber;
+import jp.wasabeef.glide.transformations.CropTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by yi on 2016/12/15.
@@ -77,7 +90,12 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
     TextView mTvAllComments;
     @BindView(R.id.fl_more_root)
     View mMoreBadge;
-
+    @BindView(R.id.ll_bag_root)
+    View mFolderRoot;
+    @BindView(R.id.tv_more_add)
+    TextView mTvMore;
+    @BindView(R.id.ll_folder_root)
+    LinearLayout mFolderAddRoot;
 
     private TextView tvHuiZhang1;
     private TextView tvHuiZhang2;
@@ -90,6 +108,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
     private View rlHuiZhang3;
     private PersonalMainEntity entity;
     private String uuid;
+    private boolean isOpenBag;
 
     @Inject
     PersonaListPresenter mPresenter;
@@ -104,6 +123,25 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         bundle.putString("uuid",id);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public boolean isOpenBag() {
+        return isOpenBag;
+    }
+
+    public void setOpenBag(boolean openBag) {
+        isOpenBag = openBag;
+        if(isOpenBag){
+            mTvMore.setText("显示全部");
+            mTvMore.setTextColor(ContextCompat.getColor(getContext(),R.color.main_cyan));
+            mTvMore.setCompoundDrawablesWithIntrinsicBounds(null,null,ContextCompat.getDrawable(getContext(),R.drawable.ic_bag_more),null);
+            mTvMore.setCompoundDrawablePadding(DensityUtil.dip2px(getContext(),4));
+        }else {
+            mTvMore.setText("未开通书包");
+            mTvMore.setTextColor(ContextCompat.getColor(getContext(),R.color.gray_d7d7d7));
+            mTvMore.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+            mTvMore.setCompoundDrawablePadding(0);
+        }
     }
 
     @Override
@@ -140,7 +178,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         super.init();
     }
 
-    @OnClick({R.id.iv_level_name_details,R.id.tv_all_liuyan})
+    @OnClick({R.id.iv_level_name_details,R.id.tv_all_liuyan,R.id.tv_more_add})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.iv_level_name_details:
@@ -150,6 +188,13 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                 Intent i = new Intent(getContext(), CommentsListActivity.class);
                 i.putExtra("uuid",uuid);
                 startActivity(i);
+                break;
+            case R.id.tv_more_add:
+                if(isOpenBag){
+                    Intent i2 = new Intent(getContext(),NewBagActivity.class);
+                    i2.putExtra("uuid",uuid);
+                    startActivity(i2);
+                }
                 break;
         }
     }
@@ -292,14 +337,20 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         final TextView[] huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
         final ImageView[] huiZhangImgs = new ImageView[]{ivHuiZhang1,ivHuiZhang2,ivHuiZhang3};
         Observable.range(0,3)
-                .subscribe(new Subscriber<Integer>() {
+                .subscribe(new Observer<Integer>() {
+
                     @Override
-                    public void onCompleted() {
+                    public void onError(Throwable e) {
 
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
@@ -339,6 +390,79 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                     .error(R.drawable.bg_default_square)
                     .into(huiZhangImgs[i]);
         }
+
+        //folder
+        if(entity.getFolderList().size() > 0){
+            mFolderRoot.setVisibility(View.VISIBLE);
+            for (int n = 0;n < entity.getFolderList().size();n++){
+                final ShowFolderEntity item = entity.getFolderList().get(n);
+                View v = LayoutInflater.from(getContext()).inflate(R.layout.item_bag_cover, null);
+                ImageView iv = (ImageView) v.findViewById(R.id.iv_cover);
+                TextView mark = (TextView) v.findViewById(R.id.tv_mark);
+                TextView title = (TextView) v.findViewById(R.id.tv_title);
+                TextView tag = (TextView) v.findViewById(R.id.tv_tag);
+                title.setText(item.getFolderName());
+                String tagStr = "";
+                for(int i = 0;i < item.getTexts().size();i++){
+                    String tagTmp = item.getTexts().get(i);
+                    if(i == 0){
+                        tagStr = tagTmp;
+                    }else {
+                        tagStr += " · " + tagTmp;
+                    }
+                }
+                tag.setText(tagStr);
+                mark.setText(item.getType());
+                if(item.getType().equals("综合")){
+                    mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+                }else if(item.getType().equals("图集")){
+                    mark.setBackgroundResource(R.drawable.shape_rect_tuji);
+                }else if(item.getType().equals("漫画")){
+                    mark.setBackgroundResource(R.drawable.shape_rect_manhua);
+                }else if(item.getType().equals("小说")){
+                    mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
+                }else if(item.getType().equals("文章")){
+                    mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+                }
+                int width = (DensityUtil.getScreenWidth(getContext()) - DensityUtil.dip2px(getContext(),42)) / 3;
+                int height = DensityUtil.dip2px(getContext(),140);
+
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
+                RecyclerView.LayoutParams lp2;
+                if(n == 1 || n == 2){
+                    lp2 = new RecyclerView.LayoutParams(width + DensityUtil.dip2px(getContext(),9),height);
+                    v.setPadding(DensityUtil.dip2px(getContext(),9),0,0,0);
+                }else {
+                    lp2 = new RecyclerView.LayoutParams(width,height);
+                    v.setPadding(0,0,0,0);
+                }
+                v.setLayoutParams(lp2);
+                iv.setLayoutParams(lp);
+                Glide.with(getContext())
+                        .load(StringUtils.getUrl(getContext(),item.getCover(),width,height, false, true))
+                        .placeholder(R.drawable.bg_default_square)
+                        .error(R.drawable.bg_default_square)
+                        .bitmapTransform(new CropTransformation(getContext(),width,height),new RoundedCornersTransformation(getContext(),DensityUtil.dip2px(getContext(),4),0))
+                        .into(iv);
+                v.setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+                        if(item.getType().equals("综合")){
+                            NewFileCommonActivity.startActivity(getContext(), FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
+                        }else if(item.getType().equals("图集")){
+                            NewFileCommonActivity.startActivity(getContext(),FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
+                        }else if(item.getType().equals("漫画")){
+                            NewFileManHuaActivity.startActivity(getContext(),FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
+                        }else if(item.getType().equals("小说")){
+                            NewFileXiaoshuoActivity.startActivity(getContext(),FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
+                        }
+                    }
+                });
+                mFolderAddRoot.addView(v);
+            }
+        }else {
+            mFolderRoot.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -353,14 +477,19 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
             final TextView[] huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
             final ImageView[] huiZhangImgs = new ImageView[]{ivHuiZhang1,ivHuiZhang2,ivHuiZhang3};
             Observable.range(0,3)
-                    .subscribe(new Subscriber<Integer>() {
+                    .subscribe(new Observer<Integer>() {
                         @Override
-                        public void onCompleted() {
+                        public void onError(Throwable e) {
 
                         }
 
                         @Override
-                        public void onError(Throwable e) {
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
 
                         }
 

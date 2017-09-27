@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.di.components.DaggerSimpleComponent;
-import com.moemoe.lalala.di.modules.SimpleModule;
+import com.moemoe.lalala.di.components.DaggerJuBaoComponent;
+import com.moemoe.lalala.di.modules.JuBaoModule;
 import com.moemoe.lalala.model.entity.DelCommentEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
-import com.moemoe.lalala.presenter.SimpleContract;
-import com.moemoe.lalala.presenter.SimplePresenter;
+import com.moemoe.lalala.presenter.JuBaoContract;
+import com.moemoe.lalala.presenter.JuBaoPresenter;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
@@ -30,13 +30,14 @@ import butterknife.BindView;
  * Created by yi on 2016/12/1.
  */
 
-public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContract.View,RadioGroup.OnCheckedChangeListener{
+public class JuBaoActivity extends BaseAppCompatActivity implements JuBaoContract.View,RadioGroup.OnCheckedChangeListener{
     public static final String EXTRA_NAME = "name";
     public static final String EXTRA_CONTENT = "content";
     public static final String EXTRA_TARGET = "target";
     public static final String EXTRA_TYPE = "type";
     public static final String EXTRA_DOC_ID = "doc_id";
     public static final String EXTRA_POSITION = "position";
+    public static final String EXTRA_PARENT_ID = "parent_id";
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
@@ -56,7 +57,7 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
     @BindView(R.id.edt_content)
     EditText mEtContent;
     @Inject
-    SimplePresenter mPresenter;
+    JuBaoPresenter mPresenter;
     private String mTarget;
     private String mType;
     private int mSelectType;//1 report 2.del 3.bag
@@ -64,6 +65,7 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
     private int position;
     private String mUserId;
     private Boolean changeGroup = false;
+    private String parentId;
 
     @Override
     protected int getLayoutId() {
@@ -74,8 +76,8 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
     protected void initViews(Bundle savedInstanceState) {
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
-        DaggerSimpleComponent.builder()
-                .simpleModule(new SimpleModule(this))
+        DaggerJuBaoComponent.builder()
+                .juBaoModule(new JuBaoModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
@@ -85,6 +87,7 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
             finish();
         }
         mUuid = getIntent().getStringExtra(UUID);
+        parentId = getIntent().getStringExtra(EXTRA_PARENT_ID);
         String mName = getIntent().getStringExtra(EXTRA_NAME);
         String mContent = getIntent().getStringExtra(EXTRA_CONTENT);
         mSelectType = getIntent().getIntExtra(EXTRA_TYPE,1);
@@ -126,13 +129,19 @@ public class JuBaoActivity extends BaseAppCompatActivity implements SimpleContra
                 createDialog();
                 if(mSelectType == 1){
                     ReportEntity bean = new ReportEntity(mEtContent.getText().toString(),mType,mUuid,mTarget);
-                    mPresenter.doRequest(bean,3);
+                    mPresenter.doRequest(bean,mSelectType);
                 }else if(mSelectType == 2){
                     DelCommentEntity bean =new DelCommentEntity(mUuid,mDocId,mEtContent.getText().toString(),mType);
-                    mPresenter.doRequest(bean,5);
+                    mPresenter.doRequest(bean,mSelectType);
                 }else if(mSelectType == 3){
                     ReportEntity bean = new ReportEntity(mEtContent.getText().toString(),mType,mUuid,mTarget,mUserId);
-                    mPresenter.doRequest(bean,6);
+                    mPresenter.doRequest(bean,mSelectType);
+                }else if(mSelectType == 4 || mSelectType == 5){
+                    ReportEntity bean = new ReportEntity(mEtContent.getText().toString(),mType,mUuid,mTarget,mUserId);
+                    if(mSelectType == 5){
+                        bean.setParentId(parentId);
+                    }
+                    mPresenter.doRequest(bean,mSelectType);
                 }
             }
         });

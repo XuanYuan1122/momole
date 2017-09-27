@@ -28,6 +28,8 @@ import com.moemoe.lalala.model.entity.NewDocType;
 import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.RichDocListEntity;
 import com.moemoe.lalala.model.entity.RichEntity;
+import com.moemoe.lalala.model.entity.ShareArticleEntity;
+import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.CreateRichDocContract;
 import com.moemoe.lalala.presenter.CreateRichDocPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -42,27 +44,32 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
+import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
-
-import static com.moemoe.lalala.utils.StartActivityConstant.REQ_MODIFY_BAG;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  *
@@ -93,10 +100,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     TextView mTvMenuRight;
     @BindView(R.id.rich_et)
     NetaRichEditor mRichEt;
-   // @BindView(R.id.et_title)
-   // EditText mEtTitle;
-   // @BindView(R.id.ev_title_count)
-   // TextView mTvTitleCount;
     @BindView(R.id.rl_ope_root)
     KeyboardListenerLayout mKlCommentBoard;
     @BindView(R.id.iv_add_bag)
@@ -107,8 +110,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     ImageView mIvAddMusic;
     @BindView(R.id.view_add_sep)
     View mViewAddSep;
-  //  @BindView(R.id.rl_title_root)
-  // View mTitleRoot;
+
     @Inject
     CreateRichDocPresenter mPresenter;
 
@@ -127,6 +129,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private BottomMenuFragment bottomFragment;
     private String mFolderType;
     private String mBgCover;
+    private int coverSize;
     private boolean mIsCover = true;
 
     @Override
@@ -157,8 +160,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mIvAddHide.setVisibility(View.VISIBLE);
         mIvAddMusic.setVisibility(View.VISIBLE);
         mViewAddSep.setVisibility(View.VISIBLE);
-      //  mTitleRoot.setVisibility(View.VISIBLE);
-
         mHideList = new ArrayList<>();
         mUserIds = new ArrayList<>();
         mTvMenuLeft.setVisibility(View.VISIBLE);
@@ -229,6 +230,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x36) * 2);
                 int h = (int) getResources().getDimension(R.dimen.y200);
                 mRichEt.setCover(StringUtils.getUrl(this,mDoc.getBgCover(),w,h,false,true));
+                mBgCover = mDoc.getBgCover();
+                coverSize = -1;
             }
             mHideType = mDoc.isHidType();
             if(!TextUtils.isEmpty(mDoc.getTitle())){
@@ -239,12 +242,18 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 if(TextUtils.isEmpty(entity.getInputStr())){
                     mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
                 }
-                Observable.from(mDoc.getList())
+                Observable.fromIterable(mDoc.getList())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<RichEntity>() {
+                        .subscribe(new Observer<RichEntity>() {
+
                             @Override
-                            public void onCompleted() {
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
                                 RichEntity entity1 = mDoc.getList().get(mDoc.getList().size() - 1);
                                 if(TextUtils.isEmpty(entity1.getInputStr())){
                                     mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),"");
@@ -252,7 +261,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                             }
 
                             @Override
-                            public void onError(Throwable e) {
+                            public void onSubscribe(@NonNull Disposable d) {
 
                             }
 
@@ -290,20 +299,20 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     }
 
     private void subscribeChangedEvent() {
-        Subscription subscription = RxBus.getInstance()
+        Disposable subscription = RxBus.getInstance()
                 .toObservable(RichImgRemoveEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .subscribe(new Action1<RichImgRemoveEvent>() {
+                .subscribe(new Consumer<RichImgRemoveEvent>() {
                     @Override
-                    public void call(RichImgRemoveEvent event) {
-                        mPathMap.remove(event.getPath());
+                    public void accept(RichImgRemoveEvent richImgRemoveEvent) throws Exception {
+                        mPathMap.remove(richImgRemoveEvent.getPath());
                         mImageSize--;
                     }
-                }, new Action1<Throwable>() {
+                }, new Consumer<Throwable>() {
                     @Override
-                    public void call(Throwable throwable) {
+                    public void accept(Throwable throwable) throws Exception {
 
                     }
                 });
@@ -418,7 +427,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             }else {
                 mDocEntity.coin.coin = 0;
             }
-            mPresenter.createDoc(mDocEntity,mDocType,mDoc == null ? "" : mDoc.getDocId());
+            mDocEntity.cover = mBgCover;
+            mPresenter.createDoc(mDocEntity,mDocType,mDoc == null ? "" : mDoc.getDocId(),coverSize);
         }
     }
 
@@ -537,6 +547,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                     if(mIsCover){
                         mRichEt.setCover(photoPaths.get(0));
                         mBgCover = photoPaths.get(0);
+                        coverSize = 0;
                     }else {
                         Collections.reverse(photoPaths);
                         createDialog("图片插入中...");
@@ -549,33 +560,40 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     }
 
     private void onGetPhotos(final ArrayList<String> paths) {
-        Observable.create(new Observable.OnSubscribe<String>() {
+        Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void call(final Subscriber<? super String> subscriber) {
+            public void subscribe(@NonNull ObservableEmitter<String> res) throws Exception {
                 mRichEt.measure(0,0);
                 try{
                     for (String s : paths){
-                        subscriber.onNext(s);
+                        res.onNext(s);
                     }
-                    subscriber.onCompleted();
+                    res.onComplete();
                 }catch (Exception e){
-                    subscriber.onError(e);
+                    res.onError(e);
                 }
             }
+
         })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-                finalizeDialog();
-                showToast("图片插入成功");
-            }
+        .subscribe(new Observer<String>() {
 
             @Override
             public void onError(Throwable e) {
                 finalizeDialog();
                 showToast("图片插入失败");
+            }
+
+            @Override
+            public void onComplete() {
+                finalizeDialog();
+                showToast("图片插入成功");
+            }
+
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
             }
 
             @Override
@@ -596,29 +614,60 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     }
 
     @Override
-    public void onSendSuccess() {
+    public void onSendSuccess(final String id, final String path) {
         mTvMenuRight.setEnabled(true);
-//        for (RichEntity entity : mRichEt.buildEditData() ){
-//            if(TextUtils.isEmpty(entity.getInputStr()) && entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
-//                if(!FileUtil.isGif(entity.getImage().getPath())){
-//                    FileUtil.deleteFile(entity.getImage().getPath());
-//                }
-//            }
-//        }
-//        for (RichEntity entity : mHideList){
-//            if(TextUtils.isEmpty(entity.getInputStr()) && entity.getImage() != null  && !TextUtils.isEmpty(entity.getImage().getPath())){
-//                if(!FileUtil.isGif(entity.getImage().getPath())) FileUtil.deleteFile(entity.getImage().getPath());
-//            }
-//        }
         finalizeDialog();
         if(mDoc != null){
             showToast(R.string.msg_update_doc_success);
         }else {
             showToast(R.string.msg_create_doc_success);
         }
-        Intent i = new Intent();
-        setResult(RESPONSE_CODE, i);
-        finish();
+        if(!TextUtils.isEmpty(id)){
+            final AlertDialogUtil dialogUtil = AlertDialogUtil.getInstance();
+            dialogUtil.createPromptNormalDialog(this,"是否分享到动态");
+            dialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                @Override
+                public void CancelOnClick() {
+                    Intent i = new Intent();
+                    setResult(RESPONSE_CODE, i);
+                    finish();
+                    dialogUtil.dismissDialog();
+                }
+
+                @Override
+                public void ConfirmOnClick() {
+                    ShareArticleEntity entity = new ShareArticleEntity();
+                    entity.setDocId(id);
+                    entity.setTitle(mRichEt.getTitle());
+                    entity.setCover(path);
+                    String content = "";
+                    for (RichEntity tmp : mRichEt.buildEditData() ){
+                        if(!TextUtils.isEmpty(tmp.getInputStr())){
+                            content = TagControl.getInstance().paresToString(tmp.getInputStr());
+                            break;
+                        }
+                    }
+                    entity.setContent(content);
+                    UserTopEntity entity1 = new UserTopEntity();
+                    entity1.setUserId(PreferenceUtils.getUUid());
+                    entity1.setUserName(PreferenceUtils.getAuthorInfo().getUserName());
+                    entity1.setLevel(PreferenceUtils.getAuthorInfo().getLevel());
+                    entity1.setHeadPath(PreferenceUtils.getAuthorInfo().getHeadPath());
+                    entity.setDocCreateUser(entity1);
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    String mTime = sdf.format(new Date());
+                    entity.setCreateTime(mTime);
+                    CreateForwardActivity.startActivity(CreateRichDocActivity.this,entity);
+                    dialogUtil.dismissDialog();
+                    finish();
+                }
+            });
+            dialogUtil.showDialog();
+        }else {
+            Intent i = new Intent();
+            setResult(RESPONSE_CODE, i);
+            finish();
+        }
     }
 
     @Override

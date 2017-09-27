@@ -8,8 +8,8 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/29.
@@ -26,18 +26,14 @@ public class ColumnPresenter implements ColumnContract.Presenter {
         this.apiService = apiService;
     }
 
-    private void requestFresh(String barId, int index, final boolean isFuture) {
+    private void requestFresh(String barId, int index) {
         apiService.requestUiDocList(barId,index,ApiService.LENGHT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetResultSubscriber<ArrayList<CalendarDayItemEntity>>() {
                     @Override
                     public void onSuccess(ArrayList<CalendarDayItemEntity> calendarDayItemEntities) {
-                        if(isFuture){
-                            if(view != null)  view.loadColumnFutureData(calendarDayItemEntities);
-                        }else {
-                            if(view != null) view.loadColumnPastData(calendarDayItemEntities);
-                        }
+                        if(view != null) view.loadColumnPastData(calendarDayItemEntities);
                     }
 
                     @Override
@@ -47,14 +43,10 @@ public class ColumnPresenter implements ColumnContract.Presenter {
                 });
     }
 
-    @Override
-    public void requestFutureFresh(String barId,int index) {
-        requestFresh(barId,index,true);
-    }
 
     @Override
     public void requestPastFresh(String barId,int index) {
-        requestFresh(barId,index,false);
+        requestFresh(barId,index);
     }
 
     @Override

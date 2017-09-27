@@ -20,8 +20,6 @@ import dagger.Component;
 public interface SimpleComponent {
     void inject(PhoneRegisterActivity activity);
     void inject(FindPasswordActivity activity);
-    void inject(JuBaoActivity activity);
     void inject(SplashActivity activity);
-    void inject(TagControlActivity activity);
     void inject(WebViewActivity activity);
 }
