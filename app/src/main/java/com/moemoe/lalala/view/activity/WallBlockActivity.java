@@ -127,10 +127,6 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         mDataPager.setCurrentItem(1);
         mPageIndicator.setTabData(mTabEntities);
         mPageIndicator.setCurrentTab(1);
-        if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
-            Intent i = new Intent(this,MengXinActivity.class);
-            startActivity(i);
-        }
         gestureDetector = new GestureDetector(this,onGestureListener);
     }
 
@@ -139,8 +135,9 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
 
     }
 
-    private static final int FLING_MIN_DISTANCE = 10;
+    private static final int FLING_MIN_DISTANCE = 50;
     private static final int FLING_MIN_VELOCITY = 0;
+    private boolean isHide;
 
     GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener(){
         @Override
@@ -148,10 +145,17 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                                float velocityY){
             if (e1.getY()-e2.getY() > FLING_MIN_DISTANCE
                     && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
-                hideRole();
+                if(!isHide){
+                    hideRole();
+                    isHide = true;
+                }
             } else if (e2.getY()-e1.getY() > FLING_MIN_DISTANCE
                     && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
-                showRole();
+                if(isHide){
+                    showRole();
+                    isHide = false;
+                }
+
             }
             return false;
         }
@@ -290,7 +294,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
             mRoleRoot.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-
+                    clickRole();
                 }
             });
             RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -350,7 +354,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     @Override
     protected void onResume() {
         super.onResume();
-        ViewUtils.setRoleButton(mIvRole);
+        ViewUtils.setRoleButton(mIvRole,mTvText);
     }
 
     @Override

@@ -50,10 +50,10 @@ public class UserInfo implements Parcelable{
     private int userNo;
     @SerializedName("followCount")
     private int followCount;
-   // @SerializedName("inviteUserName")
-   // private String inviteUserName;
-  //  @SerializedName("vipTime")
-   // private String vipTime;
+    @SerializedName("inviteUserName")
+    private String inviteUserName;
+    @SerializedName("vipTime")
+    private String vipTime;
 
 
     public String getBackground() {
@@ -204,13 +204,13 @@ public class UserInfo implements Parcelable{
         return userNo;
     }
 
-  //  public String getInviteUserName() {
-   //     return inviteUserName;
-   // }
+    public String getInviteUserName() {
+        return inviteUserName;
+    }
 
-   // public void setInviteUserName(String inviteUserName) {
-   //     this.inviteUserName = inviteUserName;
-  //  }
+    public void setInviteUserName(String inviteUserName) {
+        this.inviteUserName = inviteUserName;
+    }
 
     public void setUserNo(int userNo) {
         this.userNo = userNo;
@@ -224,13 +224,13 @@ public class UserInfo implements Parcelable{
         this.followCount = followCount;
     }
 
-//    public String getVipTime() {
-//        return vipTime;
-//    }
-//
-//    public void setVipTime(String vipTime) {
-//        this.vipTime = vipTime;
-//    }
+    public String getVipTime() {
+        return vipTime;
+    }
+
+    public void setVipTime(String vipTime) {
+        this.vipTime = vipTime;
+    }
 
     @Override
     public int describeContents() {
@@ -260,8 +260,8 @@ public class UserInfo implements Parcelable{
             info.userName = bundle.getString("userName");
             info.signature = bundle.getString("signature");
             info.rcTargetId = bundle.getString("rcTargetId");
-        //    info.inviteUserName = bundle.getString("inviteUserName");
-         //   info.vipTime = bundle.getString("vipTime");
+            info.inviteUserName = bundle.getString("inviteUserName");
+            info.vipTime = bundle.getString("vipTime");
             info.size = bundle.getLong("size");
             info.black = bundle.getBoolean("black");
             return info;
@@ -294,8 +294,8 @@ public class UserInfo implements Parcelable{
         bundle.putString("userName",userName);
         bundle.putString("signature",signature);
         bundle.putString("rcTargetId",rcTargetId);
-    //    bundle.putString("inviteUserName",inviteUserName);
-     //   bundle.putString("vipTime",vipTime);
+        bundle.putString("inviteUserName",inviteUserName);
+        bundle.putString("vipTime",vipTime);
         bundle.putLong("size",size);
         bundle.putBoolean("black",black);
         parcel.writeBundle(bundle);

@@ -41,8 +41,8 @@ public class InviteActivity extends BaseAppCompatActivity implements InviteContr
     ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)
     TextView mTvTitle;
-    @BindView(R.id.tv_menu)
-    TextView mTvMenu;
+//    @BindView(R.id.tv_menu)
+//    TextView mTvMenu;
     @BindView(R.id.tv_invit_num)
     TextView mTvInviteNum;
     @BindView(R.id.tv_copy)
@@ -72,7 +72,7 @@ public class InviteActivity extends BaseAppCompatActivity implements InviteContr
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        mTvTitle.setText("我的邀请码");
+        mTvTitle.setText("我的邀请");
         mTvInviteNum.setText(getIntent().getIntExtra("id",0) + "");
         mTvName.setText(getIntent().getStringExtra("name"));
         mAdapter = new InviteAdapter();
@@ -111,10 +111,10 @@ public class InviteActivity extends BaseAppCompatActivity implements InviteContr
                 finish();
             }
         });
-        mTvMenu.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mTvMenu,(int) getResources().getDimension(R.dimen.x36));
-        mTvMenu.setText("分享邀请");
-        mTvMenu.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+//        mTvMenu.setVisibility(View.VISIBLE);
+//        ViewUtils.setRightMargins(mTvMenu,(int) getResources().getDimension(R.dimen.x36));
+//        mTvMenu.setText("分享邀请");
+//        mTvMenu.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
     }
 
     @Override

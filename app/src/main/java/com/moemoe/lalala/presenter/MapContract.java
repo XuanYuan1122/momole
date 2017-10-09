@@ -11,6 +11,7 @@ import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
+import com.moemoe.lalala.utils.JuQingDoneEntity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +33,7 @@ public interface MapContract {
         void getTrigger();
         void getAllStory();
         void checkStoryVersion();
+        void findMyDoneJuQing();
     }
 
     interface View extends BaseView{
@@ -46,6 +48,6 @@ public interface MapContract {
         void onGetTriggerSuccess(ArrayList<JuQingTriggerEntity> entities);
         void onGetAllStorySuccess(ArrayList<JuQIngStoryEntity> entities);
         void onCheckStoryVersionSuccess(int version);
-
+        void onFindMyDoneJuQingSuccess(ArrayList<JuQingDoneEntity> entities);
     }
 }

@@ -400,7 +400,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                                             @Override
                                             public void onError(Throwable e) {
                                                 dialog.dismiss();
-                                                FileUtil.deleteFile(StorageUtils.getNovRootPath() + bookList.get(0).getTitle());
+                                                FileUtil.deleteDir(StorageUtils.getNovRootPath() + bookList.get(0).getId());
                                                 showToast("下载失败");
                                             }
 

@@ -5,43 +5,31 @@ package com.moemoe.lalala.model.entity;
  */
 
 public class JuQingEntity {
-    private String title;
-    private String tag;
-    private String progress;
-    private String userProgress;
+
+    private String bg;
+    private String by;
     private String content;
-    private String state;
+    private String groupId;
+    private String groupName;
+    private int items;
+    private int joinNum;
+    private int progress;
+    private int status;//1.攻略中2.完成3.未解锁
 
-    public String getTitle() {
-        return title;
+    public String getBg() {
+        return bg;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setBg(String bg) {
+        this.bg = bg;
     }
 
-    public String getTag() {
-        return tag;
+    public String getBy() {
+        return by;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public String getProgress() {
-        return progress;
-    }
-
-    public void setProgress(String progress) {
-        this.progress = progress;
-    }
-
-    public String getUserProgress() {
-        return userProgress;
-    }
-
-    public void setUserProgress(String userProgress) {
-        this.userProgress = userProgress;
+    public void setBy(String by) {
+        this.by = by;
     }
 
     public String getContent() {
@@ -52,11 +40,51 @@ public class JuQingEntity {
         this.content = content;
     }
 
-    public String getState() {
-        return state;
+    public String getGroupId() {
+        return groupId;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public int getItems() {
+        return items;
+    }
+
+    public void setItems(int items) {
+        this.items = items;
+    }
+
+    public int getJoinNum() {
+        return joinNum;
+    }
+
+    public void setJoinNum(int joinNum) {
+        this.joinNum = joinNum;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

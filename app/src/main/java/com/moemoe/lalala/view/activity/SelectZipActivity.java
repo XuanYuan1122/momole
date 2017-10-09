@@ -97,11 +97,9 @@ public class SelectZipActivity extends BaseAppCompatActivity {
                 Uri.parse("content://media/external/file"),
                 projection,
                 MediaStore.Files.FileColumns.DATA + " not like ? and ("
-                        + MediaStore.Files.FileColumns.DATA + " like ? or "
-                        + MediaStore.Files.FileColumns.DATA + " like ? )",
+                        + MediaStore.Files.FileColumns.DATA + " like ?)",
                 new String[]{"%" + bookpath + "%",
-                        "%" + ".zip",
-                        "%"+ ".rar"}, null);
+                        "%" + ".zip"}, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             int idindex = cursor.getColumnIndex(MediaStore.Files.FileColumns._ID);

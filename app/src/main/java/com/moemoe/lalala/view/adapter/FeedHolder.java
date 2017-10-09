@@ -98,6 +98,11 @@ public class FeedHolder extends ClickableViewHolder {
             setVisible(R.id.rl_from_top, false);
         }
         //user top
+        if(entity.getCreateUser().isVip()){
+            setVisible(R.id.iv_vip,true);
+        }else {
+            setVisible(R.id.iv_vip,false);
+        }
         int size = (int) itemView.getContext().getResources().getDimension(R.dimen.x80);
         Glide.with(itemView.getContext())
                 .load(StringUtils.getUrl(itemView.getContext(),entity.getCreateUser().getHeadPath(),size,size,false,true))
@@ -438,7 +443,10 @@ public class FeedHolder extends ClickableViewHolder {
                     layout = new LinearLayout(itemView.getContext());
                     layout.setOrientation(LinearLayout.HORIZONTAL);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    layout.setLayoutParams(lp);
+                    if(i == 3 || i == 6){
+                        lp.topMargin = (int) context.getResources().getDimension(R.dimen.y6);
+                        layout.setLayoutParams(lp);
+                    }
                 }
                 if(i % 3 != 2){
                     lp1.rightMargin = (int) itemView.getResources().getDimension(R.dimen.x6);

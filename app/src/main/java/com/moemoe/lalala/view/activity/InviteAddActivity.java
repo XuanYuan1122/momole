@@ -70,7 +70,7 @@ public class InviteAddActivity extends BaseAppCompatActivity implements InviteCo
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        mTvTitle.setText("填写邀请码");
+        mTvTitle.setText("填写邀请人");
     }
 
     @Override

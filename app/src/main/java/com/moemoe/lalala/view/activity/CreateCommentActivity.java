@@ -34,6 +34,7 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileItemDecoration;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.adapter.SelectItemAdapter;
@@ -113,6 +114,7 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
             finish();
             return;
         }
+        SoftKeyboardUtils.showSoftKeyboard(this,mEtContent);
         mEtContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -160,6 +162,7 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
         mTvMenuLeft.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
+                SoftKeyboardUtils.dismissSoftKeyboard(CreateCommentActivity.this);
                 finish();
             }
         });

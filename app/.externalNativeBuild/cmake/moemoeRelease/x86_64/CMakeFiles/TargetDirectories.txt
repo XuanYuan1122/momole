@@ -1,3 +1,0 @@
-D:/Neta-Android/app/.externalNativeBuild/cmake/moemoeRelease/x86_64/CMakeFiles/edit_cache.dir
-D:/Neta-Android/app/.externalNativeBuild/cmake/moemoeRelease/x86_64/CMakeFiles/kira.dir
-D:/Neta-Android/app/.externalNativeBuild/cmake/moemoeRelease/x86_64/CMakeFiles/rebuild_cache.dir

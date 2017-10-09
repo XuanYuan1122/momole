@@ -7,24 +7,6 @@
 
     <include layout="@layout/neta_bar"/>
 
-    <LinearLayout
-        android:id="@+id/ll_top_root"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/x24"
-        android:paddingEnd="@dimen/x24"
-        android:orientation="vertical">
-        <include
-            android:id="@+id/len_root"
-            layout="@layout/rc_item_conversation"/>
-        <include
-            android:id="@+id/mei_root"
-            layout="@layout/rc_item_conversation"/>
-        <include
-            android:id="@+id/sari_root"
-            layout="@layout/rc_item_conversation"/>
-    </LinearLayout>
-
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"

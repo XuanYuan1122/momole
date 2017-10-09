@@ -199,7 +199,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                                         @Override
                                         public void onError(Throwable e) {
                                             dialog.dismiss();
-                                            FileUtil.deleteFile(StorageUtils.getNovRootPath() + entity.getFileId());
+                                            FileUtil.deleteDir(StorageUtils.getNovRootPath() + entity.getFileId());
                                             showToast("下载失败");
                                         }
 

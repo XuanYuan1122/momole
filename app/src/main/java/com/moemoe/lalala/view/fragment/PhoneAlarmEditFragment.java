@@ -15,9 +15,11 @@ import android.widget.TimePicker;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.AlarmEvent;
+import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
 import com.moemoe.lalala.model.entity.DeskMateEntity;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
@@ -142,6 +144,7 @@ public class PhoneAlarmEditFragment extends BaseFragment{
         }
         if(mAlarmClock == null){
             mAlarmClock = new AlarmClockEntity();
+            mAlarmClock.setId(null);
             mAlarmClock.setOnOff(true); // 闹钟默认开启
             mAlarmClock.setRepeat("只响一次");
             mAlarmClock.setWeeks(null);
@@ -150,7 +153,7 @@ public class PhoneAlarmEditFragment extends BaseFragment{
             mAlarmClock.setRoleId("len");
             mTvType.setText("按时休息");
             mAlarmClock.setRingName("按时休息");
-            mAlarmClock.setRingUrl(R.raw.neta);
+            mAlarmClock.setRingUrl(R.raw.vc_alerm_len_sleep_1);
             Calendar calendar = Calendar.getInstance();
             mAlarmClock.setHour(calendar.get(Calendar.HOUR_OF_DAY));
             // 保存闹钟实例的分钟
@@ -288,17 +291,35 @@ public class PhoneAlarmEditFragment extends BaseFragment{
                 if (itemId == 1) {
                     mTvType.setText("按时休息");
                     mAlarmClock.setRingName("按时休息");
-                    mAlarmClock.setRingUrl(R.raw.neta);
+                    if(mAlarmClock.getRoleId().equals("mei")){
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_mei_sleep_1);
+                    }else if(mAlarmClock.getRoleId().equals("sari")){
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_sari_sleep_1);
+                    }else {
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_len_sleep_1);
+                    }
                 }
                 if(itemId == 2){
                     mTvType.setText("起床提醒");
                     mAlarmClock.setRingName("起床提醒");
-                    mAlarmClock.setRingUrl(R.raw.neta);
+                    if(mAlarmClock.getRoleId().equals("mei")){
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_mei_wakeup_1);
+                    }else if(mAlarmClock.getRoleId().equals("sari")){
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_sari_wakeup_1);
+                    }else {
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_len_wakeup_1);
+                    }
                 }
                 if(itemId == 3){
                     mTvType.setText("其他事宜");
                     mAlarmClock.setRingName("其他事宜");
-                    mAlarmClock.setRingUrl(R.raw.neta);
+                    if(mAlarmClock.getRoleId().equals("mei")){
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_mei_remind_1);
+                    }else if(mAlarmClock.getRoleId().equals("sari")){
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_sari_remind_1);
+                    }else {
+                        mAlarmClock.setRingUrl(R.raw.vc_alerm_len_remind_1);
+                    }
                 }
             }
         });
@@ -495,6 +516,8 @@ public class PhoneAlarmEditFragment extends BaseFragment{
     }
 
     public void sendAlarmEvent(boolean isUpdate){
+        AlarmClockEntityDao dao = GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao();
+        dao.insertOrReplace(mAlarmClock);
         RxBus.getInstance().post(new AlarmEvent(mAlarmClock,isUpdate?3:1));
     }
 }

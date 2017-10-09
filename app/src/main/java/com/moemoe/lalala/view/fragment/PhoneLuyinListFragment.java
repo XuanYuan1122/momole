@@ -143,12 +143,6 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
         mListDocs.setComplete();
     }
 
-    public void changeRoleState(boolean select){
-        if(getContext() instanceof PhoneMainActivity){
-            ((PhoneMainActivity) getContext()).changeRoleState(select);
-        }
-    }
-
     private void subscribeBackOrChangeEvent() {
         Disposable subscription = RxBus.getInstance()
                 .toObservable(PhonePlayMusicEvent.class)
@@ -172,13 +166,11 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
                                 mAdapter.notifyItemChanged(position);
                             }
                             mAdapter.notifyItemChanged(phonePlayMusicEvent.getPosition());
-                            changeRoleState(true);
                         }else {
                             if(mPlayer.isPlaying()){
                                 mPlayer.pause();
                                 mAdapter.setPlayingPosition(-1);
                                 mAdapter.notifyItemChanged(phonePlayMusicEvent.getPosition());
-                                changeRoleState(false);
                             }
                         }
                     }
@@ -237,7 +229,6 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
         int position = mAdapter.getPlayingPosition();
         mAdapter.setPlayingPosition(-1);
         mAdapter.notifyItemChanged(position);
-        changeRoleState(false);
     }
 
     @Override

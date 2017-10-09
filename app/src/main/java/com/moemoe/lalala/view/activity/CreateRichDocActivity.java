@@ -177,6 +177,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             mRichEt.setmTagNameDef(mTagNameDef);
             mRichEt.setmKlCommentBoard(mKlCommentBoard);
         }
+        mRichEt.setTop();
         mTvMenuRight.setVisibility(View.VISIBLE);
         ViewUtils.setRightMargins(mTvMenuRight,DensityUtil.dip2px(this,18));
         mTvMenuRight.setText(getString(R.string.label_menu_publish_doc));
@@ -225,7 +226,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     @Override
     protected void initData() {
         if(mDoc != null){
-            mRichEt.setTop();
             if(!TextUtils.isEmpty(mDoc.getBgCover())){
                 int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x36) * 2);
                 int h = (int) getResources().getDimension(R.dimen.y200);

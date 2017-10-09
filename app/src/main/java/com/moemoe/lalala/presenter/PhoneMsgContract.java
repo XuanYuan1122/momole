@@ -10,10 +10,10 @@ import java.util.Date;
 
 public interface PhoneMsgContract {
     interface Presenter extends BasePresenter{
-        void getServerTime();
+        void getServerTime(String role);
     }
 
     interface View extends BaseView{
-        void onGetTimeSuccess(Date time);
+        void onGetTimeSuccess(Date time,String role);
     }
 }

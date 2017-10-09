@@ -78,7 +78,6 @@ public class MengXinActivity extends BaseAppCompatActivity {
         });
     }
 
-
     private void goToMain(){
         saveLaunch();
         Intent i = new Intent(this,MapActivity.class);

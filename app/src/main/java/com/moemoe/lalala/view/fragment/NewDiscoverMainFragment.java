@@ -88,7 +88,7 @@ public class NewDiscoverMainFragment extends BaseFragment implements FeedContrac
                 .build()
                 .inject(this);
         final String type = getArguments().getString("type");
-        mListDocs.getSwipeRefreshLayout().setEnabled(false);
+        mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListDocs.setLoadMoreEnabled(false);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter= new FeedAdapter();

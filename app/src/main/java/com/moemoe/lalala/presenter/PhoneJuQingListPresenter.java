@@ -2,6 +2,7 @@ package com.moemoe.lalala.presenter;
 
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
+import com.moemoe.lalala.model.entity.JuQingEntity;
 import com.moemoe.lalala.model.entity.PhoneMenuEntity;
 
 import java.util.ArrayList;
@@ -32,14 +33,27 @@ public class PhoneJuQingListPresenter implements PhoneJuQingListContract.Present
         view = null;
     }
 
+    /**
+     *
+     * @param level 1主线 2.支线 3.日常
+     * @param type 0全部 1.攻略中 2.已完成 3.未解锁
+     * @param index
+     */
     @Override
-    public void loadUserList(String type, final int index) {
-        if(type.equals("main")){
+    public void loadUserList(int level,int type, final int index) {
+        apiService.loadStoryList(level,type,index,ApiService.LENGHT)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<JuQingEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<JuQingEntity> juQingEntities) {
+                        if(view != null)view.onLoadUserListSuccess(juQingEntities,index == 0);
+                    }
 
-        }else if(type.equals("sec")){
-
-        }else if(type.equals("day")){
-
-        }
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
     }
 }

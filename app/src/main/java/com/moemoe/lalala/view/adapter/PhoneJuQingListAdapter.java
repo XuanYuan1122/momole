@@ -17,7 +17,6 @@ public class PhoneJuQingListAdapter extends BaseRecyclerViewAdapter<JuQingEntity
         super(R.layout.item_juqing);
     }
 
-
     @Override
     protected void convert(PhoneJuQingListHolder helper, final JuQingEntity item, int position) {
         helper.createItem(item);

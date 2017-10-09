@@ -17,6 +17,7 @@ public class UserTopEntity implements Parcelable {
     private String levelColor;
     private int level;
     private BadgeEntity badge;
+    private boolean vip;
 
     @Override
     public int describeContents() {
@@ -35,6 +36,7 @@ public class UserTopEntity implements Parcelable {
             entity.sex = bundle.getString("sex");
             entity.levelColor = bundle.getString("levelColor");
             entity.level = bundle.getInt("level");
+            entity.vip = bundle.getBoolean("vip");
             entity.badge = bundle.getParcelable("badge");
             return entity;
         }
@@ -54,6 +56,7 @@ public class UserTopEntity implements Parcelable {
         bundle.putString("sex",sex);
         bundle.putString("levelColor",levelColor);
         bundle.putInt("level",level);
+        bundle.putBoolean("vip",vip);
         bundle.putParcelable("badge",badge);
         parcel.writeBundle(bundle);
     }
@@ -112,5 +115,13 @@ public class UserTopEntity implements Parcelable {
 
     public void setBadge(BadgeEntity badge) {
         this.badge = badge;
+    }
+
+    public boolean isVip() {
+        return vip;
+    }
+
+    public void setVip(boolean vip) {
+        this.vip = vip;
     }
 }

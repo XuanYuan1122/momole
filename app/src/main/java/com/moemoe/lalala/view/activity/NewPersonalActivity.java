@@ -55,6 +55,7 @@ import io.reactivex.functions.Consumer;
 import io.rong.imkit.RongIM;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  *
@@ -105,6 +106,8 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
     TextView mTvHuiYuan;
     @BindView(R.id.fl_avatar)
     FrameLayout mAvatarRoot;
+    @BindView(R.id.iv_vip)
+    ImageView mIvVip;
 
     @Inject
     PersonalPresenter mPresenter;
@@ -181,10 +184,8 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         if(mIsSelf){
             subscribeEvent();
             mIvMsg.setVisibility(View.VISIBLE);
-            mAvatarRoot.setPadding(0, (int) getResources().getDimension(R.dimen.y90),0,0);
         }else {
             mIvMsg.setVisibility(View.GONE);
-            mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y40),0,0);
         }
 
     }
@@ -256,9 +257,9 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
             items.add(item);
             item = new MenuItem(5, "收藏动态");
             items.add(item);
-            item = new MenuItem(6, "我的邀请码");
+            item = new MenuItem(6, "我的邀请");
             items.add(item);
-            item = new MenuItem(7, "填写邀请码");
+            item = new MenuItem(7, "填写邀请");
             items.add(item);
         }else {
             if(mInfo.isBlack()){
@@ -300,7 +301,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 if(itemId == 6){
                     Intent i = new Intent(NewPersonalActivity.this,InviteActivity.class);
                     i.putExtra("id",mInfo.getUserNo());
-                //    i.putExtra("name",mInfo.getInviteUserName());
+                    i.putExtra("name",mInfo.getInviteUserName());
                     startActivity(i);
                 }
                 if(itemId == 7){
@@ -419,12 +420,12 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 .error(R.drawable.btn_cardbg_defbg)
                 .placeholder(R.drawable.btn_cardbg_defbg)
                 .into(mIvBackGround);
+        int size = (int) getResources().getDimension(R.dimen.x160);
         Glide.with(this)
-                .load(StringUtils.getUrl(this,info.getHeadPath(), DensityUtil.dip2px(this,90),DensityUtil.dip2px(this,90),false,true))
-                .override(DensityUtil.dip2px(this,90),DensityUtil.dip2px(this,90))
+                .load(StringUtils.getUrl(this,info.getHeadPath(), size,size,false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
-                .bitmapTransform(new GlideCircleTransform(this,DensityUtil.dip2px(this,3)))
+                .bitmapTransform(new CropCircleTransformation(this))
                 .into(mIvAvatar);
         mTvName.setText(info.getUserName());
         mTvKiraNum.setText("kira号: " + info.getUserNo());
@@ -440,16 +441,24 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         mFanNum.setText(String.valueOf(info.getFollowers()));
         mDocNum.setText(String.valueOf(info.getFollowCount()));
         mCoinNum.setText(String.valueOf(info.getCoin()));
+        if(!TextUtils.isEmpty(info.getVipTime())){
+            mIvVip.setVisibility(View.VISIBLE);
+        }else{
+            mIvVip.setVisibility(View.GONE);
+        }
         if(mIsSelf){
             mFollowRoot.setVisibility(View.GONE);
             mEdit.setVisibility(View.VISIBLE);
             mTvHuiYuan.setVisibility(View.VISIBLE);
-           // if(!TextUtils.isEmpty(info.getVipTime())) {
-              //  mTvHuiYuan.setText("会员到期日: "+info.getVipTime());
-         //   }else {
+            if(!TextUtils.isEmpty(info.getVipTime())) {
+                mTvHuiYuan.setText("会员到期日: "+info.getVipTime());
+                mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y40),0,0);
+            }else {
                 mTvHuiYuan.setVisibility(View.GONE);
-         //   }
+                mAvatarRoot.setPadding(0, (int) getResources().getDimension(R.dimen.y90),0,0);
+            }
         }else {
+            mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y40),0,0);
             mEdit.setVisibility(View.GONE);
             mFollowRoot.setVisibility(View.VISIBLE);
             mFollow.setSelected(info.isFollowing());
@@ -480,18 +489,22 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
             if(!isChanged){
                 mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);
                 mMenuList.setImageResource(R.drawable.btn_menu_normal);
+                mIvMsg.setImageResource(R.drawable.btn_person_msg_blue);
                 isChanged = true;
             }
             mToolbar.setAlpha(percent);
             mMenuList.setAlpha(percent);
+            mIvMsg.setAlpha(percent);
         }else {
             if(isChanged){
                 mToolbar.setNavigationIcon(R.drawable.btn_back_white_normal);
                 mMenuList.setImageResource(R.drawable.btn_menu_white_normal);
+                mIvMsg.setImageResource(R.drawable.btn_person_msg);
                 isChanged = false;
             }
             mToolbar.setAlpha(1 - percent);
             mMenuList.setAlpha(1 - percent);
+            mIvMsg.setAlpha(1 - percent);
         }
         mTvTitle.setAlpha(percent);
     }

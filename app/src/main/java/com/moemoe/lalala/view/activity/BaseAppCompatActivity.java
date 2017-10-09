@@ -42,20 +42,29 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
             savedInstanceState.putParcelable("android:support:fragments", null);
         }
         super.onCreate(savedInstanceState);
-        //ImmersionBar.with(this).init();
+
         this.getWindow().setBackgroundDrawable(null);//移除默认背景，避免overdraw
-        switch (AppStatusManager.getInstance().getAppStatus()) {
-            case AppStatusConstant.STATUS_FORCE_KILLED:
-                restartApp();
-                break;
-            case AppStatusConstant.STATUS_NORMAL:
-                this.setContentView(this.getLayoutId());
-                bind = ButterKnife.bind(this);
-                this.initViews(savedInstanceState);
-                this.initToolbar(savedInstanceState);
-                this.initData();
-                this.initListeners();
-                break;
+        if(this instanceof PhoneAlarmActivity){
+            this.setContentView(this.getLayoutId());
+            bind = ButterKnife.bind(this);
+            this.initViews(savedInstanceState);
+            this.initToolbar(savedInstanceState);
+            this.initData();
+            this.initListeners();
+        }else {
+            switch (AppStatusManager.getInstance().getAppStatus()) {
+                case AppStatusConstant.STATUS_FORCE_KILLED:
+                    restartApp();
+                    break;
+                case AppStatusConstant.STATUS_NORMAL:
+                    this.setContentView(this.getLayoutId());
+                    bind = ButterKnife.bind(this);
+                    this.initViews(savedInstanceState);
+                    this.initToolbar(savedInstanceState);
+                    this.initData();
+                    this.initListeners();
+                    break;
+            }
         }
     }
 

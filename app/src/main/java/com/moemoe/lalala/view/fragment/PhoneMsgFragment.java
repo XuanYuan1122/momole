@@ -16,12 +16,12 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerPhoneMsgComponent;
 import com.moemoe.lalala.di.modules.PhoneMsgModule;
+import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.presenter.PhoneMsgContract;
 import com.moemoe.lalala.presenter.PhoneMsgPresenter;
 import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.ToastUtils;
-import com.moemoe.lalala.view.activity.MapActivity;
 import com.moemoe.lalala.view.activity.PhoneMainActivity;
 import com.moemoe.lalala.view.activity.SplashActivity;
 import com.moemoe.lalala.view.adapter.ConversationListAdapterEx;
@@ -65,9 +65,11 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
     private Fragment mCurFragment;
     private ConversationListFragment conversationListFragment;
     private ConversationFragment conversationFragment;
+    private JuQingChatFragment juQingChatFragment;
     private boolean isFromPush = false;
     private String mCurId;
     private BottomMenuFragment mBottomMenuFragment;
+    private ConversationListAdapterEx mAdapter;
 
     @Override
     protected int getLayoutId() {
@@ -84,6 +86,12 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
         bundle.putParcelable("uri",uri);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.getServerTime("");
     }
 
     @Override
@@ -132,8 +140,13 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
             if(uri != null){
                 if(uri.getPath().equals("/conversation/private")){
                     String targetId = uri.getQueryParameter("targetId");
-                    if(targetId.equals("juqing")){
-
+                    if(targetId.contains("juqing")){
+                        String[] juQing = targetId.split(":");
+                        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+                        juQingChatFragment =  JuQingChatFragment.newInstance(juQing[1],juQing[0]);
+                        fragmentTransaction.hide(mCurFragment).add(R.id.container,juQingChatFragment,"juQingFragment");
+                        fragmentTransaction.commit();
+                        mCurFragment = juQingChatFragment;
                     }else {
                         FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
                         conversationFragment = enterCoversationFragment("private",targetId);
@@ -196,7 +209,8 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
 
     private ConversationListFragment initConversationList() {
         ConversationListFragment listFragment = new ConversationListFragment();
-        listFragment.setAdapter(new ConversationListAdapterEx(RongContext.getInstance()));
+        mAdapter = new ConversationListAdapterEx(RongContext.getInstance());
+        listFragment.setAdapter(mAdapter);
         Uri uri;
         uri = Uri.parse("rong://" + getContext().getApplicationInfo().packageName).buildUpon()
                 .appendPath("conversationlist")
@@ -221,28 +235,39 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
 
     @Override
     public boolean onConversationPortraitClick(Context context, Conversation.ConversationType conversationType, String s) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean onConversationPortraitLongClick(Context context, Conversation.ConversationType conversationType, String s) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean onConversationLongClick(Context context, View view, UIConversation uiConversation) {
+        if(uiConversation.getUIConversationTitle().equals("len") || uiConversation.getUIConversationTitle().equals("mei") || uiConversation.getUIConversationTitle().equals("sari")){
+            return true;
+        }
         return false;
     }
 
     @Override
     public boolean onConversationClick(Context context, View view, UIConversation uiConversation) {
-        FragmentTransaction mFragmentTransaction = getChildFragmentManager().beginTransaction();
-        conversationFragment = enterCoversationFragment(uiConversation.getConversationType().getName(),uiConversation.getConversationTargetId());
-        mFragmentTransaction.hide(mCurFragment).add(R.id.container,conversationFragment,"ConversationFragment");
-        mFragmentTransaction.commit();
-        mCurFragment = conversationFragment;
-        mCurId = uiConversation.getConversationTargetId();
-        mIvMenu.setVisibility(View.VISIBLE);
+        if(uiConversation.getUIConversationTitle().equals("len")){
+            mPresenter.getServerTime("len");
+        }else if(uiConversation.getUIConversationTitle().equals("mei")){
+            mPresenter.getServerTime("mei");
+        }else if(uiConversation.getUIConversationTitle().equals("sari")){
+            mPresenter.getServerTime("sari");
+        }else {
+            FragmentTransaction mFragmentTransaction = getChildFragmentManager().beginTransaction();
+            conversationFragment = enterCoversationFragment(uiConversation.getConversationType().getName(),uiConversation.getConversationTargetId());
+            mFragmentTransaction.hide(mCurFragment).add(R.id.container,conversationFragment,"ConversationFragment");
+            mFragmentTransaction.commit();
+            mCurFragment = conversationFragment;
+            mCurId = uiConversation.getConversationTargetId();
+            mIvMenu.setVisibility(View.VISIBLE);
+        }
         return true;
     }
 
@@ -254,6 +279,14 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
             mFragmentTransaction.commit();
             mCurFragment = conversationListFragment;
             conversationFragment = null;
+            mCurId = null;
+            mIvMenu.setVisibility(View.GONE);
+        }else if(mCurFragment != null && mCurFragment instanceof JuQingChatFragment){
+            FragmentTransaction mFragmentTransaction = getChildFragmentManager().beginTransaction();
+            mFragmentTransaction.remove(mCurFragment).show(conversationListFragment);
+            mFragmentTransaction.commit();
+            mCurFragment = conversationListFragment;
+            juQingChatFragment = null;
             mCurId = null;
             mIvMenu.setVisibility(View.GONE);
         }else {
@@ -276,12 +309,34 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
     }
 
     @Override
-    public void onGetTimeSuccess(Date time) {
+    public void onGetTimeSuccess(Date time,String role) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(time);
-        String id = JuQingUtil.checkJuQing(calendar);
-        if(!TextUtils.isEmpty(id)){
-
+        if(TextUtils.isEmpty(role)){
+            String[] id = JuQingUtil.checkJuQingMobile(calendar);
+            if(!TextUtils.isEmpty(id[0])){
+                if(id[1].equals("len")){
+                    mAdapter.setShowRed(0);
+                    mAdapter.notifyDataSetChanged();
+                }
+                if(id[1].equals("mei")){
+                    mAdapter.setShowRed(1);
+                    mAdapter.notifyDataSetChanged();
+                }
+                if(id[1].equals("sari")){
+                    mAdapter.setShowRed(2);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        }else {
+            String[] id = JuQingUtil.checkJuQingMobile(calendar,role);
+            if(!TextUtils.isEmpty(id[0])){
+                FragmentTransaction mFragmentTransaction = getChildFragmentManager().beginTransaction();
+                juQingChatFragment =  JuQingChatFragment.newInstance(role,id[0]);
+                mFragmentTransaction.hide(mCurFragment).add(R.id.container,juQingChatFragment,"juQingFragment");
+                mFragmentTransaction.commit();
+                mCurFragment = juQingChatFragment;
+            }
         }
     }
 }

@@ -92,7 +92,6 @@ public class CommentListActivity extends BaseAppCompatActivity implements Commen
         fragment = new BottomMenuFragment();
         mRvList.setLoadMoreEnabled(false);
         mRvList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mRvList.getSwipeRefreshLayout().setEnabled(false);
         mAdapter = new CommentListAdapter(mDocId);
         mRvList.getRecyclerView().setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {

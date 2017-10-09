@@ -380,7 +380,7 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                                             @Override
                                             public void onError(Throwable e) {
                                                 dialog.dismiss();
-                                                FileUtil.deleteFile(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
+                                                FileUtil.deleteDir(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
                                                 showToast("下载失败");
                                             }
 

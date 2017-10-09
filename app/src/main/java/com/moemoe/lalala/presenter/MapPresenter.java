@@ -13,6 +13,7 @@ import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
+import com.moemoe.lalala.utils.JuQingDoneEntity;
 import com.moemoe.lalala.utils.PreferenceUtils;
 
 import java.util.ArrayList;
@@ -127,6 +128,25 @@ public class MapPresenter implements MapContract.Presenter {
                         if(view != null) view.onFailure(code, msg);
                     }
                 });
+    }
+
+    @Override
+    public void findMyDoneJuQing() {
+        apiService.getDoneJuQing()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<JuQingDoneEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<JuQingDoneEntity> entities) {
+                        if(view != null) view.onFindMyDoneJuQingSuccess(entities);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+
     }
 
     @Override

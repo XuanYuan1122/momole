@@ -48,7 +48,7 @@ public class CreateForwardPresenter implements CreateForwardContract.Presenter {
     @Override
     public void createForward(int type, final Object entity) {
         if(type == CreateForwardActivity.TYPE_DYNAMIC){
-            if(!TextUtils.isEmpty(((ForwardSendEntity) entity).img.getPath())){
+            if(TextUtils.isEmpty(((ForwardSendEntity) entity).img.getPath())){
                 apiService.rtDynamic((ForwardSendEntity) entity)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

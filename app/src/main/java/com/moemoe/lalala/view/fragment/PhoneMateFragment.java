@@ -52,12 +52,6 @@ public class PhoneMateFragment extends BaseFragment{
         subscribeBackOrChangeEvent();
     }
 
-    public void changeRoleState(boolean select){
-        if(mCurFragment instanceof PhoneTicketFragment){
-            ((PhoneTicketFragment) mCurFragment).changeRoleState(select);
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if(mCurFragment != null && mCurFragment instanceof PhoneTicketFragment){

@@ -11,21 +11,28 @@ import org.greenrobot.greendao.annotation.Generated;
 public class JuQIngStoryEntity {
     @Id
     private String storyId;
-    private String content;//json
+    private String json;//json
     private String extra;
     private int level;//1:主线 2:支线 3:日常 ,
 
-    @Generated(hash = 1119522479)
-    public JuQIngStoryEntity(String storyId, String content, String extra,
-            int level) {
+    @Generated(hash = 1727472124)
+    public JuQIngStoryEntity() {
+    }
+
+    @Generated(hash = 656531112)
+    public JuQIngStoryEntity(String storyId, String json, String extra, int level) {
         this.storyId = storyId;
-        this.content = content;
+        this.json = json;
         this.extra = extra;
         this.level = level;
     }
 
-    @Generated(hash = 1727472124)
-    public JuQIngStoryEntity() {
+    public String getJson() {
+        return json;
+    }
+
+    public void setJson(String json) {
+        this.json = json;
     }
 
     public String getStoryId() {
@@ -34,14 +41,6 @@ public class JuQIngStoryEntity {
 
     public void setStoryId(String storyId) {
         this.storyId = storyId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
     public String getExtra() {

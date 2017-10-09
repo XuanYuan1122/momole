@@ -78,6 +78,14 @@ public class JuQingUtil {
     /**
      * 已完成的剧情
      */
+    public static void saveJuQingDone(ArrayList<JuQingDoneEntity> entities){
+        JuQingDoneEntityDao dao = GreenDaoManager.getInstance().getSession().getJuQingDoneEntityDao();
+        dao.insertOrReplaceInTx(entities);
+    }
+
+    /**
+     * 已完成的剧情
+     */
     public static void saveJuQingDone(String id,long time){
         JuQingDoneEntityDao dao = GreenDaoManager.getInstance().getSession().getJuQingDoneEntityDao();
         JuQingDoneEntity entity = new JuQingDoneEntity(id,time);
@@ -85,24 +93,92 @@ public class JuQingUtil {
     }
 
     /**
+     *     String res = "";
+     String name = "";
+     String type = "";
+     String extra = "";
      * 检查是否有满足的剧情
      * @return
      */
-    public static String checkJuQing(Calendar calendar){
+    public static  ArrayList<JuQingTriggerEntity> checkJuQingAll(Calendar calendar){
+        ArrayList<JuQingTriggerEntity> res = new ArrayList<>();
+        List<JuQingTriggerEntity> list = GreenDaoManager.getInstance().getSession().getJuQingTriggerEntityDao().loadAll();
+        for(JuQingTriggerEntity entity : list){
+            JuQingDoneEntity tmp = GreenDaoManager.getInstance().getSession().getJuQingDoneEntityDao().load(entity.getStoryId());
+            if(tmp != null) continue;
+            JsonArray condition = new Gson().fromJson(entity.getConditionStr(),JsonArray.class);
+            if(condition.size() > 0){
+                if(checkCondition(condition,entity.getStoryId(),calendar)){
+                    res.add(entity);
+                }
+            }
+        }
+        return res;
+    }
+
+    public static String[] checkJuQingMobile(Calendar calendar,String role){//{"map": "111"}
         String res = "";
+        String name = "";
         List<JuQingTriggerEntity> list = GreenDaoManager.getInstance().getSession().getJuQingTriggerEntityDao().loadAll();
         for(JuQingTriggerEntity entity : list){
             if("mobile".equals(entity.getType())){//只关注手机剧情
+                JuQingDoneEntity tmp = GreenDaoManager.getInstance().getSession().getJuQingDoneEntityDao().load(entity.getStoryId());
+                if(tmp != null) continue;
                 JsonArray condition = new Gson().fromJson(entity.getConditionStr(),JsonArray.class);
                 if(condition.size() > 0){
-                    if(checkCondition(condition,entity.getStoryId(),calendar)){
+                    if(checkCondition(condition,entity.getStoryId(),calendar) && entity.getRoleOf().equals(role)){
                         res = entity.getStoryId();
+                        name = entity.getRoleOf();
                         break;
                     }
                 }
             }
         }
-        return res;
+        return new String[]{res,name};
+    }
+
+    public static String[] checkJuQingMobile(Calendar calendar){//{"map": "111"}
+        String res = "";
+        String name = "";
+        List<JuQingTriggerEntity> list = GreenDaoManager.getInstance().getSession().getJuQingTriggerEntityDao().loadAll();
+        for(JuQingTriggerEntity entity : list){
+            if("mobile".equals(entity.getType())){//只关注手机剧情
+                JuQingDoneEntity tmp = GreenDaoManager.getInstance().getSession().getJuQingDoneEntityDao().load(entity.getStoryId());
+                if(tmp != null) continue;
+                JsonArray condition = new Gson().fromJson(entity.getConditionStr(),JsonArray.class);
+                if(condition.size() > 0){
+                    if(checkCondition(condition,entity.getStoryId(),calendar)){
+                        res = entity.getStoryId();
+                        name = entity.getRoleOf();
+                        break;
+                    }
+                }
+            }
+        }
+        return new String[]{res,name};
+    }
+
+    /**
+     * 检查是否有满足的剧情
+     * @return
+     */
+    public static String[] checkJuQingAll(Calendar calendar, String role){
+        String res = "";
+        String name = "";
+        List<JuQingTriggerEntity> list = GreenDaoManager.getInstance().getSession().getJuQingTriggerEntityDao().loadAll();
+        for(JuQingTriggerEntity entity : list){
+            if("mobile".equals(entity.getType()) && entity.getRoleOf().equals(role)){//只关注手机剧情,角色名
+                JsonArray condition = new Gson().fromJson(entity.getConditionStr(),JsonArray.class);
+                if(condition.size() > 0){
+                    if(checkCondition(condition,entity.getStoryId(),calendar)){
+                        res = entity.getStoryId();
+                        name = entity.getRoleOf();
+                        break;
+                    }
+                }
+            }
+        }
+        return new String[]{res,name};
     }
 
     public static boolean checkCondition(JsonArray condition,String storyId,Calendar calendar){
@@ -235,7 +311,7 @@ public class JuQingUtil {
         ArrayList<JuQingShowEntity> resList = new ArrayList<>();
         JuQIngStoryEntity entity = GreenDaoManager.getInstance().getSession().getJuQIngStoryEntityDao().load(id);
         if(entity != null){
-            JsonArray array = new Gson().fromJson(entity.getContent(),JsonArray.class);
+            JsonArray array = new Gson().fromJson(entity.getJson(),JsonArray.class);
             for (int i = 0;i < array.size();i++){
                 JsonObject json = array.get(i).getAsJsonObject();
                 JuQingShowEntity entity1 = new JuQingShowEntity();
@@ -243,13 +319,17 @@ public class JuQingUtil {
                 entity1.setName(json.get("name").getAsString());
                 entity1.setText(json.get("talk").getAsJsonObject().get("text").getAsString());
                 entity1.setExtra(entity.getExtra());
-                LinkedHashMap<String,Integer> map = new LinkedHashMap<>();
-                JsonArray option = json.get("option").getAsJsonArray();
-                JsonArray nextnode = json.get("nextnode").getAsJsonArray();
-                for(int n = 0;n< option.size();n++){
-                    map.put(option.get(n).getAsString(),nextnode.get(n).getAsInt());
+                if(json.has("option")){
+                    LinkedHashMap<String,Integer> map = new LinkedHashMap<>();
+                    JsonArray option = json.get("option").getAsJsonArray();
+                    JsonArray nextnode = json.get("nextnode").getAsJsonArray();
+                    for(int n = 0;n< option.size();n++){
+                        map.put(option.get(n).getAsString(),nextnode.get(n).getAsInt());
+                    }
+                    entity1.setChoice(map);
+                }else {
+                    entity1.setChoice(new LinkedHashMap<String, Integer>());
                 }
-                entity1.setChoice(map);
                 resList.add(entity1);
             }
         }

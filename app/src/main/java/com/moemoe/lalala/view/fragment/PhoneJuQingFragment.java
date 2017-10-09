@@ -1,6 +1,5 @@
 package com.moemoe.lalala.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -13,10 +12,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
-import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.view.activity.DynamicActivity;
 import com.moemoe.lalala.view.activity.PhoneMainActivity;
-import com.moemoe.lalala.view.activity.TagControlActivity;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
@@ -25,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-
-import static com.moemoe.lalala.utils.StartActivityConstant.REQ_DELETE_TAG;
 
 /**
  * Created by yi on 2017/9/4.
@@ -47,6 +41,7 @@ public class PhoneJuQingFragment extends BaseFragment{
 
     private TabFragmentPagerAdapter mAdapter;
     private BottomMenuFragment fragment;
+    private ArrayList<BaseFragment> fragmentList;
 
     public static PhoneJuQingFragment newInstance(){
         return new PhoneJuQingFragment();
@@ -72,10 +67,10 @@ public class PhoneJuQingFragment extends BaseFragment{
         for (String title : mTitles) {
             mTabEntities.add(new TabEntity(title, R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
         }
-        List<BaseFragment> fragmentList = new ArrayList<>();
-        fragmentList.add(PhoneJuQingListFragment.newInstance("main"));
-        fragmentList.add(PhoneJuQingListFragment.newInstance("sec"));
-        fragmentList.add(PhoneJuQingListFragment.newInstance("day"));
+        fragmentList = new ArrayList<>();
+        fragmentList.add(PhoneJuQingListFragment.newInstance(1));
+        fragmentList.add(PhoneJuQingListFragment.newInstance(2));
+        fragmentList.add(PhoneJuQingListFragment.newInstance(3));
         List<String> titles = new ArrayList<>();
         titles.add("主线");
         titles.add("支线");
@@ -145,13 +140,32 @@ public class PhoneJuQingFragment extends BaseFragment{
             public void OnMenuItemClick(int itemId) {
                 if(itemId == 1){
                     mTvMenu.setText("全部");
-                    //TODO 根据选择加载list
+                    for (BaseFragment fragment : fragmentList){
+                        if(fragment instanceof PhoneJuQingListFragment){
+                            ((PhoneJuQingListFragment) fragment).changeFilter(0);
+                        }
+                    }
                 } else if(itemId == 2){
                     mTvMenu.setText("攻略中");
+                    for (BaseFragment fragment : fragmentList){
+                        if(fragment instanceof PhoneJuQingListFragment){
+                            ((PhoneJuQingListFragment) fragment).changeFilter(0);
+                        }
+                    }
                 } else if(itemId == 3){
                     mTvMenu.setText("已完成");
+                    for (BaseFragment fragment : fragmentList){
+                        if(fragment instanceof PhoneJuQingListFragment){
+                            ((PhoneJuQingListFragment) fragment).changeFilter(0);
+                        }
+                    }
                 } else if(itemId == 4){
                     mTvMenu.setText("未解锁");
+                    for (BaseFragment fragment : fragmentList){
+                        if(fragment instanceof PhoneJuQingListFragment){
+                            ((PhoneJuQingListFragment) fragment).changeFilter(0);
+                        }
+                    }
                 }
             }
         });

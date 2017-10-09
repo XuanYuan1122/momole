@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/len_guli"/>
+        android:src="@drawable/bg_phone_tape_len_incite"/>
 
     <LinearLayout
         android:layout_width="match_parent"

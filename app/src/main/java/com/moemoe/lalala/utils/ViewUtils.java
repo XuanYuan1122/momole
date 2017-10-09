@@ -310,7 +310,7 @@ public class ViewUtils {
         }
     }
 
-    public static void setRoleButton(ImageView ivRole){
+    public static void setRoleButton(ImageView ivRole,TextView tv){
         if(StringUtils.isyoru()){
             if(PreferenceUtils.isLogin()){
                 ArrayList<DeskMateEntity> list = PreferenceUtils.getAuthorInfo().getDeskMateEntities();
@@ -325,12 +325,15 @@ public class ViewUtils {
                     if(!TextUtils.isEmpty(mate)){
                         if("len".equals(mate)){
                             ivRole.setImageResource(R.drawable.btn_len_sleep);
+                            tv.setText("现在暂时没有需要跑腿或代练游戏的任务，你要做什么都和我没关系……要去隔壁社团看看吗？");
                         }
                         if("mei".equals(mate)){
                             ivRole.setImageResource(R.drawable.btn_mei_sleep);
+                            tv.setText("学园里的事情就交给美藤吧！小哥哥有想做的事要跟我说哦？我想现在有不少学部需要你呐！");
                         }
                         if("sari".equals(mate)){
                             ivRole.setImageResource(R.drawable.btn_mei_sleep);
+                            tv.setText("少年，你是哪位？开玩笑的啦。说好了要和你一起逛逛的，接下来去哪里好？我可是很期待呢。");
                         }
                     }else {
                         ivRole.setImageResource(R.drawable.btn_len_sleep);
@@ -344,23 +347,53 @@ public class ViewUtils {
         }else {
             if(PreferenceUtils.isLogin()){
                 ArrayList<DeskMateEntity> list = PreferenceUtils.getAuthorInfo().getDeskMateEntities();
-                String mate = "";
+                DeskMateEntity mate = null;
                 if(list != null){
                     for (DeskMateEntity entity : list){
                         if(entity.isDeskmate()){
-                            mate = entity.getRoleOf();
+                            mate = entity;
                             break;
                         }
                     }
-                    if(!TextUtils.isEmpty(mate)){
-                        if("len".equals(mate)){
-                            ivRole.setImageResource(R.drawable.btn_len_normal);//TODO 服装不同
+                    if(mate != null){
+                        if("len".equals(mate.getRoleOf())){
+                            tv.setText("现在暂时没有需要跑腿或代练游戏的任务，你要做什么都和我没关系……要去隔壁社团看看吗？");
+                            if(mate.getClothesId().equals("d20c51a4-f84e-4404-b520-a9bf6f52f603")){
+                                ivRole.setImageResource(R.drawable.btn_len_normal);
+                            }
+                            if(mate.getClothesId().equals("aa8466da-423a-4dff-9320-907e075ee507")){
+                                ivRole.setImageResource(R.drawable.btn_len_swim);
+                            }
+                            if(mate.getClothesId().equals("63fcac63-dcae-4a7f-9d59-5211c86f2a42")){
+                                ivRole.setImageResource(R.drawable.btn_len_impact);
+                            }
+                            if(mate.getClothesId().equals("1e8c16d8-e0e2-4d45-bc42-bfed079522ac")){
+                                ivRole.setImageResource(R.drawable.btn_len_space);
+                            }
+                            if(mate.getClothesId().equals("63682d29-3069-4b2c-a6e3-3b5f2c29a04e")){
+                                ivRole.setImageResource(R.drawable.btn_len_xmas);
+                            }
+                            if(mate.getClothesId().equals("6ceba098-1f53-4e67-b61d-ad6fdc59d06a")){
+                                ivRole.setImageResource(R.drawable.btn_len_kimono);
+                            }
                         }
-                        if("mei".equals(mate)){
-                            ivRole.setImageResource(R.drawable.btn_len_normal);
+                        if("mei".equals(mate.getRoleOf())){
+                            tv.setText("学园里的事情就交给美藤吧！小哥哥有想做的事要跟我说哦？我想现在有不少学部需要你呐！");
+                            if(mate.getClothesId().equals("1d6beb00-ea83-4e32-8dbd-8e0b7ee9ec5f")){
+                                ivRole.setImageResource(R.drawable.btn_mei_normal);
+                            }
+                            if(mate.getClothesId().equals("fc745524-df5c-43e6-b6db-3a1ee05c283c")){
+                                ivRole.setImageResource(R.drawable.btn_mei_kimono);
+                            }
                         }
-                        if("sari".equals(mate)){
-                            ivRole.setImageResource(R.drawable.btn_len_normal);
+                        if("sari".equals(mate.getRoleOf())){
+                            tv.setText("少年，你是哪位？开玩笑的啦。说好了要和你一起逛逛的，接下来去哪里好？我可是很期待呢。");
+                            if(mate.getClothesId().equals("59588a90-7667-4052-8ce4-17a0a013ac29")){
+                                ivRole.setImageResource(R.drawable.btn_sari_normal);
+                            }
+                            if(mate.getClothesId().equals("83e2b3cc-6831-4405-a3b5-6da7fd51cd5d")){
+                                ivRole.setImageResource(R.drawable.btn_sari_kimono);
+                            }
                         }
                     }else {
                         ivRole.setImageResource(R.drawable.btn_len_normal);
@@ -373,4 +406,8 @@ public class ViewUtils {
             }
         }
     }
+
+//    public static void setRoleButton(ImageView ivRole){
+//        setRoleButton(ivRole,null);
+//    }
 }

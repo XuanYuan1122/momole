@@ -199,7 +199,7 @@ public class DynamicPresenter implements DynamicContract.Presenter {
 
     @Override
     public void loadCommentsList(String id, int type, boolean sortTime, final int index) {
-        if(type == 1){//0 转发 1 评论
+        if(type == 0){//0 转发 1 评论
             apiService.loadRtComment(id,ApiService.LENGHT,index)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

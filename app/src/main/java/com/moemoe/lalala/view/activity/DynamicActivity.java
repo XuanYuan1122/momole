@@ -312,6 +312,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         View v = LayoutInflater.from(this).inflate(R.layout.item_new_feed_list,null);
         v.findViewById(R.id.rl_from_top).setVisibility(View.GONE);
         ImageView userHead = (ImageView) v.findViewById(R.id.iv_avatar);
+        ImageView ivVip = (ImageView) v.findViewById(R.id.iv_vip);
         TextView userName = (TextView) v.findViewById(R.id.tv_name);
         ImageView userSex = (ImageView) v.findViewById(R.id.iv_sex);
         TextView level = (TextView) v.findViewById(R.id.tv_level);
@@ -323,6 +324,11 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         LinearLayout root = (LinearLayout) v.findViewById(R.id.ll_img_root);
         
         //user top
+        if(mDynamic.getCreateUser().isVip()){
+            ivVip.setVisibility(View.VISIBLE);
+        }else {
+            ivVip.setVisibility(View.GONE);
+        }
         int size = (int) getResources().getDimension(R.dimen.x80);
         Glide.with(this)
                 .load(StringUtils.getUrl(this, mDynamic.getCreateUser().getHeadPath(),size,size,false,true))
@@ -386,7 +392,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             root.setBackgroundColor(Color.WHITE);
             DynamicContentEntity dynamicContentEntity = new Gson().fromJson(mDynamic.getDetail(),DynamicContentEntity.class);
             if(dynamicContentEntity.getImages() != null && dynamicContentEntity.getImages().size() > 0){
-                setImg(dynamicContentEntity.getImages());
+                setImg(dynamicContentEntity.getImages(),root);
             }else {
                 root.setVisibility(View.GONE);
             }
@@ -524,7 +530,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 ((LinearLayout)$(R.id.ll_img_root)).addView(tv);
             }
             if(retweetEntity.getImages() != null && retweetEntity.getImages().size() > 0){
-                setImg(retweetEntity.getImages());
+                setImg(retweetEntity.getImages(),root);
             }else {
                 if(TextUtils.isEmpty(retweetEntity.getContent())){
                     root.setVisibility(View.GONE);
@@ -700,7 +706,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         }
     }
 
-    private void setImg(ArrayList<Image> images){
+    private void setImg(ArrayList<Image> images,LinearLayout root){
         if(images.size() == 1){
             Image image = images.get(0);
             int[] wh;
@@ -719,7 +725,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                     .placeholder(R.drawable.bg_default_square)
                     .into(iv);
             showImg(iv,images,0);
-            ((LinearLayout)$(R.id.ll_img_root)).addView(iv);
+            root.addView(iv);
         }else if(images.size() == 2){
             LinearLayout layout = new LinearLayout(this);
             layout.setOrientation(LinearLayout.HORIZONTAL);
@@ -742,7 +748,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 layout.addView(iv);
                 showImg(iv,images,i);
             }
-            ((LinearLayout)$(R.id.ll_img_root)).addView(layout);
+            root.addView(layout);
         }else if(images.size() == 4){
             int w = (int) ((DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x54)))/2;
             LinearLayout layout = null;
@@ -766,7 +772,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 layout.addView(iv);
                 showImg(iv,images,i);
                 if(i == 1 || i == 3){
-                    ((LinearLayout)$(R.id.ll_img_root)).addView(layout);
+                    root.addView(layout);
                 }
             }
         }else {
@@ -794,7 +800,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 layout.addView(iv);
                 showImg(iv,images,i);
                 if(i % 3 == 2 || images.size() == i + 1){
-                    ((LinearLayout)$(R.id.ll_img_root)).addView(layout);
+                    root.addView(layout);
                 }
             }
         }

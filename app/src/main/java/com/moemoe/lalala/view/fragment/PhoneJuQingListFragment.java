@@ -36,11 +36,13 @@ public class PhoneJuQingListFragment extends BaseFragment implements PhoneJuQing
     PhoneJuQingListPresenter mPresenter;
     private PhoneJuQingListAdapter mAdapter;
     private boolean isLoading = false;
+    private int mFilter;
+    private int mType;
 
-    public static PhoneJuQingListFragment newInstance(String type){
+    public static PhoneJuQingListFragment newInstance(int type){
         PhoneJuQingListFragment fragment = new PhoneJuQingListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("type",type);
+        bundle.putInt("type",type);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -57,7 +59,8 @@ public class PhoneJuQingListFragment extends BaseFragment implements PhoneJuQing
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        final String type = getArguments().getString("type");
+        mType = getArguments().getInt("type");
+        mFilter = 0;
         mListDocs.getSwipeRefreshLayout().setEnabled(false);
         mListDocs.setLoadMoreEnabled(false);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -78,7 +81,7 @@ public class PhoneJuQingListFragment extends BaseFragment implements PhoneJuQing
             @Override
             public void onLoadMore() {
                 isLoading = true;
-                mPresenter.loadUserList(type,mAdapter.getItemCount());
+                mPresenter.loadUserList(mType,mFilter,mAdapter.getItemCount());
             }
 
             @Override
@@ -96,13 +99,25 @@ public class PhoneJuQingListFragment extends BaseFragment implements PhoneJuQing
                 return false;
             }
         });
-        mPresenter.loadUserList(type,0);
+        mPresenter.loadUserList(mType,mFilter,0);
     }
 
     @Override
     public void onFailure(int code, String msg) {
         isLoading = false;
         mListDocs.setComplete();
+    }
+
+    /**
+     *
+     * @param type 0全部 1.攻略中 2.已完成 3.未解锁
+     */
+    public void changeFilter(int type){
+        if(mFilter == type){
+            return;
+        }
+        mFilter = type;
+        mPresenter.loadUserList(mType,mFilter,0);
     }
 
     @Override

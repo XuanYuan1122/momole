@@ -23,16 +23,11 @@ Java_com_moemoe_lalala_view_activity_MapActivity_initNDK(JNIEnv *env, jobject in
 extern "C"
 JNIEXPORT void JNICALL
 toNativeView(char *schema,char *name) {
-    LOGE("我是log %s",name);
     JNIEnv *env;
     int attached = (*gJavaVM).AttachCurrentThread(&env,NULL);
-    LOGE("我是log2 %d",attached);
     jclass jcls = (*env).FindClass("com/moemoe/lalala/view/activity/MapActivity");
-    LOGE("我是log3 %s",name);
     jmethodID mid = (*env).GetMethodID(jcls,"toNativeView","(Ljava/lang/String;Ljava/lang/String;)V");
-    LOGE("我是log4 %s",name);
     (*env).CallVoidMethod(gCallbackObject,mid,(*env).NewStringUTF(schema),(*env).NewStringUTF(name));
-    LOGE("我是log5 %s",name);
 }
 
 extern "C"
@@ -55,3 +50,32 @@ StartLoad() {
     (*env).CallVoidMethod(gCallbackObject,mid);
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+toBagFromUnity(char *schema) {
+    JNIEnv *env;
+    int attached = (*gJavaVM).AttachCurrentThread(&env,NULL);
+    jclass jcls = (*env).FindClass("com/moemoe/lalala/view/activity/MapActivity");
+    jmethodID mid = (*env).GetMethodID(jcls,"toBagFromUnity","(Ljava/lang/String;)V");
+    (*env).CallVoidMethod(gCallbackObject,mid,(*env).NewStringUTF(schema));
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+toDepartmentFromUnity(char *schema,char *name) {
+    JNIEnv *env;
+    int attached = (*gJavaVM).AttachCurrentThread(&env,NULL);
+    jclass jcls = (*env).FindClass("com/moemoe/lalala/view/activity/MapActivity");
+    jmethodID mid = (*env).GetMethodID(jcls,"toDepartmentFromUnity","(Ljava/lang/String;)V");
+    (*env).CallVoidMethod(gCallbackObject,mid,(*env).NewStringUTF(schema),(*env).NewStringUTF(name));
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+toPersonalFromUnity(char *schema,char *name) {
+    JNIEnv *env;
+    int attached = (*gJavaVM).AttachCurrentThread(&env,NULL);
+    jclass jcls = (*env).FindClass("com/moemoe/lalala/view/activity/MapActivity");
+    jmethodID mid = (*env).GetMethodID(jcls,"toPersonalFromUnity","(Ljava/lang/String;)V");
+    (*env).CallVoidMethod(gCallbackObject,mid,(*env).NewStringUTF(schema),(*env).NewStringUTF(name));
+}

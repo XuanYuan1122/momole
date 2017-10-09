@@ -1,7 +1,11 @@
 package com.moemoe.lalala.model.entity;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -13,8 +17,8 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class AlarmClockEntity  implements Parcelable{
 
-    @Id
-    private long id;//闹钟id
+    @Id(autoincrement = true)
+    private Long id;//闹钟id
     private int hour;
     private int minute;
     private String roleName;
@@ -35,22 +39,8 @@ public class AlarmClockEntity  implements Parcelable{
 
     }
 
-    private AlarmClockEntity(Parcel in){
-        id = in.readLong();
-        hour = in.readInt();
-        minute = in.readInt();
-        roleName = in.readString();
-        roleId = in.readString();
-        repeat = in.readString();
-        weeks = in.readString();
-        tag = in.readString();
-        ringName = in.readString();
-        ringUrl = in.readInt();
-        onOff = in.readByte() != 0;
-    }
-
-    @Generated(hash = 581119664)
-    public AlarmClockEntity(long id, int hour, int minute, String roleName, String roleId,
+    @Generated(hash = 41083824)
+    public AlarmClockEntity(Long id, int hour, int minute, String roleName, String roleId,
             String repeat, String weeks, String tag, String ringName, int ringUrl, boolean onOff) {
         this.id = id;
         this.hour = hour;
@@ -65,12 +55,25 @@ public class AlarmClockEntity  implements Parcelable{
         this.onOff = onOff;
     }
 
-
     public static final Parcelable.Creator<AlarmClockEntity> CREATOR = new Creator<AlarmClockEntity>() {
 
         @Override
         public AlarmClockEntity createFromParcel(Parcel in) {
-            return new AlarmClockEntity(in);
+            AlarmClockEntity entity = new AlarmClockEntity();
+            Bundle bundle;
+            bundle = in.readBundle(getClass().getClassLoader());
+            entity.id = bundle.getLong("id");
+            entity.hour = bundle.getInt("hour");
+            entity.minute = bundle.getInt("minute");
+            entity.ringUrl = bundle.getInt("ringUrl");
+            entity.roleName = bundle.getString("roleName");
+            entity.roleId = bundle.getString("roleId");
+            entity.repeat = bundle.getString("repeat");
+            entity.weeks = bundle.getString("weeks");
+            entity.tag = bundle.getString("tag");
+            entity.ringName = bundle.getString("ringName");
+            entity.onOff = bundle.getBoolean("onOff");
+            return entity;
         }
 
         @Override
@@ -82,24 +85,26 @@ public class AlarmClockEntity  implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeLong(id);
-        out.writeInt(hour);
-        out.writeInt(minute);
-        out.writeString(roleName);
-        out.writeString(roleId);
-        out.writeString(repeat);
-        out.writeString(weeks);
-        out.writeString(tag);
-        out.writeString(ringName);
-        out.writeInt(ringUrl);
-        out.writeByte((byte) (onOff ? 1 : 0));
+        Bundle bundle = new Bundle();
+        bundle.putLong("id", id);
+        bundle.putInt("hour", hour);
+        bundle.putInt("minute", minute);
+        bundle.putInt("ringUrl", ringUrl);
+        bundle.putString("roleName", roleName);
+        bundle.putString("roleId",roleId);
+        bundle.putString("repeat",repeat);
+        bundle.putString("weeks",weeks);
+        bundle.putString("tag",tag);
+        bundle.putString("ringName",ringName);
+        bundle.putBoolean("onOff",onOff);
+        out.writeBundle(bundle);
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.StatFs;
 import android.text.TextUtils;
 
@@ -186,7 +188,7 @@ public class Utils {
         Intent intent = new Intent(context, AlarmClockBroadcast.class);
         intent.putExtra("alarm", entity);
         PendingIntent pi = PendingIntent.getBroadcast(context,
-                (int) entity.getId(), intent,
+                entity.getId().intValue(), intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context
                 .getSystemService(Context.ALARM_SERVICE);
@@ -455,6 +457,15 @@ public class Utils {
                                     entity.setSave(uploadResultEntity.isSave());
                                     entity.setSize(uploadResultEntity.getSize());
                                     entity.setType(uploadResultEntity.getType());
+                                    if(!TextUtils.isEmpty(folderType) && folderType.equals(FolderType.XS.toString())){
+                                        entity.setNum((int)file.length());
+                                        entity.setTitle(folderName);
+                                        String content = FileUtil.readFileToString(file);
+                                        if(content.length() > 100){
+                                            content = content.substring(0,100);
+                                        }
+                                        entity.setContent(content);
+                                    }
                                     res.onNext(entity);
                                     res.onComplete();
                                 }

@@ -34,7 +34,9 @@ import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileItemDecoration;
 import com.moemoe.lalala.utils.NetworkUtils;
+import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
+import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
@@ -83,7 +85,7 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
     CreateDynamicPresenter mPresenter;
 
     private SelectItemAdapter mSelectAdapter;
-    private ArrayList<String> mPaths;
+    private ArrayList<Object> mPaths;
     private ArrayList<DocTagEntity> mTags;
     private boolean tagFlag;
     private String mTagNameDef;
@@ -254,6 +256,13 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
         ViewUtils.setLeftMargins(mTvMenuLeft, (int) getResources().getDimension(R.dimen.x36));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvMenuLeft.setText(getString(R.string.label_give_up));
+        mTvMenuLeft.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                SoftKeyboardUtils.dismissSoftKeyboard(CreateDynamicActivity.this);
+                finish();
+            }
+        });
         mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setText("发动态");
         mTvMenuRight.setVisibility(View.VISIBLE);
@@ -289,10 +298,9 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
 
                 @Override
                 public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
+                    mPaths.clear();
                     mPaths.addAll(photoPaths);
-                    ArrayList<Object> res = new ArrayList<>();
-                    res.addAll(mPaths);
-                    mSelectAdapter.setData(res);
+                    mSelectAdapter.setData(mPaths);
                 }
             });
         }
@@ -337,7 +345,11 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
     private void choosePhoto(){
         if (mPaths.size() < ICON_NUM_LIMIT){
             try {
-                DialogUtils.createImgChooseDlg(CreateDynamicActivity.this, null, CreateDynamicActivity.this, mPaths, ICON_NUM_LIMIT).show();
+                ArrayList<String> res = new ArrayList<>();
+                for(Object tmp : mPaths){
+                    res.add((String) tmp);
+                }
+                DialogUtils.createImgChooseDlg(CreateDynamicActivity.this, null, CreateDynamicActivity.this, res, ICON_NUM_LIMIT).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -368,7 +380,11 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
         }
         entity.tags = tags;
         entity.images = new ArrayList<>();
-        mPresenter.createDynamic(entity,mPaths);
+        ArrayList<String> path = new ArrayList<>();
+        for(Object tmp : mPaths){
+            path.add((String) tmp);
+        }
+        mPresenter.createDynamic(entity,path);
     }
 
     @Override

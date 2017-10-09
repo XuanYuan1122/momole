@@ -1,0 +1,7 @@
+# ninja log v5
+7	5240	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	e2e7d07b4dff1738
+5241	6004	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6
+2	1937	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	e2e7d07b4dff1738
+1937	3109	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6
+3	3095	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	e2e7d07b4dff1738
+3096	3815	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6

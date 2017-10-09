@@ -5,8 +5,11 @@ import android.widget.ImageView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
+import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
+
+import java.util.ArrayList;
 
 /**
  *
@@ -16,6 +19,15 @@ import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
 public class MateSelectAdapter extends BaseRecyclerViewAdapter<Integer,ClickableViewHolder> {
 
     private int select;
+    private ArrayList<Integer> have = new ArrayList<>();
+
+    public ArrayList<Integer> getHave() {
+        return have;
+    }
+
+    public void setHave(ArrayList<Integer> have) {
+        this.have = have;
+    }
 
     public MateSelectAdapter() {
         super(R.layout.item_img);
@@ -37,6 +49,11 @@ public class MateSelectAdapter extends BaseRecyclerViewAdapter<Integer,Clickable
             helper.setVisible(R.id.view_select,true);
         }else {
             helper.setVisible(R.id.view_select,false);
+        }
+        if(have.contains(position)){
+            helper.setVisible(R.id.iv_cover,false);
+        }else {
+            helper.setVisible(R.id.iv_cover,true);
         }
     }
 

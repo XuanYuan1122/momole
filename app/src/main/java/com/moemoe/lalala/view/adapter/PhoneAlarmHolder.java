@@ -49,12 +49,12 @@ public class PhoneAlarmHolder extends ClickableViewHolder {
                     AlarmClockEntityDao dao = GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao();
                     entity.setOnOff(false);
                     dao.insertOrReplace(entity);
-                    Utils.cancelAlarmClock(itemView.getContext(), (int) entity.getId());
+                    Utils.cancelAlarmClock(itemView.getContext(), entity.getId().intValue());
                     NotificationManager notificationManager = (NotificationManager) itemView.getContext().
                             getSystemService(
                                     Activity.NOTIFICATION_SERVICE);
                     // 取消下拉列表通知消息
-                    notificationManager.cancel((int) entity.getId());
+                    notificationManager.cancel(entity.getId().intValue());
                     // 停止播放
                     AudioPlayer.getInstance(itemView.getContext()).stop();
                     RxBus.getInstance().post(new AlarmEvent(entity,3));

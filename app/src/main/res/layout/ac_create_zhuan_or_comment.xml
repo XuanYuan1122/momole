@@ -36,11 +36,13 @@
                 android:id="@+id/et_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="@dimen/y200"
                 android:textColor="@color/black_1e1e1e"
                 android:textSize="@dimen/x30"
                 android:layout_marginTop="@dimen/y40"
                 android:layout_marginStart="@dimen/x36"
                 android:layout_marginEnd="@dimen/x36"
+                android:gravity="top"
                 android:background="@null"/>
 
             <android.support.v7.widget.RecyclerView
@@ -70,13 +72,12 @@
     <CheckBox
         android:id="@+id/cb_comment"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/x30"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/x36"
         android:layout_above="@+id/rl_ope_root"
         android:textColor="@color/black_1e1e1e"
         android:layout_marginBottom="@dimen/y20"
-        android:background="@drawable/btn_forward_comment"
-        android:button="@null"/>
+        android:button="@drawable/btn_forward_comment" />
 
     <View
         android:layout_width="match_parent"

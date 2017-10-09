@@ -241,6 +241,23 @@ public class FileUtil {
         return false;
     }
 
+    public static void deleteDir(final String pPath) {
+        File dir = new File(pPath);
+        deleteDirWihtFile(dir);
+    }
+
+    public static void deleteDirWihtFile(File dir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDirWihtFile(file); // 递规的方式删除文件夹
+        }
+        dir.delete();// 删除目录本身
+    }
+
     public static boolean copyFile(String src, String dst) {
         if (TextUtils.isEmpty(src))
             return false;
@@ -486,7 +503,7 @@ public class FileUtil {
             }
             in = new FileInputStream(file);
             in.read(tempbytes);
-            return new String(tempbytes,"utf-8");
+            return new String(tempbytes,FileUtil.getCharset(file.getAbsolutePath()));
         } catch (Exception e1) {
             e1.printStackTrace();
             return "";

@@ -358,7 +358,7 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                                         @Override
                                         public void onError(Throwable e) {
                                             dialog.dismiss();
-                                            FileUtil.deleteFile(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
+                                            FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
                                             showToast("下载失败");
                                         }
 
@@ -417,7 +417,7 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                                         @Override
                                         public void onError(Throwable e) {
                                             dialog.dismiss();
-                                            FileUtil.deleteFile(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
+                                            FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
                                             showToast("下载失败");
                                         }
 

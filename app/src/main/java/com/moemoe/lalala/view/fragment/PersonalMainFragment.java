@@ -213,6 +213,9 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         mTvNeedScore.setText((entity.getLevelScoreEnd() - entity.getScore())+"");
         mBar.setMax(entity.getLevelScoreEnd() - entity.getLevelScoreStart());
         mBar.setProgress(entity.getScore() - entity.getLevelScoreStart());
+        if (uuid.equals(PreferenceUtils.getUUid())) {
+            PreferenceUtils.getAuthorInfo().setLevel(entity.getLevel());
+        }
 
         int radius = DensityUtil.dip2px(getContext(),9);
         float[] outerR = new float[] { radius, radius, radius, radius, radius, radius, radius, radius};
@@ -394,6 +397,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         //folder
         if(entity.getFolderList().size() > 0){
             mFolderRoot.setVisibility(View.VISIBLE);
+            mFolderAddRoot.setVisibility(View.VISIBLE);
             for (int n = 0;n < entity.getFolderList().size();n++){
                 final ShowFolderEntity item = entity.getFolderList().get(n);
                 View v = LayoutInflater.from(getContext()).inflate(R.layout.item_bag_cover, null);
@@ -412,16 +416,21 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                     }
                 }
                 tag.setText(tagStr);
-                mark.setText(item.getType());
-                if(item.getType().equals("综合")){
+
+                if(item.getType().equals("ZH")){
+                    mark.setText("综合");
                     mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
-                }else if(item.getType().equals("图集")){
+                }else if(item.getType().equals("TJ")){
+                    mark.setText("图集");
                     mark.setBackgroundResource(R.drawable.shape_rect_tuji);
-                }else if(item.getType().equals("漫画")){
+                }else if(item.getType().equals("MH")){
+                    mark.setText("漫画");
                     mark.setBackgroundResource(R.drawable.shape_rect_manhua);
-                }else if(item.getType().equals("小说")){
+                }else if(item.getType().equals("XS")){
+                    mark.setText("小说");
                     mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
-                }else if(item.getType().equals("文章")){
+                }else if(item.getType().equals("WZ")){
+                    mark.setText("文章");
                     mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
                 }
                 int width = (DensityUtil.getScreenWidth(getContext()) - DensityUtil.dip2px(getContext(),42)) / 3;
@@ -458,6 +467,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                         }
                     }
                 });
+
                 mFolderAddRoot.addView(v);
             }
         }else {

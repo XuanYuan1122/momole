@@ -58,7 +58,7 @@
             android:textColor="@color/black"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/size_15"
-            android:text="我的邀请码" />
+            android:text="我的kira号" />
 
         <TextView
             android:id="@+id/tv_invit_num"
@@ -113,7 +113,8 @@
             android:textSize="@dimen/size_14"
             android:textColor="@color/main_cyan"
             android:gravity="end"
-            android:text="福利规则说明"/>
+            android:text="福利规则说明"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

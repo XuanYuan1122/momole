@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public interface PhoneJuQingListContract {
     interface Presenter extends BasePresenter{
-        void loadUserList(String type, int index);
+        void loadUserList(int level,int type, int index);
     }
 
     interface View extends BaseView{

@@ -28,7 +28,7 @@
             android:textColor="@color/black"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/size_15"
-            android:text="邀请人的邀请码" />
+            android:text="邀请人的kira号" />
 
         <EditText
             android:id="@+id/et_num"

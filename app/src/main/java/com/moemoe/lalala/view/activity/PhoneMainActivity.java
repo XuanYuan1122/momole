@@ -162,6 +162,7 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
 
     private static final int FLING_MIN_DISTANCE = 10;
     private static final int FLING_MIN_VELOCITY = 0;
+    private boolean isHide;
 
     GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener(){
         @Override
@@ -169,10 +170,16 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
                                float velocityY){
             if (e1.getY()-e2.getY() > FLING_MIN_DISTANCE
                     && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
-                hideRole();
+                if(!isHide){
+                    hideRole();
+                    isHide = true;
+                }
             } else if (e2.getY()-e1.getY() > FLING_MIN_DISTANCE
                     && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
-                showRole();
+                if(isHide){
+                    showRole();
+                    isHide = false;
+                }
             }
             return false;
         }
@@ -219,7 +226,7 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
             mRoleRoot.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-
+                    clickRole();
                 }
             });
             RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -249,7 +256,7 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
     @Override
     protected void onResume() {
         super.onResume();
-        ViewUtils.setRoleButton(mIvRole);
+        ViewUtils.setRoleButton(mIvRole,mTvText);
     }
 
     @Override
@@ -275,12 +282,6 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
         mFragmentTransaction.commit();
         mCurFragment.release();
         mCurFragment = null;
-    }
-
-    public void changeRoleState(boolean select){
-        if(mCurFragment instanceof PhoneMateFragment){
-            ((PhoneMateFragment) mCurFragment).changeRoleState(select);
-        }
     }
 
     @OnClick({R.id.ll_menu_root,R.id.ll_msg_root,R.id.ll_mate_root,R.id.ll_album_root,R.id.ll_alarm_root,R.id.ll_shop_root,R.id.ll_search_root})

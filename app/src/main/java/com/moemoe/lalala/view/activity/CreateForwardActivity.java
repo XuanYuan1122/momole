@@ -50,6 +50,8 @@ import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileItemDecoration;
 import com.moemoe.lalala.utils.NetworkUtils;
+import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
@@ -96,12 +98,14 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
     LinearLayout mExtraRoot;
     @BindView(R.id.cb_comment)
     CheckBox mCbComment;
+    @BindView(R.id.iv_add_img)
+    ImageView mIvAddImg;
     @Inject
     CreateForwardPresenter mPresenter;
 
     private int mType;
     private SelectItemAdapter mSelectAdapter;
-    private ArrayList<String> mPaths;
+    private ArrayList<Object> mPaths;
     private String mId;
     private String mRtType;
 
@@ -141,6 +145,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
                 .build()
                 .inject(this);
         mType = getIntent().getIntExtra("type",TYPE_ARTICLE);
+        SoftKeyboardUtils.showSoftKeyboard(this,mEtContent);
         mEtContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -184,6 +189,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
             mRvImg.addItemDecoration(new FileItemDecoration());
             mRvImg.setAdapter(mSelectAdapter);
             mPaths = new ArrayList<>();
+            mIvAddImg.setVisibility(View.VISIBLE);
             createForward(mDynamic);
             mCbComment.setVisibility(View.VISIBLE);
             mCbComment.setText("转发并评论");
@@ -194,6 +200,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
                 finish();
                 return;
             }
+            mIvAddImg.setVisibility(View.GONE);
             mId = mArticle.getDocId();
             createArticle(mArticle);
             mCbComment.setVisibility(View.GONE);
@@ -205,6 +212,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
                 return;
             }
             mId = mFolder.getFolderId();
+            mIvAddImg.setVisibility(View.GONE);
             createFolder(mFolder);
             mCbComment.setVisibility(View.GONE);
         }
@@ -216,6 +224,13 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
         ViewUtils.setLeftMargins(mTvMenuLeft, (int) getResources().getDimension(R.dimen.x36));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvMenuLeft.setText(getString(R.string.label_give_up));
+        mTvMenuLeft.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                SoftKeyboardUtils.dismissSoftKeyboard(CreateForwardActivity.this);
+                finish();
+            }
+        });
         mTvTitle.setVisibility(View.VISIBLE);
         if(mType == TYPE_ARTICLE || mType == TYPE_FOLDER){
             mTvTitle.setText("分享");
@@ -407,7 +422,11 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
             case R.id.iv_add_img:
                 if (mPaths.size() < 1){
                     try {
-                        DialogUtils.createImgChooseDlg(CreateForwardActivity.this, null, CreateForwardActivity.this, mPaths, 1).show();
+                        ArrayList<String> res = new ArrayList<>();
+                        for(Object tmp : mPaths){
+                            res.add((String) tmp);
+                        }
+                        DialogUtils.createImgChooseDlg(CreateForwardActivity.this, null, CreateForwardActivity.this, res, 1).show();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -448,7 +467,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
             entity.type = mRtType;
             if(mPaths.size() > 0){
                 Image image = new Image();
-                image.setPath(mPaths.get(0));
+                image.setPath((String) mPaths.get(0));
                 entity.img = image;
             }else {
                 entity.img = new Image();
@@ -499,10 +518,9 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
 
                 @Override
                 public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
+                    mPaths.clear();
                     mPaths.addAll(photoPaths);
-                    ArrayList<Object> res = new ArrayList<>();
-                    res.addAll(mPaths);
-                    mSelectAdapter.setData(res);
+                    mSelectAdapter.setData(mPaths);
                 }
             });
         }

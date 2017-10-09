@@ -1,17 +1,21 @@
 package com.moemoe.lalala.model.entity;
 
+
 import java.util.LinkedHashMap;
+
 
 /**
  * Created by yi on 2017/9/27.
  */
 
-public class JuQingShowEntity {
+public class JuQingShowEntity{
     private int index;
     private String text;
     private String name;
     private LinkedHashMap<String,Integer> choice;
     private String extra; //{"type": "game", "score": "200", "identify": "1"}
+    private String path;
+    private int othenPath;
 
     public int getIndex() {
         return index;
@@ -51,5 +55,21 @@ public class JuQingShowEntity {
 
     public void setExtra(String extra) {
         this.extra = extra;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public int getOthenPath() {
+        return othenPath;
+    }
+
+    public void setOthenPath(int othenPath) {
+        this.othenPath = othenPath;
     }
 }

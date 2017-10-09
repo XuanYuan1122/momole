@@ -416,9 +416,10 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return mDocBean.getTags();
         }else if(position == mTagsPosition + 1){
             return "";
-        }else if(position == getItemCount() - 1){
-            return "";
         }else {
+            if(position == getItemCount() - 1){
+                return "";
+            }
             if(mDocBean.getCoin() > 0 && mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
                 return mComments.get(position - mDocBean.getDetails().size() - 6 - mDocBean.getCoinDetails().size());
             }else if(mDocBean.getCoin() > 0){
@@ -428,6 +429,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }else {
                 return mComments.get(position - mDocBean.getDetails().size() - 4);
             }
+
         }
     }
 
@@ -491,9 +493,10 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             return TYPE_LABEL;
         } else if(position == mTagsPosition + 1){
             return TYPE_FLOOR;
-        }else if(position == getItemCount() - 1){
-            return TYPE_SHOW_ALL;
         }else {
+            if(position == getItemCount() - 1){
+                return TYPE_SHOW_ALL;
+            }
             return TYPE_COMMENT;
         }
     }

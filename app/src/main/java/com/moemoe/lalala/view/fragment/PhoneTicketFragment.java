@@ -100,13 +100,13 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
         lp.rightMargin = (int) getResources().getDimension(R.dimen.x20);
         mTvMenu.setLayoutParams(lp);
         if("len".equals(mate)){
-            mIvCover.setImageResource(R.drawable.btn_len_ticket);
+            mIvCover.setImageResource(R.drawable.bg_phone_tape_len_incite);
         }
         if("mei".equals(mate)){
-            mIvCover.setImageResource(R.drawable.btn_mei_ticket);
+            mIvCover.setImageResource(R.drawable.bg_phone_tape_mei_incite);
         }
         if("sari".equals(mate)){
-            mIvCover.setImageResource(R.drawable.btn_sha_ticket);
+            mIvCover.setImageResource(R.drawable.bg_phone_tape_sha_incite);
         }
         List<BaseFragment> fragmentList = new ArrayList<>();
         fragmentList.add(PhoneLuyinListFragment.newInstance("con",mate));
@@ -126,6 +126,27 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
             @Override
             public void onTabSelect(int position) {
                 mDataPager.setCurrentItem(position);
+                if("len".equals(mate)){
+                    if(position == 0){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_len_incite);
+                    }else if(position == 1){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_len_comfort);
+                    }
+                }
+                if("mei".equals(mate)){
+                    if(position == 0){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_mei_incite);
+                    }else if(position == 1){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_mei_comfort);
+                    }
+                }
+                if("sari".equals(mate)){
+                    if(position == 0){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_sha_incite);
+                    }else if(position == 1){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_sha_comfort);
+                    }
+                }
             }
 
             @Override
@@ -149,12 +170,6 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
             }
         });
         mPresenter.loadTicketsNum();
-    }
-
-
-
-    public void changeRoleState(boolean select){
-        mIvCover.setSelected(select);
     }
 
     public void release(){

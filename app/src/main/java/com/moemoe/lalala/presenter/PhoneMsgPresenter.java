@@ -35,14 +35,14 @@ public class PhoneMsgPresenter implements PhoneMsgContract.Presenter {
 
 
     @Override
-    public void getServerTime() {
+    public void getServerTime(final String role) {
         apiService.getServerTime()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetResultSubscriber<Date>() {
                     @Override
                     public void onSuccess(Date date) {
-                        if(view != null) view.onGetTimeSuccess(date);
+                        if(view != null) view.onGetTimeSuccess(date,role);
                     }
 
                     @Override

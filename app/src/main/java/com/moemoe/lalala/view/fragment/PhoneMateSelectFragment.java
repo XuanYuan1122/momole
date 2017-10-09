@@ -17,6 +17,7 @@ import com.moemoe.lalala.di.components.DaggerPhoneMateComponent;
 import com.moemoe.lalala.di.modules.PhoneMateModule;
 import com.moemoe.lalala.event.MateBackPressEvent;
 import com.moemoe.lalala.event.MateLuyinEvent;
+import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.model.entity.DeskMateEntity;
 import com.moemoe.lalala.model.entity.PhoneFukuEntity;
 import com.moemoe.lalala.model.entity.PhoneMateEntity;
@@ -124,7 +125,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
         mListFuku.getSwipeRefreshLayout().setEnabled(false);
         mListFuku.setLoadMoreEnabled(false);
         LinearLayoutManager manager1 = new LinearLayoutManager(getContext());
-        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        manager1.setOrientation(LinearLayoutManager.HORIZONTAL);
         mListFuku.setLayoutManager(manager1);
         mAdapter2 = new MatefukuAdapter();
         mListFuku.getRecyclerView().setAdapter(mAdapter2);
@@ -170,23 +171,28 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
         list.add(R.drawable.btn_deskmate_chose_len);
         list.add(R.drawable.btn_deskmate_chose_mei);
         list.add(R.drawable.btn_deskmate_chose_sari);
+        ArrayList<Integer> haveMate = new ArrayList<>();
         mHaveMate = PreferenceUtils.getAuthorInfo().getDeskMateEntities();
         for(DeskMateEntity entity : mHaveMate){
             if(entity.isDeskmate()){
                 if(entity.getRoleOf().equals("len")){
                     mAdapter.setSelect(0);
                     mCurSelect = "len";
+                    haveMate.add(0);
                 }
                 if(entity.getRoleOf().equals("mei")){
                     mAdapter.setSelect(1);
                     mCurSelect = "mei";
+                    haveMate.add(1);
                 }
                 if(entity.getRoleOf().equals("sari")){
                     mAdapter.setSelect(2);
                     mCurSelect = "sari";
+                    haveMate.add(2);
                 }
             }
         }
+        mAdapter.setHave(haveMate);
         mAdapter.setList(list);
         mSelectRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -351,6 +357,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
             mListDocs.setVisibility(View.VISIBLE);
             mTvSelectMate.setVisibility(View.VISIBLE);
             mTvTitle.setText("同桌");
+            setView();
         }else {
             RxBus.getInstance().post(new MateBackPressEvent());
         }

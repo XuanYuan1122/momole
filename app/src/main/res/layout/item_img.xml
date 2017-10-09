@@ -4,11 +4,24 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/iv_img"
-        android:layout_width="@dimen/x284"
-        android:layout_height="@dimen/y386"
-        android:src="@drawable/btn_deskmate_chose_len"/>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_img"
+            android:layout_width="@dimen/x284"
+            android:layout_height="@dimen/y386"
+            android:src="@drawable/btn_deskmate_chose_len"/>
+
+        <ImageView
+            android:id="@+id/iv_cover"
+            android:layout_width="@dimen/x284"
+            android:layout_height="@dimen/y386"
+            android:background="@color/white_70"
+            android:visibility="gone"/>
+    </FrameLayout>
+
 
     <View
         android:id="@+id/view_select"

@@ -23,6 +23,15 @@
             android:layout_centerVertical="true"/>
 
         <ImageView
+            android:id="@+id/iv_vip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_userhead_vip_mini"
+            android:layout_alignStart="@+id/iv_avatar"
+            android:layout_alignBottom="@+id/iv_avatar"
+            android:visibility="gone"/>
+
+        <ImageView
             android:id="@+id/iv_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -135,6 +144,7 @@
         android:paddingTop="@dimen/y24"
         android:paddingLeft="@dimen/x24"
         android:paddingRight="@dimen/x24"
+        android:paddingBottom="@dimen/y24"
         android:visibility="gone">
 
     </LinearLayout>

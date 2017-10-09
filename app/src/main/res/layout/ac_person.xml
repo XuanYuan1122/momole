@@ -82,7 +82,16 @@
                     <ImageView
                         android:id="@+id/iv_avatar"
                         android:layout_width="@dimen/x160"
-                        android:layout_height="@dimen/x160" />
+                        android:layout_height="@dimen/x160"
+                        android:layout_marginStart="@dimen/x2"
+                        android:layout_gravity="bottom"/>
+
+                    <ImageView
+                        android:id="@+id/iv_vip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_userhead_vip_big"
+                        android:visibility="gone"/>
                 </FrameLayout>
 
                 <TextView

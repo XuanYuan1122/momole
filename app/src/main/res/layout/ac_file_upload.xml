@@ -94,7 +94,7 @@
                 android:textColor="@color/main_cyan"
                 android:gravity="center"
                 android:visibility="gone"
-                android:text="上传压缩包"/>
+                android:text="上传压缩包(仅支持图片)"/>
 
             <LinearLayout
                 android:id="@+id/ll_bg_root"

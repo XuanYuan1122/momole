@@ -12,6 +12,7 @@ import com.moemoe.lalala.utils.UnCaughtException;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 

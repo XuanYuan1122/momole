@@ -25,7 +25,7 @@ public class JuQIngStoryEntityDao extends AbstractDao<JuQIngStoryEntity, String>
      */
     public static class Properties {
         public final static Property StoryId = new Property(0, String.class, "storyId", true, "STORY_ID");
-        public final static Property Content = new Property(1, String.class, "content", false, "CONTENT");
+        public final static Property Json = new Property(1, String.class, "json", false, "JSON");
         public final static Property Extra = new Property(2, String.class, "extra", false, "EXTRA");
         public final static Property Level = new Property(3, int.class, "level", false, "LEVEL");
     }
@@ -44,7 +44,7 @@ public class JuQIngStoryEntityDao extends AbstractDao<JuQIngStoryEntity, String>
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"JU_QING_STORY_ENTITY\" (" + //
                 "\"STORY_ID\" TEXT PRIMARY KEY NOT NULL ," + // 0: storyId
-                "\"CONTENT\" TEXT," + // 1: content
+                "\"JSON\" TEXT," + // 1: json
                 "\"EXTRA\" TEXT," + // 2: extra
                 "\"LEVEL\" INTEGER NOT NULL );"); // 3: level
     }
@@ -64,9 +64,9 @@ public class JuQIngStoryEntityDao extends AbstractDao<JuQIngStoryEntity, String>
             stmt.bindString(1, storyId);
         }
  
-        String content = entity.getContent();
-        if (content != null) {
-            stmt.bindString(2, content);
+        String json = entity.getJson();
+        if (json != null) {
+            stmt.bindString(2, json);
         }
  
         String extra = entity.getExtra();
@@ -85,9 +85,9 @@ public class JuQIngStoryEntityDao extends AbstractDao<JuQIngStoryEntity, String>
             stmt.bindString(1, storyId);
         }
  
-        String content = entity.getContent();
-        if (content != null) {
-            stmt.bindString(2, content);
+        String json = entity.getJson();
+        if (json != null) {
+            stmt.bindString(2, json);
         }
  
         String extra = entity.getExtra();
@@ -106,7 +106,7 @@ public class JuQIngStoryEntityDao extends AbstractDao<JuQIngStoryEntity, String>
     public JuQIngStoryEntity readEntity(Cursor cursor, int offset) {
         JuQIngStoryEntity entity = new JuQIngStoryEntity( //
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // storyId
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // content
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // json
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // extra
             cursor.getInt(offset + 3) // level
         );
@@ -116,7 +116,7 @@ public class JuQIngStoryEntityDao extends AbstractDao<JuQIngStoryEntity, String>
     @Override
     public void readEntity(Cursor cursor, JuQIngStoryEntity entity, int offset) {
         entity.setStoryId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setContent(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setJson(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setExtra(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setLevel(cursor.getInt(offset + 3));
      }

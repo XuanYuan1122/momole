@@ -108,14 +108,14 @@ public class PreferenceUtils {
     public static void setJuQingVersion(Context context,int version){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
-        ed.putLong("juqing_version", version);
+        ed.putInt("juqing_version_1", version);
         ed.commit();
     }
 
     public static int getJuQingVersion(Context context){
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME,Activity.MODE_PRIVATE);
-        return sp.getInt("juqing_version",0);
+        return sp.getInt("juqing_version_1",0);
     }
 
     public static void setMessageDot(Context context,String type,boolean isNew){
@@ -420,6 +420,48 @@ public class PreferenceUtils {
                 FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putInt("back_school_level",level);
+        editor.commit();
+    }
+
+    public static String getLenLastContent(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("len_last_content", "");
+    }
+
+    public static void setLenLastContent(Context context,String content){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("len_last_content",content);
+        editor.commit();
+    }
+
+    public static String getMeiLastContent(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("mei_last_content", "");
+    }
+
+    public static void setMeiLastContent(Context context,String content){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("mei_last_content",content);
+        editor.commit();
+    }
+
+    public static String getSariLastContent(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("sari_last_content", "");
+    }
+
+    public static void setSariLastContent(Context context,String content){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("sari_last_content",content);
         editor.commit();
     }
 }

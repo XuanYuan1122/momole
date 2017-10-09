@@ -45,6 +45,7 @@ import com.moemoe.lalala.model.entity.ForwardSendEntity;
 import com.moemoe.lalala.model.entity.GiveCoinEntity;
 import com.moemoe.lalala.model.entity.InviteUserEntity;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
+import com.moemoe.lalala.model.entity.JuQingEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
 import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
@@ -93,6 +94,7 @@ import com.moemoe.lalala.model.entity.UserInfo;
 import com.moemoe.lalala.model.entity.WallBlock;
 import com.moemoe.lalala.model.entity.WenZhangFolderEntity;
 import com.moemoe.lalala.model.entity.XianChongEntity;
+import com.moemoe.lalala.utils.JuQingDoneEntity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -101,6 +103,7 @@ import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -724,7 +727,8 @@ public interface ApiService {
     Observable<ApiResult> createDynamic(@Body DynamicSendEntity entity);
 
     @GET("v2/kira/comment/get/{targetId}/top")
-    Observable<ApiResult<ArrayList<CommentV2Entity>>> loadTopComment(@Path("targerId")String id);
+    Observable<ApiResult<ArrayList<CommentV2Entity>>> loadTopComment(@Path("targetId" +
+            "")String id);
 
     @POST("v2/kira/dynamic/deleteDynamic/{dynamicId}/{type}")
     Observable<ApiResult> deleteDynamic(@Path("dynamicId")String dynamicId,@Path("type")String type);
@@ -784,5 +788,11 @@ public interface ApiService {
     Observable<ApiResult<ArrayList<JuQingTriggerEntity>>> getAllTrigger();
 
     @POST("v2/kira/story/save/record/{storyId}")
-    Observable<ApiResult> doneStory(@Path("storyId")String id);
+    Observable<ApiResult<Long>> doneStory(@Path("storyId")String id);
+
+    @GET("v2/kira/story/find/{level}/group/{type}")
+    Observable<ApiResult<ArrayList<JuQingEntity>>> loadStoryList(@Path("level")int level, @Path("type")int type,@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/story/find/my/story")
+    Observable<ApiResult<ArrayList<JuQingDoneEntity>>> getDoneJuQing();
 }

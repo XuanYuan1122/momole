@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
@@ -53,6 +55,7 @@ import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.IntentUtils;
+import com.moemoe.lalala.utils.JuQingDoneEntity;
 import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -66,7 +69,6 @@ import com.unity3d.player.UnityPlayer;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,6 +79,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.rong.imkit.RongIM;
@@ -143,6 +148,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private boolean mIsSignPress = false;
     private boolean isLoadUnity;
     private BottomMenuFragment menuFragment;
+    private boolean isLoadDone;
 
     static {
         System.loadLibrary("kira");
@@ -150,11 +156,28 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     public native int initNDK();
 
+    private void toPersonalFromUnity(String id){
+        Intent i = new Intent(this,NewPersonalActivity.class);
+        i.putExtra(UUID,id);
+        startActivity(i);
+    }
+
+    private void toDepartmentFromUnity(String id,String name){
+        Intent i = new Intent(this,DepartmentActivity.class);
+        i.putExtra(UUID,id);
+        i.putExtra("name",name);
+        startActivity(i);
+    }
+
+    private void toBagFromUnity(String id){
+        Intent i = new Intent(this,NewBagActivity.class);
+        i.putExtra(UUID,id);
+        startActivity(i);
+    }
+
     public void StartLoad(){
         isLoadUnity = true;
-        imgIn();
-        mIsOut = false;
-        mPresenter.checkStoryVersion();
+        showBtn();
         Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
         startActivity(i3);
         if(!TextUtils.isEmpty(mSchema)){
@@ -284,12 +307,15 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         final Conversation.ConversationType[] conversationTypes = {
                 Conversation.ConversationType.PRIVATE
         };
+        if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
+            Intent i = new Intent(this,MengXinActivity.class);
+            startActivity(i);
+        }
+        hideBtn();
         RongIM.getInstance().addUnReadMessageCountChangedObserver(this, conversationTypes);
         mUnityPlayer = new UnityPlayer(this);
         mMap.addView(mUnityPlayer);
         mUnityPlayer.requestFocus();
-        //imgOut();
-        //mIsOut = true;
         startService(new Intent(this, DaemonService.class));
         if(!isGisterReciver){
             IntentFilter filter = new IntentFilter();
@@ -338,15 +364,15 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mUnityPlayer.lowMemory();
+       // mUnityPlayer.lowMemory();
     }
 
     @Override
     public void onTrimMemory(int var1) {
         super.onTrimMemory(var1);
-        if(var1 == 15) {
-            this.mUnityPlayer.lowMemory();
-        }
+//        if(var1 == 15) {
+//            this.mUnityPlayer.lowMemory();
+//        }
     }
 
     @Override
@@ -400,24 +426,51 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         String mTime = dateFormat.format(new Date());
         mTvTime.setText(mTime);
-        ViewUtils.setRoleButton(mIvRole);
+        ViewUtils.setRoleButton(mIvRole,mTvText);
+        mPresenter.checkStoryVersion();
+        if(!isLoadDone){
+            mPresenter.findMyDoneJuQing();
+        }
     }
 
     @Override
     public void onGetTimeSuccess(Date time) {
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         calendar.setTime(time);
-        String id = JuQingUtil.checkJuQing(calendar);
-        if(!TextUtils.isEmpty(id)){
-            if(JuQingUtil.isForce(id)){
-                Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
-                        .appendPath("conversation").appendPath("private")
-                        .appendQueryParameter("targetId", "juqing").build();
-                Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
-                i2.setData(uri);
-                startActivity(i2);
+        Observable.create(new ObservableOnSubscribe<ArrayList<JuQingTriggerEntity>>() {
+            @Override
+            public void subscribe(ObservableEmitter<ArrayList<JuQingTriggerEntity>> e) throws Exception {
+                ArrayList<JuQingTriggerEntity> list = JuQingUtil.checkJuQingAll(calendar);
+                e.onNext(list);
             }
-        }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ArrayList<JuQingTriggerEntity>>() {
+            @Override
+            public void accept(ArrayList<JuQingTriggerEntity> id) throws Exception {
+                if(id.size() == 0) UnityPlayer.UnitySendMessage("MainSenc", "MapOrGalag","");
+                for(JuQingTriggerEntity entity : id){
+                    if(entity.getType().equals("mobile")){
+                        if(JuQingUtil.isForce(entity.getStoryId())){
+                            Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
+                                    .appendPath("conversation").appendPath("private")
+                                    .appendQueryParameter("targetId", "juqing:"+ entity.getStoryId() + ":" + entity.getRoleOf()).build();
+                            Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+                            i2.setData(uri);
+                            startActivity(i2);
+                        }
+                    }
+                    if(entity.getType().equals("map")){
+                        String extra = entity.getExtra();
+                        boolean isForce = JuQingUtil.isForce(entity.getStoryId());
+                        JsonObject jsonObject = new Gson().fromJson(extra,JsonObject.class);
+                        jsonObject.addProperty("isForce",isForce);
+                        String str = jsonObject.toString();
+                        UnityPlayer.UnitySendMessage("MainSenc", "MapOrGalag", jsonObject.toString());
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -436,8 +489,15 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         if(version1 < version){
             mPresenter.getAllStory();
             mPresenter.getTrigger();
+            PreferenceUtils.setJuQingVersion(this,version);
         }
         mPresenter.getServerTime();
+    }
+
+    @Override
+    public void onFindMyDoneJuQingSuccess(ArrayList<JuQingDoneEntity> entities) {
+        JuQingUtil.saveJuQingDone(entities);
+        isLoadDone = true;
     }
 
     @Override
@@ -687,7 +747,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mRoleRoot.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-
+                    clickRole();
                 }
             });
             RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -816,7 +876,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         RxBus.getInstance().unSubscribe(this);
         AppSetting.isRunning = false;
         RongIM.getInstance().removeUnReadMessageCountChangedObserver(this);
-        mUnityPlayer.quit();
+        if(mUnityPlayer != null)mUnityPlayer.quit();
         super.onDestroy();
     }
 

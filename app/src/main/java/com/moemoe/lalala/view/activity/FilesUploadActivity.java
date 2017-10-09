@@ -353,7 +353,7 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                     showToast("没有任何文件");
                 }
             }else {
-                showToast("解压失败，压缩文件有密码或者格式不支持");
+                showToast("解压失败，压缩文件有密码或者格式不支持,压缩包只能含有图片文件，不能存在文件夹");
             }
         }
     }
