@@ -140,25 +140,29 @@ public class TagControl {
     public SpannableStringBuilder paresToSpann(Context context,String s){
         Document document = Jsoup.parse(s);
         Map<BaseTag,DoubleKeyValueMap<String,Integer,Integer>> resMap = new HashMap<>();
-        for (BaseTag tag : tags){
-            Elements elements = document.select(tag.getTag());
-            DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
-            for(Element element : elements){
-                String text = element.text();
-                String all = "";
-                String value = "";
-                for(String attr : tag.getAttrs().keySet()){
-                    value = element.attr(attr);
-                    all = element.toString().replace("\n","").replace("\"" + value + "\"",value).replace(" " + text,text);
+        try {
+            for (BaseTag tag : tags){
+                Elements elements = document.select(tag.getTag());
+                DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
+                for(Element element : elements){
+                    String text = element.text();
+                    String all = "";
+                    String value = "";
+                    for(String attr : tag.getAttrs().keySet()){
+                        value = element.attr(attr);
+                        all = element.toString().replace("\n","").replace("\"" + value + "\"",value).replace(" " + text,text);
+                    }
+                    String beginStr = s.substring(0,s.indexOf(all));
+                    String endStr = s.substring(s.indexOf(all) + all.length());
+                    if(!TextUtils.isEmpty(value)){
+                        map.put(value,s.indexOf(all),s.indexOf(all) + text.length());
+                    }
+                    s = beginStr + text + endStr;
                 }
-                String beginStr = s.substring(0,s.indexOf(all));
-                String endStr = s.substring(s.indexOf(all) + all.length());
-                if(!TextUtils.isEmpty(value)){
-                    map.put(value,s.indexOf(all),s.indexOf(all) + text.length());
-                }
-                s = beginStr + text + endStr;
+                resMap.put(tag,map);
             }
-            resMap.put(tag,map);
+        }catch (Exception e){
+            resMap = new HashMap<>();
         }
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(s);
         for (BaseTag tag : resMap.keySet()){
@@ -168,7 +172,18 @@ public class TagControl {
                 for(Integer begin : concurrentHashMap.keySet()){
                     int end = concurrentHashMap.get(begin);
                     tag.getSpan().setmUrl(id);
-                    stringBuilder.setSpan(tag.getSpan(),begin,end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    BaseUrlSpan span;
+                    BaseTag tag1 = new BaseTag();
+                    tag1.setTag(tag.getTag());
+                    tag1.setAttrs(tag.getAttrs());
+                    if(tag.getSpan() instanceof UserUrlSpan){
+                        span = new UserUrlSpan(context,id,tag1);
+                        tag1.setSpan(span);
+                    }else {
+                        span = new ImageUrlSpan(context,id,tag1);
+                        tag1.setSpan(span);
+                    }
+                    stringBuilder.setSpan(span,begin,end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
         }

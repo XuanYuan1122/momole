@@ -1,0 +1,15 @@
+# ninja log v5
+1	142	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	a4d32c39d6aed832
+143	246	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+1	208	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	a4d32c39d6aed832
+208	849	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+1	130	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	a4d32c39d6aed832
+130	256	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+2	120	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	a4d32c39d6aed832
+120	249	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+1	114	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	a4d32c39d6aed832
+114	249	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+1	121	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	a4d32c39d6aed832
+121	273	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+2	140	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	a4d32c39d6aed832
+140	261	0	../../../../libs/x86/libkira.so	464faa60faf2966a

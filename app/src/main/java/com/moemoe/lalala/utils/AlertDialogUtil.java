@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -69,7 +70,7 @@ public class AlertDialogUtil {
         cancel = (Button) view.findViewById(R.id.general_dialog_btn_cancel);
     }
 
-    public void createBuyFolderDialog(Context context,int coin){
+    public void createBuyFolderDialog(Context context, int coin){
         this.context = context;
         if (this.dialog != null && this.dialog.isShowing()) {
             this.dialog.dismiss();
@@ -80,6 +81,10 @@ public class AlertDialogUtil {
         this.dialog.setContentView(contentView);
         Window window = dialog.getWindow();
         window.setWindowAnimations(R.style.dialogWindowAnim);
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        layoutParams.width = DensityUtil.getScreenWidth(context);
+        layoutParams.height = DensityUtil.getScreenHeight(context);
+        window.setAttributes(layoutParams);
         TextView tv = (TextView) contentView.findViewById(R.id.tv_coin);
         tv.setText(coin + " 节操");
         dialog.setCancelable(false);
@@ -338,6 +343,9 @@ public class AlertDialogUtil {
 
     public void showDialog() {
         if (this.dialog != null) {
+            if(dialog.isShowing()){
+                dialog.dismiss();
+            }
             setOnClickListener();
             this.dialog.show();
         }

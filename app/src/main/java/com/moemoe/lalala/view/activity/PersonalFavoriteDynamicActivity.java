@@ -1,28 +1,21 @@
 package com.moemoe.lalala.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerFeedComponent;
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.FeedModule;
-import com.moemoe.lalala.di.modules.PersonalListModule;
-import com.moemoe.lalala.event.SystemMessageEvent;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BannerEntity;
-import com.moemoe.lalala.model.entity.FeaturedEntity;
+import com.moemoe.lalala.model.entity.Comment24Entity;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
-import com.moemoe.lalala.model.entity.ReplyEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.XianChongEntity;
 import com.moemoe.lalala.presenter.FeedContract;
 import com.moemoe.lalala.presenter.FeedPresenter;
@@ -157,12 +150,17 @@ public class PersonalFavoriteDynamicActivity extends BaseAppCompatActivity imple
     }
 
     @Override
-    public void onFeaturedLoadSuccess(ArrayList<FeaturedEntity> featuredEntities) {
+    public void onLoadXianChongSuccess(ArrayList<XianChongEntity> entities) {
 
     }
 
     @Override
-    public void onLoadXianChongSuccess(ArrayList<XianChongEntity> entities) {
+    public void onLoadFolderSuccess(ArrayList<ShowFolderEntity> entities) {
+
+    }
+
+    @Override
+    public void onLoadCommentSuccess(Comment24Entity entity) {
 
     }
 }

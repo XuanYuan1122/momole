@@ -1,0 +1,3 @@
+D:/Neta-Android/kiragame/.externalNativeBuild/cmake/release/x86/CMakeFiles/edit_cache.dir
+D:/Neta-Android/kiragame/.externalNativeBuild/cmake/release/x86/CMakeFiles/kira.dir
+D:/Neta-Android/kiragame/.externalNativeBuild/cmake/release/x86/CMakeFiles/rebuild_cache.dir

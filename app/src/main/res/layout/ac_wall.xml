@@ -26,7 +26,7 @@
             android:paddingLeft="@dimen/size_18"
             android:paddingRight="@dimen/size_18"
             android:layout_centerVertical="true"
-            android:src="@drawable/btn_back_blue_normal"/>
+            android:src="@drawable/btn_back_blue_normal_unity"/>
 
         <com.flyco.tablayout.CommonTabLayout
             android:id="@+id/indicator_person_data"

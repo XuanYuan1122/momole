@@ -73,18 +73,7 @@
         android:background="@color/bg_f6f6f6"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="7dp"
-        android:paddingTop="7dp"
         android:visibility="visible" >
-
-        <ImageView
-            android:id="@+id/iv_add_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:gravity="center_vertical"
-            android:src="@drawable/btn_doc_reply_pic"/>
 
         <EditText
             android:id="@+id/edt_comment_input"
@@ -94,6 +83,8 @@
             android:layout_marginStart="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="7dp"
             android:layout_toRightOf="@+id/iv_add_img"
             android:layout_toLeftOf="@+id/iv_comment_send"
             android:layout_weight="1"
@@ -115,6 +106,7 @@
             android:layout_alignBottom="@+id/edt_comment_input"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:background="@drawable/bg_rect_white_click_cyan"
             android:gravity="center"
@@ -122,17 +114,8 @@
             android:textColor="@color/txt_white_gray"
             android:textSize="@dimen/size_15" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_img"
-            android:layout_width="match_parent"
-            android:layout_height="115dp"
-            android:layout_marginTop="9dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_below="@+id/edt_comment_input"
-            android:visibility="gone">
+        <include layout="@layout/item_doc_show_all"/>
 
-        </android.support.v7.widget.RecyclerView>
     </com.moemoe.lalala.view.widget.view.KeyboardListenerLayout>
+
 </LinearLayout>

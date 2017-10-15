@@ -22,6 +22,7 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.Utils;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -44,7 +45,7 @@ public class FileManHua2ViewHolder extends ClickableViewHolder {
         select = $(R.id.iv_select);
     }
 
-    public void createItem(ManHua2Entity entity, boolean isSelect){
+    public void createItem(ManHua2Entity entity, boolean isSelect,boolean isBuy){
         select.setVisibility(isSelect?View.VISIBLE:View.GONE);
         select.setSelected(entity.isSelect());
         title.setText(entity.getFolderName());
@@ -54,12 +55,22 @@ public class FileManHua2ViewHolder extends ClickableViewHolder {
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
         cover.setLayoutParams(lp);
-        Glide.with(itemView.getContext())
-                .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),width,height, false, true))
-                .placeholder(R.drawable.bg_default_square)
-                .error(R.drawable.bg_default_square)
-                .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
-                .into(cover);
+        if(!isBuy){
+            Glide.with(itemView.getContext())
+                    .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),width,height, false, true))
+                    .placeholder(R.drawable.bg_default_square)
+                    .error(R.drawable.bg_default_square)
+                    .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
+                    .into(cover);
+        }else {
+            Glide.with(itemView.getContext())
+                    .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),width,height, false, true))
+                    .placeholder(R.drawable.bg_default_square)
+                    .error(R.drawable.bg_default_square)
+                    .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0),new BlurTransformation(context,10,4))
+                    .into(cover);
+        }
+
     }
 
 }

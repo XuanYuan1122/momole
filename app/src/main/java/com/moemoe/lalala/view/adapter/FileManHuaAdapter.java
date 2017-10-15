@@ -12,16 +12,18 @@ import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 public class FileManHuaAdapter extends BaseRecyclerViewAdapter<ManHua2Entity,FileManHua2ViewHolder> {
 
     private boolean isSelect;
+    private boolean isButy;
 
     public FileManHuaAdapter() {
         super(R.layout.item_folder_manhua_2);
         isSelect = false;
+        isButy = true;
     }
 
 
     @Override
     protected void convert(FileManHua2ViewHolder helper, final ManHua2Entity item, int position) {
-        helper.createItem(item,isSelect);
+        helper.createItem(item,isSelect,isButy);
     }
 
     @Override
@@ -31,5 +33,9 @@ public class FileManHuaAdapter extends BaseRecyclerViewAdapter<ManHua2Entity,Fil
 
     public void setSelect(boolean select) {
         isSelect = select;
+    }
+
+    public void setBuy(boolean buy) {
+        isButy = buy;
     }
 }

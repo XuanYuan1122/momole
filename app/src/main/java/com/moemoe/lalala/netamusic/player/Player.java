@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 
 import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.netamusic.data.model.PlayList;
 import com.moemoe.lalala.netamusic.data.model.Song;
 import com.moemoe.lalala.utils.CommonUtils;
@@ -82,7 +83,7 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
         }
         if(mPlayList.prepare()){
             final Song song = mPlayList.getCurrentSong();
-            String url = song.getPath();
+            final String url = song.getPath();
             try {
                 mPlayer.reset();
                 if(StorageUtils.isMusicExit(song.getDisplayName())){
@@ -126,12 +127,12 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
 
                                 @Override
                                 public void onError(@NonNull Throwable e) {
-
+                                    downloadSub.deleteServiceDownload(url,false).subscribe();
                                 }
 
                                 @Override
                                 public void onComplete() {
-
+                                    downloadSub.deleteServiceDownload(url,false).subscribe();
                                 }
                             });
                     isStarted = false;

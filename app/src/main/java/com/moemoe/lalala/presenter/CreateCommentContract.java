@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public interface CreateCommentContract {
     interface Presenter extends BasePresenter{
-        void createComment(boolean isSec, String id, CommentSendV2Entity entity, ArrayList<String> path);
+        void createComment(boolean isSec, String id, CommentSendV2Entity entity, ArrayList<String> path,boolean isDoc);
     }
 
     interface View extends BaseView{

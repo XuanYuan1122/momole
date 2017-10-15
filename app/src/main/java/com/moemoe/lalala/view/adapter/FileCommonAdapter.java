@@ -21,6 +21,7 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
 
     private boolean isSelect;
     private boolean isGrid;
+    private boolean  isBuy;
     private RxDownload downloadSub;
 
     public FileCommonAdapter(String folderType, Context context) {
@@ -33,6 +34,7 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
             setLayoutResId(R.layout.item_file_common);
         }
         isSelect = false;
+        isBuy = true;
         downloadSub = RxDownload.getInstance(context)
                 .maxThread(3)
                 .maxRetryCount(3)
@@ -44,9 +46,9 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
     @Override
     protected void convert(FileCommonViewHolder helper, final CommonFileEntity item, int position) {
         if(isGrid){
-            helper.createItem(item,isSelect);
+            helper.createItem(item,isSelect,isBuy);
         }else {
-            helper.createLinearItem(item,isSelect,downloadSub,this,position);
+            helper.createLinearItem(item,isSelect,downloadSub,this,position,isBuy);
         }
     }
 
@@ -61,5 +63,9 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
 
     public void setGrid(boolean grid) {
         isGrid = grid;
+    }
+
+    public void setBuy(boolean buy) {
+        isBuy = buy;
     }
 }

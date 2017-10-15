@@ -51,6 +51,8 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         sSupportSchame.add(context.getResources().getString(R.string.label_folder_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_bag_action));
         sSupportSchame.add("event_1.0");
+        sSupportSchame.add(context.getResources().getString(R.string.label_map_event_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_game_action));
     }
 
     public static void haveShareWeb(Context context, Uri uri, View v){
@@ -108,7 +110,14 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
                     }else {
                         if(!TextUtils.isEmpty(query)){
                             if(!query.contains("&")){
-                                i.putExtra(BaseAppCompatActivity.UUID, uri.getQuery());
+                                if(query.contains("=")){
+                                    Set<String> names = uri.getQueryParameterNames();
+                                    for(String name : names){
+                                        i.putExtra(name,uri.getQueryParameter(name));
+                                    }
+                                }else {
+                                    i.putExtra(BaseAppCompatActivity.UUID, uri.getQuery());
+                                }
                             }else {
                                 Set<String> names = uri.getQueryParameterNames();
                                 for(String name : names){

@@ -1,0 +1,11 @@
+# ninja log v5
+0	401	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	552762137f962285
+401	559	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+2	115	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	552762137f962285
+115	256	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+1	632	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	552762137f962285
+633	798	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+1	376	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	552762137f962285
+376	518	0	../../../../libs/x86/libkira.so	464faa60faf2966a
+124	302	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	552762137f962285
+302	774	0	../../../../libs/x86/libkira.so	464faa60faf2966a

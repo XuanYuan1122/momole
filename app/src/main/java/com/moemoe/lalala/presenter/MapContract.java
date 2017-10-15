@@ -8,10 +8,13 @@ import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
+import com.moemoe.lalala.model.entity.MapEntity;
+import com.moemoe.lalala.model.entity.MapMarkContainer;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.utils.JuQingDoneEntity;
+import com.moemoe.lalala.view.widget.map.MapWidget;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +37,9 @@ public interface MapContract {
         void getAllStory();
         void checkStoryVersion();
         void findMyDoneJuQing();
+        void loadMapPics();
+        void addMapMark(Context context, MapWidget map, float scale);
+        void addEventMark(String id,String icon,MapMarkContainer container,Context context, MapWidget map,String storyId);
     }
 
     interface View extends BaseView{
@@ -49,5 +55,7 @@ public interface MapContract {
         void onGetAllStorySuccess(ArrayList<JuQIngStoryEntity> entities);
         void onCheckStoryVersionSuccess(int version);
         void onFindMyDoneJuQingSuccess(ArrayList<JuQingDoneEntity> entities);
+        void onMapMarkLoaded(MapMarkContainer container);
+        void onLoadMapPics(ArrayList<MapEntity> entities);
     }
 }

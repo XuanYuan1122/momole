@@ -14,13 +14,18 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPhoneMsgComponent;
 import com.moemoe.lalala.di.modules.PhoneMsgModule;
+import com.moemoe.lalala.event.BackSchoolEvent;
+import com.moemoe.lalala.event.EventDoneEvent;
+import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.presenter.PhoneMsgContract;
 import com.moemoe.lalala.presenter.PhoneMsgPresenter;
 import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.activity.PhoneMainActivity;
 import com.moemoe.lalala.view.activity.SplashActivity;
@@ -35,6 +40,10 @@ import java.util.Date;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import io.rong.imkit.RongContext;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.fragment.ConversationFragment;
@@ -108,6 +117,28 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
                 onBackPressed();
             }
         });
+        if(!RongIM.getInstance().getCurrentConnectionStatus().equals(RongIMClient.ConnectionStatusListener.ConnectionStatus.CONNECTED)){
+            if(!TextUtils.isEmpty(PreferenceUtils.getAuthorInfo().getRcToken())){
+                RongIM.connect(PreferenceUtils.getAuthorInfo().getRcToken(), new RongIMClient.ConnectCallback() {
+                    @Override
+                    public void onTokenIncorrect() {
+                        mPresenter.loadRcToken();
+                    }
+
+                    @Override
+                    public void onSuccess(String s) {
+
+                    }
+
+                    @Override
+                    public void onError(RongIMClient.ErrorCode errorCode) {
+
+                    }
+                });
+            }else {
+                mPresenter.loadRcToken();
+            }
+        }
         mIvBack.setImageResource(R.drawable.btn_phone_back);
         mTvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.main_cyan));
         mTvTitle.setText("消息");
@@ -143,7 +174,7 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
                     if(targetId.contains("juqing")){
                         String[] juQing = targetId.split(":");
                         FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
-                        juQingChatFragment =  JuQingChatFragment.newInstance(juQing[1],juQing[0]);
+                        juQingChatFragment =  JuQingChatFragment.newInstance(juQing[2],juQing[1]);
                         fragmentTransaction.hide(mCurFragment).add(R.id.container,juQingChatFragment,"juQingFragment");
                         fragmentTransaction.commit();
                         mCurFragment = juQingChatFragment;
@@ -162,6 +193,7 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
                 }
             }
         }
+        subscribeSearchChangedEvent();
     }
 
     private void black(final RongIMClient.BlacklistStatus blacklistStatus){
@@ -286,6 +318,7 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
             mFragmentTransaction.remove(mCurFragment).show(conversationListFragment);
             mFragmentTransaction.commit();
             mCurFragment = conversationListFragment;
+            juQingChatFragment.release();
             juQingChatFragment = null;
             mCurId = null;
             mIvMenu.setVisibility(View.GONE);
@@ -304,7 +337,65 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
     }
 
     @Override
+    public void release() {
+        if(mPresenter != null) mPresenter.release();
+        RongIM.getInstance().disconnect();
+        RxBus.getInstance().unSubscribe(this);
+        super.release();
+    }
+
+    private void subscribeSearchChangedEvent() {
+        Disposable subscription = RxBus.getInstance()
+                .toObservable(EventDoneEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Consumer<EventDoneEvent>() {
+                    @Override
+                    public void accept(EventDoneEvent eventDoneEvent) throws Exception {
+                        if(eventDoneEvent.getType().equals("mobile")){
+                            mAdapter.setShowRed(-1);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        RxBus.getInstance().addSubscription(this, subscription);
+    }
+
+    @Override
     public void onFailure(int code, String msg) {
+
+    }
+
+    @Override
+    public void onLoadRcTokenSuccess(String token) {
+        PreferenceUtils.getAuthorInfo().setRcToken(token);
+        RongIM.connect(PreferenceUtils.getAuthorInfo().getRcToken(), new RongIMClient.ConnectCallback() {
+            @Override
+            public void onTokenIncorrect() {
+
+            }
+
+            @Override
+            public void onSuccess(String s) {
+
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
+            }
+        });
+    }
+
+
+    @Override
+    public void onLoadRcTokenFail(int code, String msg) {
 
     }
 

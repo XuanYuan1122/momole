@@ -216,7 +216,7 @@ public class GuideActivity extends BaseAppCompatActivity {
     }
 
     private void goToMain(){
-        //saveLaunch();
+        saveLaunch();
         Intent i = new Intent(this,MapActivity.class);
         startActivity(i);
         finish();
@@ -229,7 +229,7 @@ public class GuideActivity extends BaseAppCompatActivity {
     }
 
     private void go2Login(){
-        //saveLaunch();
+        saveLaunch();
         Bundle bundle = new Bundle();
         bundle.putBoolean(LoginActivity.EXTRA_KEY_FIRST_RUN, true);
         Intent i = new Intent(this,LoginActivity.class);

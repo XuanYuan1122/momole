@@ -44,9 +44,9 @@ public class MatefukuAdapter extends BaseRecyclerViewAdapter<PhoneFukuEntity,Cli
             helper.setVisible(R.id.view_select,false);
         }
         if(item.isHave()){
-            helper.setVisible(R.id.iv_cover,false);
+            iv.setAlpha(1.0f);
         }else {
-            helper.setVisible(R.id.iv_cover,true);
+            iv.setAlpha(0.5f);
         }
         helper.itemView.setLayoutParams(lp);
     }

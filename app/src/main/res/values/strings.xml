@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">neta</string>
+    <string name="app_name">kira</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">4.7.0_20170810</string>
-    <string name="app_version_code">4700</string>
+    <string name="app_version">5.0.0_20171013</string>
+    <string name="app_version_code">5000</string>
 
     <string name="label_scheme">neta</string>
     <string name="label_host">com.moemoe.lalala</string>
@@ -54,6 +54,10 @@
     <string name="label_folder_action">folder_1.0</string>
     <string name="label_bag_path">/bag_2.0</string>
     <string name="label_bag_action">bag_2.0</string>
+    <string name="label_map_event_path">/map_event_1.0</string>
+    <string name="label_map_event_action">map_event_1.0</string>
+    <string name="label_game_path">/game_1.0</string>
+    <string name="label_game_action">game_1.0</string>
 
     <string name="label_can_not_use">施工中,敬请期待......</string>
     <string name="label_signed">今天已经签过啦</string>

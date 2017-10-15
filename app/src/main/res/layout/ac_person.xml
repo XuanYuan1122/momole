@@ -88,8 +88,8 @@
 
                     <ImageView
                         android:id="@+id/iv_vip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/x172"
+                        android:layout_height="@dimen/x189"
                         android:src="@drawable/ic_userhead_vip_big"
                         android:visibility="gone"/>
                 </FrameLayout>

@@ -84,17 +84,19 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
     private String mId;
     private String mCommentTo;
     private boolean isSec;
+    private boolean isDoc;
 
     @Override
     protected int getLayoutId() {
         return R.layout.ac_create_zhuan_or_comment;
     }
 
-    public static void startActivity(Context context,String id,boolean isSec,String commentTo){
+    public static void startActivity(Context context,String id,boolean isSec,String commentTo,boolean isDoc){
         Intent i = new Intent(context,CreateCommentActivity.class);
         i.putExtra(UUID,id);
         i.putExtra("commentTo",commentTo);
         i.putExtra("isSec",isSec);
+        i.putExtra("isDoc",isDoc);
         context.startActivity(i);
     }
 
@@ -110,6 +112,7 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
         mId = getIntent().getStringExtra(UUID);
         mCommentTo = getIntent().getStringExtra("commentTo");
         isSec = getIntent().getBooleanExtra("isSec",false);
+        isDoc = getIntent().getBooleanExtra("isDoc",false);
         if(TextUtils.isEmpty(mId)){
             finish();
             return;
@@ -149,8 +152,12 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
         mRvImg.addItemDecoration(new FileItemDecoration());
         mRvImg.setAdapter(mSelectAdapter);
         mPaths = new ArrayList<>();
-        mCbComment.setVisibility(View.VISIBLE);
-        mCbComment.setText("评论并转发");
+        if(isDoc || isSec){
+            mCbComment.setVisibility(View.GONE);
+        }else {
+            mCbComment.setVisibility(View.VISIBLE);
+            mCbComment.setText("评论并转发");
+        }
     }
 
     @Override
@@ -239,7 +246,7 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
             }
         }
         entity.atUsers = atUser;
-        mPresenter.createComment(isSec,mId,entity,mPaths);
+        mPresenter.createComment(isSec,mId,entity,mPaths,isDoc);
     }
 
     @Override

@@ -402,6 +402,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                                                 dialog.dismiss();
                                                 FileUtil.deleteDir(StorageUtils.getNovRootPath() + bookList.get(0).getId());
                                                 showToast("下载失败");
+                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  bookList.get(0).getPath(),false).subscribe();
                                             }
 
                                             @Override
@@ -420,6 +421,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                                                 currentChapter = 1;
                                                 showChapterRead(1);
                                                 bookList.remove(0);
+                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  bookList.get(0).getPath(),false).subscribe();
                                             }
 
                                             @Override

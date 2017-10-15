@@ -1,9 +1,13 @@
 package com.moemoe.lalala.view.fragment;
 
+import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.SeekBar;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -22,6 +26,10 @@ import com.moemoe.lalala.netamusic.player.Player;
 import com.moemoe.lalala.presenter.PhoneLuYinPresenter;
 import com.moemoe.lalala.presenter.PhoneLuyinContract;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.AudioPlayer;
+import com.moemoe.lalala.utils.FileUtil;
+import com.moemoe.lalala.utils.StorageUtils;
+import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.activity.PhoneMainActivity;
 import com.moemoe.lalala.view.adapter.PhoneLuYinListAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
@@ -33,16 +41,20 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/9/4.
  */
 
-public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinContract.View,IPlayBack.Callback{
+public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinContract.View{
 
     @BindView(R.id.list)
     PullAndLoadView mListDocs;
@@ -51,7 +63,22 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
     private PhoneLuYinListAdapter mAdapter;
     private boolean isLoading = false;
     private String mate;
-    private Player mPlayer;
+    private String type;
+
+//    private Handler mHandler = new Handler();
+//    private Runnable mProgressCallback = new Runnable() {
+//        @Override
+//        public void run() {
+//            if (AudioPlayer.getInstance(getContext()).isPlaying()) {
+//                if(mAdapter.getPlayingPosition() != -1){
+//                    mAdapter.notifyItemChanged(mAdapter.getPlayingPosition());
+//                    mHandler.postDelayed(this, 1000);
+//                }
+//            }else {
+//                mHandler.removeCallbacks(this);
+//            }
+//        }
+//    };
 
     public static PhoneLuyinListFragment newInstance(String type,String mate){
         PhoneLuyinListFragment fragment = new PhoneLuyinListFragment();
@@ -74,14 +101,12 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        final String type = getArguments().getString("type");
+        type = getArguments().getString("type");
         mate = getArguments().getString("mate");
-        mPlayer = Player.getInstance(getContext());
-        mPlayer.registerCallback(this);
         mListDocs.getSwipeRefreshLayout().setEnabled(false);
         mListDocs.setLoadMoreEnabled(false);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter= new PhoneLuYinListAdapter();
+        mAdapter= new PhoneLuYinListAdapter(type);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
@@ -152,26 +177,35 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
                 .subscribe(new Consumer<PhonePlayMusicEvent>() {
                     @Override
                     public void accept(PhonePlayMusicEvent phonePlayMusicEvent) throws Exception {
-
-                        if(phonePlayMusicEvent.isPlay()){
-                            Song mMusicInfo = new Song();
-                            mMusicInfo.setPath(ApiService.URL_QINIU + phonePlayMusicEvent.getPath());
-                            mMusicInfo.setDisplayName(phonePlayMusicEvent.getPath());
-                            mMusicInfo.setDuration(phonePlayMusicEvent.getTimestamp());
-                            PlayList playList = new PlayList(mMusicInfo);
-                            mPlayer.play(playList,0);
-                            int position = mAdapter.getPlayingPosition();
-                            mAdapter.setPlayingPosition(phonePlayMusicEvent.getPosition());
-                            if(position >= 0){
-                                mAdapter.notifyItemChanged(position);
-                            }
-                            mAdapter.notifyItemChanged(phonePlayMusicEvent.getPosition());
-                        }else {
-                            if(mPlayer.isPlaying()){
-                                mPlayer.pause();
+                        if(type.equals(phonePlayMusicEvent.getType())){
+                            if(phonePlayMusicEvent.isPlay()){
+                                int position = mAdapter.getPlayingPosition();
+                                mAdapter.setPlayingPosition(phonePlayMusicEvent.getPosition());
+                                if(position >= 0){
+                                    mAdapter.notifyItemChanged(position);
+                                }
+                                //检查文件是否存在
+                                if(FileUtil.isExists(StorageUtils.getMusicRootPath() + phonePlayMusicEvent.getPath().substring(phonePlayMusicEvent.getPath().lastIndexOf("/") + 1))){
+                                    //存在提示更新播放
+                                    mAdapter.notifyItemChanged(phonePlayMusicEvent.getPosition());
+                                }else {
+                                    //不存在 下载  下载成功更新  下载失败提示失败 不更新播放
+                                    LuYinEntity entity = mAdapter.getItem(phonePlayMusicEvent.getPosition());
+                                    downloadMusic(entity,true);
+                                }
+                            }else {
                                 mAdapter.setPlayingPosition(-1);
                                 mAdapter.notifyItemChanged(phonePlayMusicEvent.getPosition());
                             }
+                        }else {
+                            int position = mAdapter.getPlayingPosition();
+                            if(position >= 0){
+                                mAdapter.setPlayingPosition(-1);
+                                mAdapter.notifyItemChanged(position);
+                            }
+                        }
+                        if("error".equals(phonePlayMusicEvent.getType())){
+                            FileUtil.deleteFile(phonePlayMusicEvent.getPath());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -186,8 +220,7 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
 
     public void release(){
         if(mPresenter != null) mPresenter.release();
-        mPlayer.pause();
-        mPlayer.unregisterCallback(this);
+        AudioPlayer.getInstance(getContext()).stop();
         RxBus.getInstance().unSubscribe(this);
         super.release();
     }
@@ -210,29 +243,57 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
 
     @Override
     public void onUnlockSuccess(int position) {
+        mAdapter.getItem(position).setFlag(true);
         mAdapter.notifyItemChanged(position);
-    }
-
-    @Override
-    public void onSwitchLast(@Nullable Song last) {
+        LuYinEntity entity = mAdapter.getItem(position);
+        downloadMusic(entity,false);
 
     }
 
-    @Override
-    public void onSwitchNext(@Nullable Song next) {
+    private void downloadMusic(final LuYinEntity entity, final boolean play){
+        if(!FileUtil.isExists(StorageUtils.getMusicRootPath() + entity.getSound().substring(entity.getSound().lastIndexOf("/") + 1))){
+            final ProgressDialog dialog = new ProgressDialog(getContext());
+            dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setIcon(R.drawable.ic_launcher);
+            dialog.setTitle("下载中");
+            RxDownload.getInstance(getContext())
+                    .download(ApiService.URL_QINIU + entity.getSound(),entity.getSound().substring(entity.getSound().lastIndexOf("/") + 1),StorageUtils.getMusicRootPath())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<DownloadStatus>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
 
-    }
+                        }
 
-    @Override
-    public void onComplete(@Nullable Song next) {
-        mPlayer.seekTo(0);
-        int position = mAdapter.getPlayingPosition();
-        mAdapter.setPlayingPosition(-1);
-        mAdapter.notifyItemChanged(position);
-    }
+                        @Override
+                        public void onNext(@NonNull DownloadStatus downloadStatus) {
+                            dialog.setMax((int) downloadStatus.getTotalSize());
+                            dialog.setProgress((int) downloadStatus.getDownloadSize());
+                        }
 
-    @Override
-    public void onPlayStatusChanged(boolean isPlaying) {
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            ToastUtils.showShortToast(getContext(),"下载失败，请重试");
+                            dialog.dismiss();
+                            RxDownload.getInstance(getContext()).deleteServiceDownload(ApiService.URL_QINIU +  entity.getSound(),false).subscribe();
+                            if(play){
+                                mAdapter.setPlayingPosition(-1);
+                            }
+                        }
 
+                        @Override
+                        public void onComplete() {
+                            dialog.dismiss();
+                            RxDownload.getInstance(getContext()).deleteServiceDownload(ApiService.URL_QINIU +  entity.getSound(),false).subscribe();
+                            if(play){
+                                mAdapter.notifyItemChanged(mAdapter.getPlayingPosition());
+                                //mHandler.postDelayed(mProgressCallback,1000);
+                            }
+                        }
+                    });
+        }
     }
 }

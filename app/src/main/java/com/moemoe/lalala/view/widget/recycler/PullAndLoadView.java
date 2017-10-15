@@ -67,7 +67,7 @@ public class PullAndLoadView extends FrameLayout {
                     int lastvisible = mRecyclerViewHelper.findLastVisibleItemPosition();
 
                     if (mIsLoadMoreEnabled && (lastPosition == lastvisible || firstVisible == lastvisible) && (mCurScrollingDirection == ScrollDirection.UP)) {
-                        if (!mPullCallback.isLoading() && !mPullCallback.hasLoadedAllItems()) {
+                        if (mPullCallback != null && !mPullCallback.isLoading() && !mPullCallback.hasLoadedAllItems()) {
                             final int totalItemCount = mRecyclerViewHelper.getItemCount();
                             final int firstVisibleItem = mRecyclerViewHelper.findFirstVisibleItemPosition();
                             final int visibleItemCount = Math.abs(mRecyclerViewHelper.findLastVisibleItemPosition() - firstVisibleItem);

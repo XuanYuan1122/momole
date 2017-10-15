@@ -1,0 +1,15 @@
+# ninja log v5
+0	184	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	5029ed2e61f6cf6c
+184	299	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6
+2	927	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	5029ed2e61f6cf6c
+927	1650	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6
+1	278	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	5029ed2e61f6cf6c
+278	474	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6
+2	202	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	5029ed2e61f6cf6c
+203	342	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6
+1	156	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	5029ed2e61f6cf6c
+156	281	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6
+1	181	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	5029ed2e61f6cf6c
+181	439	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6
+2	236	0	CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o	5029ed2e61f6cf6c
+236	435	0	../../../../libs/armeabi-v7a/libkira.so	6848d7a6a18a34b6

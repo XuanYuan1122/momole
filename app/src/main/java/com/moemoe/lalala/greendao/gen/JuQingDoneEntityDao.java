@@ -24,8 +24,9 @@ public class JuQingDoneEntityDao extends AbstractDao<JuQingDoneEntity, String> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, String.class, "id", true, "ID");
-        public final static Property Time = new Property(1, long.class, "time", false, "TIME");
+        public final static Property StoryId = new Property(0, String.class, "storyId", true, "STORY_ID");
+        public final static Property Timestamp = new Property(1, long.class, "timestamp", false, "TIMESTAMP");
+        public final static Property CreateTime = new Property(2, String.class, "createTime", false, "CREATE_TIME");
     }
 
 
@@ -41,8 +42,9 @@ public class JuQingDoneEntityDao extends AbstractDao<JuQingDoneEntity, String> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"JU_QING_DONE_ENTITY\" (" + //
-                "\"ID\" TEXT PRIMARY KEY NOT NULL ," + // 0: id
-                "\"TIME\" INTEGER NOT NULL );"); // 1: time
+                "\"STORY_ID\" TEXT PRIMARY KEY NOT NULL ," + // 0: storyId
+                "\"TIMESTAMP\" INTEGER NOT NULL ," + // 1: timestamp
+                "\"CREATE_TIME\" TEXT);"); // 2: createTime
     }
 
     /** Drops the underlying database table. */
@@ -55,22 +57,32 @@ public class JuQingDoneEntityDao extends AbstractDao<JuQingDoneEntity, String> {
     protected final void bindValues(DatabaseStatement stmt, JuQingDoneEntity entity) {
         stmt.clearBindings();
  
-        String id = entity.getId();
-        if (id != null) {
-            stmt.bindString(1, id);
+        String storyId = entity.getStoryId();
+        if (storyId != null) {
+            stmt.bindString(1, storyId);
         }
-        stmt.bindLong(2, entity.getTime());
+        stmt.bindLong(2, entity.getTimestamp());
+ 
+        String createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindString(3, createTime);
+        }
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, JuQingDoneEntity entity) {
         stmt.clearBindings();
  
-        String id = entity.getId();
-        if (id != null) {
-            stmt.bindString(1, id);
+        String storyId = entity.getStoryId();
+        if (storyId != null) {
+            stmt.bindString(1, storyId);
         }
-        stmt.bindLong(2, entity.getTime());
+        stmt.bindLong(2, entity.getTimestamp());
+ 
+        String createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindString(3, createTime);
+        }
     }
 
     @Override
@@ -81,27 +93,29 @@ public class JuQingDoneEntityDao extends AbstractDao<JuQingDoneEntity, String> {
     @Override
     public JuQingDoneEntity readEntity(Cursor cursor, int offset) {
         JuQingDoneEntity entity = new JuQingDoneEntity( //
-            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // id
-            cursor.getLong(offset + 1) // time
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // storyId
+            cursor.getLong(offset + 1), // timestamp
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // createTime
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, JuQingDoneEntity entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setTime(cursor.getLong(offset + 1));
+        entity.setStoryId(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setTimestamp(cursor.getLong(offset + 1));
+        entity.setCreateTime(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     @Override
     protected final String updateKeyAfterInsert(JuQingDoneEntity entity, long rowId) {
-        return entity.getId();
+        return entity.getStoryId();
     }
     
     @Override
     public String getKey(JuQingDoneEntity entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.getStoryId();
         } else {
             return null;
         }
@@ -109,7 +123,7 @@ public class JuQingDoneEntityDao extends AbstractDao<JuQingDoneEntity, String> {
 
     @Override
     public boolean hasKey(JuQingDoneEntity entity) {
-        return entity.getId() != null;
+        return entity.getStoryId() != null;
     }
 
     @Override

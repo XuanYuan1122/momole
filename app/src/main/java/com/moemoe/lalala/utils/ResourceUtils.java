@@ -27,4 +27,9 @@ public class ResourceUtils {
 		int resId = ctx.getResources().getIdentifier(colorName, "color", ctx.getPackageName());
 		return resId;
 	}
+
+	public static int getDimenResource(Context ctx, String dimenName) {
+		int resId = ctx.getResources().getIdentifier(dimenName, "dimen", ctx.getPackageName());
+		return resId;
+	}
 }

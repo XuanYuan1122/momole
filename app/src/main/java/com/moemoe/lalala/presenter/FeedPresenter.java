@@ -5,11 +5,14 @@ import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.BannerEntity;
+import com.moemoe.lalala.model.entity.Comment24Entity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.XianChongEntity;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -38,7 +41,7 @@ public class FeedPresenter implements FeedContract.Presenter {
 
 
     @Override
-    public void loadList(final long time, String type) {
+    public void loadList(final long time, String type,String id) {
         if("follow".equals(type)){
             apiService.loadFeedFollowList(time)
                     .subscribeOn(Schedulers.io())
@@ -55,7 +58,7 @@ public class FeedPresenter implements FeedContract.Presenter {
                         }
                     });
         }else if("random".equals(type)){
-            apiService.loadFeedRandomList(time)
+            apiService.loadFeedRandomList((int) time,ApiService.LENGHT)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetResultSubscriber<ArrayList<NewDynamicEntity>>() {
@@ -85,7 +88,7 @@ public class FeedPresenter implements FeedContract.Presenter {
                         }
                     });
         }else if("my".equals(type)){
-            apiService.loadFeedMyList(time)
+            apiService.loadFeedMyList(id,time)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetResultSubscriber<ArrayList<NewDynamicEntity>>() {
@@ -138,23 +141,6 @@ public class FeedPresenter implements FeedContract.Presenter {
     }
 
     @Override
-    public void requestFeatured(String room) {
-        apiService.requestFreatured(room)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetResultSubscriber<ArrayList<FeaturedEntity>>() {
-                    @Override
-                    public void onSuccess(ArrayList<FeaturedEntity> featuredEntities) {
-                        if(view != null) view.onFeaturedLoadSuccess(featuredEntities);
-                    }
-
-                    @Override
-                    public void onFail(int code,String msg) {
-                    }
-                });
-    }
-
-    @Override
     public void loadXianChongList() {
         apiService.loadXianChongList()
                 .subscribeOn(Schedulers.io())
@@ -163,6 +149,50 @@ public class FeedPresenter implements FeedContract.Presenter {
                     @Override
                     public void onSuccess(ArrayList<XianChongEntity> entities) {
                         if(view!=null) view.onLoadXianChongSuccess(entities);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view!=null)view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadFolder() {
+        apiService.load24Folder()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<ShowFolderEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<ShowFolderEntity> entities) {
+                        if(view!=null)view.onLoadFolderSuccess(entities);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view!=null)view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadComment() {
+        apiService.load24Comments(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<Comment24Entity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<Comment24Entity> entities) {
+                        if(view!=null){
+                            if(entities.size() > 0){
+                                Random random = new Random();
+                                int i = random.nextInt(entities.size());
+                                view.onLoadCommentSuccess(entities.get(i));
+                            }else {
+                                view.onLoadCommentSuccess(null);
+                            }
+                        }
                     }
 
                     @Override

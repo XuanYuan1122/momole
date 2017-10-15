@@ -130,13 +130,13 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
             @Override
             public void onLoadMore() {
                 mIsLoading = true;
-                mPresenter.requestPastFresh(mBarId,mPastAdapter.getDataCount());
+                mPresenter.requestPastFresh(mBarId,-mPastAdapter.getDataCount() - 1);
             }
 
             @Override
             public void onRefresh() {
                 mIsLoading = true;
-                mPresenter.requestPastFresh(mBarId,0);
+                mPresenter.requestPastFresh(mBarId,-1);
             }
 
             @Override
@@ -159,7 +159,7 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
                 }
             }
         });
-        mPresenter.requestPastFresh(mBarId,0);
+        mPresenter.requestPastFresh(mBarId,-1);
     }
 
     @Override

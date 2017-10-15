@@ -54,11 +54,6 @@ public class DocHistoryActivity extends BaseAppCompatActivity implements Persona
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))

@@ -26,6 +26,7 @@ import java.io.File;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -55,19 +56,28 @@ public class FileCommonViewHolder extends ClickableViewHolder {
         longCover = $(R.id.iv_long_image);
     }
 
-    public void createItem(CommonFileEntity entity,boolean isSelect){
+    public void createItem(CommonFileEntity entity,boolean isSelect,boolean isBuy){
         select.setVisibility(isSelect?View.VISIBLE:View.GONE);
         select.setSelected(entity.isSelect());
         int size = (DensityUtil.getScreenWidth(itemView.getContext()) - DensityUtil.dip2px(itemView.getContext(),6)) /3;
         root.setLayoutParams(new RecyclerView.LayoutParams(size,size));
         cover.setLayoutParams(new RelativeLayout.LayoutParams(size,size));
         if(entity.getType().equals("image")){
-            Glide.with(itemView.getContext())
-                    .load(StringUtils.getUrl(itemView.getContext(),entity.getPath(),size,size,false,true))
-                    .error(R.drawable.bg_default_square)
-                    .placeholder(R.drawable.bg_default_square)
-                    .bitmapTransform(new CropSquareTransformation(itemView.getContext()))
-                    .into(cover);
+            if(!isBuy){
+                Glide.with(itemView.getContext())
+                        .load(StringUtils.getUrl(itemView.getContext(),entity.getPath(),size,size,false,true))
+                        .error(R.drawable.bg_default_square)
+                        .placeholder(R.drawable.bg_default_square)
+                        .bitmapTransform(new CropSquareTransformation(itemView.getContext()))
+                        .into(cover);
+            }else {
+                Glide.with(itemView.getContext())
+                        .load(StringUtils.getUrl(itemView.getContext(),entity.getPath(),size,size,false,true))
+                        .error(R.drawable.bg_default_square)
+                        .placeholder(R.drawable.bg_default_square)
+                        .bitmapTransform(new CropSquareTransformation(itemView.getContext()),new BlurTransformation(context,10,4))
+                        .into(cover);
+            }
             title.setVisibility(View.GONE);
             extra.setVisibility(View.GONE);
         }else if(entity.getType().equals("music")){
@@ -99,7 +109,7 @@ public class FileCommonViewHolder extends ClickableViewHolder {
         }
     }
 
-    public void createLinearItem(CommonFileEntity entity, boolean isSelect, RxDownload downloadSub, final RecyclerView.Adapter adapter, final int position){
+    public void createLinearItem(final CommonFileEntity entity, boolean isSelect, final RxDownload downloadSub, final RecyclerView.Adapter adapter, final int position,boolean isBuy){
         select.setVisibility(isSelect?View.VISIBLE:View.GONE);
         select.setSelected(entity.isSelect());
         if(entity.getType().equals("image")) {
@@ -135,7 +145,7 @@ public class FileCommonViewHolder extends ClickableViewHolder {
 
                                         @Override
                                         public void onError(Throwable e) {
-
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU + ApiService.URL_QINIU +  entity.getPath(),false).subscribe();
                                         }
 
                                         @Override
@@ -143,6 +153,7 @@ public class FileCommonViewHolder extends ClickableViewHolder {
                                             BitmapUtils.galleryAddPic(itemView.getContext(), longImage.getAbsolutePath());
                                             longCover.setImage(longImage.getAbsolutePath());
                                             adapter.notifyItemChanged(position);
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU + ApiService.URL_QINIU +  entity.getPath(),false).subscribe();
                                         }
 
                                         @Override

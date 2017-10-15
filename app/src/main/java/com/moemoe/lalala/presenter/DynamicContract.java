@@ -3,6 +3,8 @@ package com.moemoe.lalala.presenter;
 import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.CommentV2Entity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
+import com.moemoe.lalala.model.entity.DynamicEntity;
+import com.moemoe.lalala.model.entity.NewDynamicEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
 
@@ -24,6 +26,7 @@ public interface DynamicContract {
         void loadCommentsList(String id,int type,boolean sortTime,int index);
         void deleteComment(String id,String commentId,int position);
         void favoriteComment(String id,String commentId,boolean isFavorite,int position);
+        void getDynamic(String id);
     }
 
     interface View extends BaseView{
@@ -37,5 +40,6 @@ public interface DynamicContract {
         void onDeleteCommentSuccess(int position);
         void favoriteCommentSuccess(boolean isFavorite,int position);
         void onPlusTagSuccess(int position,boolean isLike);
+        void onLoadDynamicSuccess(NewDynamicEntity entity);
     }
 }

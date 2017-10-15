@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y184"
+    android:background="@drawable/btn_white_border_selector">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray_e8e8e8"/>
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="@dimen/x112"
+        android:layout_height="@dimen/x112"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/x24"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:id="@+id/tv_doc_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x20"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_toEndOf="@+id/iv_cover"
+        android:layout_alignTop="@+id/iv_cover"
+        android:textSize="@dimen/x30"
+        android:textColor="@color/black_1e1e1e"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_doc_title"
+        android:layout_alignStart="@+id/tv_doc_title"
+        android:layout_marginTop="@dimen/y10"
+        android:textSize="@dimen/x24"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_state"
+        android:layout_alignStart="@+id/tv_doc_title"
+        android:layout_marginTop="@dimen/y10"
+        android:textSize="@dimen/x20"
+        android:textColor="@color/gray_929292"/>
+
+    <TextView
+        android:id="@+id/tv_department"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/main_cyan"
+        android:textSize="@dimen/x20"
+        android:layout_alignTop="@+id/tv_time"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/x24"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/x20"
+        android:textColor="@color/gray_d7d7d7"
+        android:layout_alignTop="@+id/tv_time"
+        android:layout_toStartOf="@+id/tv_department"
+        android:layout_marginEnd="@dimen/x6"
+        android:text="投稿在"/>
+</RelativeLayout>

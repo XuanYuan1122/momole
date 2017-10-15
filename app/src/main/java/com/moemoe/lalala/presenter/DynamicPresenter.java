@@ -6,6 +6,7 @@ import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.CommentV2Entity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
+import com.moemoe.lalala.model.entity.NewDynamicEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
 
@@ -259,6 +260,24 @@ public class DynamicPresenter implements DynamicContract.Presenter {
                     @Override
                     public void onSuccess() {
                         if(view != null) view.favoriteCommentSuccess(!isFavorite,position);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code,msg);
+                    }
+                });
+    }
+
+    @Override
+    public void getDynamic(String id) {
+        apiService.getDynamic(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<NewDynamicEntity>() {
+                    @Override
+                    public void onSuccess(NewDynamicEntity entity) {
+                        if(view != null) view.onLoadDynamicSuccess(entity);
                     }
 
                     @Override

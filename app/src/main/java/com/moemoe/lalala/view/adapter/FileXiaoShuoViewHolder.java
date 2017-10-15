@@ -10,6 +10,8 @@ import com.moemoe.lalala.model.entity.FileXiaoShuoEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
+
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 
 /**
@@ -35,15 +37,24 @@ public class FileXiaoShuoViewHolder extends ClickableViewHolder {
         select = $(R.id.iv_select);
     }
 
-    public void createItem(FileXiaoShuoEntity entity, boolean isSelect){
+    public void createItem(FileXiaoShuoEntity entity, boolean isSelect,boolean isBuy){
         select.setVisibility(isSelect?View.VISIBLE:View.GONE);
         select.setSelected(entity.isSelect());
-        Glide.with(itemView.getContext())
-                .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74),false,true))
-                .error(R.drawable.bg_default_square)
-                .placeholder(R.drawable.bg_default_square)
-                .bitmapTransform(new CropTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74)))
-                .into(cover);
+        if(!isBuy){
+            Glide.with(itemView.getContext())
+                    .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74),false,true))
+                    .error(R.drawable.bg_default_square)
+                    .placeholder(R.drawable.bg_default_square)
+                    .bitmapTransform(new CropTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74)))
+                    .into(cover);
+        }else {
+            Glide.with(itemView.getContext())
+                    .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74),false,true))
+                    .error(R.drawable.bg_default_square)
+                    .placeholder(R.drawable.bg_default_square)
+                    .bitmapTransform(new CropTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74)),new BlurTransformation(context,10,4))
+                    .into(cover);
+        }
         title.setText(entity.getTitle());
         name.setText("UP " + entity.getUserName());
         num.setText("字数 " + entity.getNum());

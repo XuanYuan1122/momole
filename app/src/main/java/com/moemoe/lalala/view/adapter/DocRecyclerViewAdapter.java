@@ -117,7 +117,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_FLOOR = 11;
     private static final int TYPE_FOLDER = 12;
     private static final int TYPE_TITLE = 13;
-    private static final int TYPE_SHOW_ALL = 14;
 
     private static final long UPDATE_PROGRESS_INTERVAL = 1000;
     private RxDownload downloadSub;
@@ -134,7 +133,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private OnItemClickListener onItemClickListener;
     private BottomMenuFragment fragment;
     private Handler mHandler = new Handler();
-    private boolean showAll;
     private Runnable mProgressCallback = new Runnable() {
         @Override
         public void run() {
@@ -153,10 +151,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }
         }
     };
-
-    public void setShowAll(boolean showAll){
-        this.showAll = showAll;
-    }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener){
         this.onItemClickListener = onItemClickListener;
@@ -245,8 +239,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 return new BagFavoriteHolder(mLayoutInflater.inflate(R.layout.item_bag_get,parent,false));
             case TYPE_TITLE:
                 return new TextHolder(mLayoutInflater.inflate(R.layout.item_new_doc_text,parent,false));
-            case TYPE_SHOW_ALL:
-                return new ShowAllHolder(mLayoutInflater.inflate(R.layout.item_doc_show_all,parent,false));
             default:
                 return new EmptyViewHolder(mLayoutInflater.inflate(R.layout.item_empty,parent,false));
         }
@@ -359,9 +351,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }else if(holder instanceof BagFavoriteHolder){
             BagFavoriteHolder bagFavoriteHolder = (BagFavoriteHolder) holder;
             createFolderItem(bagFavoriteHolder,position);
-        }else if(holder instanceof ShowAllHolder){
-            ShowAllHolder showAllHolder = (ShowAllHolder) holder;
-            createShowAll(showAllHolder,position);
         }
     }
 
@@ -380,7 +369,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             if(mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
                 size++;
             }
-            size++;
         }
         return size;
     }
@@ -417,9 +405,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }else if(position == mTagsPosition + 1){
             return "";
         }else {
-            if(position == getItemCount() - 1){
-                return "";
-            }
             if(mDocBean.getCoin() > 0 && mDocBean.getFolderInfo() != null && !TextUtils.isEmpty(mDocBean.getFolderInfo().getFolderId())){
                 return mComments.get(position - mDocBean.getDetails().size() - 6 - mDocBean.getCoinDetails().size());
             }else if(mDocBean.getCoin() > 0){
@@ -494,9 +479,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         } else if(position == mTagsPosition + 1){
             return TYPE_FLOOR;
         }else {
-            if(position == getItemCount() - 1){
-                return TYPE_SHOW_ALL;
-            }
             return TYPE_COMMENT;
         }
     }
@@ -525,38 +507,30 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static class CreatorHolder extends RecyclerView.ViewHolder{
 
         ImageView mIvCreator;
+        ImageView mIvVip;
+        ImageView mIvSex;
         TextView mTvCreator;
-        View ivLevelColor;
         TextView tvLevel;
-        View rlLevelPack;
         TextView mTvTime;
         TextView mFollow;
         View rlHuiZhang1;
-        View rlHuiZhang2;
-        View rlHuiZhang3;
         TextView tvHuiZhang1;
-        TextView tvHuiZhang2;
-        TextView tvHuiZhang3;
         View[] huiZhangRoots;
         TextView[] huiZhangTexts;
 
         CreatorHolder(View itemView) {
             super(itemView);
-            mIvCreator = (ImageView) itemView.findViewById(R.id.iv_post_creator);
-            mTvCreator = (TextView) itemView.findViewById(R.id.tv_post_creator_name);
-            mTvTime = (TextView) itemView.findViewById(R.id.tv_post_update_time);
-            ivLevelColor = itemView.findViewById(R.id.rl_level_bg);
+            mIvCreator = (ImageView) itemView.findViewById(R.id.iv_avatar);
+            mIvVip = (ImageView) itemView.findViewById(R.id.iv_vip);
+            mIvSex = (ImageView) itemView.findViewById(R.id.iv_sex);
+            mTvCreator = (TextView) itemView.findViewById(R.id.tv_name);
+            mTvTime = (TextView) itemView.findViewById(R.id.tv_time);
             tvLevel = (TextView)itemView.findViewById(R.id.tv_level);
             tvHuiZhang1 = (TextView)itemView.findViewById(R.id.tv_huizhang_1);
-            tvHuiZhang2 = (TextView)itemView.findViewById(R.id.tv_huizhang_2);
-            tvHuiZhang3 = (TextView)itemView.findViewById(R.id.tv_huizhang_3);
             mFollow = (TextView) itemView.findViewById(R.id.tv_follow);
-            rlLevelPack = itemView.findViewById(R.id.rl_level_pack);
             rlHuiZhang1 = itemView.findViewById(R.id.fl_huizhang_1);
-            rlHuiZhang2 = itemView.findViewById(R.id.fl_huizhang_2);
-            rlHuiZhang3 = itemView.findViewById(R.id.fl_huizhang_3);
-            huiZhangRoots = new View[]{rlHuiZhang1,rlHuiZhang2,rlHuiZhang3};
-            huiZhangTexts = new TextView[]{tvHuiZhang1,tvHuiZhang2,tvHuiZhang3};
+            huiZhangRoots = new View[]{rlHuiZhang1};
+            huiZhangTexts = new TextView[]{tvHuiZhang1};
         }
     }
 
@@ -566,14 +540,13 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void createCreator(final CreatorHolder holder){
+        int size = (int) mContext.getResources().getDimension(R.dimen.x80);
         Glide.with(mContext)
-                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + mDocBean.getUserIcon(), DensityUtil.dip2px(mContext,44), DensityUtil.dip2px(mContext,44),false,false))
-                .override(DensityUtil.dip2px(mContext,44), DensityUtil.dip2px(mContext,44))
-                .placeholder(R.drawable.bg_default_circle)
+                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + mDocBean.getUserIcon(),size,size,false,true))
                 .error(R.drawable.bg_default_circle)
+                .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(mContext))
                 .into(holder.mIvCreator);
-
         if(mDocBean.getUserId().equals(PreferenceUtils.getUUid())){
             holder.mFollow.setVisibility(View.GONE);
         }else {
@@ -587,59 +560,33 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ((NewDocDetailActivity)mContext).followUser(mDocBean.getUserId(),mDocBean.isFollowUser());
             }
         });
+
+        if(mDocBean.isVip()){
+            holder.mIvVip.setVisibility(View.VISIBLE);
+        }else {
+            holder.mIvVip.setVisibility(View.GONE);
+        }
+        holder.mIvSex.setImageResource(mDocBean.getUserSex().equalsIgnoreCase("M")?R.drawable.ic_user_girl:R.drawable.ic_user_boy);
         holder.mTvCreator.setText(mDocBean.getUserName());
-        holder.rlLevelPack.setVisibility(View.VISIBLE);
-        holder.tvLevel.setText(String.valueOf(mDocBean.getUserLevel()));
         holder.mTvTime.setText(StringUtils.timeFormate(mDocBean.getCreateTime()));
+        LevelSpan levelSpan = new LevelSpan(ContextCompat.getColor(mContext,R.color.white),mContext.getResources().getDimension(R.dimen.x12));
+        String content = "LV" + mDocBean.getUserLevel();
+        String colorStr = "LV";
+        SpannableStringBuilder style = new SpannableStringBuilder(content);
+        style.setSpan(levelSpan, content.indexOf(colorStr), content.indexOf(colorStr) + colorStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        holder.tvLevel.setText(style);
+        float radius2 = mContext.getResources().getDimension(R.dimen.y4);
+        float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
+        RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
+        ShapeDrawable shapeDrawable2 = new ShapeDrawable();
+        shapeDrawable2.setShape(roundRectShape2);
+        shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
+        shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(mDocBean.getUserLevelColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
+        holder.tvLevel.setBackgroundDrawable(shapeDrawable2);
         holder.mIvCreator.setTag(R.id.id_creator_uuid, mDocBean.getUserId());
         holder.mIvCreator.setOnClickListener(mAvatarListener);
-        int radius1 = DensityUtil.dip2px(mContext,5);
-        float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
-        RoundRectShape roundRectShape1 = new RoundRectShape(outerR1, null, null);
-        ShapeDrawable shapeDrawable1 = new ShapeDrawable();
-        shapeDrawable1.setShape(roundRectShape1);
-        shapeDrawable1.getPaint().setStyle(Paint.Style.FILL);
-        shapeDrawable1.getPaint().setColor(StringUtils.readColorStr(mDocBean.getUserLevelColor(), ContextCompat.getColor(mContext, R.color.main_cyan)));
-        holder.ivLevelColor.setBackgroundDrawable(shapeDrawable1);
         ViewUtils.badge(mContext,holder.huiZhangRoots,holder.huiZhangTexts,mDocBean.getBadgeList());
     }
-
-    private static class ShowAllHolder extends RecyclerView.ViewHolder{
-
-        TextView mTvText;
-
-        ShowAllHolder(View itemView) {
-            super(itemView);
-            mTvText = (TextView) itemView.findViewById(R.id.tv_doc_content);
-        }
-    }
-
-    private void createShowAll(ShowAllHolder holder,int position){
-        if(showAll){
-            holder.mTvText.setGravity(Gravity.CENTER);
-            holder.mTvText.setPadding(0,0,0,0);
-            holder.mTvText.setTextColor(ContextCompat.getColor(mContext,R.color.main_cyan));
-            holder.mTvText.setText(StringUtils.getNumberInLengthLimit(mDocBean.getComments(),3));
-            holder.itemView.setOnClickListener(new NoDoubleClickListener() {
-                @Override
-                public void onNoDoubleClick(View v) {
-                    CommentListActivity.startActivity(mContext,mDocBean.getId(),mDocBean.getUserId());
-                }
-            });
-        }else {
-            holder.mTvText.setGravity(Gravity.END|Gravity.CENTER_VERTICAL);
-            holder.mTvText.setPadding((int) mContext.getResources().getDimension(R.dimen.x24),0,0,0);
-            holder.mTvText.setTextColor(ContextCompat.getColor(mContext,R.color.gray_d7d7d7));
-            holder.mTvText.setText("输入评论...");
-            holder.itemView.setOnClickListener(new NoDoubleClickListener() {
-                @Override
-                public void onNoDoubleClick(View v) {
-                    CreateCommentActivity.startActivity(mContext,mDocBean.getId(),false,"");
-                }
-            });
-        }
-    }
-
 
     private static class TextHolder extends RecyclerView.ViewHolder{
 
@@ -722,7 +669,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                                 @Override
                                 public void onError(Throwable e) {
-
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
@@ -730,6 +677,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                     BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                     notifyItemChanged(position);
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
@@ -790,7 +738,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void createHideImage(final HideImageHolder holder, final int position, int size){
-        Image image  = (Image) getItem(position);
+        final Image image  = (Image) getItem(position);
         if(image.getW() <= 0 || image.getH() <= 0){
             holder.mIvImage.setVisibility(View.GONE);
             holder.mIvLongImage.setVisibility(View.GONE);
@@ -815,7 +763,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                                 @Override
                                 public void onError(Throwable e) {
-
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
@@ -823,6 +771,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                     BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                     notifyItemChanged(position);
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
@@ -923,7 +872,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     onSongUpdate(musicInfo);
                 }
             }
-            Image image = music.getCover();
+            final Image image = music.getCover();
             if(image.getW() <= 0 || image.getH() <= 0){
                 mMusicHolder.mIvImage.setVisibility(View.GONE);
                 mMusicHolder.mIvLongImage.setVisibility(View.GONE);
@@ -947,7 +896,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                 .subscribe(new Observer<DownloadStatus>() {
                                     @Override
                                     public void onError(Throwable e) {
-
+                                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                     }
 
                                     @Override
@@ -955,6 +904,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                         BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                         mMusicHolder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                         notifyItemChanged(position);
+                                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                     }
 
                                     @Override
@@ -1205,7 +1155,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         mLabelHolder.cRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                CreateCommentActivity.startActivity(mContext,mDocBean.getId(),false,"");
+                CreateCommentActivity.startActivity(mContext,mDocBean.getId(),false,"",true);
             }
         });
     }
@@ -1234,18 +1184,15 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         ImageView mIvGiveCoin;
         TextView mTvCoinNum;
-        TextView mCommentNum;
-        
+
         FloorHolder(View itemView) {
             super(itemView);
             mIvGiveCoin = (ImageView) itemView.findViewById(R.id.iv_give_coin);
             mTvCoinNum = (TextView) itemView.findViewById(R.id.tv_got_coin);
-            mCommentNum = (TextView) itemView.findViewById(R.id.tv_comment_num);
         }
     }
 
     private void createFloor(FloorHolder holder){
-        holder.mCommentNum.setText(mContext.getString(R.string.label_comment_num,mComments.size()));
         holder.mTvCoinNum.setText(mContext.getString(R.string.label_got_coin,mDocBean.getCoinPays()));
         if(mDocBean.getUserId().equals(PreferenceUtils.getUUid())){
             holder.mIvGiveCoin.setImageResource(R.drawable.btn_doc_givecoins_given_enabel);
@@ -1464,7 +1411,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             @Override
             public void OnMenuItemClick(int itemId) {
                 if (itemId == 0) {
-                    CreateCommentActivity.startActivity(mContext,bean.getCommentId(),true,"");
+                    CreateCommentActivity.startActivity(mContext,bean.getCommentId(),true,"",true);
                 } else if (itemId == 2) {
                     Intent intent = new Intent(mContext, JuBaoActivity.class);
                     intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getCreateUser().getUserName());

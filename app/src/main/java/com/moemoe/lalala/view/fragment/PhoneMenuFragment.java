@@ -50,9 +50,9 @@ public class PhoneMenuFragment extends BaseFragment {
     @Override
     protected void initViews(Bundle savedInstanceState) {
         mIvBack.setVisibility(View.VISIBLE);
-        mIvBack.setOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNoDoubleClick(View v) {
+            public void onClick(View v) {
                 onBackPressed();
             }
         });

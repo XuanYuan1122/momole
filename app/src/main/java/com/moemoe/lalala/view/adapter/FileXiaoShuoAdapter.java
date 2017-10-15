@@ -14,6 +14,7 @@ import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 public class FileXiaoShuoAdapter extends BaseRecyclerViewAdapter<FileXiaoShuoEntity,FileXiaoShuoViewHolder> {
 
     private boolean isSelect;
+    private boolean isBuy;
 
     public FileXiaoShuoAdapter() {
         super(R.layout.item_file_xiaoshuo);
@@ -23,7 +24,7 @@ public class FileXiaoShuoAdapter extends BaseRecyclerViewAdapter<FileXiaoShuoEnt
 
     @Override
     protected void convert(FileXiaoShuoViewHolder helper, final FileXiaoShuoEntity item, int position) {
-        helper.createItem(item,isSelect);
+        helper.createItem(item,isSelect,isBuy);
     }
 
     @Override
@@ -33,5 +34,9 @@ public class FileXiaoShuoAdapter extends BaseRecyclerViewAdapter<FileXiaoShuoEnt
 
     public void setSelect(boolean select) {
         isSelect = select;
+    }
+
+    public void setBuy(boolean buy) {
+        isBuy = buy;
     }
 }

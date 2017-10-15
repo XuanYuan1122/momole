@@ -71,6 +71,9 @@ public class BagCollectionTopHolder extends ClickableViewHolder {
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
         iv.setLayoutParams(lp);
+
+        RecyclerView.LayoutParams lp1 = new RecyclerView.LayoutParams(width,height);
+        root.setLayoutParams(lp1);
         Glide.with(itemView.getContext())
                 .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),width,height, false, true))
                 .placeholder(R.drawable.bg_default_square)

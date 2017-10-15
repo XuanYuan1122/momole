@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/iv_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/iv_cg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/iv_pose"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/iv_face"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/iv_extra"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="@dimen/x714"
+        android:layout_height="@dimen/y222"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/y52"
+        android:background="@drawable/ic_gal_talkbar_text"
+        android:paddingTop="@dimen/y68"
+        android:paddingStart="@dimen/x44"
+        android:paddingEnd="@dimen/x44"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x30"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="@dimen/x287"
+        android:layout_height="@dimen/y77"
+        android:background="@drawable/ic_gal_talkbar_name"
+        android:layout_alignStart="@+id/tv_text"
+        android:layout_marginBottom="-25dp"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/x44"
+        android:textSize="@dimen/x30"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_above="@+id/tv_text"
+        android:visibility="invisible"/>
+
+    <ImageView
+        android:id="@+id/iv_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/fl_click"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_download"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/bg_gal_loading_2"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/ll_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x30"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/y20"/>
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:progressDrawable="@drawable/download_progress"
+                android:background="@drawable/shape_white_bg_y18"
+                android:progress="100"
+                android:layout_width="@dimen/x562"
+                android:layout_height="@dimen/y36"
+                android:padding="@dimen/y4"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/iv_skip"
+        android:layout_width="@dimen/x180"
+        android:layout_height="@dimen/y70"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/y44"
+        android:layout_marginEnd="@dimen/x44"
+        android:src="@drawable/btn_gal_skip_normal"/>
+</RelativeLayout>

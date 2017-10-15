@@ -14,6 +14,7 @@ import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -58,6 +59,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
+import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.DocRecyclerViewAdapter;
@@ -100,6 +102,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private final int EDIT_DOC = 108;
     private final int MENU_EGG = 109;
     private final int MENU_FORWARD = 110;
+    private final int MENU_SUBMISSION = 111;
     private final int ICON_NUM_LIMIT = 9;
     private final int REQ_GET_EDIT_VERSION_IMG = 2333;
     private final int REQ_TO_FOLDER = 30003;
@@ -113,12 +116,14 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     PullAndLoadView mList;
     @BindView(R.id.iv_menu_list)
     ImageView mIvMenu;
-    @BindView(R.id.rv_img)
-    RecyclerView mRvComment;
     @BindView(R.id.edt_comment_input)
     EditText mEdtCommentInput;
     @BindView(R.id.iv_comment_send)
     View mTvSendComment;
+    @BindView(R.id.tv_doc_content)
+    TextView mTvComment;
+    @BindView(R.id.rl_send_root)
+    View mSendRoot;
     @Inject
     DocDetailPresenter mPresenter;
     /**
@@ -131,7 +136,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private String mShareTitle;
     private String mShareIcon;
     private DocRecyclerViewAdapter mAdapter;
-    private SelectImgAdapter mSelectAdapter;
     private BottomMenuFragment bottomMenuFragment;
     private int mCurType = 0;//0.对楼主 1.对某楼 2.对标签
     private ArrayList<Image> mImages ;
@@ -140,6 +144,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private ArrayList<DocTagEntity> mDocTags;
     private int mPosition;
     private int mCommentNum;
+    private KeyboardListenerLayout mKlCommentBoard;
 
     @Override
     protected int getLayoutId() {
@@ -173,12 +178,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mList.setLayoutManager(layoutManager);
         mImages = new ArrayList<>();
-        mSelectAdapter = new SelectImgAdapter(this);
-        LinearLayoutManager selectRvL = new LinearLayoutManager(this);
-        selectRvL.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mRvComment.setLayoutManager(selectRvL);
-        mRvComment.setAdapter(mSelectAdapter);
-        mRvComment.setVisibility(View.GONE);
         mTvSendComment.setEnabled(false);
     }
 
@@ -263,7 +262,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 }
             }
         });
-        KeyboardListenerLayout mKlCommentBoard = (KeyboardListenerLayout) findViewById(R.id.ll_comment_pannel);
+        mKlCommentBoard = (KeyboardListenerLayout) findViewById(R.id.ll_comment_pannel);
         mKlCommentBoard.setOnkbdStateListener(new KeyboardListenerLayout.onKeyboardChangeListener() {
 
             @Override
@@ -274,6 +273,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                         mCurType = 0;
                         mEdtCommentInput.setHint(R.string.a_hint_input_comment);
                     }
+                    mSendRoot.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -311,25 +311,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     mTvSendComment.setEnabled(true);
                 }
 
-            }
-        });
-        mSelectAdapter.setOnItemClickListener(new SelectImgAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                if(position == mIconPaths.size()){
-                    choosePhoto();
-                }
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-
-            @Override
-            public void onAllDelete() {
-                mRvComment.setVisibility(View.GONE);
-                mTvSendComment.setEnabled(false);
             }
         });
         mPresenter.requestDoc(mDocId);
@@ -444,7 +425,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         super.onResume();
     }
 
-    @OnClick({R.id.iv_comment_send,R.id.iv_add_img})
+    @OnClick({R.id.iv_comment_send})
     public void onClick(View view){
         switch (view.getId()){
             case R.id.iv_comment_send:
@@ -454,31 +435,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     sendComment(false,null);
                 }
                 break;
-            case R.id.iv_add_img:
-                choosePhoto();
-                break;
-        }
-    }
-
-    private void choosePhoto() {
-        if (mIconPaths.size() < ICON_NUM_LIMIT) {
-            if (AppSetting.IS_EDITOR_VERSION) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                try {
-                    startActivityForResult(intent, REQ_GET_EDIT_VERSION_IMG);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    DialogUtils.createImgChooseDlg(this, null, this, mIconPaths, ICON_NUM_LIMIT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            showToast(R.string.msg_create_doc_9_jpg);
         }
     }
 
@@ -520,8 +476,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                         }
                     }
                     mIconPaths.add(photoPath);
-                    onGetPhotos();
-
                 }
             }
         }else if(requestCode == REQ_TO_FOLDER && resultCode == RESULT_OK){
@@ -540,34 +494,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 mDocTags = entities;
                 mAdapter.setTags(entities);
             }
-        }else {
-            DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
-
-                @Override
-                public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
-                    if (override) {
-                        mIconPaths = photoPaths;
-                    } else {
-                        mIconPaths.addAll(photoPaths);
-                    }
-                    onGetPhotos();
-                }
-            });
-        }
-    }
-
-    private void onGetPhotos() {
-        if (mIconPaths.size() == 0) {
-            // 取消选择了所有图
-            mRvComment.setVisibility(View.GONE);
-            String content = mEdtCommentInput.getText().toString();
-            if(TextUtils.isEmpty(content)){
-                mTvSendComment.setEnabled(false);
-            }
-        }else if(mIconPaths.size() <= ICON_NUM_LIMIT){
-            mTvSendComment.setEnabled(true);
-            mRvComment.setVisibility(View.VISIBLE);
-            mSelectAdapter.setData(mIconPaths);
         }
     }
 
@@ -645,12 +571,12 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     }
 
     public void addDocLabelView(){
+        mSendRoot.setVisibility(View.GONE);
         mEdtCommentInput.setText("");
         mEdtCommentInput.setHint("添加标签吧~~");
         mEdtCommentInput.requestFocus();
         SoftKeyboardUtils.showSoftKeyboard(this, mEdtCommentInput);
         mCurType = 2;
-        //  mIsLabel = true;
     }
 
     public void autoSendComment(){
@@ -753,6 +679,9 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             item = new MenuItem(EDIT_DOC,getString(R.string.label_update_post),R.drawable.btn_doc_option_edit);
             items.add(item);
 
+            item = new MenuItem(MENU_SUBMISSION,"投稿",R.drawable.btn_doc_option_contribute);
+            items.add(item);
+
             item = new MenuItem(MENU_DELETE,getString(R.string.label_delete),R.drawable.btn_doc_option_delete);
             items.add(item);
 
@@ -768,7 +697,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             items.add(item);
         }
 
-        item = new MenuItem(MENU_FORWARD, "转发");
+        item = new MenuItem(MENU_FORWARD, "转发",R.drawable.btn_doc_option_forward);
         items.add(item);
 
         item = new MenuItem(MENU_SHARE, getString(R.string.label_share),R.drawable.btn_doc_option_share);
@@ -822,6 +751,11 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     entity2.setUserName(mDoc.getUserName());
                     entity1.setDocCreateUser(entity2);
                     CreateForwardActivity.startActivity(NewDocDetailActivity.this,entity1);
+                }else if(itemId == MENU_SUBMISSION){
+                    Intent i = new Intent(NewDocDetailActivity.this,SubmissionActivity.class);
+                    i.putExtra(UUID,mDocId);
+                    i.putExtra("doc_name",entity.getTitle());
+                    startActivity(i);
                 }
             }
         });
@@ -940,9 +874,27 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mList.setComplete();
         mAdapter.setComment(commentV2Entities);
         if(commentV2Entities.size() <= mCommentNum){
-            mAdapter.setShowAll(false);
+            mTvComment.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
+            mTvComment.setPadding((int) getResources().getDimension(R.dimen.x24),0,0,0);
+            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
+            mTvComment.setText("输入评论...");
+            mTvComment.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    CreateCommentActivity.startActivity(NewDocDetailActivity.this,mDocId,false,"",true);
+                }
+            });
         }else {
-            mAdapter.setShowAll(true);
+            mTvComment.setGravity(Gravity.CENTER);
+            mTvComment.setPadding(0,0,0,0);
+            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+            mTvComment.setText("显示全部"+StringUtils.getNumberInLengthLimit(mDoc.getComments(),3)+"条评论");
+            mTvComment.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    CommentListActivity.startActivity(NewDocDetailActivity.this,mDocId,mDoc.getUserId());
+                }
+            });
         }
     }
 
@@ -970,8 +922,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         finalizeDialog();
         clearEdit();
         mIconPaths.clear();
-        mSelectAdapter.notifyDataSetChanged();
-        mRvComment.setVisibility(View.GONE);
         showToast(R.string.msg_send_comment_success);
         if(isReplyShow){
             autoSendComment();

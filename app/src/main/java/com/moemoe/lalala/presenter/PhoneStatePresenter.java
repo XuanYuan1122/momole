@@ -4,6 +4,7 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.AuthorInfo;
+import com.moemoe.lalala.model.entity.CodeEntity;
 import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.model.entity.RegisterEntity;
@@ -79,6 +80,26 @@ public class PhoneStatePresenter implements PhoneStateContract.Presenter {
                     @Override
                     public void onSuccess(LoginResultEntity loginResultEntity) {
                         if(view != null) view.onLoginSuccess(info,loginResultEntity);
+                    }
+
+                    @Override
+                    public void onFail(int code,String msg) {
+                        if(view != null) view.onFailure(code,msg);
+                    }
+                });
+    }
+
+    @Override
+    public void requestRegisterCode(String mobile) {
+        CodeEntity entity = new CodeEntity();
+        entity.mobile = mobile;
+        apiService.requestRegisterCode(entity)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view != null) view.onGetCodeSuccess();
                     }
 
                     @Override

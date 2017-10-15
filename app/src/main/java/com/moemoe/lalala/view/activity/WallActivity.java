@@ -98,7 +98,7 @@ public class WallActivity extends BaseAppCompatActivity implements CommentContra
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
         mIvBack.setVisibility(View.VISIBLE);
-        mIvBack.setImageResource(R.drawable.btn_back_blue_normal);
+        mIvBack.setImageResource(R.drawable.btn_back_blue_normal_unity);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {

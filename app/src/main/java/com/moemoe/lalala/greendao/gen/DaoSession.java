@@ -12,6 +12,7 @@ import com.moemoe.lalala.model.entity.AlarmClockEntity;
 import com.moemoe.lalala.model.entity.AuthorInfo;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
+import com.moemoe.lalala.model.entity.MapDbEntity;
 import com.moemoe.lalala.model.entity.NetaDb;
 import com.moemoe.lalala.utils.JuQingDoneEntity;
 
@@ -19,6 +20,7 @@ import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
 import com.moemoe.lalala.greendao.gen.AuthorInfoDao;
 import com.moemoe.lalala.greendao.gen.JuQIngStoryEntityDao;
 import com.moemoe.lalala.greendao.gen.JuQingTriggerEntityDao;
+import com.moemoe.lalala.greendao.gen.MapDbEntityDao;
 import com.moemoe.lalala.greendao.gen.NetaDbDao;
 import com.moemoe.lalala.greendao.gen.JuQingDoneEntityDao;
 
@@ -35,6 +37,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig authorInfoDaoConfig;
     private final DaoConfig juQIngStoryEntityDaoConfig;
     private final DaoConfig juQingTriggerEntityDaoConfig;
+    private final DaoConfig mapDbEntityDaoConfig;
     private final DaoConfig netaDbDaoConfig;
     private final DaoConfig juQingDoneEntityDaoConfig;
 
@@ -42,6 +45,7 @@ public class DaoSession extends AbstractDaoSession {
     private final AuthorInfoDao authorInfoDao;
     private final JuQIngStoryEntityDao juQIngStoryEntityDao;
     private final JuQingTriggerEntityDao juQingTriggerEntityDao;
+    private final MapDbEntityDao mapDbEntityDao;
     private final NetaDbDao netaDbDao;
     private final JuQingDoneEntityDao juQingDoneEntityDao;
 
@@ -61,6 +65,9 @@ public class DaoSession extends AbstractDaoSession {
         juQingTriggerEntityDaoConfig = daoConfigMap.get(JuQingTriggerEntityDao.class).clone();
         juQingTriggerEntityDaoConfig.initIdentityScope(type);
 
+        mapDbEntityDaoConfig = daoConfigMap.get(MapDbEntityDao.class).clone();
+        mapDbEntityDaoConfig.initIdentityScope(type);
+
         netaDbDaoConfig = daoConfigMap.get(NetaDbDao.class).clone();
         netaDbDaoConfig.initIdentityScope(type);
 
@@ -71,6 +78,7 @@ public class DaoSession extends AbstractDaoSession {
         authorInfoDao = new AuthorInfoDao(authorInfoDaoConfig, this);
         juQIngStoryEntityDao = new JuQIngStoryEntityDao(juQIngStoryEntityDaoConfig, this);
         juQingTriggerEntityDao = new JuQingTriggerEntityDao(juQingTriggerEntityDaoConfig, this);
+        mapDbEntityDao = new MapDbEntityDao(mapDbEntityDaoConfig, this);
         netaDbDao = new NetaDbDao(netaDbDaoConfig, this);
         juQingDoneEntityDao = new JuQingDoneEntityDao(juQingDoneEntityDaoConfig, this);
 
@@ -78,6 +86,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(AuthorInfo.class, authorInfoDao);
         registerDao(JuQIngStoryEntity.class, juQIngStoryEntityDao);
         registerDao(JuQingTriggerEntity.class, juQingTriggerEntityDao);
+        registerDao(MapDbEntity.class, mapDbEntityDao);
         registerDao(NetaDb.class, netaDbDao);
         registerDao(JuQingDoneEntity.class, juQingDoneEntityDao);
     }
@@ -87,6 +96,7 @@ public class DaoSession extends AbstractDaoSession {
         authorInfoDaoConfig.clearIdentityScope();
         juQIngStoryEntityDaoConfig.clearIdentityScope();
         juQingTriggerEntityDaoConfig.clearIdentityScope();
+        mapDbEntityDaoConfig.clearIdentityScope();
         netaDbDaoConfig.clearIdentityScope();
         juQingDoneEntityDaoConfig.clearIdentityScope();
     }
@@ -105,6 +115,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public JuQingTriggerEntityDao getJuQingTriggerEntityDao() {
         return juQingTriggerEntityDao;
+    }
+
+    public MapDbEntityDao getMapDbEntityDao() {
+        return mapDbEntityDao;
     }
 
     public NetaDbDao getNetaDbDao() {

@@ -26,8 +26,8 @@ android {
         applicationId "com.moemoe.lalala"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 4700
-        versionName "4.7.0"
+        versionCode 5000
+        versionName "5.0.0"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "moemoe",
                                 GETUI_APP_ID : "yJYiw8VtVO9wuMk0DgV6p4",
                                 GETUI_APP_KEY : "WaKYr5EG2c7DIAib45aPy3",
@@ -68,15 +68,15 @@ android {
     }
     buildTypes {
         release {
-            buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
-           // buildConfigField("String", "BASE_URL", "\"http://2333.moemoe.la/\"")
+           // buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
+            buildConfigField("String", "BASE_URL", "\"http://2333.moemoe.la/\"")
             buildConfigField("String", "NOT_FOUND_PAGE", "\"http://s.moemoe.la/404.html\"")
             //混淆
-            minifyEnabled false
+            minifyEnabled true
             //Zipalign优化
-            zipAlignEnabled false
+            zipAlignEnabled true
             // 移除无用的resource文件
-            shrinkResources false
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             applicationVariants.all { variant ->
@@ -91,9 +91,9 @@ android {
             }
         }
         debug{
-           // buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
-            buildConfigField("String","BASE_URL","\"http://123.58.136.98:12333/\"")
-          //  buildConfigField("String","BASE_URL","\"http://2333.moemoe.la/\"")
+            //buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
+           // buildConfigField("String","BASE_URL","\"http://123.58.136.98:12333/\"")
+            buildConfigField("String","BASE_URL","\"http://2333.moemoe.la/\"")
             buildConfigField("String", "NOT_FOUND_PAGE", "\"http://s.moemoe.la/404.html\"")
             //混淆
             minifyEnabled false
@@ -115,13 +115,8 @@ android {
             }
         }
     }
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-        }
-    }
     greendao{
-        schemaVersion 5
+        schemaVersion 6
         daoPackage 'com.moemoe.lalala.greendao.gen'
         targetGenDir 'src/main/java'
     }
@@ -310,7 +305,7 @@ dependencies {
     compile project(':IMKit')
     compile project(':pingpp')
     compile files('libs/GetuiSDK2.11.1.0.jar')
-    compile files('libs/unity-classes.jar')
+    compile project(':kiragame')
 }
 
 def buildTime() {

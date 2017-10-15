@@ -213,6 +213,61 @@ public class StringUtils {
         return res;
     }
 
+    public static boolean issyougo(){
+        boolean res = false;
+        boolean a = matchCurrentTime(parseSentenceTime("09:00"), parseSentenceTime("14:00"));
+        if(a){
+            res = true;
+        }
+        return res;
+    }
+
+    public static boolean isasa(){
+        boolean res = false;
+        boolean a = matchCurrentTime(parseSentenceTime("05:00"), parseSentenceTime("10:00"));
+        if(a){
+            res = true;
+        }
+        return res;
+    }
+
+    public static boolean isgogo(){
+        boolean res = false;
+        boolean a = matchCurrentTime(parseSentenceTime("14:00"), parseSentenceTime("17:00"));
+        if(a){
+            res = true;
+        }
+        return res;
+    }
+
+    public static boolean istasogare(){
+        boolean res = false;
+        boolean a = matchCurrentTime(parseSentenceTime("17:00"), parseSentenceTime("19:00"));
+        if(a){
+            res = true;
+        }
+        return res;
+    }
+
+    public static boolean isyoru2(){
+        boolean res = false;
+        boolean a = matchCurrentTime(parseSentenceTime("19:00"), parseSentenceTime("24:00"));
+        boolean b = matchCurrentTime(parseSentenceTime("00:00"),parseSentenceTime("01:00"));
+        if(a || b){
+            res = true;
+        }
+        return res;
+    }
+
+    public static boolean ismayonaka(){
+        boolean res = false;
+        boolean a = matchCurrentTime(parseSentenceTime("01:00"), parseSentenceTime("05:00"));
+        if(a){
+            res = true;
+        }
+        return res;
+    }
+
     public static boolean isyoru(){
         boolean res = false;
         boolean a = matchCurrentTime(parseSentenceTime("22:00"), parseSentenceTime("24:00"));
@@ -479,6 +534,16 @@ public class StringUtils {
         return "";
     }
 
+    public static String getUrl(String path){
+        String res;
+        if(path.startsWith("http") || path.startsWith("https")){
+            res = path;
+        }else {
+            res = ApiService.URL_QINIU + path;
+        }
+        return res;
+    }
+
     public static String getUrl(Context context,String path,int width,int height,boolean isDocDetail,boolean isDoc){
         String res;
         if(path.startsWith("http") || path.startsWith("https")){
@@ -604,7 +669,14 @@ public class StringUtils {
             return null;
         }
         BigInteger bigInt = new BigInteger(1, digest.digest());
-        return bigInt.toString(16);
+        String res = bigInt.toString(16);
+        if(res.length() < 32){
+            int n = 32 - res.length();
+            for(int i = 0;i < n;i++){
+                res = "0" + res;
+            }
+        }
+        return res;
     }
 
     /**

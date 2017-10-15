@@ -66,6 +66,8 @@ public class DocDetailEntity {
     private boolean followUser;
     @SerializedName("cover")
     private String cover;
+    @SerializedName("vip")
+    private boolean vip;
 
     public class Detail<T>{
         @SerializedName("type")
@@ -248,6 +250,14 @@ public class DocDetailEntity {
                 this.color = color;
             }
         }
+    }
+
+    public boolean isVip() {
+        return vip;
+    }
+
+    public void setVip(boolean vip) {
+        this.vip = vip;
     }
 
     public String getId() {

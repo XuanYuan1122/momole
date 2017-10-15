@@ -69,9 +69,9 @@ public class PhoneAlarmFragment extends BaseFragment{
     protected void initViews(Bundle savedInstanceState) {
 
         mIvBack.setVisibility(View.VISIBLE);
-        mIvBack.setOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNoDoubleClick(View v) {
+            public void onClick(View v) {
                 onBackPressed();
             }
         });
@@ -225,6 +225,7 @@ public class PhoneAlarmFragment extends BaseFragment{
             FragmentTransaction mFragmentTransaction = getChildFragmentManager().beginTransaction();
             mFragmentTransaction.remove(mPhoneAlarmEditFragment);
             mFragmentTransaction.commit();
+            mPhoneAlarmEditFragment.release();
             mPhoneAlarmEditFragment = null;
             mIvAdd.setImageResource(R.drawable.btn_add_alarm);
         }else {

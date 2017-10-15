@@ -24,7 +24,6 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class PhoneJuQingListHolder extends ClickableViewHolder {
 
-
     public PhoneJuQingListHolder(View itemView) {
         super(itemView);
     }

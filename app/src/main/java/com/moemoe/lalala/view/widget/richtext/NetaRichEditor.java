@@ -704,7 +704,7 @@ public class NetaRichEditor extends ScrollView {
             layoutParams.height = wh[1];
             longImageView.setLayoutParams(layoutParams);
             longImageView.requestLayout();
-            Image image = new Image();
+            final Image image = new Image();
             image.setH(height);
             image.setW(width);
             image.setPath(imagePath);
@@ -732,13 +732,14 @@ public class NetaRichEditor extends ScrollView {
 
                                 @Override
                                 public void onError(@NonNull Throwable e) {
-
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
                                 public void onComplete() {
                                     BitmapUtils.galleryAddPic(getContext(), longImage.getAbsolutePath());
                                     longImageView.setImage(longImage.getAbsolutePath());
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
                             });
                 }

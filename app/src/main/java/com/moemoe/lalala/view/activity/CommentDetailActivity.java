@@ -143,12 +143,6 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .keyboardEnable(true)
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
         mSchema = getIntent().getStringExtra("schema");

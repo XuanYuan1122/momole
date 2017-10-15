@@ -45,7 +45,7 @@ public class CreateCommentPresenter implements CreateCommentContract.Presenter {
     }
 
     @Override
-    public void createComment(final boolean isSec, final String id, final CommentSendV2Entity entity, ArrayList<String> path) {
+    public void createComment(final boolean isSec, final String id, final CommentSendV2Entity entity, ArrayList<String> path, final boolean isDoc) {
         if(path.size() > 0){
             ArrayList<Object> item = new ArrayList<>();
             item.addAll(path);
@@ -76,20 +76,37 @@ public class CreateCommentPresenter implements CreateCommentContract.Presenter {
                                     }
                                 });
                     }else {
-                        apiService.sendComment(id,entity)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new NetSimpleResultSubscriber() {
-                                    @Override
-                                    public void onSuccess() {
-                                        if(view != null) view.onCreateCommentSuccess();
-                                    }
+                        if(isDoc){
+                            apiService.sendCommentWenZhang(id,entity)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new NetSimpleResultSubscriber() {
+                                        @Override
+                                        public void onSuccess() {
+                                            if(view != null) view.onCreateCommentSuccess();
+                                        }
 
-                                    @Override
-                                    public void onFail(int code, String msg) {
-                                        if(view != null) view.onFailure(code, msg);
-                                    }
-                                });
+                                        @Override
+                                        public void onFail(int code, String msg) {
+                                            if(view != null) view.onFailure(code, msg);
+                                        }
+                                    });
+                        }else {
+                            apiService.sendComment(id,entity)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new NetSimpleResultSubscriber() {
+                                        @Override
+                                        public void onSuccess() {
+                                            if(view != null) view.onCreateCommentSuccess();
+                                        }
+
+                                        @Override
+                                        public void onFail(int code, String msg) {
+                                            if(view != null) view.onFailure(code, msg);
+                                        }
+                                    });
+                        }
                     }
                 }
 
@@ -130,20 +147,37 @@ public class CreateCommentPresenter implements CreateCommentContract.Presenter {
                             }
                         });
             }else {
-                apiService.sendComment(id,entity)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new NetSimpleResultSubscriber() {
-                            @Override
-                            public void onSuccess() {
-                                if(view != null) view.onCreateCommentSuccess();
-                            }
+                if(isDoc){
+                    apiService.sendCommentWenZhang(id,entity)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new NetSimpleResultSubscriber() {
+                                @Override
+                                public void onSuccess() {
+                                    if(view != null) view.onCreateCommentSuccess();
+                                }
 
-                            @Override
-                            public void onFail(int code, String msg) {
-                                if(view != null) view.onFailure(code, msg);
-                            }
-                        });
+                                @Override
+                                public void onFail(int code, String msg) {
+                                    if(view != null) view.onFailure(code, msg);
+                                }
+                            });
+                }else {
+                    apiService.sendComment(id,entity)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new NetSimpleResultSubscriber() {
+                                @Override
+                                public void onSuccess() {
+                                    if(view != null) view.onCreateCommentSuccess();
+                                }
+
+                                @Override
+                                public void onFail(int code, String msg) {
+                                    if(view != null) view.onFailure(code, msg);
+                                }
+                            });
+                }
             }
         }
     }

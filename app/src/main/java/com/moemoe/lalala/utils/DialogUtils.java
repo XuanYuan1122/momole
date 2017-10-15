@@ -210,22 +210,40 @@ public class DialogUtils {
         if (PreferenceUtils.isLogin()) {
             res = true;
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(R.string.a_dlg_title).setMessage(R.string.a_dlg_msg_need_login_first)
-                    .setPositiveButton(R.string.a_dlg_go_2_login, new DialogInterface.OnClickListener() {
+            final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+            alertDialogUtil.createPromptNormalDialog(context,context.getString(R.string.a_dlg_msg_need_login_first));
+            alertDialogUtil.setButtonText(context.getString(R.string.a_dlg_go_2_login),context.getString(R.string.label_cancel),0);
+            alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                @Override
+                public void CancelOnClick() {
+                    alertDialogUtil.dismissDialog();
+                }
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // 前往登录界面
-                            Intent i = new Intent(context, LoginActivity.class);
-                            context.startActivity(i);
-                        }
-                    }).setNegativeButton(R.string.label_cancel, null);
-            try {
-                builder.create().show();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                @Override
+                public void ConfirmOnClick() {
+                    // 前往登录界面
+                    Intent i = new Intent(context, LoginActivity.class);
+                    context.startActivity(i);
+                    alertDialogUtil.dismissDialog();
+                }
+            });
+            alertDialogUtil.showDialog();
+//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//            builder.setTitle(R.string.a_dlg_title).setMessage(R.string.a_dlg_msg_need_login_first)
+//                    .setPositiveButton(R.string.a_dlg_go_2_login, new DialogInterface.OnClickListener() {
+//
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            // 前往登录界面
+//                            Intent i = new Intent(context, LoginActivity.class);
+//                            context.startActivity(i);
+//                        }
+//                    }).setNegativeButton(R.string.label_cancel, null);
+//            try {
+//                builder.create().show();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             res = false;
         }

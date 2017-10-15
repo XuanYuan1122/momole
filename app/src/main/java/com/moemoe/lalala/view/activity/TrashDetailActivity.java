@@ -383,7 +383,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
         ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
     }
 
-    private void createImage(Image image){
+    private void createImage(final Image image){
         if(image.getW() >0 && image.getH() > 0){
             final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,20));
             if(wh[1] > 2048){
@@ -406,13 +406,14 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
 
                                 @Override
                                 public void onError(Throwable e) {
-
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
                                 public void onComplete() {
                                     BitmapUtils.galleryAddPic(TrashDetailActivity.this, longImage.getAbsolutePath());
                                     mLongImage.setImage(longImage.getAbsolutePath());
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override

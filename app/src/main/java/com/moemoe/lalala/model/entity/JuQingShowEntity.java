@@ -15,7 +15,7 @@ public class JuQingShowEntity{
     private LinkedHashMap<String,Integer> choice;
     private String extra; //{"type": "game", "score": "200", "identify": "1"}
     private String path;
-    private int othenPath;
+    private int otherPath;
 
     public int getIndex() {
         return index;
@@ -65,11 +65,11 @@ public class JuQingShowEntity{
         this.path = path;
     }
 
-    public int getOthenPath() {
-        return othenPath;
+    public int getOtherPath() {
+        return otherPath;
     }
 
-    public void setOthenPath(int othenPath) {
-        this.othenPath = othenPath;
+    public void setOtherPath(int otherPath) {
+        this.otherPath = otherPath;
     }
 }

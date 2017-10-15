@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/iv_avatar"
-        android:layout_width="@dimen/size_18"
-        android:layout_height="@dimen/size_18"
+        android:layout_width="@dimen/x36"
+        android:layout_height="@dimen/x36"
         android:scaleType="centerCrop"/>
 
     <TextView
@@ -18,7 +18,7 @@
         android:textColor="@color/main_cyan"
         android:layout_marginLeft="@dimen/size_4"
         android:layout_marginStart="@dimen/size_4"
-        android:textSize="@dimen/size_12"
+        android:textSize="@dimen/x24"
         android:layout_gravity="center_vertical"/>
 
     <TextView
@@ -28,6 +28,6 @@
         android:layout_marginLeft="@dimen/size_4"
         android:layout_marginStart="@dimen/size_4"
         android:textColor="@color/black_1e1e1e"
-        android:textSize="@dimen/size_12"
+        android:textSize="@dimen/x24"
         android:layout_gravity="center_vertical"/>
 </LinearLayout>

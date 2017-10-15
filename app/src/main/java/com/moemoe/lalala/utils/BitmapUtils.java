@@ -1,5 +1,6 @@
 package com.moemoe.lalala.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,6 +10,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.moemoe.lalala.model.entity.Image;
 
@@ -46,6 +48,22 @@ public class BitmapUtils {
         res[1] = options.outHeight;
 
         return res;
+    }
+
+
+    public static Bitmap takeScreenShot(Activity activity) {
+        View view = activity.getWindow().getDecorView();
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap b1 = view.getDrawingCache();
+
+        // 获取屏幕长和高
+        int width = activity.getResources().getDisplayMetrics().widthPixels;
+        int height = activity.getResources().getDisplayMetrics().heightPixels;
+
+        Bitmap bmp = Bitmap.createBitmap(b1, 0, 0, width, height);
+        view.destroyDrawingCache();
+        return bmp;
     }
 
     public static Bitmap loadThumb(String path, int width, int height) {

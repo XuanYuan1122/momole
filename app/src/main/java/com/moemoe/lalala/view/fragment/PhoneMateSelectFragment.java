@@ -16,6 +16,7 @@ import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPhoneMateComponent;
 import com.moemoe.lalala.di.modules.PhoneMateModule;
 import com.moemoe.lalala.event.MateBackPressEvent;
+import com.moemoe.lalala.event.MateChangeEvent;
 import com.moemoe.lalala.event.MateLuyinEvent;
 import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.model.entity.DeskMateEntity;
@@ -69,10 +70,10 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
     View mSelectRoot;
     @BindView(R.id.tv_set_mate)
     TextView mTvSelectMate;
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
-    @BindView(R.id.tv_toolbar_title)
-    TextView mTvTitle;
+//    @BindView(R.id.iv_back)
+//    ImageView mIvBack;
+//    @BindView(R.id.tv_toolbar_title)
+//    TextView mTvTitle;
     @BindView(R.id.tv_col_luyin)
     TextView mTvCol;
 
@@ -84,7 +85,8 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
     private String mCurSelect;
     private String mCurFukuId;
     private ArrayList<PhoneMateEntity> mMate;
-    private  ArrayList<DeskMateEntity> mHaveMate;
+    private ArrayList<DeskMateEntity> mHaveMate;
+    private boolean haveFuku;
 
     public static PhoneMateSelectFragment newInstance(){
         return new PhoneMateSelectFragment();
@@ -97,22 +99,21 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-
         DaggerPhoneMateComponent.builder()
                 .phoneMateModule(new PhoneMateModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        mIvBack.setVisibility(View.VISIBLE);
-        mIvBack.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                onBackPressed();
-            }
-        });
-        mIvBack.setImageResource(R.drawable.btn_phone_back);
-        mTvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.main_cyan));
-        mTvTitle.setText("同桌");
+//        mIvBack.setVisibility(View.VISIBLE);
+//        mIvBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onBackPressed();
+//            }
+//        });
+//        mIvBack.setImageResource(R.drawable.btn_phone_back);
+//        mTvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.main_cyan));
+//        mTvTitle.setText("同桌");
 
         mListDocs.getSwipeRefreshLayout().setEnabled(false);
         mListDocs.setLoadMoreEnabled(false);
@@ -134,6 +135,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
             public void onItemClick(View view, int position) {
                 setFukuView(mAdapter2.getItem(position));
                 mCurFukuId = mAdapter2.getItem(position).getId();
+                haveFuku = mAdapter2.getItem(position).isHave();
                 mAdapter2.setSelect(position);
                 mAdapter2.notifyDataSetChanged();
             }
@@ -178,18 +180,30 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
                 if(entity.getRoleOf().equals("len")){
                     mAdapter.setSelect(0);
                     mCurSelect = "len";
-                    haveMate.add(0);
+                    haveFuku = true;
+                    mCurFukuId = entity.getClothesId();
                 }
                 if(entity.getRoleOf().equals("mei")){
                     mAdapter.setSelect(1);
                     mCurSelect = "mei";
-                    haveMate.add(1);
+                    haveFuku = true;
+                    mCurFukuId = entity.getClothesId();
                 }
                 if(entity.getRoleOf().equals("sari")){
                     mAdapter.setSelect(2);
                     mCurSelect = "sari";
-                    haveMate.add(2);
+                    haveFuku = true;
+                    mCurFukuId = entity.getClothesId();
                 }
+            }
+            if(entity.getRoleOf().equals("len")){
+                haveMate.add(0);
+            }
+            if(entity.getRoleOf().equals("mei")){
+                haveMate.add(1);
+            }
+            if(entity.getRoleOf().equals("sari")){
+                haveMate.add(2);
             }
         }
         mAdapter.setHave(haveMate);
@@ -211,10 +225,15 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
                         mTvSelectFuku.setText("选择");
                         mTvSelectContent.setVisibility(View.GONE);
                         mTvSelectMate.setVisibility(View.GONE);
-                        mTvTitle.setText("服装");
+                        RxBus.getInstance().post(new MateBackPressEvent("服装"));
+                       // mTvTitle.setText("服装");
                         mPresenter.loadFukuInfo(mCurSelect);
                     }else {
-                        mPresenter.setFuku(mCurSelect,mCurFukuId);
+                        if(haveFuku){
+                            mPresenter.setFuku(mCurSelect,mCurFukuId);
+                        }else {
+                            ToastUtils.showShortToast(getContext(),"还未拥该服装");
+                        }
                     }
                 }else {
                     ToastUtils.showShortToast(getContext(),"还未拥有角色");
@@ -272,7 +291,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
             }
         }
         if(entity == null){
-            onBackPressed();
+            onBack();
             return;
         }
         mTvName.setText(entity.getRoleName());
@@ -293,7 +312,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
                 }
             }
             if(like == null){
-                onBackPressed();
+                onBack();
                 return;
             }
             float radius2 = getContext().getResources().getDimension(R.dimen.y18);
@@ -322,7 +341,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
                 }
             }
             if(like == null){
-                onBackPressed();
+                onBack();
                 return;
             }
             float radius2 = getContext().getResources().getDimension(R.dimen.y18);
@@ -350,16 +369,16 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
         super.release();
     }
 
-    @Override
-    public void onBackPressed() {
+    public boolean onBack() {
         if(mListFuku.getVisibility() == View.VISIBLE){
             mListFuku.setVisibility(View.GONE);
             mListDocs.setVisibility(View.VISIBLE);
             mTvSelectMate.setVisibility(View.VISIBLE);
-            mTvTitle.setText("同桌");
+           // mTvTitle.setText("同桌");
             setView();
+            return true;
         }else {
-            RxBus.getInstance().post(new MateBackPressEvent());
+            return false;
         }
     }
 
@@ -386,10 +405,27 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
     @Override
     public void setMateSuccess() {
         ToastUtils.showShortToast(getContext(),"设置同桌成功");
+        changeMate();
+        RxBus.getInstance().post(new MateChangeEvent());
     }
 
     @Override
     public void setFukuSuccess() {
         ToastUtils.showShortToast(getContext(),"设置服装成功");
+        changeMate();
+        RxBus.getInstance().post(new MateChangeEvent());
+    }
+
+    private void changeMate(){
+        ArrayList<DeskMateEntity> list = PreferenceUtils.getAuthorInfo().getDeskMateEntities();
+        for(DeskMateEntity entity : list){
+            if(entity.getRoleOf().equals(mCurSelect)){
+                entity.setDeskmate(true);
+                entity.setClothesId(mCurFukuId);
+            }else {
+                entity.setDeskmate(false);
+            }
+        }
+        PreferenceUtils.getAuthorInfo().setDeskMateEntities(list);
     }
 }

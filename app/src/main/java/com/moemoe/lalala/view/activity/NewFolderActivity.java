@@ -14,11 +14,9 @@ import android.widget.TextView;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerNewFolderComponent;
-import com.moemoe.lalala.di.modules.NewFileModule;
 import com.moemoe.lalala.di.modules.NewFolderModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.FolderType;
-import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.NewFolderContract;
 import com.moemoe.lalala.presenter.NewFolderPresenter;
@@ -218,7 +216,12 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
                 return false;
             }
         });
-        initPopupMenus();
+        if(mUserId.equals(PreferenceUtils.getUUid())){
+            initPopupMenus();
+            mIvMenu.setVisibility(View.VISIBLE);
+        }else {
+            mIvMenu.setVisibility(View.GONE);
+        }
         mPresenter.loadFolderList(mFolderType,0,mUserId,mType);
     }
 
@@ -263,7 +266,6 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
                 finish();
             }
         });
-        mIvMenu.setVisibility(View.VISIBLE);
         mIvMenu.setImageResource(R.drawable.btn_menu_black_normal);
         mIvMenu.setOnClickListener(new NoDoubleClickListener() {
             @Override

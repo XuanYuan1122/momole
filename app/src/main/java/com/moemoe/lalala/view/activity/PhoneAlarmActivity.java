@@ -132,8 +132,7 @@ public class PhoneAlarmActivity extends BaseAppCompatActivity {
     private void playRing() {
         if(mAlarmClock != null){
             AudioPlayer.getInstance(this).stop();
-
-            AudioPlayer.getInstance(this).playRaw(getAlarmUrl(),true,false);
+            AudioPlayer.getInstance(this).playRaw(getAlarmUrl(),false,false);
         }
     }
 

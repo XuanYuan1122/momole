@@ -99,6 +99,7 @@
             app:tl_iconVisible="false"
             app:tl_tab_padding="@dimen/x15"
             app:tl_indicator_height="@dimen/y8"
+            app:tl_tab_space_equal="false"
             app:tl_indicator_color="@color/main_cyan"
             app:tl_textsize="@dimen/x24"
             app:tl_textSelectColor="@color/main_cyan"

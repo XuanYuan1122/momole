@@ -31,7 +31,6 @@ import com.moemoe.lalala.presenter.PersonalPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
-import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
@@ -143,7 +142,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         List<BaseFragment> fragmentList = new ArrayList<>();
         mainFragment = PersonalMainFragment.newInstance(mUserId);
         fragmentList.add(mainFragment);
-        fragmentList.add(NewFollowMainFragment.newInstance("my"));
+        fragmentList.add(NewFollowMainFragment.newInstance("my",mUserId));
         String[] mTitles = {getString(R.string.label_home_page), "动态"};
         List<String> titles = new ArrayList<>();
         titles.add(getString(R.string.label_home_page));
@@ -458,7 +457,12 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
                 mAvatarRoot.setPadding(0, (int) getResources().getDimension(R.dimen.y90),0,0);
             }
         }else {
-            mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y40),0,0);
+            if(!TextUtils.isEmpty(info.getVipTime())){
+                mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y30),0,0);
+            }else {
+                mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y40),0,0);
+            }
+
             mEdit.setVisibility(View.GONE);
             mFollowRoot.setVisibility(View.VISIBLE);
             mFollow.setSelected(info.isFollowing());
@@ -487,7 +491,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         float percent = (float)Math.abs(verticalOffset) / temp;
         if(percent > 0.4){
             if(!isChanged){
-                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);
+                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal_unity);
                 mMenuList.setImageResource(R.drawable.btn_menu_normal);
                 mIvMsg.setImageResource(R.drawable.btn_person_msg_blue);
                 isChanged = true;

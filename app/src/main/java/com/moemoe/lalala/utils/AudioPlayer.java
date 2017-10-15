@@ -2,9 +2,12 @@ package com.moemoe.lalala.utils;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Vibrator;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.app.RxBus;
+import com.moemoe.lalala.event.PhonePlayMusicEvent;
 
 import java.io.IOException;
 
@@ -53,6 +56,21 @@ public class AudioPlayer {
         return sAudioPlayer;
     }
 
+    public boolean isPlaying(){
+        if(mPlayer != null) return  mPlayer.isPlaying();
+        return false;
+    }
+
+    public int getCurPosition(){
+        if(mPlayer != null) mPlayer.getCurrentPosition();
+        return 0;
+    }
+
+    public int getDuration(){
+        if(mPlayer != null) mPlayer.getDuration();
+        return 0;
+    }
+
     /**
      * 停止播放，振动
      */
@@ -77,6 +95,53 @@ public class AudioPlayer {
 
     }
 
+    public void play(final String url) {
+        stop();
+        mPlayer = new MediaPlayer();
+        try {
+            // 设置数据源
+            mPlayer.setDataSource(url);
+            // 异步准备，不会阻碍主线程
+            mPlayer.prepareAsync();
+        } catch (IllegalArgumentException | SecurityException
+                | IllegalStateException | IOException e) {
+            ToastUtils.showShortToast(mContext,"播放失败,请重试");
+            RxBus.getInstance().post(new PhonePlayMusicEvent(url,-1,false,0,"error",""));
+        }
+
+        // 当准备好时
+        mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                    mPlayer.start();
+            }
+        });
+        // 当播放完成时
+        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (!mPlayer.isLooping()) {
+                    stopPlay();
+                }
+
+            }
+        });
+        // 当播放出现错误时
+        mPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                ToastUtils.showShortToast(mContext,
+                        "播放失败,请重试");
+                RxBus.getInstance().post(new PhonePlayMusicEvent(url,-1,false,0,"error",""));
+                return false;
+            }
+
+        });
+    }
+
     /**
      * 开始播放
      *
@@ -90,7 +155,6 @@ public class AudioPlayer {
         if (vibrate) {
             vibrate();
         }
-
         mPlayer = new MediaPlayer();
         try {
             // 设置数据源

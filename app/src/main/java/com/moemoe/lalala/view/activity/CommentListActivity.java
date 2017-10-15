@@ -132,7 +132,7 @@ public class CommentListActivity extends BaseAppCompatActivity implements Commen
         mTvToComment.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                CreateCommentActivity.startActivity(CommentListActivity.this,mDocId,false,"");
+                CreateCommentActivity.startActivity(CommentListActivity.this,mDocId,false,"",true);
             }
         });
         mTvSort.setOnClickListener(new NoDoubleClickListener() {
@@ -179,7 +179,7 @@ public class CommentListActivity extends BaseAppCompatActivity implements Commen
             @Override
             public void OnMenuItemClick(int itemId) {
                 if (itemId == 0) {
-                    CreateCommentActivity.startActivity(CommentListActivity.this,bean.getCommentId(),true,bean.getCreateUser().getUserId());
+                    CreateCommentActivity.startActivity(CommentListActivity.this,bean.getCommentId(),true,bean.getCreateUser().getUserId(),true);
                 } else if (itemId == 2) {
                     Intent intent = new Intent(CommentListActivity.this, JuBaoActivity.class);
                     intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getCreateUser().getUserName());

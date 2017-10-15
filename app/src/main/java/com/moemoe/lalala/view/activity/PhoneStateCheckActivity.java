@@ -95,11 +95,6 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerPhoneStateComponent.builder()
                 .phoneStateModule(new PhoneStateModule(this))
@@ -178,6 +173,14 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
                 }
             }
         });
+        mTvResend.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                if (NetworkUtils.checkNetworkAndShowError(PhoneStateCheckActivity.this)) {
+                    mPresenter.requestRegisterCode(mAccount);
+                }
+            }
+        });
     }
 
     @Override
@@ -252,5 +255,10 @@ public class PhoneStateCheckActivity extends BaseAppCompatActivity implements Ph
         Intent i = new Intent(this,InviteAddActivity.class);
         i.putExtra("type",0);
         startActivityForResult(i,REQ_INVITE_ADD);
+    }
+
+    @Override
+    public void onGetCodeSuccess() {
+
     }
 }

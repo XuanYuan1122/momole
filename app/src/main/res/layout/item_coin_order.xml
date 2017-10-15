@@ -33,7 +33,7 @@
         android:layout_alignLeft="@+id/tv_commodity_title"
         android:layout_alignStart="@+id/tv_commodity_title"
         android:layout_below="@+id/tv_commodity_title"
-        android:layout_marginTop="@dimen/size_10"
+        android:layout_marginTop="@dimen/size_5"
         android:layout_marginRight="@dimen/size_12"
         android:layout_marginEnd="@dimen/size_12"
         android:textSize="@dimen/size_10"

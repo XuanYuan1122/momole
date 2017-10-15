@@ -18,12 +18,19 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPhoneMainComponent;
 import com.moemoe.lalala.di.modules.PhoneMainModule;
+import com.moemoe.lalala.event.BackSchoolEvent;
+import com.moemoe.lalala.event.MateChangeEvent;
+import com.moemoe.lalala.event.SystemMessageEvent;
+import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.presenter.PhoneMainContract;
 import com.moemoe.lalala.presenter.PhoneMainPresenter;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
+import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.JuQingUtil;
+import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ViewUtils;
@@ -43,6 +50,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.RongIMClient;
@@ -55,7 +66,7 @@ import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_
  */
 
 @SuppressWarnings("deprecation")
-public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMainContract.View,IUnReadMessageObserver {
+public class PhoneMainActivity extends BaseAppCompatActivity{
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
@@ -73,8 +84,6 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
     TextView mTvText;
     @BindView(R.id.rl_role_root)
     RelativeLayout mRoleRoot;
-    @Inject
-    PhoneMainPresenter mPresenter;
 
     private BaseFragment mCurFragment;
 
@@ -88,11 +97,6 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-        DaggerPhoneMainComponent.builder()
-                .phoneMainModule(new PhoneMainModule(this))
-                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
-                .build()
-                .inject(this);
         AndroidBug5497Workaround.assistActivity(this);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -100,42 +104,20 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
                 finish();
             }
         });
-        if(!RongIM.getInstance().getCurrentConnectionStatus().equals(RongIMClient.ConnectionStatusListener.ConnectionStatus.CONNECTED)){
-            if(!TextUtils.isEmpty(PreferenceUtils.getAuthorInfo().getRcToken())){
-                RongIM.connect(PreferenceUtils.getAuthorInfo().getRcToken(), new RongIMClient.ConnectCallback() {
-                    @Override
-                    public void onTokenIncorrect() {
-                        mPresenter.loadRcToken();
-                    }
-
-                    @Override
-                    public void onSuccess(String s) {
-
-                    }
-
-                    @Override
-                    public void onError(RongIMClient.ErrorCode errorCode) {
-
-                    }
-                });
-            }else {
-                mPresenter.loadRcToken();
-            }
-        }
         Uri uri = getIntent().getData();
         if(uri != null && uri.getScheme().equals("rong")){
-            mMainRoot.setVisibility(View.GONE);
-            mIvBack.setVisibility(View.GONE);
-            mCurFragment = PhoneMsgFragment.newInstance(uri);
-            mFragmentTransaction = getSupportFragmentManager().beginTransaction();
-            mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMsgFragment.TAG);
-            mFragmentTransaction.commit();
+            if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)){
+                mMainRoot.setVisibility(View.GONE);
+                mIvBack.setVisibility(View.GONE);
+                mCurFragment = PhoneMsgFragment.newInstance(uri);
+                mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMsgFragment.TAG);
+                mFragmentTransaction.commit();
+            }
         }
-        final Conversation.ConversationType[] conversationTypes = {
-                Conversation.ConversationType.PRIVATE
-        };
-        RongIM.getInstance().addUnReadMessageCountChangedObserver(this, conversationTypes);
         gestureDetector = new GestureDetector(this,onGestureListener);
+        subscribeSearchChangedEvent();
+        ViewUtils.setRoleButton(mIvRole,mTvText);
     }
 
     @Override
@@ -187,15 +169,16 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
 
     @Override
     protected void initListeners() {
-        mIvRole.setOnClickListener(new NoDoubleClickListener() {
+        mIvRole.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNoDoubleClick(View v) {
+            public void onClick(View v) {
                 clickRole();
             }
         });
         mIvCreatDynamic.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
+                clickRole();
                 Intent i4 = new Intent(PhoneMainActivity.this,CreateDynamicActivity.class);
                 i4.putExtra("default_tag","广场");
                 startActivity(i4);
@@ -204,6 +187,7 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
         mIvCreateWen.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
+                clickRole();
                 Intent intent = new Intent(PhoneMainActivity.this, CreateRichDocActivity.class);
                 intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
                 intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
@@ -223,9 +207,9 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mRoleRoot.setLayoutParams(lp);
             mRoleRoot.setBackgroundColor(ContextCompat.getColor(PhoneMainActivity.this,R.color.alph_60));
-            mRoleRoot.setOnClickListener(new NoDoubleClickListener() {
+            mRoleRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onNoDoubleClick(View v) {
+                public void onClick(View v) {
                     clickRole();
                 }
             });
@@ -253,10 +237,29 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
 
     }
 
+    private void subscribeSearchChangedEvent() {
+        Disposable subscription1 = RxBus.getInstance()
+                .toObservable(MateChangeEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Consumer<MateChangeEvent>() {
+                    @Override
+                    public void accept(MateChangeEvent backSchoolEvent) throws Exception {
+                        ViewUtils.setRoleButton(mIvRole,mTvText);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        RxBus.getInstance().addSubscription(this, subscription1);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        ViewUtils.setRoleButton(mIvRole,mTvText);
     }
 
     @Override
@@ -284,40 +287,50 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
         mCurFragment = null;
     }
 
-    @OnClick({R.id.ll_menu_root,R.id.ll_msg_root,R.id.ll_mate_root,R.id.ll_album_root,R.id.ll_alarm_root,R.id.ll_shop_root,R.id.ll_search_root})
+    @OnClick({R.id.ll_menu_root,R.id.ll_msg_root,R.id.ll_mate_root,R.id.ll_album_root,R.id.ll_alarm_root,R.id.ll_shop_root,R.id.ll_search_root,R.id.ll_find_root})
     public void onClick(View v){
         mMainRoot.setVisibility(View.GONE);
         mIvBack.setVisibility(View.GONE);
         switch (v.getId()){
             case R.id.ll_menu_root:
-                mCurFragment = PhoneMenuFragment.newInstance();
-                mFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMateSelectFragment.TAG);
-                mFragmentTransaction.commit();
+                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)){
+                    mCurFragment = PhoneMenuFragment.newInstance();
+                    mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMateSelectFragment.TAG);
+                    mFragmentTransaction.commit();
+                }
                 break;
             case R.id.ll_msg_root:
-                mCurFragment = PhoneMsgFragment.newInstance();
-                mFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMsgFragment.TAG);
-                mFragmentTransaction.commit();
+                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)){
+                    mCurFragment = PhoneMsgFragment.newInstance();
+                    mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMsgFragment.TAG);
+                    mFragmentTransaction.commit();
+                }
                 break;
             case R.id.ll_mate_root:
-                mCurFragment = PhoneMateFragment.newInstance();
-                mFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMateFragment.TAG);
-                mFragmentTransaction.commit();
+                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)) {
+                    mCurFragment = PhoneMateFragment.newInstance();
+                    mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    mFragmentTransaction.add(R.id.phone_container, mCurFragment, PhoneMateFragment.TAG);
+                    mFragmentTransaction.commit();
+                }
                 break;
             case R.id.ll_album_root:
-                mCurFragment = PhoneJuQingFragment.newInstance();
-                mFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneJuQingFragment.TAG);
-                mFragmentTransaction.commit();
+                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)) {
+                    mCurFragment = PhoneJuQingFragment.newInstance();
+                    mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    mFragmentTransaction.add(R.id.phone_container, mCurFragment, PhoneJuQingFragment.TAG);
+                    mFragmentTransaction.commit();
+                }
                 break;
             case R.id.ll_alarm_root:
-                mCurFragment = PhoneAlarmFragment.newInstance();
-                mFragmentTransaction = getSupportFragmentManager().beginTransaction();
-                mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneAlarmFragment.TAG);
-                mFragmentTransaction.commit();
+                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)) {
+                    mCurFragment = PhoneAlarmFragment.newInstance();
+                    mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    mFragmentTransaction.add(R.id.phone_container, mCurFragment, PhoneAlarmFragment.TAG);
+                    mFragmentTransaction.commit();
+                }
                 break;
             case R.id.ll_shop_root:
                 mMainRoot.setVisibility(View.VISIBLE);
@@ -331,57 +344,18 @@ public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMai
                 Intent i6 = new Intent(PhoneMainActivity.this,SearchActivity.class);
                 startActivity(i6);
                 break;
+            case R.id.ll_find_root:
+                mMainRoot.setVisibility(View.VISIBLE);
+                mIvBack.setVisibility(View.VISIBLE);
+                Intent i3 = new Intent(PhoneMainActivity.this,WallBlockActivity.class);
+                startActivity(i3);
+                break;
         }
     }
 
     @Override
     protected void onDestroy() {
-        RongIM.getInstance().disconnect();
-        RongIM.getInstance().removeUnReadMessageCountChangedObserver(this);
-        if(mPresenter != null) mPresenter.release();
+        RxBus.getInstance().unSubscribe(this);
         super.onDestroy();
-    }
-
-    @Override
-    public void onFailure(int code, String msg) {
-
-    }
-
-    @Override
-    public void onLoadRcTokenSuccess(String token) {
-        PreferenceUtils.getAuthorInfo().setRcToken(token);
-        RongIM.connect(PreferenceUtils.getAuthorInfo().getRcToken(), new RongIMClient.ConnectCallback() {
-            @Override
-            public void onTokenIncorrect() {
-
-            }
-
-            @Override
-            public void onSuccess(String s) {
-
-            }
-
-            @Override
-            public void onError(RongIMClient.ErrorCode errorCode) {
-
-            }
-        });
-    }
-
-
-    @Override
-    public void onLoadRcTokenFail(int code, String msg) {
-
-    }
-
-    @Override
-    public void onCountChanged(int i) {
-        if(i > 0){
-            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null, ContextCompat.getDrawable(this,R.drawable.ic_inform_reddot),null);
-            mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
-        }else {
-            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
-            mTvMsg.setCompoundDrawablePadding(0);
-        }
     }
 }

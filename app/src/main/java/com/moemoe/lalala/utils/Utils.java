@@ -29,12 +29,14 @@ import android.os.StatFs;
 import android.text.TextUtils;
 
 
+import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.broadcast.AlarmClockBroadcast;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
 import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FolderType;
+import com.moemoe.lalala.model.entity.MapDbEntity;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
 import com.moemoe.lalala.model.entity.UploadResultEntity;
 import com.qiniu.android.http.ResponseInfo;
@@ -58,7 +60,6 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;

@@ -42,12 +42,12 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
 
     public static final String TAG = "PhoneTicketFragment";
 
-    @BindView(R.id.iv_back)
-    ImageView mIvBack;
-    @BindView(R.id.tv_toolbar_title)
-    TextView mTvTitle;
-    @BindView(R.id.tv_menu)
-    TextView mTvMenu;
+//    @BindView(R.id.iv_back)
+//    ImageView mIvBack;
+//    @BindView(R.id.tv_toolbar_title)
+//    TextView mTvTitle;
+//    @BindView(R.id.tv_menu)
+//    TextView mTvMenu;
     @BindView(R.id.pager_person_data)
     ViewPager mDataPager;
     @BindView(R.id.indicator_person_data)
@@ -81,24 +81,24 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
                 .build()
                 .inject(this);
         mate = getArguments().getString("mate");
-        mIvBack.setVisibility(View.VISIBLE);
-        mIvBack.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                RxBus.getInstance().post(new MateBackPressEvent());
-            }
-        });
-        mIvBack.setImageResource(R.drawable.btn_phone_back);
-        mTvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.main_cyan));
-        mTvTitle.setText("录音收集");
-        mTvMenu.setVisibility(View.VISIBLE);
-        mTvMenu.setTextColor(Color.WHITE);
-        mTvMenu.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.x20));
-        mTvMenu.setGravity(Gravity.CENTER);
-        mTvMenu.setBackgroundResource(R.drawable.shape_rect_border_main_background_y22);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.x144),(int)getResources().getDimension(R.dimen.y44));
-        lp.rightMargin = (int) getResources().getDimension(R.dimen.x20);
-        mTvMenu.setLayoutParams(lp);
+//        mIvBack.setVisibility(View.VISIBLE);
+//        mIvBack.setOnClickListener(new NoDoubleClickListener() {
+//            @Override
+//            public void onNoDoubleClick(View v) {
+//                RxBus.getInstance().post(new MateBackPressEvent());
+//            }
+//        });
+//        mIvBack.setImageResource(R.drawable.btn_phone_back);
+//        mTvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.main_cyan));
+//        mTvTitle.setText("录音收集");
+//        mTvMenu.setVisibility(View.VISIBLE);
+//        mTvMenu.setTextColor(Color.WHITE);
+//        mTvMenu.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.x20));
+//        mTvMenu.setGravity(Gravity.CENTER);
+//        mTvMenu.setBackgroundResource(R.drawable.shape_rect_border_main_background_y22);
+//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.x144),(int)getResources().getDimension(R.dimen.y44));
+//        lp.rightMargin = (int) getResources().getDimension(R.dimen.x20);
+//        mTvMenu.setLayoutParams(lp);
         if("len".equals(mate)){
             mIvCover.setImageResource(R.drawable.bg_phone_tape_len_incite);
         }
@@ -162,6 +162,27 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
             @Override
             public void onPageSelected(int position) {
                 mPageIndicator.setCurrentTab(position);
+                if("len".equals(mate)){
+                    if(position == 0){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_len_incite);
+                    }else if(position == 1){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_len_comfort);
+                    }
+                }
+                if("mei".equals(mate)){
+                    if(position == 0){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_mei_incite);
+                    }else if(position == 1){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_mei_comfort);
+                    }
+                }
+                if("sari".equals(mate)){
+                    if(position == 0){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_sha_incite);
+                    }else if(position == 1){
+                        mIvCover.setImageResource(R.drawable.bg_phone_tape_sha_comfort);
+                    }
+                }
             }
 
             @Override
@@ -179,17 +200,13 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
     }
 
     @Override
-    public void onBackPressed() {
-        ((PhoneMainActivity)getContext()).finishCurFragment();
-    }
-
-    @Override
     public void onFailure(int code, String msg) {
 
     }
 
     @Override
     public void onLoadTicketsNumSuccess(int num) {
-        mTvMenu.setText("录音券: " + num);
+        //mTvMenu.setText("录音券: " + num);
+        RxBus.getInstance().post(new MateBackPressEvent("录音券: " + num));
     }
 }

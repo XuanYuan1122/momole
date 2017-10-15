@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import com.moemoe.lalala.R;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -14,14 +16,16 @@ import java.lang.ref.WeakReference;
 
 public class AutoPollRecyclerView extends RecyclerView {
 
-    private static final long TIME_AUTO_POLL = 16;
+    private static final long TIME_AUTO_POLL = 1000;
     AutoPollTask autoPollTask;
     private boolean running; //标示是否正在自动轮询
     private boolean canRun;//标示是否可以自动轮询,可在不需要的是否置false
+    private int step;
 
     public AutoPollRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         autoPollTask = new AutoPollTask(this);
+        step = (int) context.getResources().getDimension(R.dimen.x36);
     }
 
     private class AutoPollTask implements Runnable {
@@ -34,7 +38,8 @@ public class AutoPollRecyclerView extends RecyclerView {
         public void run() {
             AutoPollRecyclerView recyclerView = mReference.get();
             if (recyclerView != null &&  recyclerView.running && recyclerView.canRun) {
-                recyclerView.scrollBy(2, 2);
+               // recyclerView.scrollBy(2, step);
+                recyclerView.smoothScrollBy(2, step);
                 recyclerView.postDelayed(recyclerView.autoPollTask,TIME_AUTO_POLL);
             }
         }

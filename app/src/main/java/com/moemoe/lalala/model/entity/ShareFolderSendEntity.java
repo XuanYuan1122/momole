@@ -7,4 +7,5 @@ package com.moemoe.lalala.model.entity;
 public class ShareFolderSendEntity {
     public String folderId;
     public String shareText;
+    public String folderCreateUser;
 }

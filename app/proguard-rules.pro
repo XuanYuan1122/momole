@@ -68,6 +68,8 @@
 -keep class jp.live2d.**{ *; }
 -keep class com.nineoldandroids.**{ *; }
 -keep class com.umeng.analytics.**{ *; }
+-keep class bitter.jnibridge.**{ *; }
+-keep class com.unity3d.player.**{ *; }
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
@@ -311,3 +313,9 @@ public static java.lang.String TABLENAME;
 -keep class com.jrmf360.rylib.** {*;}
 -ignorewarnings
 -keep class com.moemoe.lalala.broadcast.SealNotificationReceiver {*;}
+
+-keep class com.moemoe.lalala.kira.game.MapGameActivity {
+public void EventInit();
+public void showLog(java.lang.String);
+public void EventError();
+}

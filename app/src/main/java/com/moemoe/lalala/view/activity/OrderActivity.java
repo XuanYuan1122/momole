@@ -76,11 +76,6 @@ public class OrderActivity extends BaseAppCompatActivity implements OrderContrac
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .statusBarView(R.id.top_view)
-//                .statusBarDarkFont(true,0.2f)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         DaggerOrderComponent.builder()
                 .orderModule(new OrderModule(this))

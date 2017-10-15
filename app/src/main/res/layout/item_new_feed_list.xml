@@ -102,12 +102,12 @@
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
                 
                 <ImageView
                     android:id="@+id/iv_more"
                     android:layout_width="@dimen/x32"
-                    android:layout_height="@dimen/y20"
+                    android:layout_height="match_parent"
                     android:layout_gravity="end"
                     android:src="@drawable/btn_feed_list_coption"/>
 
@@ -133,6 +133,7 @@
         android:layout_marginTop="@dimen/y12"
         android:layout_marginStart="@dimen/x24"
         android:layout_marginEnd="@dimen/x24"
+        android:layout_marginBottom="@dimen/x24"
         android:maxLines="5"
         android:ellipsize="end"/>
 
@@ -141,7 +142,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="@dimen/y24"
         android:paddingLeft="@dimen/x24"
         android:paddingRight="@dimen/x24"
         android:paddingBottom="@dimen/y24"

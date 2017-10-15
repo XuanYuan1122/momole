@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y64"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x24">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="24h 热门评论"
+            android:textColor="@color/main_red"
+            android:textSize="@dimen/x24"/>
+
+        <TextView
+            android:id="@+id/tv_more"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/x24"
+            android:gravity="center_vertical"
+            android:textColor="@color/main_cyan"
+            android:text="查看更多"/>
+    </LinearLayout>
+
+    <include layout="@layout/item_24_comment"/>
+</LinearLayout>

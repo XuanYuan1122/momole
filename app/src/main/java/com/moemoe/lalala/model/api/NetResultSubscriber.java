@@ -7,6 +7,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
 /**
+ * 网络请求回调
  * Created by yi on 2016/11/28.
  */
 

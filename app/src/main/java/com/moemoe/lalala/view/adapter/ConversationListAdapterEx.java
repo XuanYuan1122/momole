@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.model.entity.ApiResult;
 import com.moemoe.lalala.utils.PreferenceUtils;
 
 import io.rong.common.RLog;
@@ -46,24 +45,19 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
     }
 
     @Override
+    public void remove(int position) {
+        if(position > 2){
+           super.remove(position - 3);
+        }
+    }
+
+    @Override
     public int findGatheredItem(Conversation.ConversationType type) {
         int index = this.getCount();
         int position = -1;
 
         while(index-- > 0) {
             UIConversation uiConversation = (UIConversation)this.getItem(index);
-            if(((UIConversation)this.getItem(index)).getUIConversationTitle().equals("len")){
-                position = 0;
-                break;
-            }
-            if(((UIConversation)this.getItem(index)).getUIConversationTitle().equals("mei")){
-                position = 1;
-                break;
-            }
-            if(((UIConversation)this.getItem(index)).getUIConversationTitle().equals("sari")){
-                position = 2;
-                break;
-            }
             if(uiConversation.getConversationType().equals(type)) {
                 position = index;
                 break;
@@ -79,18 +73,6 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
         int position = -1;
 
         while(index-- > 0) {
-            if(((UIConversation)this.getItem(index)).getUIConversationTitle().equals("len")){
-                position = 0;
-                break;
-            }
-            if(((UIConversation)this.getItem(index)).getUIConversationTitle().equals("mei")){
-                position = 1;
-                break;
-            }
-            if(((UIConversation)this.getItem(index)).getUIConversationTitle().equals("sari")){
-                position = 2;
-                break;
-            }
             if(((UIConversation)this.getItem(index)).getConversationType().equals(type) && ((UIConversation)this.getItem(index)).getConversationTargetId().equals(targetId)) {
                 position = index;
                 break;
@@ -123,9 +105,12 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
     @Override
     public UIConversation getItem(int position) {
         if(position > 2){
-            return super.getItem(position - 3);
+            UIConversation item = super.getItem(position - 3);
+            return item;
         }else {
             UIConversation item = new UIConversation();
+            item.setConversationTargetId("");
+            item.setConversationType(Conversation.ConversationType.PRIVATE);
             if(position == 0){
                 item.setUIConversationTitle("len");
             }

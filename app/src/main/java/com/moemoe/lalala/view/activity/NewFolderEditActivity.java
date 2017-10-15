@@ -19,8 +19,6 @@ import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerNewFolderEditComponent;
-import com.moemoe.lalala.di.components.NewFolderEditComponent;
-import com.moemoe.lalala.di.modules.BagModule;
 import com.moemoe.lalala.di.modules.NewFolderEditModule;
 import com.moemoe.lalala.model.entity.FolderRepEntity;
 import com.moemoe.lalala.model.entity.NewFolderEntity;

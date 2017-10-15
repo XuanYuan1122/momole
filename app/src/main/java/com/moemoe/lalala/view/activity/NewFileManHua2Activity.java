@@ -158,7 +158,6 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
 
             }
         });
-        mListDocs.setLoadMoreEnabled(false);
         mListDocs.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
@@ -398,32 +397,34 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
             mListDocs.setLoadMoreEnabled(true);
         }else {
             mListDocs.setLoadMoreEnabled(false);
-            if(!mUserId.equals(PreferenceUtils.getUUid()) && mBottomView != null){
-                RecyclerView.LayoutManager manager = mListDocs.getRecyclerView().getLayoutManager();
-                int last = -1;
-                if(manager instanceof GridLayoutManager){
-                    last = ((GridLayoutManager)manager).findLastVisibleItemPosition();
-                }else if(manager instanceof LinearLayoutManager){
-                    last = ((LinearLayoutManager)manager).findLastVisibleItemPosition();
-                }
-                if(last >= 0){
-                    View lastVisibleView = manager.findViewByPosition(last);
-                    int[] lastLocation = new int[2] ;
-                    lastVisibleView.getLocationOnScreen(lastLocation);
-                    int lastY = lastLocation[1] + lastVisibleView.getMeasuredHeight();
-                    int[] location = new int[2] ;
-                    mListDocs.getRecyclerView().getLocationOnScreen(location);
-                    int rvY = location[1] + mListDocs.getRecyclerView().getMeasuredHeight();
-                    int topMargin;
-                    if(lastY >= rvY){//view超过一屏了
-                        topMargin = 0;
-                    }else {//view小于一屏
-                        topMargin = rvY - lastY;
+            if(mAdapter.getFooterLayoutCount() != 1){
+                if(!mUserId.equals(PreferenceUtils.getUUid()) && mBottomView != null){
+                    RecyclerView.LayoutManager manager = mListDocs.getRecyclerView().getLayoutManager();
+                    int last = -1;
+                    if(manager instanceof GridLayoutManager){
+                        last = ((GridLayoutManager)manager).findLastVisibleItemPosition();
+                    }else if(manager instanceof LinearLayoutManager){
+                        last = ((LinearLayoutManager)manager).findLastVisibleItemPosition();
                     }
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    lp.topMargin = topMargin;
-                    mBottomView.setLayoutParams(lp);
-                    mAdapter.addFooterView(mBottomView);
+                    if(last >= 0){
+                        View lastVisibleView = manager.findViewByPosition(last);
+                        int[] lastLocation = new int[2] ;
+                        lastVisibleView.getLocationOnScreen(lastLocation);
+                        int lastY = lastLocation[1] + lastVisibleView.getMeasuredHeight();
+                        int[] location = new int[2] ;
+                        mListDocs.getRecyclerView().getLocationOnScreen(location);
+                        int rvY = location[1] + mListDocs.getRecyclerView().getMeasuredHeight();
+                        int topMargin;
+                        if(lastY >= rvY){//view超过一屏了
+                            topMargin = 0;
+                        }else {//view小于一屏
+                            topMargin = rvY - lastY;
+                        }
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        lp.topMargin = topMargin;
+                        mBottomView.setLayoutParams(lp);
+                        mAdapter.addFooterView(mBottomView);
+                    }
                 }
             }
         }

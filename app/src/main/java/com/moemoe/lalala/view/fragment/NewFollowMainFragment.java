@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
@@ -13,15 +14,20 @@ import com.moemoe.lalala.di.components.DaggerFeedComponent;
 import com.moemoe.lalala.di.modules.FeedModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BannerEntity;
+import com.moemoe.lalala.model.entity.Comment24Entity;
 import com.moemoe.lalala.model.entity.DocListEntity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.XianChongEntity;
 import com.moemoe.lalala.presenter.FeedContract;
 import com.moemoe.lalala.presenter.FeedPresenter;
+import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StartActivityConstant;
 import com.moemoe.lalala.view.activity.CreateRichDocActivity;
 import com.moemoe.lalala.view.activity.DynamicActivity;
+import com.moemoe.lalala.view.activity.NewFolderWenZhangActivity;
 import com.moemoe.lalala.view.activity.WallBlockActivity;
 import com.moemoe.lalala.view.adapter.FeedAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
@@ -42,6 +48,9 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
 
     @BindView(R.id.list)
     PullAndLoadView mListDocs;
+    @BindView(R.id.iv_to_wen)
+    ImageView mIvWen;
+
     @Inject
     FeedPresenter mPresenter;
     private FeedAdapter mAdapter;
@@ -51,6 +60,15 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
         NewFollowMainFragment fragment = new NewFollowMainFragment();
         Bundle bundle = new Bundle();
         bundle.putString("type",type);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static NewFollowMainFragment newInstance(String type,String userId){
+        NewFollowMainFragment fragment = new NewFollowMainFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("type",type);
+        bundle.putString("id",userId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -68,6 +86,16 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
                 .build()
                 .inject(this);
         final String type = getArguments().getString("type");
+        final String userId = getArguments().getString("id");
+        if("my".equals(type)){
+            mIvWen.setVisibility(View.VISIBLE);
+            mIvWen.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    NewFolderWenZhangActivity.startActivity(getContext(),userId, FolderType.WZ.toString());
+                }
+            });
+        }
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListDocs.setLoadMoreEnabled(false);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -88,13 +116,13 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
             @Override
             public void onLoadMore() {
                 isLoading = true;
-                mPresenter.loadList(mAdapter.getItem(mAdapter.getList().size() - 1).getTimestamp(),type);
+                mPresenter.loadList(mAdapter.getItem(mAdapter.getList().size() - 1).getTimestamp(),type,userId);
             }
 
             @Override
             public void onRefresh() {
                 isLoading = true;
-                mPresenter.loadList(0,type);
+                mPresenter.loadList(0,type,userId);
             }
 
             @Override
@@ -107,7 +135,7 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
                 return false;
             }
         });
-        mPresenter.loadList(0,type);
+        mPresenter.loadList(0,type,userId);
     }
 
     @Override
@@ -143,12 +171,17 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
     }
 
     @Override
-    public void onFeaturedLoadSuccess(ArrayList<FeaturedEntity> featuredEntities) {
+    public void onLoadXianChongSuccess(ArrayList<XianChongEntity> entities) {
 
     }
 
     @Override
-    public void onLoadXianChongSuccess(ArrayList<XianChongEntity> entities) {
+    public void onLoadFolderSuccess(ArrayList<ShowFolderEntity> entities) {
+
+    }
+
+    @Override
+    public void onLoadCommentSuccess(Comment24Entity entity) {
 
     }
 

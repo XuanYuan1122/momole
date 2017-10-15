@@ -13,11 +13,9 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.JuQingShowEntity;
 import com.moemoe.lalala.utils.DensityUtil;
-import com.moemoe.lalala.utils.GlideCircleTransform;
 import com.moemoe.lalala.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
@@ -88,7 +86,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .into(chatViewHolder.ivAvatar);
         }else {
             Glide.with(context)
-                    .load(entity.getOthenPath())
+                    .load(entity.getOtherPath())
                     .override(DensityUtil.dip2px(context,40),DensityUtil.dip2px(context,40))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)

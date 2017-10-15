@@ -323,6 +323,7 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
             lastEditStr.setSpan(tag.getSpan(),cursorIndex,cursorIndex + str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         mEtContent.setText(lastEditStr);
+        mEtContent.setSelection(mEtContent.getText().length());
     }
 
     @OnClick({R.id.iv_add_img,R.id.iv_alt_user,R.id.tv_menu})
@@ -371,6 +372,7 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
             showToast("超过字数限制");
             return;
         }
+        SoftKeyboardUtils.dismissSoftKeyboard(this);
         createDialog();
         DynamicSendEntity entity = new DynamicSendEntity();
         entity.content = TagControl.getInstance().paresToString(mEtContent.getText());

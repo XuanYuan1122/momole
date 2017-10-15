@@ -14,9 +14,15 @@ import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerBagMyComponent;
 import com.moemoe.lalala.di.modules.BagMyModule;
 import com.moemoe.lalala.model.entity.BagMyShowEntity;
+import com.moemoe.lalala.model.entity.FolderType;
+import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.BagMyContract;
 import com.moemoe.lalala.presenter.BagMyPresenter;
+import com.moemoe.lalala.utils.FolderVDecoration;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
+import com.moemoe.lalala.view.activity.NewFileCommonActivity;
+import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
+import com.moemoe.lalala.view.activity.NewFileXiaoshuoActivity;
 import com.moemoe.lalala.view.adapter.BagCollectionTopAdapter;
 import com.moemoe.lalala.view.adapter.BagMyAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
@@ -103,8 +109,30 @@ public class BagMyFragment extends BaseFragment implements BagMyContract.View{
             LinearLayoutManager m = new LinearLayoutManager(getContext());
             m.setOrientation(LinearLayoutManager.HORIZONTAL);
             rv.setLayoutManager(m);
+            rv.addItemDecoration(new FolderVDecoration());
             mTopAdapter = new BagCollectionTopAdapter();
             rv.setAdapter(mTopAdapter);
+            mTopAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    ShowFolderEntity entity = mTopAdapter.getItem(position);
+                    if(entity.getType().equals(FolderType.ZH.toString())){
+                        NewFileCommonActivity.startActivity(getContext(),FolderType.ZH.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(entity.getType().equals(FolderType.TJ.toString())){
+                        NewFileCommonActivity.startActivity(getContext(),FolderType.TJ.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(entity.getType().equals(FolderType.MH.toString())){
+                        NewFileManHuaActivity.startActivity(getContext(),FolderType.MH.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(entity.getType().equals(FolderType.XS.toString())){
+                        NewFileXiaoshuoActivity.startActivity(getContext(),FolderType.XS.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }
+                }
+
+                @Override
+                public void onItemLongClick(View view, int position) {
+
+                }
+            });
+            mAdapter.addHeaderView(mTop);
         }
         mPresenter.loadContent(type,userId);
     }

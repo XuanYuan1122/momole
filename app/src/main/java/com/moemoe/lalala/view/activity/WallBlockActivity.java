@@ -25,10 +25,12 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
 import com.moemoe.lalala.di.components.DaggerWallComponent;
 import com.moemoe.lalala.di.modules.SimpleModule;
 import com.moemoe.lalala.di.modules.WallModule;
+import com.moemoe.lalala.event.MateChangeEvent;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.presenter.WallContract;
@@ -51,6 +53,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_DOC;
 
@@ -128,6 +134,8 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         mPageIndicator.setTabData(mTabEntities);
         mPageIndicator.setCurrentTab(1);
         gestureDetector = new GestureDetector(this,onGestureListener);
+        subscribeSearchChangedEvent();
+        ViewUtils.setRoleButton(mIvRole,mTvText);
     }
 
     @Override
@@ -243,15 +251,16 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                 }
             }
         });
-        mIvRole.setOnClickListener(new NoDoubleClickListener() {
+        mIvRole.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNoDoubleClick(View v) {
+            public void onClick(View v) {
                 clickRole();
             }
         });
         mIvCreatDynamic.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
+                clickRole();
                 Intent i4 = new Intent(WallBlockActivity.this,CreateDynamicActivity.class);
                 i4.putExtra("default_tag","广场");
                 startActivity(i4);
@@ -260,6 +269,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         mIvCreateWen.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
+                clickRole();
                 Intent intent = new Intent(WallBlockActivity.this, CreateRichDocActivity.class);
                 intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
                 intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
@@ -291,9 +301,9 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mRoleRoot.setLayoutParams(lp);
             mRoleRoot.setBackgroundColor(ContextCompat.getColor(WallBlockActivity.this,R.color.alph_60));
-            mRoleRoot.setOnClickListener(new NoDoubleClickListener() {
+            mRoleRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onNoDoubleClick(View v) {
+                public void onClick(View v) {
                     clickRole();
                 }
             });
@@ -351,10 +361,29 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         super.onPause();
     }
 
+    private void subscribeSearchChangedEvent() {
+        Disposable subscription1 = RxBus.getInstance()
+                .toObservable(MateChangeEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Consumer<MateChangeEvent>() {
+                    @Override
+                    public void accept(MateChangeEvent backSchoolEvent) throws Exception {
+                        ViewUtils.setRoleButton(mIvRole,mTvText);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        RxBus.getInstance().addSubscription(this, subscription1);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        ViewUtils.setRoleButton(mIvRole,mTvText);
     }
 
     @Override
@@ -366,6 +395,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     protected void onDestroy() {
         if (mPresenter != null) mPresenter.release();
         if(mAdapter != null) mAdapter.release();
+        RxBus.getInstance().unSubscribe(this);
         super.onDestroy();
     }
 

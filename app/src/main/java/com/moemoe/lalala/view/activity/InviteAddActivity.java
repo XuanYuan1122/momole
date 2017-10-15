@@ -1,12 +1,7 @@
 package com.moemoe.lalala.view.activity;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -25,9 +20,7 @@ import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
-import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
-import com.moemoe.lalala.view.adapter.InviteAdapter;
 
 import java.util.ArrayList;
 

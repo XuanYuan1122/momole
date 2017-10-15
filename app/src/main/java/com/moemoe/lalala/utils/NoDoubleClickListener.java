@@ -8,8 +8,15 @@ import android.view.View;
 
 public abstract class NoDoubleClickListener implements View.OnClickListener{
 
-    public static final int MIN_CLICK_DELAY_TIME = 1000;
+    private int MIN_CLICK_DELAY_TIME = 1000;
     private long lastClickTime = 0;
+
+    public NoDoubleClickListener(int MIN_CLICK_DELAY_TIME) {
+        this.MIN_CLICK_DELAY_TIME = MIN_CLICK_DELAY_TIME;
+    }
+
+    public NoDoubleClickListener() {
+    }
 
     @Override
     public void onClick(View v) {

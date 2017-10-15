@@ -42,6 +42,7 @@ public class BottomMenuFragment extends DialogFragment{
     private int menuType = TYPE_VERTICAL;
     private MenuItemClickListener mClickListener;
     private MenuItemAdapter menuItemAdapter;
+    private boolean showCancel = true;
 
     public BottomMenuFragment() {
         // Required empty public constructor
@@ -88,6 +89,12 @@ public class BottomMenuFragment extends DialogFragment{
             TextView top = (TextView) view.findViewById(R.id.tv_top);
             top.setVisibility(View.VISIBLE);
             top.setText(topContent);
+        }
+
+        if(!showCancel){
+            tv_cancel.setVisibility(View.GONE);
+        }else {
+            tv_cancel.setVisibility(View.VISIBLE);
         }
 
         final RecyclerView rv = (RecyclerView) view.findViewById(R.id.rv_menu);
@@ -144,6 +151,14 @@ public class BottomMenuFragment extends DialogFragment{
 
     public void setShowTop(boolean showTop) {
         this.showTop = showTop;
+    }
+
+    public boolean isShowCancel() {
+        return showCancel;
+    }
+
+    public void setShowCancel(boolean showCancel) {
+        this.showCancel = showCancel;
     }
 
     public int getMenuType() {

@@ -659,6 +659,11 @@ public abstract class BaseRecyclerViewAdapter<T,K extends ClickableViewHolder> e
         notifyItemRangeInserted(bfSize,getItemCount() - bfSize);
     }
 
+    public void removeItem(int adapterPosition){
+        this.list.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+    }
+
     private void compatibilityDataSizeChanged(int size) {
         final int dataSize = list == null ? 0 : list.size();
         if (dataSize == size) {

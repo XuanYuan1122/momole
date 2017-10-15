@@ -12,11 +12,13 @@ public interface PhoneStateContract {
     interface Presenter extends BasePresenter{
         void checkPhoneCode(int action, AuthorInfo info,String code);
         void login(AuthorInfo info,LoginEntity entity);
+        void requestRegisterCode(String mobile);
     }
 
     interface View extends BaseView{
         void onRegisterSuccess(AuthorInfo authorInfo);
         void onFindPwdSuccess();
         void onLoginSuccess(AuthorInfo info,LoginResultEntity entity);
+        void onGetCodeSuccess();
     }
 }

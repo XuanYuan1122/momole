@@ -19,7 +19,6 @@ import com.moemoe.lalala.di.components.DaggerNewFolderComponent;
 import com.moemoe.lalala.di.modules.NewFolderModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.FolderType;
-import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.WenZhangFolderEntity;
 import com.moemoe.lalala.presenter.NewFolderContract;
 import com.moemoe.lalala.presenter.NewFolderPresenter;
@@ -30,7 +29,6 @@ import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ViewUtils;
-import com.moemoe.lalala.view.adapter.BagCollectionTopAdapter;
 import com.moemoe.lalala.view.adapter.BagWenZhangAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
@@ -92,7 +90,6 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         i.putExtra("folderType",folderType);
         context.startActivity(i);
     }
-
 
     @Override
     protected void onDestroy() {
@@ -200,7 +197,12 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                 return false;
             }
         });
-        initPopupMenus();
+        if(mUserId.equals(PreferenceUtils.getUUid())){
+            initPopupMenus();
+            mIvMenu.setVisibility(View.VISIBLE);
+        }else {
+            mIvMenu.setVisibility(View.GONE);
+        }
         mPresenter.loadFolderList(mFolderType,0,mUserId,"");
     }
 
@@ -208,6 +210,8 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         bottomMenuFragment = new BottomMenuFragment();
         ArrayList<MenuItem> items = new ArrayList<>();
         MenuItem item = new MenuItem(1, "选择");
+        items.add(item);
+        item = new MenuItem(2, "投稿箱");
         items.add(item);
         bottomMenuFragment.setMenuItems(items);
         bottomMenuFragment.setShowTop(false);
@@ -231,6 +235,10 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                     mAdapter.setSelect(mIsSelect);
                     mAdapter.notifyDataSetChanged();
                 }
+                if(itemId == 2){
+                    Intent i = new Intent(NewFolderWenZhangActivity.this,SubmissionHistoryActivity.class);
+                    startActivity(i);
+                }
             }
         });
     }
@@ -245,7 +253,6 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                 finish();
             }
         });
-        mIvMenu.setVisibility(View.GONE);
         mIvMenu.setImageResource(R.drawable.btn_menu_black_normal);
         mIvMenu.setOnClickListener(new NoDoubleClickListener() {
             @Override

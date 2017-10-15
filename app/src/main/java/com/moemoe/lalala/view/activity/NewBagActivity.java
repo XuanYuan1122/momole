@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -153,6 +152,9 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
 
             item = new MenuItem(3, getString(R.string.label_add_space));
             items.add(item);
+
+            item = new MenuItem(5, "下载管理");
+            items.add(item);
         }else {
             // 举报
             MenuItem item = new MenuItem(4, getString(R.string.label_jubao));
@@ -188,6 +190,9 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
                     intent.putExtra("userId",mUserId);
                     intent.putExtra(JuBaoActivity.EXTRA_TARGET, REPORT.BAG.toString());
                     startActivity(intent);
+                }else if(itemId == 5){
+                    Intent i = new Intent(NewBagActivity.this,DownLoadListActivity.class);
+                    startActivity(i);
                 }
             }
         });
@@ -268,7 +273,7 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
 
         if(percent > 0.4){
             if(!isChanged){
-                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);
+                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal_unity);
                 mIvMenu.setImageResource(R.drawable.btn_menu_normal);
                 isChanged = true;
             }

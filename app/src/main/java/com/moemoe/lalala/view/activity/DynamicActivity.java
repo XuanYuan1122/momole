@@ -39,6 +39,7 @@ import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.CommentV2Entity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.DynamicContentEntity;
+import com.moemoe.lalala.model.entity.DynamicEntity;
 import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
@@ -53,6 +54,7 @@ import com.moemoe.lalala.model.entity.tag.UserUrlSpan;
 import com.moemoe.lalala.presenter.DynamicContract;
 import com.moemoe.lalala.presenter.DynamicPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -126,6 +128,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
     private ArrayList<CommentV2Entity> mPreComments;
     private int mPrePosition;
     private boolean mAuto;
+    private String mId;
 
     @Override
     protected int getLayoutId() {
@@ -138,6 +141,12 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         context.startActivity(i);
     }
 
+    public static void startActivity(Context context,String id){
+        Intent i = new Intent(context,DynamicActivity.class);
+        i.putExtra("id",id);
+        context.startActivity(i);
+    }
+
     public static void startActivity(Context context,NewDynamicEntity dynamic,boolean autoComment){
         Intent i = new Intent(context,DynamicActivity.class);
         i.putExtra("dynamic",dynamic);
@@ -145,21 +154,26 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         context.startActivity(i);
     }
 
-
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
+        AndroidBug5497Workaround.assistActivity(this);
         DaggerDynamicComponent.builder()
                 .dynamicModule(new DynamicModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
         mDynamic = getIntent().getParcelableExtra("dynamic");
+        mId = getIntent().getStringExtra("id");
         mAuto = getIntent().getBooleanExtra("auto",false);
-        if(mDynamic == null){
-            finish();
-            return;
+        if(TextUtils.isEmpty(mId)){
+            init();
+        }else {
+            mPresenter.getDynamic(mId);
         }
+    }
+
+    private void init(){
         mPreComments = new ArrayList<>();
         fragment = new BottomMenuFragment();
         mRvList.setLoadMoreEnabled(false);
@@ -233,7 +247,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         mTvToComment.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                CreateCommentActivity.startActivity(DynamicActivity.this,mDynamic.getId(),false,"");
+                CreateCommentActivity.startActivity(DynamicActivity.this,mDynamic.getId(),false,"",false);
             }
         });
         setHead();
@@ -371,6 +385,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         }
         time.setText(StringUtils.timeFormate(mDynamic.getCreateTime()));
         //content
+        text.setMaxLines(100);
         text.setText(TagControl.getInstance().paresToSpann(this, mDynamic.getText()));
         text.setMovementMethod(LinkMovementMethod.getInstance());
         //extra
@@ -383,7 +398,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             tv.setTextColor(ContextCompat.getColor(this,R.color.white));
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,this.getResources().getDimension(R.dimen.x36));
             tv.setGravity(Gravity.CENTER);
-            tv.setBackgroundColor(ContextCompat.getColor(this,R.color.gray_e8e8e8));
+            tv.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
             int h = (int) getResources().getDimension(R.dimen.y320);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,h);
             tv.setLayoutParams(lp);
@@ -413,7 +428,19 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                     .placeholder(R.drawable.bg_default_square)
                     .bitmapTransform(new CropTransformation(this,w,h))
                     .into(cover);
-            mark.setText(folderEntity.getFolderType());
+            if(folderEntity.getFolderType().equals(FolderType.ZH.toString())){
+                mark.setText("综合");
+                mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+            }else if(folderEntity.getFolderType().equals(FolderType.TJ.toString())){
+                mark.setText("图集");
+                mark.setBackgroundResource(R.drawable.shape_rect_tuji);
+            }else if(folderEntity.getFolderType().equals(FolderType.MH.toString())){
+                mark.setText("漫画");
+                mark.setBackgroundResource(R.drawable.shape_rect_manhua);
+            }else if(folderEntity.getFolderType().equals(FolderType.XS.toString())){
+                mark.setText("小说");
+                mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
+            }
             name.setText(folderEntity.getFolderName());
             String tagStr = "";
             for(int i = 0;i < folderEntity.getFolderTags().size();i++){
@@ -516,18 +543,14 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 TextView tv = new TextView(this);
                 tv.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.x24));
-                String retweetContent = "@" + retweetEntity.getCreateUserName() + ": " + retweetEntity.getContent();
-                String retweetColorStr = "@" + retweetEntity.getCreateUserName() + ":";
-                SpannableStringBuilder style1 = new SpannableStringBuilder(retweetContent);
-                UserUrlSpan span = new UserUrlSpan(this,retweetEntity.getCreateUserId(),null);
-                style1.setSpan(span, retweetContent.indexOf(retweetColorStr), retweetContent.indexOf(retweetColorStr) + retweetColorStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                tv.setText(style1);
+                String res = "<at_user user_id="+ retweetEntity.getCreateUserId() + ">" + retweetEntity.getCreateUserName() + ":</at_user>" +  retweetEntity.getContent();
+                tv.setText(TagControl.getInstance().paresToSpann(this,res));
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 lp.topMargin = (int) getResources().getDimension(R.dimen.y24);
                 lp.bottomMargin = (int) getResources().getDimension(R.dimen.y24);
                 tv.setLayoutParams(lp);
-                ((LinearLayout)$(R.id.ll_img_root)).addView(tv);
+                root.addView(tv);
             }
             if(retweetEntity.getImages() != null && retweetEntity.getImages().size() > 0){
                 setImg(retweetEntity.getImages(),root);
@@ -541,6 +564,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         }
         //label
         docLabel = (DocLabelView)v.findViewById(R.id.dv_doc_label_root);
+        docLabel.setVisibility(View.VISIBLE);
         docLabelAdapter = new NewDocLabelAdapter(this,true);
         docLabel.setDocLabelAdapter(docLabelAdapter);
         docLabel.setItemClickListener(new DocLabelView.LabelItemClickListener() {
@@ -582,8 +606,8 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             docLabel.setBackgroundColor(Color.TRANSPARENT);
         }else {
             tRoot.setVisibility(View.INVISIBLE);
-            root.setBackgroundColor(ContextCompat.getColor(this,R.color.gray_e8e8e8));
-            docLabel.setBackgroundColor(ContextCompat.getColor(this,R.color.gray_e8e8e8));
+            root.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
+            docLabel.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
         }
         fRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -594,7 +618,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         cRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                CreateCommentActivity.startActivity(DynamicActivity.this,mDynamic.getId(),false,"");
+                CreateCommentActivity.startActivity(DynamicActivity.this,mDynamic.getId(),false,"",false);
             }
         });
         mAdapter.addHeaderView(v);
@@ -760,6 +784,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                     layout = new LinearLayout(this);
                     layout.setOrientation(LinearLayout.HORIZONTAL);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    if(i == 2)lp.topMargin = (int) getResources().getDimension(R.dimen.y6);
                     layout.setLayoutParams(lp);
                 }
                 ImageView iv = new ImageView(this);
@@ -908,7 +933,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             @Override
             public void OnMenuItemClick(int itemId) {
                 if (itemId == 0) {
-                    CreateCommentActivity.startActivity(DynamicActivity.this,bean.getCommentId(),true,"");
+                    CreateCommentActivity.startActivity(DynamicActivity.this,bean.getCommentId(),true,"",false);
                 } else if (itemId == 2) {
                     Intent intent = new Intent(DynamicActivity.this, JuBaoActivity.class);
                     intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getCreateUser().getUserName());
@@ -974,13 +999,6 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
     @Override
     public void onSendTagSuccess(String s,String name) {
         finalizeDialog();
-        DocTagEntity tag = new DocTagEntity();
-        tag.setLiked(true);
-        tag.setId(s);
-        tag.setLikes(1);
-        tag.setName(name);
-        mTags.add(tag);
-        docLabel.notifyAdapter();
     }
 
     @Override
@@ -1051,5 +1069,15 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             }
         }
         docLabel.notifyAdapter();
+    }
+
+    @Override
+    public void onLoadDynamicSuccess(NewDynamicEntity entity) {
+        if(entity == null) {
+            finish();
+            return;
+        }
+        mDynamic = entity;
+        init();
     }
 }

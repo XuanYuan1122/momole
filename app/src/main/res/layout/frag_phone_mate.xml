@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <include layout="@layout/neta_bar"/>
+    <!--<include layout="@layout/neta_bar"/>-->
 
     <com.moemoe.lalala.view.widget.recycler.PullAndLoadView
         android:id="@+id/list"

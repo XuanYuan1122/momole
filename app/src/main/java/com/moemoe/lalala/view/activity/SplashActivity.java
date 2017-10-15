@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -76,13 +77,19 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.GET_ACCOUNTS,
-            Manifest.permission.RECORD_AUDIO
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA
     };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         AppStatusManager.getInstance().setAppStatus(AppStatusConstant.STATUS_NORMAL); //进入应用初始化设置成未登录状态
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.ac_splash);
+        ButterKnife.bind(SplashActivity.this);
+        int[] splash = new int[]{R.drawable.splash1,R.drawable.splash2,R.drawable.splash3};
+        splashImg.setImageResource(splash[new Random().nextInt(3)]);
+        //delaySplash();
     }
 
     @Override
@@ -211,23 +218,20 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         if(!EasyPermissions.hasPermissions(this,needPermissions)){
             EasyPermissions.requestPermissions(this,"应用需要这些权限",PERMISSON_REQ,needPermissions);
         }else {
-            setContentView(R.layout.ac_splash);
-            ButterKnife.bind(SplashActivity.this);
-            delaySplash();
             init();
         }
     }
 
-    private void delaySplash(){
-        try {
-            AssetManager assetManager = this.getAssets();
-            InputStream in = assetManager.open("splash.jpg");
-            splashImg.setImageDrawable(InputStream2Drawable(in));
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    private void delaySplash(){
+//        try {
+//            AssetManager assetManager = this.getAssets();
+//            InputStream in = assetManager.open("splash" + (new Random().nextInt(3) + 1) + ".jpg");
+//            splashImg.setImageDrawable(InputStream2Drawable(in));
+//            in.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public Drawable InputStream2Drawable(InputStream is){
         Drawable drawable = BitmapDrawable.createFromStream(is,"splashImg");

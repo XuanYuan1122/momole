@@ -51,4 +51,22 @@ public class PhoneMsgPresenter implements PhoneMsgContract.Presenter {
                     }
                 });
     }
+
+    @Override
+    public void loadRcToken() {
+        apiService.loadRcToken()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        if(view != null) view.onLoadRcTokenSuccess(s);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onLoadRcTokenFail(code, msg);
+                    }
+                });
+    }
 }

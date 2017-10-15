@@ -23,6 +23,7 @@
     <color name="white_95">#95ffffff</color>
     <color name="black">#000000</color>
     <color name="main_cyan">#42beec</color>
+    <color name="cyan_e1f9ff">#e1f9ff</color>
     <color name="main_cyan_90">#f042beec</color>
     <color name="main_cyan_70">#7042beec</color>
     <color name="main_light_cyan">#D9F0F4</color>

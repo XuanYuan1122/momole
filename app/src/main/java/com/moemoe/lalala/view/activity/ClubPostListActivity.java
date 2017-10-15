@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerClubComponent;
 import com.moemoe.lalala.di.modules.ClubModule;
@@ -34,7 +33,6 @@ import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.GlideRoundTransform;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
-import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.DocListAdapter;
@@ -436,7 +434,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
 
         if(percent > 0.4){
             if(!isChanged){
-                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal);
+                mToolbar.setNavigationIcon(R.drawable.btn_back_blue_normal_unity);
                 isChanged = true;
             }
             mToolbar.setAlpha(percent);

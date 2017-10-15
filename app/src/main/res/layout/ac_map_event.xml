@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/top_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/status_bar_height"
+            android:background="@color/transparent"/>
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_height="@dimen/y100"
+            android:layout_width="wrap_content"
+            android:paddingStart="@dimen/size_18"
+            android:paddingEnd="@dimen/size_10"
+            android:src="@drawable/btn_back_blue_normal_unity" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -64,8 +65,10 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadBean;
 import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
@@ -347,13 +350,14 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
 
                                     @Override
                                     public void onError(Throwable e) {
-
+                                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),false).subscribe();
                                     }
 
                                     @Override
                                     public void onComplete() {
                                         BitmapUtils.galleryAddPic(FileDetailActivity.this, longImage.getAbsolutePath());
                                         imageView.setImage(longImage.getAbsolutePath());
+                                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),false).subscribe();
                                     }
 
                                     @Override
@@ -574,7 +578,6 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
     public void onClick(View v){
         switch (v.getId()){
             case R.id.fl_down_root:
-                createDialog();
                 downloadRaw();
                 break;
             case R.id.fl_delete_root:
@@ -645,35 +648,20 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
             file = new File(StorageUtils.getMusicRootPath(),temp);
             path = StorageUtils.getMusicRootPath();
         }
-        downloadSub.download(ApiService.URL_QINIU + entity.getPath(),temp,path)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DownloadStatus>() {
+        DownloadBean downloadBean = new DownloadBean
+                .Builder(ApiService.URL_QINIU + entity.getPath())
+                .setSaveName(temp)
+                .setSavePath(path)
+                .setExtra1(entity.getPath())
+                .setExtra2(entity.getFileName())
+                .setExtra3(entity.getType())
+                .setExtra4(file.getAbsolutePath())
+                .build();
+        downloadSub.serviceDownload(downloadBean)
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void onError(Throwable e) {
-                        finalizeDialog();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        finalizeDialog();
-                        if(entity.getType().equals("image")){
-                            BitmapUtils.galleryAddPic(FileDetailActivity.this, file.getAbsolutePath());
-                            showToast(getString(R.string.msg_register_to_gallery_success, file.getAbsolutePath()));
-                        }else {
-                            BitmapUtils.galleryAddPic(FileDetailActivity.this, file.getAbsolutePath());
-                            showToast(getString(R.string.msg_register_to_music_success, file.getAbsolutePath()));
-                        }
-                    }
-
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(DownloadStatus downloadStatus) {
-
+                    public void accept(Object o) throws Exception {
+                        showToast("下载开始");
                     }
                 });
     }

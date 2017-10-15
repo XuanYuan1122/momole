@@ -31,9 +31,11 @@ import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.CommentListActivity;
 import com.moemoe.lalala.view.activity.CommentSecListActivity;
+import com.moemoe.lalala.view.activity.CreateCommentActivity;
 import com.moemoe.lalala.view.activity.DynamicActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
@@ -60,6 +62,12 @@ public class CommentListHolder extends ClickableViewHolder {
                 .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(itemView.getContext()))
                 .into((ImageView) $(R.id.iv_avatar));
+        $(R.id.iv_avatar).setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ViewUtils.toPersonal(context,entity.getCreateUser().getUserId());
+            }
+        });
         setText(R.id.tv_name,entity.getCreateUser().getUserName());
         LevelSpan levelSpan = new LevelSpan(ContextCompat.getColor(itemView.getContext(),R.color.white),itemView.getContext().getResources().getDimension(R.dimen.x12));
         final String content = "LV" + entity.getCreateUser().getLevel();
@@ -142,7 +150,7 @@ public class CommentListHolder extends ClickableViewHolder {
         if(entity.getHotComments() != null && entity.getHotComments().size() > 0){
             setVisible(R.id.ll_comment_root,true);
             ((LinearLayout)$(R.id.ll_comment_root)).removeAllViews();
-            for(CommentV2SecEntity secEntity : entity.getHotComments()){
+            for(final CommentV2SecEntity secEntity : entity.getHotComments()){
                 TextView tv = new TextView(itemView.getContext());
                 tv.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.gray_444444));
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,itemView.getResources().getDimension(R.dimen.x20));
@@ -163,6 +171,12 @@ public class CommentListHolder extends ClickableViewHolder {
                 }
                 tv.setText(style1);
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
+                tv.setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+                        CreateCommentActivity.startActivity(context,secEntity.getCommentId(),true,secEntity.getCreateUser().getUserId(),false);
+                    }
+                });
                 ((LinearLayout)$(R.id.ll_comment_root)).addView(tv);
             }
             if(entity.getComments() > entity.getHotComments().size()){

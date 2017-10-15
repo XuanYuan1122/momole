@@ -57,18 +57,10 @@
         android:paddingTop="@dimen/status_bar_height"
         android:src="@drawable/btn_map_bag"/>
 
-    <ImageView
-        android:id="@+id/iv_main"
-        android:layout_width="@dimen/x200"
-        android:layout_height="@dimen/x200"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/btn_map_main"/>
-
     <RelativeLayout
         android:id="@+id/rl_main_list_root"
         android:layout_width="@dimen/x200"
         android:layout_height="@dimen/x200"
-        android:layout_toEndOf="@+id/iv_main"
         android:layout_alignParentBottom="true"
         android:background="@drawable/btn_map_phone"
         android:visibility="visible">
@@ -93,10 +85,8 @@
             android:layout_below="@+id/tv_sys_time"
             android:layout_centerHorizontal="true"
             android:gravity="center_vertical"
-            android:drawableStart="@drawable/ic_inform_reddot"
-            android:drawablePadding="@dimen/size_2"
-            android:text="23条新内容"
-            android:visibility="gone"/>
+            android:text="无新信息"
+            android:visibility="visible"/>
     </RelativeLayout>
 
     <include layout="@layout/float_send_layout"/>

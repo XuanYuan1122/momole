@@ -32,6 +32,7 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCreateForwardComponent;
 import com.moemoe.lalala.di.modules.CreateForwardModule;
 import com.moemoe.lalala.model.entity.DynamicContentEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ForwardSendEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
@@ -108,6 +109,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
     private ArrayList<Object> mPaths;
     private String mId;
     private String mRtType;
+    private String mUserId;
 
     @Override
     protected int getLayoutId() {
@@ -128,10 +130,11 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
         context.startActivity(i);
     }
 
-    public static void startActivity(Context context,ShareFolderEntity entity){
+    public static void startActivity(Context context,ShareFolderEntity entity,String mUserId){
         Intent i = new Intent(context,CreateForwardActivity.class);
         i.putExtra("type",TYPE_FOLDER);
         i.putExtra("folder",entity);
+        i.putExtra("mUserId",mUserId);
         context.startActivity(i);
     }
 
@@ -146,6 +149,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
                 .inject(this);
         mType = getIntent().getIntExtra("type",TYPE_ARTICLE);
         SoftKeyboardUtils.showSoftKeyboard(this,mEtContent);
+        mUserId = getIntent().getStringExtra("mUserId");
         mEtContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -232,11 +236,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
             }
         });
         mTvTitle.setVisibility(View.VISIBLE);
-        if(mType == TYPE_ARTICLE || mType == TYPE_FOLDER){
-            mTvTitle.setText("分享");
-        }else {
-            mTvTitle.setText("转发");
-        }
+        mTvTitle.setText("转发");
         mTvMenuRight.setVisibility(View.VISIBLE);
         ViewUtils.setRightMargins(mTvMenuRight,(int) getResources().getDimension(R.dimen.x36));
         mTvMenuRight.setText(getString(R.string.label_menu_publish_doc));
@@ -308,7 +308,19 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
                 .placeholder(R.drawable.bg_default_square)
                 .bitmapTransform(new CropTransformation(this,w,h))
                 .into(cover);
-        mark.setText(entity.getFolderType());
+        if(entity.getFolderType().equals(FolderType.ZH.toString())){
+            mark.setText("综合");
+            mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+        }else if(entity.getFolderType().equals(FolderType.TJ.toString())){
+            mark.setText("图集");
+            mark.setBackgroundResource(R.drawable.shape_rect_tuji);
+        }else if(entity.getFolderType().equals(FolderType.MH.toString())){
+            mark.setText("漫画");
+            mark.setBackgroundResource(R.drawable.shape_rect_manhua);
+        }else if(entity.getFolderType().equals(FolderType.XS.toString())){
+            mark.setText("小说");
+            mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
+        }
         name.setText(entity.getFolderName());
         String tagStr = "";
         for(int i = 0;i < entity.getFolderTags().size();i++){
@@ -482,6 +494,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
             ShareFolderSendEntity entity = new ShareFolderSendEntity();
             entity.folderId = mId;
             entity.shareText = TagControl.getInstance().paresToString(mEtContent.getText());
+            entity.folderCreateUser = mUserId;
             mPresenter.createForward(mType,entity);
         }
     }

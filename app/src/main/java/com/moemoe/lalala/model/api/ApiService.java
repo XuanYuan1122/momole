@@ -17,6 +17,7 @@ import com.moemoe.lalala.model.entity.CalendarDayItemEntity;
 import com.moemoe.lalala.model.entity.CodeEntity;
 import com.moemoe.lalala.model.entity.CoinDetailEntity;
 import com.moemoe.lalala.model.entity.CoinShopEntity;
+import com.moemoe.lalala.model.entity.Comment24Entity;
 import com.moemoe.lalala.model.entity.CommentDetailEntity;
 import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
 import com.moemoe.lalala.model.entity.CommentListSendEntity;
@@ -52,6 +53,7 @@ import com.moemoe.lalala.model.entity.LoginResultEntity;
 import com.moemoe.lalala.model.entity.LuYinEntity;
 import com.moemoe.lalala.model.entity.ManHua2Entity;
 import com.moemoe.lalala.model.entity.ManHuaUploadEntity;
+import com.moemoe.lalala.model.entity.MapEntity;
 import com.moemoe.lalala.model.entity.ModifyEntity;
 import com.moemoe.lalala.model.entity.ModifyFileEntity;
 import com.moemoe.lalala.model.entity.MoveFileEntity;
@@ -77,10 +79,13 @@ import com.moemoe.lalala.model.entity.RejectEntity;
 import com.moemoe.lalala.model.entity.ReplyEntity;
 import com.moemoe.lalala.model.entity.ReportEntity;
 import com.moemoe.lalala.model.entity.SearchEntity;
+import com.moemoe.lalala.model.entity.SendSubmissionEntity;
 import com.moemoe.lalala.model.entity.ShareArticleSendEntity;
 import com.moemoe.lalala.model.entity.ShareFolderSendEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
+import com.moemoe.lalala.model.entity.SubmissionDepartmentEntity;
+import com.moemoe.lalala.model.entity.SubmissionItemEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagNodeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
@@ -364,7 +369,7 @@ public interface ApiService {
     @POST("api/user/{show}/fans")
     Observable<ApiResult> showFans(@Path("show")boolean show);
 
-    @GET("api/user/dailyTask")
+    @GET("v2/kira/user/dailyTask")
     Observable<ApiResult<DailyTaskEntity>> getDailyTask();
 
     @POST("api/doc/shareDoc")
@@ -711,6 +716,9 @@ public interface ApiService {
     @POST("v2/kira/comment/send/{targetId}/comment")
     Observable<ApiResult> sendComment(@Path("targetId")String targetId, @Body CommentSendV2Entity entity);
 
+    @POST("v2/kira/comment/send/doc/{docId}/comment")
+    Observable<ApiResult> sendCommentWenZhang(@Path("docId")String targetId, @Body CommentSendV2Entity entity);
+
     @POST("v2/kira/comment/send/sec/{commentId}/comment")
     Observable<ApiResult> sendCommentSec(@Path("commentId")String commentId, @Body CommentSendV2Entity entity);
 
@@ -727,8 +735,7 @@ public interface ApiService {
     Observable<ApiResult> createDynamic(@Body DynamicSendEntity entity);
 
     @GET("v2/kira/comment/get/{targetId}/top")
-    Observable<ApiResult<ArrayList<CommentV2Entity>>> loadTopComment(@Path("targetId" +
-            "")String id);
+    Observable<ApiResult<ArrayList<CommentV2Entity>>> loadTopComment(@Path("targetId")String id);
 
     @POST("v2/kira/dynamic/deleteDynamic/{dynamicId}/{type}")
     Observable<ApiResult> deleteDynamic(@Path("dynamicId")String dynamicId,@Path("type")String type);
@@ -743,13 +750,16 @@ public interface ApiService {
     Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedFavoriteList(@Query("index")int index,@Query("size")int size);
 
     @GET("v2/kira/dynamic/getDynamicList/random")
-    Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedRandomList(@Query("time")long timestamp);
+    Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedRandomList(@Query("index")int index,@Query("size")int size);
 
     @GET("v2/kira/dynamic/getDynamicList/playground")
     Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedGroundList(@Query("time")long timestamp);
 
-    @GET("v2/kira/dynamic/getMyDynamicList")
-    Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedMyList(@Query("time")long timestamp);
+//    @GET("v2/kira/dynamic/getMyDynamicList")
+//    Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedMyList(@Query("time")long timestamp);
+
+    @GET("v2/kira/dynamic/get/{userId}/dynamic/list")
+    Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedMyList(@Path("userId")String userId,@Query("time")long timestamp);
 
     @GET("v2/kira/user/get/tickets")
     Observable<ApiResult<Integer>> loadTicketsNum();
@@ -795,4 +805,25 @@ public interface ApiService {
 
     @GET("v2/kira/story/find/my/story")
     Observable<ApiResult<ArrayList<JuQingDoneEntity>>> getDoneJuQing();
+
+    @GET("v2/kira/doc/get/department")
+    Observable<ApiResult<ArrayList<SubmissionDepartmentEntity>>> loadDepartment();
+
+    @POST("v2/kira/doc/submit/contribute")
+    Observable<ApiResult> submission(@Body SendSubmissionEntity entity);
+
+    @GET("v2/kira/doc/get/contribute")
+    Observable<ApiResult<ArrayList<SubmissionItemEntity>>> loadSubmissionList(@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/map/pics")
+    Observable<ApiResult<ArrayList<MapEntity>>> loadMapPics();
+
+    @GET("v2/kira/comment/get/hot")
+    Observable<ApiResult<ArrayList<Comment24Entity>>> load24Comments(@Query("page")int page);
+
+    @GET("v2/kira/bag/hot/folder")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> load24Folder();
+
+    @GET("v2/kira/dynamic/get/{dynamicId}/dynamic")
+    Observable<ApiResult<NewDynamicEntity>> getDynamic(@Path("dynamicId")String id);
 }

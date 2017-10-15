@@ -56,9 +56,9 @@ public class PhoneJuQingFragment extends BaseFragment{
     protected void initViews(Bundle savedInstanceState) {
         fragment = new BottomMenuFragment();
         mIvBack.setVisibility(View.VISIBLE);
-        mIvBack.setOnClickListener(new NoDoubleClickListener() {
+        mIvBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNoDoubleClick(View v) {
+            public void onClick(View v) {
                 onBackPressed();
             }
         });
@@ -149,21 +149,21 @@ public class PhoneJuQingFragment extends BaseFragment{
                     mTvMenu.setText("攻略中");
                     for (BaseFragment fragment : fragmentList){
                         if(fragment instanceof PhoneJuQingListFragment){
-                            ((PhoneJuQingListFragment) fragment).changeFilter(0);
+                            ((PhoneJuQingListFragment) fragment).changeFilter(1);
                         }
                     }
                 } else if(itemId == 3){
                     mTvMenu.setText("已完成");
                     for (BaseFragment fragment : fragmentList){
                         if(fragment instanceof PhoneJuQingListFragment){
-                            ((PhoneJuQingListFragment) fragment).changeFilter(0);
+                            ((PhoneJuQingListFragment) fragment).changeFilter(2);
                         }
                     }
                 } else if(itemId == 4){
                     mTvMenu.setText("未解锁");
                     for (BaseFragment fragment : fragmentList){
                         if(fragment instanceof PhoneJuQingListFragment){
-                            ((PhoneJuQingListFragment) fragment).changeFilter(0);
+                            ((PhoneJuQingListFragment) fragment).changeFilter(3);
                         }
                     }
                 }

@@ -22,26 +22,15 @@ import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.entity.CommonFileEntity;
 import com.moemoe.lalala.model.entity.FileXiaoShuoEntity;
-import com.moemoe.lalala.model.entity.FolderType;
-import com.moemoe.lalala.model.entity.ManHua2Entity;
-import com.moemoe.lalala.model.entity.NewFolderEntity;
-import com.moemoe.lalala.presenter.NewFolderItemContract;
-import com.moemoe.lalala.presenter.NewFolderItemPresenter;
 import com.moemoe.lalala.utils.DensityUtil;
-import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
-import com.moemoe.lalala.view.adapter.FileCommonAdapter;
 import com.moemoe.lalala.view.adapter.XiaoShuoAdapter;
-import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
-import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
-import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
@@ -92,6 +81,8 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
     private String charset;
     private boolean isLoading = false;
     private String mUserId;
+    private String path;
+    private boolean isFromFolder;
 
     @Override
     protected int getLayoutId() {
@@ -103,6 +94,14 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
         i.putExtra(UUID,userId);
         i.putParcelableArrayListExtra("folders",entities);
         i.putExtra("position",position);
+        i.putExtra("from_folder",true);
+        context.startActivity(i);
+    }
+
+    public static void startActivity(Context context,String path){
+        Intent i = new Intent(context,NewFileXiaoShuo2Activity.class);
+        i.putExtra("path",path);
+        i.putExtra("from_folder",false);
         context.startActivity(i);
     }
 
@@ -119,9 +118,13 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getNovRootPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+
         mUserId = getIntent().getStringExtra(UUID);
         mManHualist = getIntent().getParcelableArrayListExtra("folders");
         mPosition = getIntent().getIntExtra("position",0);
+
+        isFromFolder = getIntent().getBooleanExtra("from_folder",false);
+        path = getIntent().getStringExtra("path");
         mIvAddFolder.setVisibility(View.GONE);
         mListDocs.setPadding(0,0,0,0);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
@@ -129,17 +132,6 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.getRecyclerView().setVerticalScrollBarEnabled(true);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        });
         mListDocs.getSwipeRefreshLayout().setEnabled(false);
         mListDocs.setLoadMoreEnabled(true);
         mListDocs.setPullCallback(new PullCallback() {
@@ -164,14 +156,22 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                 return false;
             }
         });
-        mFolderName = mManHualist.get(mPosition).getFileName();
-        mTvMenuLeft.setText(mFolderName);
-        createBottomView();
+
+        if(isFromFolder){
+            mFolderName = mManHualist.get(mPosition).getFileName();
+            mTvMenuLeft.setText(mFolderName);
+            createBottomView();
+        }
         initTxt();
     }
 
     private void initTxt(){
-        File file = new File(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId(),mManHualist.get(mPosition).getFileName());
+        File file;
+        if(isFromFolder){
+            file = new File(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId(),mManHualist.get(mPosition).getFileName());
+        }else {
+            file = new File(path);
+        }
         long length = file.length();
         if(length > 10){
             mbBufferLen = (int) length;
@@ -211,32 +211,34 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                 .replaceAll("\n", " "); // 段落中的换行符去掉，绘制的时候再换行
         if(TextUtils.isEmpty(strParagraph)){
             mAdapter.setEnableLoadMore(false);
-            if(!mUserId.equals(PreferenceUtils.getUUid()) && mBottomView != null){
-                RecyclerView.LayoutManager manager = mListDocs.getRecyclerView().getLayoutManager();
-                int last = -1;
-                if(manager instanceof GridLayoutManager){
-                    last = ((GridLayoutManager)manager).findLastVisibleItemPosition();
-                }else if(manager instanceof LinearLayoutManager){
-                    last = ((LinearLayoutManager)manager).findLastVisibleItemPosition();
-                }
-                if(last >= 0){
-                    View lastVisibleView = manager.findViewByPosition(last);
-                    int[] lastLocation = new int[2] ;
-                    lastVisibleView.getLocationOnScreen(lastLocation);
-                    int lastY = lastLocation[1] + lastVisibleView.getMeasuredHeight();
-                    int[] location = new int[2] ;
-                    mListDocs.getRecyclerView().getLocationOnScreen(location);
-                    int rvY = location[1] + mListDocs.getRecyclerView().getMeasuredHeight();
-                    int topMargin;
-                    if(lastY >= rvY){//view超过一屏了
-                        topMargin = 0;
-                    }else {//view小于一屏
-                        topMargin = rvY - lastY;
+            if(mAdapter.getFooterLayoutCount() != 1){
+                if(isFromFolder && !mUserId.equals(PreferenceUtils.getUUid()) && mBottomView != null){
+                    RecyclerView.LayoutManager manager = mListDocs.getRecyclerView().getLayoutManager();
+                    int last = -1;
+                    if(manager instanceof GridLayoutManager){
+                        last = ((GridLayoutManager)manager).findLastVisibleItemPosition();
+                    }else if(manager instanceof LinearLayoutManager){
+                        last = ((LinearLayoutManager)manager).findLastVisibleItemPosition();
                     }
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    lp.topMargin = topMargin;
-                    mBottomView.setLayoutParams(lp);
-                    mAdapter.addFooterView(mBottomView);
+                    if(last >= 0){
+                        View lastVisibleView = manager.findViewByPosition(last);
+                        int[] lastLocation = new int[2] ;
+                        lastVisibleView.getLocationOnScreen(lastLocation);
+                        int lastY = lastLocation[1] + lastVisibleView.getMeasuredHeight();
+                        int[] location = new int[2] ;
+                        mListDocs.getRecyclerView().getLocationOnScreen(location);
+                        int rvY = location[1] + mListDocs.getRecyclerView().getMeasuredHeight();
+                        int topMargin;
+                        if(lastY >= rvY){//view超过一屏了
+                            topMargin = 0;
+                        }else {//view小于一屏
+                            topMargin = rvY - lastY;
+                        }
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        lp.topMargin = topMargin;
+                        mBottomView.setLayoutParams(lp);
+                        mAdapter.addFooterView(mBottomView);
+                    }
                 }
             }
         }else {
@@ -360,12 +362,14 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                                             dialog.dismiss();
                                             FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
                                             showToast("下载失败");
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
                                         }
 
                                         @Override
                                         public void onComplete() {
                                             dialog.dismiss();
                                             NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
                                         }
 
                                         @Override
@@ -419,12 +423,14 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                                             dialog.dismiss();
                                             FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
                                             showToast("下载失败");
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
                                         }
 
                                         @Override
                                         public void onComplete() {
                                             dialog.dismiss();
                                             NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
                                         }
 
                                         @Override

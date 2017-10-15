@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,6 +21,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerNewFileComponent;
@@ -35,6 +39,7 @@ import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.NewFolderItemContract;
 import com.moemoe.lalala.presenter.NewFolderItemPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
+import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FolderDecoration;
@@ -49,12 +54,14 @@ import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -316,7 +323,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                     entity1.setBadge(null);
                     entity1.setHeadPath(mFolderInfo.getUserIcon().getPath());
                     entity.setCreateUser(entity1);
-                    CreateForwardActivity.startActivity(NewFileManHuaActivity.this,entity);
+                    CreateForwardActivity.startActivity(NewFileManHuaActivity.this,entity,mUserId);
                 }
             }
         });
@@ -470,10 +477,11 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
             createBottomView(entity);
         }
         mPresenter.loadFileList(mUserId,mFolderType,mFolderId,0);
+        mAdapter.setBuy(!entity.isBuy() && entity.getCoin() > 0 && !mUserId.equals(PreferenceUtils.getUUid()));
         if(!entity.isBuy() && entity.getCoin() > 0 && !mUserId.equals(PreferenceUtils.getUUid())){
             alertDialogUtil = AlertDialogUtil.getInstance();
-            alertDialogUtil.createBuyFolderDialog(this, entity.getCoin());
-            alertDialogUtil.setButtonText(getString(R.string.label_confirm), getString(R.string.label_cancel),0);
+            alertDialogUtil.createBuyFolderDialog(NewFileManHuaActivity.this, entity.getCoin());
+            alertDialogUtil.setButtonText("确定购买", "返回",0);
             alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
                 @Override
                 public void CancelOnClick() {
@@ -720,6 +728,8 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
     @Override
     public void onBuyFolderSuccess() {
         alertDialogUtil.dismissDialog();
+        mAdapter.setBuy(true);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -741,33 +751,35 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
         if(entities.size() >= ApiService.LENGHT){
             mListDocs.setLoadMoreEnabled(true);
         }else {
-            if(!mUserId.equals(PreferenceUtils.getUUid()) && mBottomView != null){
-                RecyclerView.LayoutManager manager = mListDocs.getRecyclerView().getLayoutManager();
-                int last = -1;
-                if(manager instanceof GridLayoutManager){
-                    last = ((GridLayoutManager)manager).findLastVisibleItemPosition();
-                }else if(manager instanceof LinearLayoutManager){
-                    last = ((LinearLayoutManager)manager).findLastVisibleItemPosition();
-                }
-                if(last >= 0){
-                    View lastVisibleView = manager.findViewByPosition(last);
-                    int[] lastLocation = new int[2] ;
-                    lastVisibleView.getLocationOnScreen(lastLocation);
-                    int lastY = lastLocation[1] + lastVisibleView.getMeasuredHeight();
-                    int[] location = new int[2] ;
-                    mListDocs.getRecyclerView().getLocationOnScreen(location);
-                    int rvY = location[1] + mListDocs.getRecyclerView().getMeasuredHeight();
-                    int topMargin;
-                    if(lastY >= rvY){//view超过一屏了
-                        topMargin = 0;
-                    }else {//view小于一屏
-                        topMargin = rvY - lastY;
+            if(mAdapter.getFooterLayoutCount() != 1){
+                if(!mUserId.equals(PreferenceUtils.getUUid()) && mBottomView != null){
+                    RecyclerView.LayoutManager manager = mListDocs.getRecyclerView().getLayoutManager();
+                    int last = -1;
+                    if(manager instanceof GridLayoutManager){
+                        last = ((GridLayoutManager)manager).findLastVisibleItemPosition();
+                    }else if(manager instanceof LinearLayoutManager){
+                        last = ((LinearLayoutManager)manager).findLastVisibleItemPosition();
                     }
-                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    lp.topMargin = topMargin;
-                    mBottomView.setLayoutParams(lp);
-                    mAdapter.addFooterView(mBottomView);
-                    mListDocs.setLoadMoreEnabled(false);
+                    if(last >= 0){
+                        View lastVisibleView = manager.findViewByPosition(last);
+                        int[] lastLocation = new int[2] ;
+                        lastVisibleView.getLocationOnScreen(lastLocation);
+                        int lastY = lastLocation[1] + lastVisibleView.getMeasuredHeight();
+                        int[] location = new int[2] ;
+                        mListDocs.getRecyclerView().getLocationOnScreen(location);
+                        int rvY = location[1] + mListDocs.getRecyclerView().getMeasuredHeight();
+                        int topMargin;
+                        if(lastY >= rvY){//view超过一屏了
+                            topMargin = 0;
+                        }else {//view小于一屏
+                            topMargin = rvY - lastY;
+                        }
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        lp.topMargin = topMargin;
+                        mBottomView.setLayoutParams(lp);
+                        mAdapter.addFooterView(mBottomView);
+                        mListDocs.setLoadMoreEnabled(false);
+                    }
                 }
             }
         }

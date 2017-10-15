@@ -18,6 +18,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.modules.MapModule;
 import com.moemoe.lalala.dialog.SignDialog;
 import com.moemoe.lalala.event.BackSchoolEvent;
+import com.moemoe.lalala.event.EventDoneEvent;
+import com.moemoe.lalala.event.MateChangeEvent;
 import com.moemoe.lalala.event.SystemMessageEvent;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.AuthorInfo;
@@ -44,6 +47,10 @@ import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
+import com.moemoe.lalala.model.entity.MapDbEntity;
+import com.moemoe.lalala.model.entity.MapEntity;
+import com.moemoe.lalala.model.entity.MapMarkContainer;
+import com.moemoe.lalala.model.entity.MapMarkEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
@@ -54,17 +61,30 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.JuQingDoneEntity;
 import com.moemoe.lalala.utils.JuQingUtil;
+import com.moemoe.lalala.utils.MapUtil;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.ToolTipUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.di.components.DaggerMapComponent;
+import com.moemoe.lalala.view.widget.map.MapWidget;
+import com.moemoe.lalala.view.widget.map.config.OfflineMapConfig;
+import com.moemoe.lalala.view.widget.map.events.MapTouchedEvent;
+import com.moemoe.lalala.view.widget.map.events.ObjectTouchEvent;
+import com.moemoe.lalala.view.widget.map.interfaces.Layer;
+import com.moemoe.lalala.view.widget.map.interfaces.MapEventsListener;
+import com.moemoe.lalala.view.widget.map.interfaces.OnMapTilesFinishedLoadingListener;
+import com.moemoe.lalala.view.widget.map.interfaces.OnMapTouchListener;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
-import com.unity3d.player.UnityPlayer;
+import com.moemoe.lalala.view.widget.tooltip.Tooltip;
+import com.moemoe.lalala.view.widget.tooltip.TooltipAnimation;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -73,7 +93,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -82,6 +104,8 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.rong.imkit.RongIM;
@@ -99,6 +123,13 @@ import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_
 
 public class MapActivity extends BaseAppCompatActivity implements MapContract.View,IUnReadMessageObserver {
 
+    private static final int MAP_SCHOOL_ASA = 0;
+    private static final int MAP_SCHOOL_YORU = 1;
+    private static final int MAP_SCHOOL_GOGO = 3;
+    private static final int MAP_SCHOOL_MAYONAKA = 4;
+    private static final int MAP_SCHOOL_SYOUGO = 5;
+    private static final int MAP_SCHOOL_TASOGARE = 6;
+
     @BindView(R.id.main_root)
     RelativeLayout mMainRoot;
     @BindView(R.id.fl_map_root)
@@ -111,8 +142,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     View mCardRoot;
     @BindView(R.id.iv_card_dot)
     View mCardDot;
-    @BindView(R.id.iv_main)
-    ImageView mIvMain;
     @BindView(R.id.rl_main_list_root)
     View mPhoneRoot;
     @BindView(R.id.iv_sign)
@@ -134,10 +163,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Inject
     MapPresenter mPresenter;
+    private MapWidget mapWidget;
+    private int mMapState = MAP_SCHOOL_ASA;
+    private String mEventId;
 
-    protected UnityPlayer mUnityPlayer;
-
-    private TextView mEventTv;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
     private boolean isGisterReciver;
     private long mLastBackTime = 0;
@@ -146,140 +175,9 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private boolean mIsOut = false;
     public static long mUpdateDownloadId = Integer.MIN_VALUE;
     private boolean mIsSignPress = false;
-    private boolean isLoadUnity;
+    private MapMarkContainer mContainer;
     private BottomMenuFragment menuFragment;
     private boolean isLoadDone;
-
-    static {
-        System.loadLibrary("kira");
-    }
-
-    public native int initNDK();
-
-    private void toPersonalFromUnity(String id){
-        Intent i = new Intent(this,NewPersonalActivity.class);
-        i.putExtra(UUID,id);
-        startActivity(i);
-    }
-
-    private void toDepartmentFromUnity(String id,String name){
-        Intent i = new Intent(this,DepartmentActivity.class);
-        i.putExtra(UUID,id);
-        i.putExtra("name",name);
-        startActivity(i);
-    }
-
-    private void toBagFromUnity(String id){
-        Intent i = new Intent(this,NewBagActivity.class);
-        i.putExtra(UUID,id);
-        startActivity(i);
-    }
-
-    public void StartLoad(){
-        isLoadUnity = true;
-        showBtn();
-        Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
-        startActivity(i3);
-        if(!TextUtils.isEmpty(mSchema)){
-            IntentUtils.toActivityFromUri(this, Uri.parse(mSchema),null);
-        }
-    }
-
-    public void changeButtonState(){
-        if(mIsOut){
-            imgIn();
-            mIsOut = false;
-        }else {
-            imgOut();
-            mIsOut = true;
-        }
-    }
-
-    public void toNativeView(String schema,String name){
-        try{
-            if(!TextUtils.isEmpty(schema)) {
-                String temp = schema;
-                if (name.equals("恋爱讲座")) {
-                    if (menuFragment == null) {
-                        ArrayList<MenuItem> items = new ArrayList<>();
-                        MenuItem item = new MenuItem(0, "赤印");
-                        items.add(item);
-                        item = new MenuItem(1, "雪之本境");
-                        items.add(item);
-                        item = new MenuItem(2, "且听琴语");
-                        items.add(item);
-                        menuFragment = new BottomMenuFragment();
-                        menuFragment.setShowTop(true);
-                        menuFragment.setTopContent("选择听哪个故事呢？");
-                        menuFragment.setMenuItems(items);
-                        menuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
-                        menuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
-                            @Override
-                            public void OnMenuItemClick(int itemId) {
-                                String url = "";
-                                if (itemId == 0) {
-                                    url = "https://www.iqing.in/play/653";
-                                } else if (itemId == 1) {
-                                    url = "https://www.iqing.in/play/654";
-                                } else if (itemId == 2) {
-                                    url = "https://www.iqing.in/play/655";
-                                }
-                                WebViewActivity.startActivity(MapActivity.this, url, true);
-                            }
-                        });
-                    }
-                    menuFragment.show(getSupportFragmentManager(), "mapMenu");
-                } else if (name.equals("扭蛋机抽奖")) {
-                    if (DialogUtils.checkLoginAndShowDlg(MapActivity.this)) {
-                        AuthorInfo authorInfo = PreferenceUtils.getAuthorInfo();
-                        try {
-                            temp += "?user_id=" + authorInfo.getUserId()
-                                    + "&nickname=" + (TextUtils.isEmpty(authorInfo.getUserName()) ? "" : URLEncoder.encode(authorInfo.getUserName(), "UTF-8"))
-                                    + "&token=" + PreferenceUtils.getToken();
-                            Uri uri = Uri.parse(temp);
-                            IntentUtils.haveShareWeb(MapActivity.this, uri, null);
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else if (name.equals("返校-人物")) {
-                    int level = PreferenceUtils.getBackSchoolLevel(MapActivity.this);
-                    if (level == 5) {
-                        if (!AppSetting.isShowBackSchoolAll) showEventDialog("是否回顾剧情", 2);
-                    } else {
-                        temp += "?token=" + PreferenceUtils.getToken()
-                                + "&full_screen";
-                        Uri uri = Uri.parse(temp);
-                        IntentUtils.toActivityFromUri(MapActivity.this, uri, null);
-                    }
-                } else {
-                    if (temp.contains("http://prize.moemoe.la:8000/mt")) {
-                        AuthorInfo authorInfo = PreferenceUtils.getAuthorInfo();
-                        temp += "?user_id=" + authorInfo.getUserId() + "&nickname=" + authorInfo.getUserName();
-                    }
-                    if (temp.contains("http://prize.moemoe.la:8000/netaopera/chap")) {
-                        AuthorInfo authorInfo = PreferenceUtils.getAuthorInfo();
-                        temp += "?pass=" + PreferenceUtils.getPassEvent(MapActivity.this) + "&user_id=" + authorInfo.getUserId();
-                    }
-                    if (temp.contains("http://neta.facehub.me/")) {
-                        AuthorInfo authorInfo = PreferenceUtils.getAuthorInfo();
-                        temp += "?open_id=" + authorInfo.getUserId() + "&nickname=" + authorInfo.getUserName() + "&pay_way=alipay,wx,qq" + "&full_screen";
-                    }
-                    if (temp.contains("fanxiao/final.html")) {
-                        temp += "?token=" + PreferenceUtils.getToken()
-                                + "&full_screen";
-                    }
-                    if (temp.contains("fanxiao/paihang.html")) {
-                        temp += "?token=" + PreferenceUtils.getToken();
-                    }
-                    Uri uri = Uri.parse(temp);
-                    IntentUtils.toActivityFromUri(MapActivity.this, uri, null);
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected int getLayoutId() {
@@ -299,23 +197,12 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        if(1 != initNDK()){
-            Log.e("NDKUtil","初始化失败");
-        }else {
-            Log.e("NDKUtil","初始化成功");
-        }
+        initMap("map_asa");
         final Conversation.ConversationType[] conversationTypes = {
                 Conversation.ConversationType.PRIVATE
         };
-        if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
-            Intent i = new Intent(this,MengXinActivity.class);
-            startActivity(i);
-        }
-        hideBtn();
+        mEventId = "";
         RongIM.getInstance().addUnReadMessageCountChangedObserver(this, conversationTypes);
-        mUnityPlayer = new UnityPlayer(this);
-        mMap.addView(mUnityPlayer);
-        mUnityPlayer.requestFocus();
         startService(new Intent(this, DaemonService.class));
         if(!isGisterReciver){
             IntentFilter filter = new IntentFilter();
@@ -327,98 +214,100 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mPresenter.checkVersion();
         }
         mPresenter.getEventList();
+        mPresenter.loadMapPics();
         String mTime = dateFormat.format(new Date());
         mTvTime.setText(mTime);
+        subscribeSearchChangedEvent();
+        ViewUtils.setRoleButton(mIvRole,mTvText);
+    }
+
+    private void initMap(String map){
+        mapWidget = new MapWidget(this,map,12);
+        mapWidget.centerMap();
+        float scale = (float) DensityUtil.getScreenHeight(this) / mapWidget.getOriginalMapHeight();
+        mapWidget.setScale(scale);
+        OfflineMapConfig config = mapWidget.getConfig();
+        mapWidget.scrollMapTo(0,0);
+        config.setPinchZoomEnabled(true);
+        config.setFlingEnabled(true);
+        config.setMaxZoomLevelLimit(14);
+        config.setMinZoomLevelLimit(12);
+        config.setZoomBtnsVisible(false);
+        config.setMapCenteringEnabled(true);
+        mMap.removeAllViews();
+        mMap.addView(mapWidget);
+        mPresenter.addMapMark(this,mapWidget,scale);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        RxBus.getInstance().unSubscribe(this);
         hideBtn();
-        mUnityPlayer.pause();
     }
 
-    private void subscribeEvent() {
-        Disposable sysSubscription = RxBus.getInstance()
-                .toObservable(SystemMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SystemMessageEvent>() {
-                    @Override
-                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
-                        if(PreferenceUtils.getMessageDot(MapActivity.this,"neta") || PreferenceUtils.getMessageDot(MapActivity.this,"system") || PreferenceUtils.getMessageDot(MapActivity.this,"at_user")){
-                            mCardDot.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().addSubscription(this, sysSubscription);
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-       // mUnityPlayer.lowMemory();
-    }
-
-    @Override
-    public void onTrimMemory(int var1) {
-        super.onTrimMemory(var1);
-//        if(var1 == 15) {
-//            this.mUnityPlayer.lowMemory();
-//        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration var1) {
-        super.onConfigurationChanged(var1);
-        this.mUnityPlayer.configurationChanged(var1);
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean var1) {
-        super.onWindowFocusChanged(var1);
-        this.mUnityPlayer.windowFocusChanged(var1);
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent var1) {
-        return var1.getAction() == 2?this.mUnityPlayer.injectEvent(var1):super.dispatchKeyEvent(var1);
-    }
-
-    @Override
-    public boolean onKeyUp(int var1, KeyEvent var2) {
-        return this.mUnityPlayer.injectEvent(var2);
-    }
-
-    @Override
-    public boolean onKeyDown(int var1, KeyEvent var2) {
-        if(var1 == 4){
-            onBackPressed();
-            return true;
-        }else {
-            return this.mUnityPlayer.injectEvent(var2);
+    private void clearMap(){
+        if(mapWidget != null){
+            mapWidget.clearLayers();
+            mapWidget = null;
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent var1) {
-        return this.mUnityPlayer.injectEvent(var1);
+    private void invalidateMap(boolean shouldChange){
+        if(StringUtils.isasa()) {
+            if (mMapState != MAP_SCHOOL_ASA || shouldChange) {
+                clearMap();
+                mMapState = MAP_SCHOOL_ASA;
+                initMap("map_asa");
+                initMapListeners();
+            }
+        }
+        if(StringUtils.issyougo()) {
+            if (mMapState != MAP_SCHOOL_SYOUGO || shouldChange) {
+                clearMap();
+                mMapState = MAP_SCHOOL_SYOUGO;
+                initMap("map_syougo");
+                initMapListeners();
+            }
+        }
+        if(StringUtils.isgogo()) {
+            if (mMapState != MAP_SCHOOL_GOGO || shouldChange) {
+                clearMap();
+                mMapState = MAP_SCHOOL_GOGO;
+                initMap("map_gogo");
+                initMapListeners();
+            }
+        }
+        if(StringUtils.istasogare()) {
+            if (mMapState != MAP_SCHOOL_TASOGARE || shouldChange) {
+                clearMap();
+                mMapState = MAP_SCHOOL_TASOGARE;
+                initMap("map_tasogare");
+                initMapListeners();
+            }
+        }
+        if(StringUtils.isyoru2()) {
+            if (mMapState != MAP_SCHOOL_YORU || shouldChange) {
+                clearMap();
+                mMapState = MAP_SCHOOL_YORU;
+                initMap("map_yoru");
+                initMapListeners();
+            }
+        }
+        if(StringUtils.ismayonaka()) {
+            if (mMapState != MAP_SCHOOL_MAYONAKA || shouldChange) {
+                clearMap();
+                mMapState = MAP_SCHOOL_MAYONAKA;
+                initMap("map_mayonaka");
+                initMapListeners();
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         showBtn();
-        subscribeEvent();
-        subscribeSearchChangedEvent();
-        mUnityPlayer.resume();
+        invalidateMap(false);
         if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") ){//|| showDot){
             mCardDot.setVisibility(View.VISIBLE);
         }else {
@@ -426,8 +315,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         String mTime = dateFormat.format(new Date());
         mTvTime.setText(mTime);
-        ViewUtils.setRoleButton(mIvRole,mTvText);
         mPresenter.checkStoryVersion();
+        if(!PreferenceUtils.isLogin()){
+            isLoadDone = false;
+        }
         if(!isLoadDone){
             mPresenter.findMyDoneJuQing();
         }
@@ -448,10 +339,9 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 .subscribe(new Consumer<ArrayList<JuQingTriggerEntity>>() {
             @Override
             public void accept(ArrayList<JuQingTriggerEntity> id) throws Exception {
-                if(id.size() == 0) UnityPlayer.UnitySendMessage("MainSenc", "MapOrGalag","");
                 for(JuQingTriggerEntity entity : id){
                     if(entity.getType().equals("mobile")){
-                        if(JuQingUtil.isForce(entity.getStoryId())){
+                        if(entity.isForce()){
                             Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
                                     .appendPath("conversation").appendPath("private")
                                     .appendQueryParameter("targetId", "juqing:"+ entity.getStoryId() + ":" + entity.getRoleOf()).build();
@@ -459,14 +349,31 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                             i2.setData(uri);
                             startActivity(i2);
                         }
+                        if(!entity.getStoryId().equals(mEventId)){
+                            String msg = mTvMsg.getText().toString();
+                            if(msg.equals("无新信息")){
+                                msg = "1条新消息";
+                            }else {
+                                msg = (Integer.valueOf(msg.replace("条新消息","").trim()) + 1) + "条新消息";
+                            }
+                            mTvMsg.setText(msg);
+                            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(MapActivity.this,R.drawable.ic_inform_reddot),null,null,null);
+                            mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+                            mEventId = entity.getStoryId();
+                        }
                     }
                     if(entity.getType().equals("map")){
                         String extra = entity.getExtra();
-                        boolean isForce = JuQingUtil.isForce(entity.getStoryId());
+                        boolean isForce = entity.isForce();
                         JsonObject jsonObject = new Gson().fromJson(extra,JsonObject.class);
-                        jsonObject.addProperty("isForce",isForce);
-                        String str = jsonObject.toString();
-                        UnityPlayer.UnitySendMessage("MainSenc", "MapOrGalag", jsonObject.toString());
+                        String eventId = jsonObject.get("map").getAsString();
+                        String icon = jsonObject.get("icon").getAsString();
+                        mPresenter.addEventMark(eventId,icon,mContainer,MapActivity.this,mapWidget,entity.getStoryId());
+                        if(isForce){
+                            Intent i = new Intent(MapActivity.this,MapEventNewActivity.class);
+                            i.putExtra("id",entity.getStoryId());
+                            startActivity(i);
+                        }
                     }
                 }
             }
@@ -496,7 +403,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     public void onFindMyDoneJuQingSuccess(ArrayList<JuQingDoneEntity> entities) {
-        JuQingUtil.saveJuQingDone(entities);
+        //JuQingUtil.saveJuQingDone(entities);
         isLoadDone = true;
     }
 
@@ -514,80 +421,185 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     }
 
-    private void showEventDialog(String content, final int type){
-        final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-        alertDialogUtil.createNormalDialog(this,content);
-        alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+    private void initMapListeners(){
+        mapWidget.setOnMapTouchListener(new OnMapTouchListener() {
             @Override
-            public void CancelOnClick() {
-                alertDialogUtil.dismissDialog();
-            }
+            public void onTouch(MapWidget v, MapTouchedEvent event) {
+                List<ObjectTouchEvent> objectTouchEvents = event.getTouchedObjectEvents();
+                if(objectTouchEvents.size() == 0){
+                    if(mIsOut){
+                        imgIn();
+                        mIsOut = false;
+                    }else {
+                        imgOut();
+                        mIsOut = true;
+                    }
+                }
+                if(objectTouchEvents.size() == 1){
+                    int mapX = event.getScreenX();
+                    int mapY = event.getScreenY();
 
-            @Override
-            public void ConfirmOnClick() {
-                alertDialogUtil.dismissDialog();
-                if(type == 1){
-                    backSchoolEvent();
-                }else if(type == 2){
-                    AppSetting.isShowBackSchoolAll = true;
-                    PreferenceUtils.setAllBackSchool(MapActivity.this,true);
+                    ObjectTouchEvent objectTouchEvent = objectTouchEvents.get(0);
+                    Object objectId =  objectTouchEvent.getObjectId();
+                    MapMarkEntity entity = mContainer.getMarkById((String) objectId);
+                    if(!TextUtils.isEmpty(entity.getSchema())){
+                        String temp = entity.getSchema();
+                        if(temp.contains("map_event_1.0") || temp.contains("game_1.0")){
+                            if(!DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
+                                return;
+                            }
+                        }
+                        if(entity.getId().equals("恋爱讲座")){
+                            if(menuFragment == null){
+                                ArrayList<MenuItem> items = new ArrayList<>();
+                                MenuItem item = new MenuItem(0,"赤印");
+                                items.add(item);
+                                item = new MenuItem(1,"雪之本境");
+                                items.add(item);
+                                item = new MenuItem(2,"且听琴语");
+                                items.add(item);
+                                menuFragment = new BottomMenuFragment();
+                                menuFragment.setShowTop(true);
+                                menuFragment.setTopContent("选择听哪个故事呢？");
+                                menuFragment.setMenuItems(items);
+                                menuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+                                menuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
+                                    @Override
+                                    public void OnMenuItemClick(int itemId) {
+                                        String url = "";
+                                        if(itemId == 0){
+                                            url = "https://www.iqing.in/play/653";
+                                        }else if(itemId == 1){
+                                            url = "https://www.iqing.in/play/654";
+                                        }else if(itemId == 2){
+                                            url = "https://www.iqing.in/play/655";
+                                        }
+                                        WebViewActivity.startActivity(MapActivity.this,url,true);
+                                    }
+                                });
+                            }
+                            menuFragment.show(getSupportFragmentManager(),"mapMenu");
+                        }else if(entity.getId().equals("扭蛋机抽奖")){
+                            if (DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
+                                AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
+                                try {
+                                    temp += "?user_id=" + authorInfo.getUserId()
+                                            + "&nickname=" + (TextUtils.isEmpty(authorInfo.getUserName())? "" : URLEncoder.encode(authorInfo.getUserName(),"UTF-8"))
+                                            + "&token=" + PreferenceUtils.getToken();
+                                    Uri uri = Uri.parse(temp);
+                                    IntentUtils.haveShareWeb(MapActivity.this, uri, v);
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }else {
+                            if(temp.contains("http://prize.moemoe.la:8000/mt")){
+                                AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
+                                temp +="?user_id=" + authorInfo.getUserId() + "&nickname="+authorInfo.getUserName();
+                            }
+                            if(temp.contains("http://prize.moemoe.la:8000/netaopera/chap")){
+                                AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
+                                temp +="?pass=" + PreferenceUtils.getPassEvent(MapActivity.this) + "&user_id=" + authorInfo.getUserId();
+                            }
+                            if(temp.contains("http://neta.facehub.me/")){
+                                AuthorInfo authorInfo =  PreferenceUtils.getAuthorInfo();
+                                temp +="?open_id=" + authorInfo.getUserId() + "&nickname=" + authorInfo.getUserName() + "&pay_way=alipay,wx,qq"+"&full_screen";
+                            }
+                            if(temp.contains("fanxiao/final.html")){
+                                temp += "?token=" + PreferenceUtils.getToken()
+                                        + "&full_screen";
+                            }
+                            if(temp.contains("fanxiao/paihang.html")){
+                                temp += "?token=" + PreferenceUtils.getToken();
+                            }
+                            if(temp.contains("game_1.0")){
+                                temp += "&token="+PreferenceUtils.getToken()+"&version="+AppSetting.VERSION_CODE+"&userId="+PreferenceUtils.getUUid()+"&channel="+AppSetting.CHANNEL;
+                            }
+                            Uri uri = Uri.parse(temp);
+                            IntentUtils.toActivityFromUri(MapActivity.this, uri, v);
+                        }
+                    }else {
+                        TextView textView = (TextView) LayoutInflater.from(MapActivity.this).inflate(R.layout.tooltip_textview, null);
+                        int viewHeight = mapWidget.getMapHeight();
+                        int type;
+                        if(entity.getY() < viewHeight / 2){
+                            type = Tooltip.BOTTOM;
+                        }else {
+                            type = Tooltip.TOP;
+                        }
+                        int x = xToScreenCoords(entity.getX());
+                        int y = yToScreenCoords(entity.getY());
+                        if(TextUtils.isEmpty(entity.getContent())){
+                            Random random = new Random();
+                            int i = random.nextInt(entity.getContents().size());
+                            ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContents().get(i),type,mapX,mapY,entity.getW(),entity.getH(),true,
+                                    TooltipAnimation.SCALE_AND_FADE,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
+                        }else {
+                            ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContent(),type, mapX,mapY,entity.getW(),entity.getH(),true,
+                                    TooltipAnimation.SCALE_AND_FADE,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                                    ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
+                        }
+                    }
                 }
             }
         });
-        alertDialogUtil.showDialog();
+        mapWidget.addMapEventsListener(new MapEventsListener() {
+            @Override
+            public void onPreZoomIn() {
+            }
+
+            @Override
+            public void onPostZoomIn() {
+            }
+
+            @Override
+            public void onPreZoomOut() {
+            }
+
+            @Override
+            public void onPostZoomOut() {
+            }
+        });
+        mapWidget.setOnMapTilesFinishLoadingListener(new OnMapTilesFinishedLoadingListener() {
+            @Override
+            public void onMapTilesFinishedLoading() {
+
+            }
+        });
     }
 
-    private void backSchoolEvent(){
-        if(!mIsOut){
-            imgOut();
-            mIsOut = true;
-        }
+    private int xToScreenCoords(int mapCoord) {
+        return (int)(mapCoord *  mapWidget.getScale() - mapWidget.getScrollX());
+    }
 
-        mEventTv = new TextView(this);
-        mEventTv.setGravity(Gravity.CENTER);
-        mEventTv.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mEventTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
-        mEventTv.setTextColor(Color.WHITE);
-        mEventTv.setBackgroundColor(ContextCompat.getColor(this,R.color.alph_80));
-        TextPaint paint = mEventTv.getPaint();
-        paint.setFakeBoldText(true);
-        mEventTv.setText("“我在哪儿？我是谁？”\n" + "我慌乱的从地上做了起来，周围烟雾弥漫，气氛诡异");
-        mMainRoot.addView(mEventTv);
-        mEventTv.bringToFront();
-        mEventTv.setOnClickListener(new View.OnClickListener() {
-            int i = 1;
-            @Override
-            public void onClick(View v) {
-                switch (i){
-                    case 1:
-                        mEventTv.setText("隐约记得我是在找人来着\n" + "也不知着了什么魔怔，一下什么也想不起来\n" + "“魏仲廷！对了，就是他！”");
-                        i++;
-                        break;
-                    case 2:
-                        mEventTv.setText("脑海里，隐约想起了一些\n" + "记得是一场台风，将我两个人困在了学校\n" + "和他的相识便是在这个时候");
-                        i++;
-                        break;
-                    case 3:
-                        mEventTv.setText("本来在教室说笑的我们本打算就这么过夜了\n" + "突然他说要去打电话试试能不能联系外界，便让他去了");
-                        i++;
-                        break;
-                    case 4:
-                        mEventTv.setText("他的脚步声轻声回荡，勾起我心中一丝不安\n" + "然而时间戛然停止，世界分崩离析\n" + "转眼间虚无已将我吞噬……\n" + "回过神来时……我已站在了这儿");
-                        i++;
-                        break;
-                    case 5:
-                        mEventTv.setVisibility(View.GONE);
-                        mMainRoot.removeView(mEventTv);
-                        mEventTv.setOnClickListener(null);
-                        mEventTv = null;
-                        //showEventMapMark(false);
-                        break;
-                }
-            }
-        });
+    private int yToScreenCoords(int mapCoord) {
+        return (int)(mapCoord *  mapWidget.getScale() - mapWidget.getScrollY());
     }
 
     private void subscribeSearchChangedEvent() {
+        Disposable sysSubscription = RxBus.getInstance()
+                .toObservable(SystemMessageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Consumer<SystemMessageEvent>() {
+                    @Override
+                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
+                        if(PreferenceUtils.getMessageDot(MapActivity.this,"neta") || PreferenceUtils.getMessageDot(MapActivity.this,"system") || PreferenceUtils.getMessageDot(MapActivity.this,"at_user")){
+                            mCardDot.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
         Disposable subscription = RxBus.getInstance()
                 .toObservable(BackSchoolEvent.class)
                 .subscribeOn(Schedulers.io())
@@ -604,7 +616,65 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
                     }
                 });
+        Disposable subscription1 = RxBus.getInstance()
+                .toObservable(MateChangeEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Consumer<MateChangeEvent>() {
+                    @Override
+                    public void accept(MateChangeEvent backSchoolEvent) throws Exception {
+                        ViewUtils.setRoleButton(mIvRole,mTvText);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        Disposable subscription3 = RxBus.getInstance()
+                .toObservable(EventDoneEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Consumer<EventDoneEvent>() {
+                    @Override
+                    public void accept(EventDoneEvent eventDoneEvent) throws Exception {
+                        if(eventDoneEvent.getType().equals("mobile")){
+                            mEventId = "";
+                            String msg = mTvMsg.getText().toString();
+                            if(!msg.equals("无新信息")){
+                                int i = Integer.valueOf(msg.replace("条新消息","").trim()) - 1;
+                                if(i <= 0){
+                                    msg = "无新信息" ;
+                                    mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+                                    mTvMsg.setCompoundDrawablePadding(0);
+                                }else {
+                                    msg = i + "条新消息";
+                                    mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(MapActivity.this,R.drawable.ic_inform_reddot),null,null,null);
+                                    mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+                                }
+                            }else {
+                                mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+                                mTvMsg.setCompoundDrawablePadding(0);
+                            }
+                            mTvMsg.setText(msg);
+                        }else if(eventDoneEvent.getType().equals("map")){
+                            Layer layer = mapWidget.getLayerById(1);
+                            layer.setVisible(false);
+                            mapWidget.invalidate();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
         RxBus.getInstance().addSubscription(this, subscription);
+        RxBus.getInstance().addSubscription(this, subscription1);
+        RxBus.getInstance().addSubscription(this, subscription3);
+        RxBus.getInstance().addSubscription(this, sysSubscription);
     }
 
     @Override
@@ -618,7 +688,13 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     protected void initListeners() {
-
+        initMapListeners();
+        if(!TextUtils.isEmpty(mSchema)){
+            IntentUtils.toActivityFromUri(this, Uri.parse(mSchema),null);
+        }else {
+            Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+            startActivity(i2);
+        }
     }
 
     @Override
@@ -638,6 +714,38 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     @Override
     public void onPersonMainLoad(PersonalMainEntity entity) {
         PersonalLevelActivity.startActivity(this,entity.getLevelName(),entity.getLevelColor(),entity.getScore(),entity.getLevelScoreStart(),entity.getLevelScoreEnd(),entity.getLevel());
+    }
+
+    @Override
+    public void onMapMarkLoaded(MapMarkContainer container) {
+        mContainer = container;
+    }
+
+    @Override
+    public void onLoadMapPics(ArrayList<MapEntity> entities) {
+        final ArrayList<MapDbEntity> res = new ArrayList<>();
+        MapUtil.checkAndDownload(this,MapDbEntity.toDb(entities),new Observer<MapDbEntity>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull MapDbEntity mapDbEntity) {
+                res.add(mapDbEntity);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                GreenDaoManager.getInstance().getSession().getMapDbEntityDao().insertOrReplaceInTx(res);
+                invalidateMap(true);
+            }
+        });
     }
 
     @Override
@@ -677,7 +785,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         ErrorCodeUtils.showErrorMsgByCode(MapActivity.this,code,msg);
     }
 
-    @OnClick({R.id.iv_bag,R.id.iv_card,R.id.rl_main_list_root,R.id.iv_main,R.id.iv_sign,R.id.iv_create_dynamic,R.id.iv_create_wenzhang,R.id.iv_role})
+    @OnClick({R.id.iv_bag,R.id.iv_card,R.id.rl_main_list_root,R.id.iv_sign,R.id.iv_create_dynamic,R.id.iv_create_wenzhang,R.id.iv_role})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_bag:
@@ -700,15 +808,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 }
                 break;
             case R.id.rl_main_list_root:
-                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
-                    Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
-                    startActivity(i2);
-                }
-                break;
-            case R.id.iv_main:
-                Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
-                startActivity(i3);
-                overridePendingTransition(R.anim.main_list_in,0);
+                Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+                startActivity(i2);
                 break;
             case R.id.iv_sign:
                 if(DialogUtils.checkLoginAndShowDlg(MapActivity.this) && !mIsSignPress){
@@ -717,11 +818,13 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 }
                 break;
             case R.id.iv_create_dynamic:
+                clickRole();
                 Intent i4 = new Intent(MapActivity.this,CreateDynamicActivity.class);
                 i4.putExtra("default_tag","广场");
                 startActivity(i4);
                 break;
             case R.id.iv_create_wenzhang:
+                clickRole();
                 Intent intent = new Intent(MapActivity.this, CreateRichDocActivity.class);
                 intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
                 intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
@@ -790,8 +893,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",-mIvBag.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvMain,"translationY",mIvMain.getHeight(),0).setDuration(300);
-        squareAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mPhoneRoot,"translationY",mPhoneRoot.getHeight(),0).setDuration(300);
         phoneAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mIvSign,"translationX",mIvSign.getWidth() + DensityUtil.dip2px(this,14),0).setDuration(300);
@@ -800,8 +901,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         roleAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
-        set.play(bagAnimator).with(squareAnimator);
-        set.play(squareAnimator).with(phoneAnimator);
+        set.play(bagAnimator).with(phoneAnimator);
         set.play(phoneAnimator).with(signAnimator);
         set.play(signAnimator).with(roleAnimator);
         set.start();
@@ -812,8 +912,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         cardAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",0,-mIvBag.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
         bagAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvMain,"translationY",0,mIvMain.getHeight()).setDuration(300);
-        squareAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mPhoneRoot,"translationY",0,mPhoneRoot.getHeight()).setDuration(300);
         phoneAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mIvSign,"translationX",0,mIvSign.getWidth() + DensityUtil.dip2px(this,14)).setDuration(300);
@@ -822,8 +920,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         roleAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(cardAnimator).with(bagAnimator);
-        set.play(bagAnimator).with(squareAnimator);
-        set.play(squareAnimator).with(phoneAnimator);
+        set.play(bagAnimator).with(phoneAnimator);
         set.play(phoneAnimator).with(signAnimator);
         set.play(signAnimator).with(roleAnimator);
         set.start();
@@ -832,7 +929,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private void showBtn(){
         mCardRoot.setVisibility(View.VISIBLE);
         mIvBag.setVisibility(View.VISIBLE);
-        mIvMain.setVisibility(View.VISIBLE);
         mIvSign.setVisibility(View.VISIBLE);
         mIvRole.setVisibility(View.VISIBLE);
         mPhoneRoot.setVisibility(View.VISIBLE);
@@ -841,7 +937,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private void hideBtn(){
         mCardRoot.setVisibility(View.INVISIBLE);
         mIvBag.setVisibility(View.INVISIBLE);
-        mIvMain.setVisibility(View.INVISIBLE);
         mIvSign.setVisibility(View.INVISIBLE);
         mIvRole.setVisibility(View.INVISIBLE);
         mPhoneRoot.setVisibility(View.INVISIBLE);
@@ -876,7 +971,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         RxBus.getInstance().unSubscribe(this);
         AppSetting.isRunning = false;
         RongIM.getInstance().removeUnReadMessageCountChangedObserver(this);
-        if(mUnityPlayer != null)mUnityPlayer.quit();
         super.onDestroy();
     }
 

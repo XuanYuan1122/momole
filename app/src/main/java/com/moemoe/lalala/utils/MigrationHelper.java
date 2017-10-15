@@ -35,14 +35,14 @@ public class MigrationHelper {
         printLog("【The Old Database Version】" + db.getVersion());
         printLog("【Generate temp table】start");
         generateTempTables(database, daoClasses);
-        printLog("【Generate temp table】complete");
+        printLog("【Generate temp table】completeDownLoad");
 
         dropAllTables(database, true, daoClasses);
         createAllTables(database, false, daoClasses);
 
         printLog("【Restore data】start");
         restoreData(database, daoClasses);
-        printLog("【Restore data】complete");
+        printLog("【Restore data】completeDownLoad");
     }
 
     private static void generateTempTables(Database db, Class<? extends AbstractDao<?, ?>>... daoClasses) {

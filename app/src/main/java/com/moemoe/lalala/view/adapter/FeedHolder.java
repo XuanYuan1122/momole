@@ -163,7 +163,7 @@ public class FeedHolder extends ClickableViewHolder {
             tv.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.white));
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,itemView.getContext().getResources().getDimension(R.dimen.x36));
             tv.setGravity(Gravity.CENTER);
-            tv.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.gray_e8e8e8));
+            tv.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_e1f9ff));
             int h = (int) itemView.getResources().getDimension(R.dimen.y320);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,h);
             tv.setLayoutParams(lp);
@@ -193,7 +193,19 @@ public class FeedHolder extends ClickableViewHolder {
                     .placeholder(R.drawable.bg_default_square)
                     .bitmapTransform(new CropTransformation(itemView.getContext(),w,h))
                     .into(cover);
-            mark.setText(folderEntity.getFolderType());
+            if(folderEntity.getFolderType().equals(FolderType.ZH.toString())){
+                mark.setText("综合");
+                mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+            }else if(folderEntity.getFolderType().equals(FolderType.TJ.toString())){
+                mark.setText("图集");
+                mark.setBackgroundResource(R.drawable.shape_rect_tuji);
+            }else if(folderEntity.getFolderType().equals(FolderType.MH.toString())){
+                mark.setText("漫画");
+                mark.setBackgroundResource(R.drawable.shape_rect_manhua);
+            }else if(folderEntity.getFolderType().equals(FolderType.XS.toString())){
+                mark.setText("小说");
+                mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
+            }
             name.setText(folderEntity.getFolderName());
             String tagStr = "";
             for(int i = 0;i < folderEntity.getFolderTags().size();i++){
@@ -296,12 +308,8 @@ public class FeedHolder extends ClickableViewHolder {
                 TextView tv = new TextView(itemView.getContext());
                 tv.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.black_1e1e1e));
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,itemView.getResources().getDimension(R.dimen.x24));
-                String retweetContent = "@" + retweetEntity.getCreateUserName() + ": " + TagControl.getInstance().paresToSpann(context,retweetEntity.getContent());
-                String retweetColorStr = "@" + retweetEntity.getCreateUserName() + ":";
-                SpannableStringBuilder style1 = new SpannableStringBuilder(retweetContent);
-                UserUrlSpan span = new UserUrlSpan(itemView.getContext(),retweetEntity.getCreateUserId(),null);
-                style1.setSpan(span, retweetContent.indexOf(retweetColorStr), retweetContent.indexOf(retweetColorStr) + retweetColorStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                tv.setText(style1);
+                String res = "<at_user user_id="+ retweetEntity.getCreateUserId() + ">" + retweetEntity.getCreateUserName() + ":</at_user>" +  retweetEntity.getContent();
+                tv.setText(TagControl.getInstance().paresToSpann(context,res));
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 lp.topMargin = (int) itemView.getResources().getDimension(R.dimen.y24);
@@ -338,8 +346,8 @@ public class FeedHolder extends ClickableViewHolder {
             docLabel.setBackgroundColor(Color.TRANSPARENT);
         }else {
             $(R.id.fl_tag_root).setVisibility(View.INVISIBLE);
-            $(R.id.ll_img_root).setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.gray_e8e8e8));
-            docLabel.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.gray_e8e8e8));
+            $(R.id.ll_img_root).setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_e1f9ff));
+            docLabel.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_e1f9ff));
         }
         setText(R.id.tv_forward_num, StringUtils.getNumberInLengthLimit(entity.getRetweets(), 3));
         setText(R.id.tv_comment_num, StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
@@ -418,6 +426,7 @@ public class FeedHolder extends ClickableViewHolder {
                     layout = new LinearLayout(itemView.getContext());
                     layout.setOrientation(LinearLayout.HORIZONTAL);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    if(i == 2)lp.topMargin = (int) context.getResources().getDimension(R.dimen.y6);
                     layout.setLayoutParams(lp);
                 }
                 ImageView iv = new ImageView(itemView.getContext());

@@ -1,19 +1,15 @@
 package com.moemoe.lalala.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerBagFavoriteComponent;
 import com.moemoe.lalala.di.modules.BagFavoriteModule;
-import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.BagFavoriteContract;
@@ -23,8 +19,6 @@ import com.moemoe.lalala.utils.FolderDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.BagCollectionTopAdapter;
-import com.moemoe.lalala.view.adapter.OnItemClickListener;
-import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
@@ -42,8 +36,6 @@ import butterknife.BindView;
 
 public class BagBuyActivity extends BaseAppCompatActivity implements BagFavoriteContract.View{
 
-    @BindView(R.id.include_toolbar)
-    View mToolbar;
     @BindView(R.id.iv_back)
     ImageView mIvBack;
     @BindView(R.id.tv_toolbar_title)

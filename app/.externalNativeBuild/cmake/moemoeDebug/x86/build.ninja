@@ -34,7 +34,7 @@ include rules.ninja
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\Neta-Android\app\.externalNativeBuild\cmake\moemoeDebug\x86 && E:\android-sdk\cmake\3.6.4111459\bin\cmake.exe -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D D:\Neta-Android\app\.externalNativeBuild\cmake\moemoeDebug\x86 && E:\android-sdk\cmake\3.6.4111459\bin\cmake.exe -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 build edit_cache: phony CMakeFiles/edit_cache.util
@@ -46,7 +46,7 @@ build CMakeFiles/kira.dir/src/main/cpp/kira.cpp.o: CXX_COMPILER__kira ../../../.
   DEP_FILE = CMakeFiles\kira.dir\src\main\cpp\kira.cpp.o.d
   FLAGS = -isystem E:/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -D__ANDROID_API__=17 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC
   INCLUDES = -isystem E:/android-sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem E:/android-sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/libs/x86/include -isystem E:/android-sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/include/backward
-  IN_ABS = G:\Neta-Android\app\src\main\cpp\kira.cpp
+  IN_ABS = D:\Neta-Android\app\src\main\cpp\kira.cpp
   OBJECT_DIR = CMakeFiles\kira.dir
   OBJECT_FILE_DIR = CMakeFiles\kira.dir\src\main\cpp
 
@@ -73,7 +73,7 @@ build ../../../../libs/x86/libkira.so: CXX_SHARED_LIBRARY_LINKER__kira CMakeFile
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D G:\Neta-Android\app\.externalNativeBuild\cmake\moemoeDebug\x86 && E:\android-sdk\cmake\3.6.4111459\bin\cmake.exe -HG:\Neta-Android\app -BG:\Neta-Android\app\.externalNativeBuild\cmake\moemoeDebug\x86"
+  COMMAND = cmd.exe /C "cd /D D:\Neta-Android\app\.externalNativeBuild\cmake\moemoeDebug\x86 && E:\android-sdk\cmake\3.6.4111459\bin\cmake.exe -HD:\Neta-Android\app -BD:\Neta-Android\app\.externalNativeBuild\cmake\moemoeDebug\x86"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1

@@ -58,6 +58,11 @@ public class StorageUtils {
     private static String sDirTxt;
 
     /**
+     * 地图文件地址
+     */
+    private static String sDirMap;
+
+    /**
      *
      * @param context
      */
@@ -79,6 +84,8 @@ public class StorageUtils {
 
         sDirTxt = sDirRoot + "nov/";
 
+        sDirMap = sDirRoot + "map/";
+
         boolean check = checkDir(sDirRoot);
         check &= checkDir(sDirIconImage);
         check &= checkDir(sDirGalleryImage);
@@ -86,6 +93,7 @@ public class StorageUtils {
         check &= checkDir(sDirTemp);
         check &= checkDir(sDirMusic);
         check &= checkDir(sDirTxt);
+        check &= checkDir(sDirMap);
         //check &= checkDir(sDirLog);
 
         Logger.d("initialStorageDir = " + check + ", paths = " + sDirRoot + "; " + sDirTemp);
@@ -191,6 +199,10 @@ public class StorageUtils {
 
     public static String getNovRootPath(){
         return sDirTxt;
+    }
+
+    public static String getMapRootPath(){
+        return sDirMap;
     }
 
     public static String getRootPath(){

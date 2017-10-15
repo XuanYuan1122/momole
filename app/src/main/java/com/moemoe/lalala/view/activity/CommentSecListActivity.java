@@ -155,7 +155,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
         mTvToComment.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                CreateCommentActivity.startActivity(CommentSecListActivity.this,mComment.getCommentId(),true,"");
+                CreateCommentActivity.startActivity(CommentSecListActivity.this,mComment.getCommentId(),true,"",true);
             }
         });
         setHead();
@@ -190,7 +190,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
             @Override
             public void OnMenuItemClick(int itemId) {
                 if (itemId == 0) {
-                    CreateCommentActivity.startActivity(CommentSecListActivity.this,bean.getCommentId(),true,bean.getCreateUser().getUserId());
+                    CreateCommentActivity.startActivity(CommentSecListActivity.this,bean.getCommentId(),true,bean.getCreateUser().getUserId(),true);
                 } else if (itemId == 2) {
                     Intent intent = new Intent(CommentSecListActivity.this, JuBaoActivity.class);
                     intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getCreateUser().getUserName());

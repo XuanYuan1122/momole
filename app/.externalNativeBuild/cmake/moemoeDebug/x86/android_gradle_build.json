@@ -1,9 +1,9 @@
 
 {
-	"buildFiles" : [ "G:/Neta-Android/app/CMakeLists.txt" ],
+	"buildFiles" : [ "D:/Neta-Android/app/CMakeLists.txt" ],
 	"cleanCommands" : 
 	[
-		"E:\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build G:\\Neta-Android\\app\\.externalNativeBuild\\cmake\\moemoeDebug\\x86 --target clean"
+		"E:\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Neta-Android\\app\\.externalNativeBuild\\cmake\\moemoeDebug\\x86 --target clean"
 	],
 	"cppFileExtensions" : [ "cpp" ],
 	"libraries" : 
@@ -12,18 +12,18 @@
 		{
 			"abi" : "x86",
 			"artifactName" : "kira",
-			"buildCommand" : "E:\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build G:\\Neta-Android\\app\\.externalNativeBuild\\cmake\\moemoeDebug\\x86 --target kira",
+			"buildCommand" : "E:\\android-sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build D:\\Neta-Android\\app\\.externalNativeBuild\\cmake\\moemoeDebug\\x86 --target kira",
 			"buildType" : "debug",
 			"files" : 
 			[
 				
 				{
 					"flags" : "  --target=i686-none-linux-android --gcc-toolchain=E:/android-sdk/ndk-bundle/toolchains/x86-4.9/prebuilt/windows-x86_64 --sysroot=E:/android-sdk/ndk-bundle/sysroot  -Dkira_EXPORTS -isystem E:\\android-sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include -isystem E:\\android-sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\libs\\x86\\include -isystem E:\\android-sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include\\backward  -isystem E:/android-sdk/ndk-bundle/sysroot/usr/include/i686-linux-android -D__ANDROID_API__=17 -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -mstackrealign -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "G:/Neta-Android/app/src/main/cpp/kira.cpp",
-					"workingDirectory" : "G:/Neta-Android/app/.externalNativeBuild/cmake/moemoeDebug/x86"
+					"src" : "D:/Neta-Android/app/src/main/cpp/kira.cpp",
+					"workingDirectory" : "D:/Neta-Android/app/.externalNativeBuild/cmake/moemoeDebug/x86"
 				}
 			],
-			"output" : "G:/Neta-Android/app/libs/x86/libkira.so",
+			"output" : "D:/Neta-Android/app/libs/x86/libkira.so",
 			"toolchain" : "3827254813"
 		}
 	},

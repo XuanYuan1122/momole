@@ -51,9 +51,9 @@ public class MateSelectAdapter extends BaseRecyclerViewAdapter<Integer,Clickable
             helper.setVisible(R.id.view_select,false);
         }
         if(have.contains(position)){
-            helper.setVisible(R.id.iv_cover,false);
+            iv.setAlpha(1.0f);
         }else {
-            helper.setVisible(R.id.iv_cover,true);
+            iv.setAlpha(0.5f);
         }
     }
 

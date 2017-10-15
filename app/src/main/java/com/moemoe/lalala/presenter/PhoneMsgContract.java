@@ -11,9 +11,12 @@ import java.util.Date;
 public interface PhoneMsgContract {
     interface Presenter extends BasePresenter{
         void getServerTime(String role);
+        void loadRcToken();
     }
 
     interface View extends BaseView{
         void onGetTimeSuccess(Date time,String role);
+        void onLoadRcTokenSuccess(String token);
+        void onLoadRcTokenFail(int code,String msg);
     }
 }

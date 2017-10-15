@@ -6,6 +6,17 @@ package com.moemoe.lalala.event;
 
 public class MateBackPressEvent {
 
-    public MateBackPressEvent() {
+    private String name;
+
+    public MateBackPressEvent(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

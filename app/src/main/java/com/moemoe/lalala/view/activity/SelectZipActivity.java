@@ -15,9 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.ZipInfo;
-import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 

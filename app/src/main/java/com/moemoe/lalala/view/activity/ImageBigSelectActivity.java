@@ -45,8 +45,10 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadBean;
 import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
@@ -233,7 +235,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, final int position) {
-            Image fb = mImages.get(position);
+            final Image fb = mImages.get(position);
             View view;
             View.OnClickListener clickListener = new NoDoubleClickListener() {
                 @Override
@@ -281,13 +283,14 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
 
                                 @Override
                                 public void onError(Throwable e) {
-
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),false).subscribe();
                                 }
 
                                 @Override
                                 public void onComplete() {
                                     BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
                                     imageView.setImage(longImage.getAbsolutePath());
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),false).subscribe();
                                 }
 
                                 @Override
@@ -308,7 +311,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                 if (FileUtil.isGif(fb.getPath())) {
                     ImageView imageView = new ImageView(ImageBigSelectActivity.this);
                     Glide.with(ImageBigSelectActivity.this)
-                            .load(ApiService.URL_QINIU + fb.getPath())
+                            .load(StringUtils.getUrl(ApiService.URL_QINIU + fb.getPath()))
                             .asGif()
                             .placeholder(R.drawable.bg_default_square)
                             .error(R.drawable.bg_default_square)
@@ -340,7 +343,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                     }else {
                         final int[] wh = BitmapUtils.getDocIconSizeFromW(fb.getW() * 2, fb.getH() * 2, DensityUtil.getScreenWidth(ImageBigSelectActivity.this));
                         Glide.with(ImageBigSelectActivity.this)
-                                .load(StringUtils.getUrl(ImageBigSelectActivity.this,ApiService.URL_QINIU + fb.getPath(), wh[0], wh[1], true, true))
+                                .load(StringUtils.getUrl(ImageBigSelectActivity.this,fb.getPath(), wh[0], wh[1], true, true))
                                 .placeholder(R.drawable.bg_default_square)
                                 .error(R.drawable.bg_default_square)
                                 .skipMemoryCache(true)
@@ -439,31 +442,20 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
         final Image image = mImages.get(mViewPager.getCurrentItem());
         String temp = StringUtils.createImageFile(FileUtil.isGif(ApiService.URL_QINIU + image.getPath()));
         final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
-        downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DownloadStatus>() {
-
+        DownloadBean downloadBean = new DownloadBean
+                .Builder(ApiService.URL_QINIU + image.getPath())
+                .setSaveName(temp)
+                .setSavePath(null)
+                .setExtra1(image.getPath())
+                .setExtra2(longImage.getName())
+                .setExtra3("image")
+                .setExtra4(longImage.getAbsolutePath())
+                .build();
+        downloadSub.serviceDownload(downloadBean)
+                .subscribe(new Consumer<Object>() {
                     @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        image.setLocal_path(longImage.getAbsolutePath());
-                        BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, image.getLocal_path());
-                        showToast(getString(R.string.msg_register_to_gallery_success, image.getLocal_path()));
-                    }
-
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(DownloadStatus downloadStatus) {
-
+                    public void accept(Object o) throws Exception {
+                        showToast("下载开始");
                     }
                 });
     }

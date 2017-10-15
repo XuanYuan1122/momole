@@ -10,6 +10,15 @@ public class LuYinEntity {
     private String soundName;
     private boolean flag;
     private int timestamp;
+    private int progress;
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
 
     public String getId() {
         return id;
