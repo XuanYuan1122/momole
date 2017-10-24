@@ -295,6 +295,8 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
         authorInfo.setInspector(entity.isInspector());
         authorInfo.setPlatform("neta");
         authorInfo.setDeskMateEntities(entity.getDeskMateList());
+        authorInfo.setVipTime(entity.getVipTime());
+        authorInfo.setInviteNum(entity.getInviteNum());
         finalizeDialog();
         PreferenceUtils.setAuthorInfo(authorInfo);
         showToast(R.string.msg_login_success);

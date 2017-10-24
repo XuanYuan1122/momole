@@ -144,6 +144,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private ArrayList<DocTagEntity> mDocTags;
     private int mPosition;
     private int mCommentNum;
+    private boolean isLoading;
     private KeyboardListenerLayout mKlCommentBoard;
 
     @Override
@@ -172,7 +173,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mIvMenu.setVisibility(View.VISIBLE);
         mList.setLoadMoreEnabled(false);
         mList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mList.getSwipeRefreshLayout().setEnabled(false);
         mAdapter = new DocRecyclerViewAdapter(this);
         mList.getRecyclerView().setAdapter(mAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -311,6 +311,28 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     mTvSendComment.setEnabled(true);
                 }
 
+            }
+        });
+        mList.setPullCallback(new PullCallback() {
+            @Override
+            public void onLoadMore() {
+
+            }
+
+            @Override
+            public void onRefresh() {
+                isLoading = true;
+                mPresenter.requestDoc(mDocId);
+            }
+
+            @Override
+            public boolean isLoading() {
+                return isLoading;
+            }
+
+            @Override
+            public boolean hasLoadedAllItems() {
+                return false;
             }
         });
         mPresenter.requestDoc(mDocId);
@@ -697,7 +719,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             items.add(item);
         }
 
-        item = new MenuItem(MENU_FORWARD, "转发",R.drawable.btn_doc_option_forward);
+        item = new MenuItem(MENU_FORWARD, "转发到动态",R.drawable.btn_doc_option_forward);
         items.add(item);
 
         item = new MenuItem(MENU_SHARE, getString(R.string.label_share),R.drawable.btn_doc_option_share);
@@ -774,6 +796,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         entity.setTitle(mDoc.getTitle());
         entity.setFolderId(mDoc.getFolderInfo() == null ? "" : mDoc.getFolderInfo().getFolderId());
         entity.setTags(mDoc.getTags());
+        entity.setBgCover(mDoc.getCover());
         entity.setHidType(mDoc.isCoinComment());
         if(mDoc.getCoinDetails() != null){
             for(DocDetailEntity.Detail detail : mDoc.getDetails()){
@@ -813,9 +836,10 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     @Override
     public void onDocLoaded(DocDetailEntity entity) {
         mDoc = entity;
+        isLoading = false;
         mList.setComplete();
         isReplyShow = entity.isCoinComment() && (entity.getCoinDetails() == null || (entity.getCoinDetails() != null && entity.getCoinDetails().size() <= 0));
-        mList.setLoadMoreEnabled(true);
+//        mList.setLoadMoreEnabled(true);
         mCommentNum = entity.getComments();
         hasLoaded = true;
         mUserName = entity.getUserName();
@@ -873,18 +897,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         finalizeDialog();
         mList.setComplete();
         mAdapter.setComment(commentV2Entities);
-        if(commentV2Entities.size() <= mCommentNum){
-            mTvComment.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
-            mTvComment.setPadding((int) getResources().getDimension(R.dimen.x24),0,0,0);
-            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
-            mTvComment.setText("输入评论...");
-            mTvComment.setOnClickListener(new NoDoubleClickListener() {
-                @Override
-                public void onNoDoubleClick(View v) {
-                    CreateCommentActivity.startActivity(NewDocDetailActivity.this,mDocId,false,"",true);
-                }
-            });
-        }else {
+        if(commentV2Entities.size() > 1){
             mTvComment.setGravity(Gravity.CENTER);
             mTvComment.setPadding(0,0,0,0);
             mTvComment.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
@@ -893,6 +906,17 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 @Override
                 public void onNoDoubleClick(View v) {
                     CommentListActivity.startActivity(NewDocDetailActivity.this,mDocId,mDoc.getUserId());
+                }
+            });
+        }else {
+            mTvComment.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
+            mTvComment.setPadding((int) getResources().getDimension(R.dimen.x24),0,0,0);
+            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
+            mTvComment.setText("输入评论...");
+            mTvComment.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    CreateCommentActivity.startActivity(NewDocDetailActivity.this,mDocId,false,"",true);
                 }
             });
         }

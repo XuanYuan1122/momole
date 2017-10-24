@@ -53,30 +53,46 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/y24"
+                android:text="消息"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="消息"/>
+                android:textSize="@dimen/size_15" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_mate_root"
+            android:id="@+id/ll_person_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <ImageView
+            <FrameLayout
                 android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_mate" />
+                android:layout_height="@dimen/y132">
+
+                <ImageView
+                    android:layout_width="@dimen/x132"
+                    android:layout_height="@dimen/y132"
+                    android:src="@drawable/btn_map_card" />
+
+                <ImageView
+                    android:id="@+id/iv_card_dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/x12"
+                    android:layout_marginTop="@dimen/y12"
+                    android:src="@drawable/btn_map_personal_reddot"
+                    android:visibility="gone" />
+            </FrameLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/y24"
+                android:text="个人中心"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="同桌"/>
+                android:textSize="@dimen/size_15" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -87,7 +103,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/ll_album_root"
+            android:id="@+id/ll_bag_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
@@ -96,7 +112,7 @@
             <ImageView
                 android:layout_width="@dimen/x132"
                 android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_album" />
+                android:src="@drawable/btn_phone_bag" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -104,78 +120,8 @@
                 android:layout_marginTop="@dimen/y24"
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_15"
-                android:text="剧情"/>
-        </LinearLayout>
+                android:text="书包"/>
 
-        <LinearLayout
-            android:id="@+id/ll_alarm_root"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_alarm" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="提醒"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_shop_root"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_shop" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="商店"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y36"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/ll_search_root"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_search" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="搜索"/>
         </LinearLayout>
 
         <LinearLayout
@@ -198,14 +144,172 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/size_15"
                 android:text="动态"/>
+
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_wenzhang_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/x132"
+                android:layout_height="@dimen/y132"
+                android:src="@drawable/btn_phone_wenzhang" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y24"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15"
+                android:text="论坛"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y36"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_mate_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/x132"
+                android:layout_height="@dimen/y132"
+                android:src="@drawable/btn_phone_mate" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y24"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15"
+                android:text="同桌"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_album_root"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/x132"
+                android:layout_height="@dimen/y132"
+                android:src="@drawable/btn_phone_album" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y24"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15"
+                android:text="剧情"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_alarm_root"
             android:layout_width="@dimen/x132"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
+
+            <ImageView
+                android:layout_width="@dimen/x132"
+                android:layout_height="@dimen/y132"
+                android:src="@drawable/btn_phone_alarm" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y24"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15"
+                android:text="提醒"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y36"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_shop_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/x132"
+                android:layout_height="@dimen/y132"
+                android:src="@drawable/btn_phone_shop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y24"
+                android:text="商店"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_sign_root"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/x132"
+                android:layout_height="@dimen/y132"
+                android:src="@drawable/btn_map_sign" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y24"
+                android:text="每日任务"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_search_root"
+            android:layout_width="@dimen/x132"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/x132"
+                android:layout_height="@dimen/y132"
+                android:src="@drawable/btn_phone_search" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y24"
+                android:text="搜索"
+                android:textColor="@color/white"
+                android:textSize="@dimen/size_15" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -113,11 +113,13 @@ public class PhoneJuQingListFragment extends BaseFragment implements PhoneJuQing
      * @param type 0全部 1.攻略中 2.已完成 3.未解锁
      */
     public void changeFilter(int type){
-        if(mFilter == type){
-            return;
+        if(mPresenter != null){
+            if(mFilter == type){
+                return;
+            }
+            mFilter = type;
+            mPresenter.loadUserList(mType,mFilter,0);
         }
-        mFilter = type;
-        mPresenter.loadUserList(mType,mFilter,0);
     }
 
     @Override

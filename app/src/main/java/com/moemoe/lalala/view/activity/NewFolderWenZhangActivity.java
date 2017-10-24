@@ -84,10 +84,11 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         return R.layout.ac_folder;
     }
 
-    public static void startActivity(Context context,String userId,String folderType){
+    public static void startActivity(Context context,String userId,String folderType,String type){
         Intent i = new Intent(context,NewFolderWenZhangActivity.class);
         i.putExtra(UUID,userId);
         i.putExtra("folderType",folderType);
+        i.putExtra("type",type);
         context.startActivity(i);
     }
 
@@ -106,6 +107,7 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mUserId = getIntent().getStringExtra(UUID);
+        final String type = getIntent().getStringExtra("type");
         mFolderType = getIntent().getStringExtra("folderType");
         mIsSelect = false;
         String title = "";
@@ -124,7 +126,7 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                     intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
                     intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
                     intent.putExtra("from_name","书包");
-                    intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");//TODO 2.0
+                    intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");
                     startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
                 }
             });
@@ -178,13 +180,13 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
             @Override
             public void onLoadMore() {
                 isLoading = true;
-                mPresenter.loadFolderList(mFolderType,mAdapter.getItemCount(),mUserId,"");
+                mPresenter.loadFolderList(mFolderType,mAdapter.getItemCount(),mUserId,type);
             }
 
             @Override
             public void onRefresh() {
                 isLoading = true;
-                mPresenter.loadFolderList(mFolderType,0,mUserId,"");
+                mPresenter.loadFolderList(mFolderType,0,mUserId,type);
             }
 
             @Override
@@ -198,12 +200,16 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
             }
         });
         if(mUserId.equals(PreferenceUtils.getUUid())){
-            initPopupMenus();
-            mIvMenu.setVisibility(View.VISIBLE);
+            if(!type.equals("my")){
+                mIvMenu.setVisibility(View.GONE);
+            }else {
+                initPopupMenus();
+                mIvMenu.setVisibility(View.VISIBLE);
+            }
         }else {
             mIvMenu.setVisibility(View.GONE);
         }
-        mPresenter.loadFolderList(mFolderType,0,mUserId,"");
+        mPresenter.loadFolderList(mFolderType,0,mUserId,type);
     }
 
     private void initPopupMenus() {

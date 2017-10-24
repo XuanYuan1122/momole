@@ -19,11 +19,14 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPhoneTicketComponent;
 import com.moemoe.lalala.di.modules.PhoneTicketModule;
+import com.moemoe.lalala.event.GetLuYinEvent;
 import com.moemoe.lalala.event.MateBackPressEvent;
+import com.moemoe.lalala.event.MateLuyinEvent;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.presenter.PhoneTicketContract;
 import com.moemoe.lalala.presenter.PhoneTicketPresenter;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.activity.PhoneMainActivity;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
 
@@ -33,6 +36,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2017/9/4.
@@ -81,24 +88,6 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
                 .build()
                 .inject(this);
         mate = getArguments().getString("mate");
-//        mIvBack.setVisibility(View.VISIBLE);
-//        mIvBack.setOnClickListener(new NoDoubleClickListener() {
-//            @Override
-//            public void onNoDoubleClick(View v) {
-//                RxBus.getInstance().post(new MateBackPressEvent());
-//            }
-//        });
-//        mIvBack.setImageResource(R.drawable.btn_phone_back);
-//        mTvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.main_cyan));
-//        mTvTitle.setText("录音收集");
-//        mTvMenu.setVisibility(View.VISIBLE);
-//        mTvMenu.setTextColor(Color.WHITE);
-//        mTvMenu.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.x20));
-//        mTvMenu.setGravity(Gravity.CENTER);
-//        mTvMenu.setBackgroundResource(R.drawable.shape_rect_border_main_background_y22);
-//        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.x144),(int)getResources().getDimension(R.dimen.y44));
-//        lp.rightMargin = (int) getResources().getDimension(R.dimen.x20);
-//        mTvMenu.setLayoutParams(lp);
         if("len".equals(mate)){
             mIvCover.setImageResource(R.drawable.bg_phone_tape_len_incite);
         }
@@ -108,6 +97,24 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
         if("sari".equals(mate)){
             mIvCover.setImageResource(R.drawable.bg_phone_tape_sha_incite);
         }
+        mPresenter.loadTicketsNum();
+    }
+
+    public void release(){
+        if(mAdapter != null) mAdapter.release();
+        if(mPresenter != null) mPresenter.release();
+        super.release();
+    }
+
+    @Override
+    public void onFailure(int code, String msg) {
+
+    }
+
+    @Override
+    public void onLoadTicketsNumSuccess(int num) {
+        PreferenceUtils.getAuthorInfo().setTicketNum(num);
+        RxBus.getInstance().post(new MateBackPressEvent("次元币: " + num));
         List<BaseFragment> fragmentList = new ArrayList<>();
         fragmentList.add(PhoneLuyinListFragment.newInstance("con",mate));
         fragmentList.add(PhoneLuyinListFragment.newInstance("enc",mate));
@@ -190,23 +197,5 @@ public class PhoneTicketFragment extends BaseFragment implements PhoneTicketCont
 
             }
         });
-        mPresenter.loadTicketsNum();
-    }
-
-    public void release(){
-        if(mAdapter != null) mAdapter.release();
-        if(mPresenter != null) mPresenter.release();
-        super.release();
-    }
-
-    @Override
-    public void onFailure(int code, String msg) {
-
-    }
-
-    @Override
-    public void onLoadTicketsNumSuccess(int num) {
-        //mTvMenu.setText("录音券: " + num);
-        RxBus.getInstance().post(new MateBackPressEvent("录音券: " + num));
     }
 }

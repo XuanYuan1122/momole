@@ -15,6 +15,15 @@ public class JuQingEntity {
     private int joinNum;
     private int progress;
     private int status;//1.攻略中2.完成3.未解锁
+    private boolean vip;
+
+    public boolean isVip() {
+        return vip;
+    }
+
+    public void setVip(boolean vip) {
+        this.vip = vip;
+    }
 
     public String getBg() {
         return bg;

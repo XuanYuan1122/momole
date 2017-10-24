@@ -3,9 +3,6 @@ package com.moemoe.lalala.greendao.gen;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
-import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
-import com.moemoe.lalala.utils.JuQingDoneEntity;
 import com.moemoe.lalala.utils.MigrationHelper;
 
 

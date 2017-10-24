@@ -21,9 +21,10 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
-import com.moemoe.lalala.view.activity.MapActivity;
+import com.moemoe.lalala.view.activity.PhoneMainActivity;
 
 /**
+ *
  * Created by yi on 2016/11/28.
  */
 
@@ -71,15 +72,15 @@ public class SignDialog extends Dialog implements View.OnClickListener {
         setContentView(contentView);
         setCanceledOnTouchOutside(false);
         mDialogView = getWindow().getDecorView().findViewById(android.R.id.content);
-        mClose = (ImageView) findViewById(R.id.iv_close);
-        mSign = (ImageView) findViewById(R.id.iv_sign);
-        mTvLevel = (TextView) findViewById(R.id.tv_level);
-        mTvCoin = (TextView) findViewById(R.id.tv_coin);
-        mTotalScore = (TextView) findViewById(R.id.tv_total_score);
-        mRvTaskList = (RecyclerView) findViewById(R.id.rv_task_list);
-        mRvSignList = (RecyclerView) findViewById(R.id.rv_sign_info);
-        mProgress = (ProgressBar) findViewById(R.id.pb_score);
-        mInfo = (ImageView) findViewById(R.id.iv_info);
+        mClose = findViewById(R.id.iv_close);
+        mSign = findViewById(R.id.iv_sign);
+        mTvLevel = findViewById(R.id.tv_level);
+        mTvCoin = findViewById(R.id.tv_coin);
+        mTotalScore = findViewById(R.id.tv_total_score);
+        mRvTaskList = findViewById(R.id.rv_task_list);
+        mRvSignList = findViewById(R.id.rv_sign_info);
+        mProgress = findViewById(R.id.pb_score);
+        mInfo = findViewById(R.id.iv_info);
         LinearLayoutManager l1 = new LinearLayoutManager(mContext);
         mRvTaskList.setLayoutManager(l1);
         mRvTaskList.setHasFixedSize(true);
@@ -185,7 +186,7 @@ public class SignDialog extends Dialog implements View.OnClickListener {
                 mPositiveListener.onClick(this);
             }
         }else if(id == R.id.iv_info){
-            ((MapActivity)mContext).loadPerson();
+            ((PhoneMainActivity)mContext).loadPerson();
         }
     }
 

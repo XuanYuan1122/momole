@@ -173,7 +173,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
             mIvAdd.setImageResource(R.drawable.btn_follow_folder_item);
         }
         downloadSub = RxDownload.getInstance(this)
-                .maxThread(3)
+                .maxThread(1)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getNovRootPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
@@ -208,7 +208,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                                             dialog.dismiss();
                                             FileUtil.deleteDir(StorageUtils.getNovRootPath() + entity.getFileId());
                                             showToast("下载失败");
-                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  entity.getPath(),false).subscribe();
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  entity.getPath(),true).subscribe();
                                         }
 
                                         @Override
@@ -332,7 +332,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
             MenuItem item = new MenuItem(2, "举报");
             items.add(item);
         }
-        MenuItem item = new MenuItem(4, "转发");
+        MenuItem item = new MenuItem(4, "转发到动态");
         items.add(item);
         bottomMenuFragment.setMenuItems(items);
         bottomMenuFragment.setShowTop(false);
@@ -567,13 +567,13 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
 
     private void createBottomView(final NewFolderEntity entity){
         mBottomView = LayoutInflater.from(this).inflate(R.layout.item_folder_recommend, null);
-        ImageView ivUser = (ImageView) mBottomView.findViewById(R.id.iv_avatar);
-        TextView tvUser = (TextView) mBottomView.findViewById(R.id.tv_user_name);
-        final TextView tvFollow = (TextView) mBottomView.findViewById(R.id.tv_follow);
-        LinearLayout folderRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_folder_root);
-        LinearLayout recommendTopRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_recommend_top_root);
-        LinearLayout recommendRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_recommend_root);
-        TextView tvRefresh = (TextView) mBottomView.findViewById(R.id.tv_refresh);
+        ImageView ivUser = mBottomView.findViewById(R.id.iv_avatar);
+        TextView tvUser = mBottomView.findViewById(R.id.tv_user_name);
+        final TextView tvFollow = mBottomView.findViewById(R.id.tv_follow);
+        LinearLayout folderRoot = mBottomView.findViewById(R.id.ll_folder_root);
+        LinearLayout recommendTopRoot = mBottomView.findViewById(R.id.ll_recommend_top_root);
+        LinearLayout recommendRoot = mBottomView.findViewById(R.id.ll_recommend_root);
+        TextView tvRefresh = mBottomView.findViewById(R.id.tv_refresh);
 
         Glide.with(this)
                 .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),DensityUtil.dip2px(this,40),DensityUtil.dip2px(this,40),false,true))
@@ -836,7 +836,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
     @Override
     public void onBuyFolderSuccess() {
         alertDialogUtil.dismissDialog();
-        mAdapter.setBuy(true);
+        mAdapter.setBuy(false);
         mAdapter.notifyDataSetChanged();
     }
 

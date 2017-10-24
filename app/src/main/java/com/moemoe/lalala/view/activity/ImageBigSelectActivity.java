@@ -135,7 +135,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
             mTvRaw.setVisibility(View.VISIBLE);
         }
         downloadSub = RxDownload.getInstance(this)
-                    .maxThread(3)
+                    .maxThread(1)
                     .maxRetryCount(3)
                     .defaultSavePath(StorageUtils.getGalleryDirPath())
                     .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
@@ -266,10 +266,9 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                     return true;
                 }
             };
-
-            if(fb.getH() > 2048){
+            if(fb.getH() != 0 && fb.getW() != 0 && ((float)(fb.getH()/fb.getW())) > 16.0f / 9.0f){
                 View viewTemp = View.inflate(ImageBigSelectActivity.this,R.layout.item_longimage,null);
-                final LongImageView imageView = (LongImageView) viewTemp.findViewById(R.id.imageView);
+                final LongImageView imageView = viewTemp.findViewById(R.id.imageView);
                 imageView.setOnClickListener(clickListener);
                 String temp = EncoderUtils.MD5(ApiService.URL_QINIU + fb.getPath()) + ".jpg";
                 final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
@@ -283,7 +282,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),false).subscribe();
+                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),true).subscribe();
                                 }
 
                                 @Override
@@ -441,21 +440,43 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
     public void downloadRaw(){
         final Image image = mImages.get(mViewPager.getCurrentItem());
         String temp = StringUtils.createImageFile(FileUtil.isGif(ApiService.URL_QINIU + image.getPath()));
-        final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
+        final File longImage = new File(StorageUtils.getDownloadRootPath(), temp);
         DownloadBean downloadBean = new DownloadBean
                 .Builder(ApiService.URL_QINIU + image.getPath())
                 .setSaveName(temp)
-                .setSavePath(null)
+                .setSavePath(StorageUtils.getDownloadRootPath())
                 .setExtra1(image.getPath())
                 .setExtra2(longImage.getName())
                 .setExtra3("image")
                 .setExtra4(longImage.getAbsolutePath())
                 .build();
-        downloadSub.serviceDownload(downloadBean)
-                .subscribe(new Consumer<Object>() {
+        createDialog();
+        downloadSub.download(downloadBean)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DownloadStatus>() {
                     @Override
-                    public void accept(Object o) throws Exception {
-                        showToast("下载开始");
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull DownloadStatus downloadStatus) {
+
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        finalizeDialog();
+                        showToast("保存失败，请重试");
+                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU + image.getPath(),true).subscribe();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        finalizeDialog();
+                        BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
+                        showToast(getString(R.string.msg_register_to_gallery_success, longImage.getAbsolutePath()));
                     }
                 });
     }

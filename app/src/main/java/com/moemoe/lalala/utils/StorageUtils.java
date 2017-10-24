@@ -62,6 +62,9 @@ public class StorageUtils {
      */
     private static String sDirMap;
 
+    private static String sDirEvent;
+
+    private static String sDirDownload;
     /**
      *
      * @param context
@@ -84,7 +87,11 @@ public class StorageUtils {
 
         sDirTxt = sDirRoot + "nov/";
 
-        sDirMap = sDirRoot + "map/";
+        sDirMap = sDirRoot + ".map/";
+
+        sDirEvent = sDirRoot + "event/";
+
+        sDirDownload = sDirRoot + "download/";
 
         boolean check = checkDir(sDirRoot);
         check &= checkDir(sDirIconImage);
@@ -94,6 +101,8 @@ public class StorageUtils {
         check &= checkDir(sDirMusic);
         check &= checkDir(sDirTxt);
         check &= checkDir(sDirMap);
+        check &= checkDir(sDirEvent);
+        check &= checkDir(sDirDownload);
         //check &= checkDir(sDirLog);
 
         Logger.d("initialStorageDir = " + check + ", paths = " + sDirRoot + "; " + sDirTemp);
@@ -203,6 +212,14 @@ public class StorageUtils {
 
     public static String getMapRootPath(){
         return sDirMap;
+    }
+
+    public static String getEventRootPath(){
+        return sDirEvent;
+    }
+
+    public static String getDownloadRootPath(){
+        return sDirDownload;
     }
 
     public static String getRootPath(){

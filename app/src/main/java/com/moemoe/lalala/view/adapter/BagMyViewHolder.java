@@ -186,19 +186,19 @@ public class BagMyViewHolder extends ClickableViewHolder {
             }
         }else if(position == 4){
             if(entity.getNum() > 0){
-                if(type.equals("my")){
+               // if(type.equals("my")){
                     tvMore.setText("显示全部");
                     tvMore.setCompoundDrawablesWithIntrinsicBounds (null,null, ContextCompat.getDrawable(itemView.getContext(),R.drawable.ic_bag_more),null);
                     tvMore.setCompoundDrawablePadding(DensityUtil.dip2px(itemView.getContext(),4));
                     tvMore.setOnClickListener(new NoDoubleClickListener() {
                         @Override
                         public void onNoDoubleClick(View v) {
-                            NewFolderWenZhangActivity.startActivity(itemView.getContext(),userId, FolderType.WZ.toString());
+                            NewFolderWenZhangActivity.startActivity(itemView.getContext(),userId, FolderType.WZ.toString(),type);
                         }
                     });
-                }else {
-                    tvMore.setVisibility(View.GONE);
-                }
+              //  }else {
+              //      tvMore.setVisibility(View.GONE);
+              //  }
             }else {
                 if(type.equals("my")){
                     tvMore.setText("添加");

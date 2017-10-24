@@ -13,7 +13,7 @@ import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 public class Comment24Adapter extends BaseRecyclerViewAdapter<Comment24Entity,Comment24Holder> {
 
     public Comment24Adapter() {
-        super(R.layout.item_bag_cover);
+        super(R.layout.item_24_comment);
     }
 
 

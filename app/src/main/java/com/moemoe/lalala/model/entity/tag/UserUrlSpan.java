@@ -6,6 +6,7 @@ import android.text.TextPaint;
 import android.view.View;
 
 import com.moemoe.lalala.utils.BaseUrlSpan;
+import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.activity.NewPersonalActivity;
 
 /**
@@ -24,9 +25,11 @@ public class UserUrlSpan extends BaseUrlSpan {
 
     @Override
     public void onClick(View widget) {
-        Intent i = new Intent(mContext, NewPersonalActivity.class);
-        i.putExtra("uuid",mUrl);
-        mContext.startActivity(i);
+        if(!mUrl.equals(PreferenceUtils.getUUid())){
+            Intent i = new Intent(mContext, NewPersonalActivity.class);
+            i.putExtra("uuid",mUrl);
+            mContext.startActivity(i);
+        }
     }
 
     @Override

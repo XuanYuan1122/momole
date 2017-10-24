@@ -2,31 +2,21 @@ package com.moemoe.lalala.view.activity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.MediaDataSource;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
@@ -43,13 +33,12 @@ import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TextAppearOneControl;
 import com.moemoe.lalala.view.widget.netamenu.CenterMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,7 +47,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
@@ -77,6 +65,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.http.Path;
 
 /**
+ *
  * Created by yi on 2017/10/12.
  */
 
@@ -163,7 +152,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
         lp.rightMargin = (int) - getResources().getDimension(R.dimen.x10);
         mIvBg.setLayoutParams(lp);
         mIvCg.setLayoutParams(lp);
-
+        TextAppearOneControl.getInstance().setTextView(mTvText);
         if(eventList != null && eventList.size() > 0){
             //下载资源到本地
            // ArrayList<String> needDown = new ArrayList<>();
@@ -264,7 +253,8 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
 
                     @Override
                     public void ConfirmOnClick() {
-                        finish();
+                        mCurIndex = -1;
+                        mPresenter.doneJuQing(mId);
                         alertDialogUtil.dismissDialog();
                     }
                 });
@@ -363,24 +353,28 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
     private void clickEvent(){
         if(mCurIndex != -1){
             JuQingMapShowEntity entity =  eventList.get(mCurIndex);
-            if(entity.isShowCg()){
-                imgIn();
-                showCharacter(entity);
-                entity.setShowCg(false);
-                eventList.get(mCurIndex).setShowCg(false);
+            if(!TextAppearOneControl.getInstance().isFinish()){
+                TextAppearOneControl.getInstance().setShowAll(true);
             }else {
-                if(entity.getChoice().size() > 0){
-                    if (entity.getChoice().size() == 1){
-                        for(int index : entity.getChoice().values()){
-                            mCurIndex = index;
-                            showEvent();
+                if(entity.isShowCg()){
+                    imgIn();
+                    showCharacter(entity);
+                    entity.setShowCg(false);
+                    eventList.get(mCurIndex).setShowCg(false);
+                }else {
+                    if(entity.getChoice().size() > 0){
+                        if (entity.getChoice().size() == 1){
+                            for(int index : entity.getChoice().values()){
+                                mCurIndex = index;
+                                showEvent();
+                            }
+                        }else {
+                            showMenu(entity.getChoice());
                         }
                     }else {
-                        showMenu(entity.getChoice());
+                        mCurIndex = -1;
+                        mPresenter.doneJuQing(mId);
                     }
-                }else {
-                    mCurIndex = -1;
-                    mPresenter.doneJuQing(mId);
                 }
             }
         }
@@ -454,6 +448,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
             }
         }else {
             mIvBg.setImageDrawable(null);
+            mCurBg = "";
             mCurBgDrawable = null;
         }
         //cg
@@ -502,6 +497,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
             }
         }else {
             mIvCg.setImageDrawable(null);
+            mCurCg = "";
             mCurCgDrawable = null;
         }
         //人物等
@@ -595,6 +591,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
             }
         }else {
             mIvPose.setImageDrawable(null);
+            mCurPose = "";
             mCurPoseDrawable = null;
 
         }
@@ -635,10 +632,11 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
             }
         }else {
             mIvFace.setImageDrawable(null);
+            mCurFace = "";
             mCurFaceDrawable = null;
         }
         if(!"无".equals(entity.getExtra().getFile())){
-            File file = new File(entity.getExtra().getLocalPath().substring(0,entity.getExtra().getLocalPath().lastIndexOf(".")));
+           // File file = new File(entity.getExtra().getLocalPath().substring(0,entity.getExtra().getLocalPath().lastIndexOf(".")));
             if(isExistImg(entity.getExtra().getLocalPath().substring(0,entity.getExtra().getLocalPath().lastIndexOf(".")))){
                 if(!mCurExtra.equals(entity.getExtra().getLocalPath())){
                     Drawable drawable = Drawable.createFromPath(entity.getExtra().getLocalPath().substring(0,entity.getExtra().getLocalPath().lastIndexOf(".")));
@@ -674,6 +672,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
             }
         }else {
             mIvExtra.setImageDrawable(null);
+            mCurExtra = "";
             mCurExtraDrawable = null;
         }
         Observable.timer(100, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
@@ -766,7 +765,8 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
         }else {
             mTvText.setVisibility(View.VISIBLE);
         }
-        mTvText.setText(entity.getTalk().getText());
+        //mTvText.setText(entity.getTalk().getText());
+        TextAppearOneControl.getInstance().setTextAndStart(entity.getTalk().getText());
         if("shock".equals(entity.getTalk().getEffect())){
             Animation animation = AnimationUtils.loadAnimation(this, R.anim.shake);
             animation.setStartOffset(100);
@@ -988,6 +988,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
 
     @Override
     protected void onDestroy() {
+        TextAppearOneControl.getInstance().release();
         if(notDown != null){
             for(String str : notDown.keySet()){
                 if(isError){
@@ -1015,7 +1016,6 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
                 mdecrptDisposable.dispose();
             }
         }
-
         super.onDestroy();
     }
 

@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">kira</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">5.0.0_20171013</string>
+    <string name="app_version">5.0.3_20171024</string>
     <string name="app_version_code">5000</string>
 
     <string name="label_scheme">neta</string>
@@ -38,8 +38,8 @@
     <string name="label_donation_path">/donation_1.0</string>
     <string name="label_snow_action">snow_1.0</string>
     <string name="label_snow_path">/snow_1.0</string>
-    <string name="label_swim_path">/swim_1.0</string>
-    <string name="label_swim_action">swim_1.0</string>
+    <string name="label_swim_path">/swim_2.0</string>
+    <string name="label_swim_action">swim_2.0</string>
     <string name="label_user_info_path">/user_info_1.0</string>
     <string name="label_user_info_action">user_info_1.0</string>
     <string name="label_user_info_user_comment_path">/user_info_user_comment_1.0</string>
@@ -58,6 +58,8 @@
     <string name="label_map_event_action">map_event_1.0</string>
     <string name="label_game_path">/game_1.0</string>
     <string name="label_game_action">game_1.0</string>
+    <string name="label_luntan_path">/luntan_1.0</string>
+    <string name="label_luntan_action">luntan_1.0</string>
 
     <string name="label_can_not_use">施工中,敬请期待......</string>
     <string name="label_signed">今天已经签过啦</string>
@@ -310,7 +312,7 @@
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>
-    <string name="msg_click_twice_to_exit">再按一次离开neta</string>
+    <string name="msg_click_twice_to_exit">再按一次离开kira</string>
     <string name="msg_server_illegal_pwd">账号或密码错误，再好好想想？</string>
     <string name="msg_server_login_account_frozen">该帐号已被冻结</string>
     <string name="msg_server_registe_phone_repeat">该手机号已注册</string>

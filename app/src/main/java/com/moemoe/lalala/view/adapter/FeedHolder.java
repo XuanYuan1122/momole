@@ -7,6 +7,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -154,21 +155,27 @@ public class FeedHolder extends ClickableViewHolder {
         setText(R.id.tv_content, TagControl.getInstance().paresToSpann(itemView.getContext(),entity.getText()));
         ((TextView)$(R.id.tv_content)).setMovementMethod(LinkMovementMethod.getInstance());
         //extra
-        setVisible(R.id.ll_img_root,true);
+        setVisible(R.id.ll_img_root,false);
+        setVisible(R.id.rl_card_root,false);
         ((LinearLayout)$(R.id.ll_img_root)).removeAllViews();
         $(R.id.ll_img_root).setOnClickListener(null);
+        ((LinearLayout)$(R.id.ll_card_root)).removeAllViews();
+        $(R.id.rl_card_root).setOnClickListener(null);
         if("DELETE".equals(entity.getType())){//已被删除
+            setVisible(R.id.ll_img_root,true);
+            $(R.id.ll_img_root).setBackgroundColor(Color.WHITE);
             TextView tv = new TextView(itemView.getContext());
             tv.setText("该内容已被删除");
             tv.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.white));
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,itemView.getContext().getResources().getDimension(R.dimen.x36));
             tv.setGravity(Gravity.CENTER);
-            tv.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_e1f9ff));
+            tv.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.gray_e8e8e8));
             int h = (int) itemView.getResources().getDimension(R.dimen.y320);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,h);
             tv.setLayoutParams(lp);
             ((LinearLayout)$(R.id.ll_img_root)).addView(tv);
         }else if("DYNAMIC".equals(entity.getType())){
+            setVisible(R.id.ll_img_root,true);
             $(R.id.ll_img_root).setBackgroundColor(Color.WHITE);
             DynamicContentEntity dynamicContentEntity = new Gson().fromJson(entity.getDetail(),DynamicContentEntity.class);
             if(dynamicContentEntity.getImages() != null && dynamicContentEntity.getImages().size() > 0){
@@ -177,6 +184,7 @@ public class FeedHolder extends ClickableViewHolder {
                 setVisible(R.id.ll_img_root,false);
             }
         }else if("FOLDER".equals(entity.getType())){
+            setVisible(R.id.rl_card_root,true);
             final ShareFolderEntity folderEntity = new Gson().fromJson(entity.getDetail(),ShareFolderEntity.class);
             View folder = LayoutInflater.from(itemView.getContext()).inflate(R.layout.item_new_wenzhang_zhuan,null);
             folder.findViewById(R.id.tv_title).setVisibility(View.GONE);
@@ -236,9 +244,9 @@ public class FeedHolder extends ClickableViewHolder {
             });
             userName.setText(folderEntity.getCreateUser().getUserName());
             time.setText("上一次更新:" + StringUtils.timeFormate(folderEntity.getUpdateTime()));
-            ((LinearLayout)$(R.id.ll_img_root)).addView(folder);
+            ((LinearLayout)$(R.id.ll_card_root)).addView(folder);
 
-            $(R.id.ll_img_root).setOnClickListener(new NoDoubleClickListener() {
+            $(R.id.rl_card_root).setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
                     if(folderEntity.getFolderType().equals(FolderType.ZH.toString())){
@@ -253,6 +261,7 @@ public class FeedHolder extends ClickableViewHolder {
                 }
             });
         }else if("ARTICLE".equals(entity.getType())){
+            setVisible(R.id.rl_card_root,true);
             final ShareArticleEntity folderEntity = new Gson().fromJson(entity.getDetail(),ShareArticleEntity.class);
             View article = LayoutInflater.from(itemView.getContext()).inflate(R.layout.item_new_wenzhang_zhuan,null);
             TextView title = (TextView) article.findViewById(R.id.tv_title);
@@ -261,7 +270,6 @@ public class FeedHolder extends ClickableViewHolder {
             TextView mark = (TextView) article.findViewById(R.id.tv_mark);
             article.findViewById(R.id.tv_folder_name).setVisibility(View.GONE);
             article.findViewById(R.id.tv_tag).setVisibility(View.GONE);
-            article.findViewById(R.id.iv_mask).setVisibility(View.GONE);
             int w = (int) (DensityUtil.getScreenWidth(itemView.getContext()) - itemView.getResources().getDimension(R.dimen.x48));
             int h = (int) itemView.getResources().getDimension(R.dimen.y320);
             Glide.with(itemView.getContext())
@@ -291,8 +299,8 @@ public class FeedHolder extends ClickableViewHolder {
             });
             userName.setText(folderEntity.getDocCreateUser().getUserName());
             time.setText(StringUtils.timeFormate(folderEntity.getCreateTime()));
-            ((LinearLayout)$(R.id.ll_img_root)).addView(article);
-            $(R.id.ll_img_root).setOnClickListener(new NoDoubleClickListener() {
+            ((LinearLayout)$(R.id.ll_card_root)).addView(article);
+            $(R.id.rl_card_root).setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
                     if (!TextUtils.isEmpty(folderEntity.getDocId())) {
@@ -303,6 +311,7 @@ public class FeedHolder extends ClickableViewHolder {
                 }
             });
         }else if("RETWEET".equals(entity.getType())){
+            setVisible(R.id.ll_img_root,true);
             RetweetEntity retweetEntity = new Gson().fromJson(entity.getDetail(),RetweetEntity.class);
             if(!TextUtils.isEmpty(retweetEntity.getContent())){
                 TextView tv = new TextView(itemView.getContext());
@@ -324,8 +333,6 @@ public class FeedHolder extends ClickableViewHolder {
                     setVisible(R.id.ll_img_root,false);
                 }
             }
-        }else {
-            setVisible(R.id.ll_img_root,false);
         }
         //label
         if(docLabel != null && entity.getTags() != null){
@@ -343,11 +350,21 @@ public class FeedHolder extends ClickableViewHolder {
         if(entity.isTag()){
             $(R.id.fl_tag_root).setVisibility(View.VISIBLE);
             $(R.id.ll_img_root).setBackgroundColor(Color.TRANSPARENT);
+            $(R.id.rl_card_root).setBackgroundColor(Color.TRANSPARENT);
             docLabel.setBackgroundColor(Color.TRANSPARENT);
+            if("ARTICLE".equals(entity.getType()) || "FOLDER".equals(entity.getType())){
+                int py = (int) context.getResources().getDimension(R.dimen.y24);
+                $(R.id.rl_card_root).setPadding(0,0,0,py);
+            }
         }else {
             $(R.id.fl_tag_root).setVisibility(View.INVISIBLE);
             $(R.id.ll_img_root).setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_e1f9ff));
+            $(R.id.rl_card_root).setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_e1f9ff));
             docLabel.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_e1f9ff));
+            if("ARTICLE".equals(entity.getType()) || "FOLDER".equals(entity.getType())){
+                int py = (int) context.getResources().getDimension(R.dimen.y24);
+                $(R.id.rl_card_root).setPadding(0,py,0,py);
+            }
         }
         setText(R.id.tv_forward_num, StringUtils.getNumberInLengthLimit(entity.getRetweets(), 3));
         setText(R.id.tv_comment_num, StringUtils.getNumberInLengthLimit(entity.getComments(), 3));

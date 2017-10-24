@@ -78,7 +78,7 @@ public class DownloadListHolder extends ClickableViewHolder {
         mName = $(R.id.name);
         mMore = $(R.id.more);
         mAdapter = adapter;
-        mRxDownload = RxDownload.getInstance(context);
+        mRxDownload = RxDownload.getInstance(context).maxThread(1);
         mDownloadController = new DownloadController(mStatusText, mActionButton);
     }
 

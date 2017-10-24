@@ -24,7 +24,7 @@ public class AlarmClockEntityDao extends AbstractDao<AlarmClockEntity, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property Hour = new Property(1, int.class, "hour", false, "HOUR");
         public final static Property Minute = new Property(2, int.class, "minute", false, "MINUTE");
         public final static Property RoleName = new Property(3, String.class, "roleName", false, "ROLE_NAME");
@@ -50,7 +50,7 @@ public class AlarmClockEntityDao extends AbstractDao<AlarmClockEntity, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ALARM_CLOCK_ENTITY\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "\"_id\" INTEGER PRIMARY KEY NOT NULL ," + // 0: id
                 "\"HOUR\" INTEGER NOT NULL ," + // 1: hour
                 "\"MINUTE\" INTEGER NOT NULL ," + // 2: minute
                 "\"ROLE_NAME\" TEXT," + // 3: roleName
@@ -72,11 +72,7 @@ public class AlarmClockEntityDao extends AbstractDao<AlarmClockEntity, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, AlarmClockEntity entity) {
         stmt.clearBindings();
- 
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
-        }
+        stmt.bindLong(1, entity.getId());
         stmt.bindLong(2, entity.getHour());
         stmt.bindLong(3, entity.getMinute());
  
@@ -116,11 +112,7 @@ public class AlarmClockEntityDao extends AbstractDao<AlarmClockEntity, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, AlarmClockEntity entity) {
         stmt.clearBindings();
- 
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
-        }
+        stmt.bindLong(1, entity.getId());
         stmt.bindLong(2, entity.getHour());
         stmt.bindLong(3, entity.getMinute());
  
@@ -159,13 +151,13 @@ public class AlarmClockEntityDao extends AbstractDao<AlarmClockEntity, Long> {
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        return cursor.getLong(offset + 0);
     }    
 
     @Override
     public AlarmClockEntity readEntity(Cursor cursor, int offset) {
         AlarmClockEntity entity = new AlarmClockEntity( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.getLong(offset + 0), // id
             cursor.getInt(offset + 1), // hour
             cursor.getInt(offset + 2), // minute
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // roleName
@@ -182,7 +174,7 @@ public class AlarmClockEntityDao extends AbstractDao<AlarmClockEntity, Long> {
      
     @Override
     public void readEntity(Cursor cursor, AlarmClockEntity entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setId(cursor.getLong(offset + 0));
         entity.setHour(cursor.getInt(offset + 1));
         entity.setMinute(cursor.getInt(offset + 2));
         entity.setRoleName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -212,7 +204,7 @@ public class AlarmClockEntityDao extends AbstractDao<AlarmClockEntity, Long> {
 
     @Override
     public boolean hasKey(AlarmClockEntity entity) {
-        return entity.getId() != null;
+        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
     }
 
     @Override

@@ -6,12 +6,10 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <include layout="@layout/neta_bar"/>
-
     <ImageView
         android:id="@+id/iv_cover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/x634"
+        android:layout_height="@dimen/y360"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/bg_phone_tape_len_incite"/>
 

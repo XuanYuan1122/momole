@@ -17,8 +17,8 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class AlarmClockEntity  implements Parcelable{
 
-    @Id(autoincrement = true)
-    private Long id;//闹钟id
+    @Id
+    private long id;//闹钟id
     private int hour;
     private int minute;
     private String roleName;
@@ -39,8 +39,8 @@ public class AlarmClockEntity  implements Parcelable{
 
     }
 
-    @Generated(hash = 41083824)
-    public AlarmClockEntity(Long id, int hour, int minute, String roleName, String roleId,
+    @Generated(hash = 581119664)
+    public AlarmClockEntity(long id, int hour, int minute, String roleName, String roleId,
             String repeat, String weeks, String tag, String ringName, int ringUrl, boolean onOff) {
         this.id = id;
         this.hour = hour;
@@ -61,7 +61,7 @@ public class AlarmClockEntity  implements Parcelable{
         public AlarmClockEntity createFromParcel(Parcel in) {
             AlarmClockEntity entity = new AlarmClockEntity();
             Bundle bundle;
-            bundle = in.readBundle(getClass().getClassLoader());
+            bundle = in.readBundle();
             entity.id = bundle.getLong("id");
             entity.hour = bundle.getInt("hour");
             entity.minute = bundle.getInt("minute");
@@ -100,11 +100,11 @@ public class AlarmClockEntity  implements Parcelable{
         out.writeBundle(bundle);
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

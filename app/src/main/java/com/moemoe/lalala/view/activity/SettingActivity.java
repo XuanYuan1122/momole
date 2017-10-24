@@ -25,6 +25,7 @@ import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.CommonLoadingTask;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
+import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -40,6 +41,7 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.wechat.friends.Wechat;
+import io.rong.imkit.RongIM;
 
 /**
  * Created by yi on 2016/12/1.
@@ -331,6 +333,9 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         //清除数据库相关私信信息
         //私信列表
         try {
+            AppSetting.isLoadDone = false;
+            RongIM.getInstance().logout();
+            JuQingUtil.clearJuQingDone();
             if(isThirdParty(PreferenceUtils.getAuthorInfo().getPlatform())){
                 Platform p = ShareSDK.getPlatform(PreferenceUtils.getAuthorInfo().getPlatform());
                 if(p.isAuthValid()){

@@ -102,7 +102,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
     private String mType;
    // private String mId;
     private NewDocLabelAdapter docLabelAdapter;
-    private String mPath;
+  // private String mPath;
     private TrashEntity mEntity;
 
     @Override
@@ -132,7 +132,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
         mType = getIntent().getStringExtra("type");
         mEntity = getIntent().getParcelableExtra("item");
         downloadSub = RxDownload.getInstance(this)
-                .maxThread(3)
+                .maxThread(1)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
@@ -152,7 +152,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
         if("text".equals(mType)){
             mContent.setText(mEntity.getContent());
         }else if("image".equals(mType)){
-            mPath = mEntity.getImage().getPath();
+            //mPath = mEntity.getImage().getPath();
             createImage(mEntity.getImage());
         }
         mLikeNum.setText(mEntity.getFun() + "");
@@ -325,12 +325,9 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
                 break;
             case R.id.iv_image:
             case R.id.iv_doc_long_image:
-                if(!TextUtils.isEmpty(mPath)){
+                if(mEntity.getImage() != null){
                     ArrayList<Image> temp = new ArrayList<>();
-                    Image image = new Image();
-                    String str = mPath;
-                    image.setPath(str);
-                    temp.add(image);
+                    temp.add(mEntity.getImage());
                     Intent intent = new Intent(this, ImageBigSelectActivity.class);
                     intent.putExtra(ImageBigSelectActivity.EXTRA_KEY_FILEBEAN, temp);
                     intent.putExtra(ImageBigSelectActivity.EXTRAS_KEY_FIRST_PHTOT_INDEX,

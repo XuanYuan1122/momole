@@ -1,6 +1,10 @@
 package com.moemoe.lalala.presenter;
 
+import com.moemoe.lalala.dialog.SignDialog;
 import com.moemoe.lalala.model.entity.AddressEntity;
+import com.moemoe.lalala.model.entity.DailyTaskEntity;
+import com.moemoe.lalala.model.entity.PersonalMainEntity;
+import com.moemoe.lalala.model.entity.SignEntity;
 
 import java.util.Date;
 
@@ -10,11 +14,14 @@ import java.util.Date;
 
 public interface PhoneMainContract {
     interface Presenter extends BasePresenter{
-        void loadRcToken();
+        void getDailyTask();
+        void signToday(SignDialog dialog);
+        void requestPersonMain();
     }
 
     interface View extends BaseView{
-        void onLoadRcTokenSuccess(String token);
-        void onLoadRcTokenFail(int code,String msg);
+        void onDailyTaskLoad(DailyTaskEntity entity);
+        void changeSignState(SignEntity entity, boolean sign);
+        void onPersonMainLoad(PersonalMainEntity entity);
     }
 }

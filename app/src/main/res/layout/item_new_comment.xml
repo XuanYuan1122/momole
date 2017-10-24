@@ -86,7 +86,7 @@
         android:layout_marginEnd="@dimen/x36"
         android:layout_alignStart="@+id/ll_name_root"
         android:textColor="@color/gray_444444"
-        android:textSize="@dimen/x24" />
+        android:textSize="@dimen/x30" />
 
     <LinearLayout
         android:id="@+id/ll_comment_img"
@@ -111,10 +111,10 @@
         android:layout_marginTop="@dimen/y10"
         android:paddingStart="@dimen/x24"
         android:paddingEnd="@dimen/x20"
-        android:paddingTop="@dimen/y24"
+        android:paddingTop="@dimen/y20"
         android:paddingBottom="@dimen/y24"
         android:orientation="vertical"
-        android:background="@color/gray_e8e8e8"
+        android:background="@color/bg_f6f6f6"
         android:visibility="gone">
 
     </LinearLayout>

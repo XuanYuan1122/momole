@@ -36,11 +36,14 @@ import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.PersonaListPresenter;
 import com.moemoe.lalala.presenter.PersonalListContract;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.GlideCircleTransform;
+import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.BadgeActivity;
+import com.moemoe.lalala.view.activity.BagOpenActivity;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.CommentsListActivity;
 import com.moemoe.lalala.view.activity.NewBagActivity;
@@ -194,6 +197,13 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                     Intent i2 = new Intent(getContext(),NewBagActivity.class);
                     i2.putExtra("uuid",uuid);
                     startActivity(i2);
+                }else {
+                    if(uuid.equals(PreferenceUtils.getUUid())){
+                        if(NetworkUtils.checkNetworkAndShowError(getContext()) && DialogUtils.checkLoginAndShowDlg(getContext())){
+                            Intent i2 = new Intent(getContext(),BagOpenActivity.class);
+                            startActivity(i2);
+                        }
+                    }
                 }
                 break;
         }
@@ -395,8 +405,8 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
         }
 
         //folder
+        mFolderRoot.setVisibility(View.VISIBLE);
         if(entity.getFolderList().size() > 0){
-            mFolderRoot.setVisibility(View.VISIBLE);
             mFolderAddRoot.setVisibility(View.VISIBLE);
             for (int n = 0;n < entity.getFolderList().size();n++){
                 final ShowFolderEntity item = entity.getFolderList().get(n);
@@ -471,7 +481,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonalListCo
                 mFolderAddRoot.addView(v);
             }
         }else {
-            mFolderRoot.setVisibility(View.GONE);
+            mFolderAddRoot.setVisibility(View.GONE);
         }
     }
 

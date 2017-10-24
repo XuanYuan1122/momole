@@ -47,6 +47,7 @@ import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
+import com.moemoe.lalala.view.activity.CreateRichDocActivity;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
@@ -198,7 +199,7 @@ public class NetaRichEditor extends ScrollView {
         };
 
         downloadSub = RxDownload.getInstance(getContext())
-                .maxThread(3)
+                .maxThread(1)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
@@ -253,14 +254,17 @@ public class NetaRichEditor extends ScrollView {
 
     public void setTop(){
         View topRoot = createTopView();
-        mEtTitle = (EditText) topRoot.findViewById(R.id.et_title);
-        mCover = (ImageView) topRoot.findViewById(R.id.iv_cover);
-        mTvAddCover = (TextView) topRoot.findViewById(R.id.tv_add_cover);
-        mTvTitleCount = (TextView) topRoot.findViewById(R.id.ev_title_count);
+        mEtTitle = topRoot.findViewById(R.id.et_title);
+        mCover = topRoot.findViewById(R.id.iv_cover);
+        mTvAddCover = topRoot.findViewById(R.id.tv_add_cover);
+        mTvTitleCount = topRoot.findViewById(R.id.ev_title_count);
         mCover.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 ArrayList<String> arrayList = new ArrayList<>();
+                if(getContext() instanceof CreateRichDocActivity){
+                    ((CreateRichDocActivity) getContext()).setmIsCover(true);
+                }
                 DialogUtils.createImgChooseDlg((BaseAppCompatActivity)getContext(), null,getContext(), arrayList, 1).show();
             }
         });
@@ -322,7 +326,7 @@ public class NetaRichEditor extends ScrollView {
     public void setLabelAble(){
         mTags = new ArrayList<>();
         View labelRoot = createLabelView();
-        docLabelView = (DocLabelView) labelRoot.findViewById(R.id.dv_doc_label_root);
+        docLabelView = labelRoot.findViewById(R.id.dv_doc_label_root);
         docLabelView.setContentAndNumList(true,mTags);
         docLabelView.setItemClickListener(new DocLabelView.LabelItemClickListener() {
             @Override
@@ -522,9 +526,6 @@ public class NetaRichEditor extends ScrollView {
         //删除文件夹里的图片
         List<RichEntity> dataList = buildEditData();
         RichEntity editData = dataList.get(disappearingImageIndex);
-//        if (editData.getImage() != null && !TextUtils.isEmpty(editData.getImage().getPath())) {
-//            if(!FileUtil.isGif(editData.getImage().getPath())) FileUtil.deleteFile(editData.getImage().getPath());
-//        }
         RxBus.getInstance().post(new RichImgRemoveEvent(editData.getImage().getPath()));
         allLayout.removeView(view);
     }
@@ -616,7 +617,6 @@ public class NetaRichEditor extends ScrollView {
         String lastEditStr = lastFocusEdit.getText().toString();
         int cursorIndex = lastFocusEdit.getSelectionStart();
         int lastEditIndex = allLayout.indexOfChild(lastFocusEdit);
-      //  String editStr1 = "";
         SpannableStringBuilder editStr = new SpannableStringBuilder(lastFocusEdit.getText());
         SpannableStringBuilder editStr1 = new SpannableStringBuilder();
         if(cursorIndex < 0){
@@ -640,7 +640,6 @@ public class NetaRichEditor extends ScrollView {
             // 如果EditText非空且光标不在最顶端，则需要添加新的imageView和EditText
             lastFocusEdit.setText(editStr1);
             addImageViewAtIndex(lastEditIndex + 1, imagePath);
-            //String editStr2 = lastEditStr.substring(cursorIndex);
             SpannableStringBuilder editStr2;
             editStr2 = (SpannableStringBuilder) editStr.subSequence(cursorIndex,editStr.length());
             if (editStr2.length() == 0) {
@@ -652,7 +651,7 @@ public class NetaRichEditor extends ScrollView {
                 addEditTextAtIndex(lastEditIndex + 2, editStr2);
             }
             lastFocusEdit.requestFocus();
-            lastFocusEdit.setSelection(editStr1.length(), editStr1.length());
+            lastFocusEdit.setSelection(lastFocusEdit.getText().length(), lastFocusEdit.getText().length());
         }
         hideKeyBoard();
     }
@@ -679,6 +678,7 @@ public class NetaRichEditor extends ScrollView {
         LinearLayout.LayoutParams editParam = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         allLayout.addView(editText2, index,editParam);
+        lastFocusEdit = editText2;
     }
 
     public void addImageViewAtIndex(final int index, String imagePath,int w,int h,long size){

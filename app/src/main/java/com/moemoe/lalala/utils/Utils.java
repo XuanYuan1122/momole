@@ -22,6 +22,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -187,9 +188,11 @@ public class Utils {
 
     public static void startAlarmClock(Context context, AlarmClockEntity entity){
         Intent intent = new Intent(context, AlarmClockBroadcast.class);
-        intent.putExtra("alarm", entity);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("alarm",entity);
+        intent.putExtra("bundle",bundle);
         PendingIntent pi = PendingIntent.getBroadcast(context,
-                entity.getId().intValue(), intent,
+                (int) entity.getId(), intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context
                 .getSystemService(Context.ALARM_SERVICE);
@@ -307,6 +310,14 @@ public class Utils {
                                                     entity.setSave(uploadResultEntity.isSave());
                                                     entity.setSize(file.length());
                                                     entity.setType(uploadResultEntity.getType());
+                                                    if(FileUtil.isImageFileBySuffix(file.getName())){
+                                                        try {
+                                                            String attr = "{\"h\":" + response.getInt("h") + ",\"w\":" + response.getInt("w") + "}";
+                                                            entity.setAttr(attr);
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
                                                     res.onNext(entity);
                                                     res.onComplete();
                                                 } else {

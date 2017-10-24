@@ -82,8 +82,7 @@ public class Grid
 
 	private double scale;
 
-	public Grid(View parent, OfflineMapConfig config, TileProvider tileProvider, int initZoomLevel)
-	{
+	public Grid(View parent, OfflineMapConfig config, TileProvider tileProvider, int initZoomLevel) {
 		this.zoomLevel = initZoomLevel;
 		
 		this.imageWidth = config.getImageWidth();
@@ -122,8 +121,7 @@ public class Grid
 	}
 
 	
-	private void initGrid(int zoomLevel, int tileSize) 
-	{	
+	private void initGrid(int zoomLevel, int tileSize) {
 		if (Looper.myLooper() == null) {
 			throw new IllegalThreadStateException("Should be called from UI thread");
 		}
@@ -141,16 +139,14 @@ public class Grid
 	}
 	
 	
-	public void setTileProvider(TileProvider tileManager)
-	{
+	public void setTileProvider(TileProvider tileManager) {
 		for (Cell cell:cells) {
 			cell.setTileProvider(tileManager);
 		}
 	}
 	
 	
-	public void draw(Canvas canvas, Paint paint, Rect drawingRect)
-	{
+	public void draw(Canvas canvas, Paint paint, Rect drawingRect) {
 		cachedDrawRect = drawingRect;
 		
 		if (cells == null)
@@ -188,8 +184,7 @@ public class Grid
 	}
 	
 	
-	private Rect getRridWindowBigger(Rect gridWindow) 
-	{
+	private Rect getRridWindowBigger(Rect gridWindow) {
 		
 		gridWindowBigger.left = gridWindow.left - screenXCapacity;
 		
@@ -221,8 +216,7 @@ public class Grid
 	}
 	
 	
-	public int getOriginalHeight() 
-	{
+	public int getOriginalHeight() {
 		return imageHeight;
 	}
 	
@@ -232,8 +226,7 @@ public class Grid
 		return imageWidth;
 	}
 
-	public double getScale()
-	{
+	public double getScale() {
 		if (maxZoomLevel == zoomLevel)
 			return 1.0f * scale;
 		
@@ -394,8 +387,7 @@ public class Grid
 	}
 	
 	
-	private void applyScale(double scale)
-	{
+	private void applyScale(double scale) {
 		int size = cells.size();
 		calcCellsInScreen();
 

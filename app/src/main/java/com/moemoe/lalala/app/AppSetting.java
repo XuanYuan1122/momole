@@ -17,8 +17,9 @@ public class AppSetting {
     public static boolean isFirstLauncherToday = false;
     public static boolean isEnterEventToday = false;
     public static boolean isShowBackSchoolAll = false;
+    public static boolean isLoadDone = false;
     public static String sCurChatId = "";
-    public static Boolean TXBB = false;
+    public static boolean TXBB = false;
 
     public static String CHANNEL;
     public static int VERSION_CODE;

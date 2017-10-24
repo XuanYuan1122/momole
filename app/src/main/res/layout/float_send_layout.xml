@@ -39,7 +39,7 @@
         android:layout_width="@dimen/x432"
         android:layout_height="@dimen/y128"
         android:layout_alignParentEnd="true"
-        android:layout_above="@+id/iv_create_wenzhang"
+        android:layout_above="@+id/iv_create_dynamic"
         android:layout_marginEnd="@dimen/x260"
         android:layout_marginBottom="@dimen/y48"
         android:background="@drawable/bg_classmate_talkbar"

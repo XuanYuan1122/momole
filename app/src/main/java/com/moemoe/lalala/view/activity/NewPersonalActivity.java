@@ -38,6 +38,7 @@ import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
 import com.moemoe.lalala.view.fragment.BaseFragment;
 import com.moemoe.lalala.view.fragment.NewFollowMainFragment;
+import com.moemoe.lalala.view.fragment.OldDocFragment;
 import com.moemoe.lalala.view.fragment.PersonalMainFragment;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
@@ -143,10 +144,12 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         mainFragment = PersonalMainFragment.newInstance(mUserId);
         fragmentList.add(mainFragment);
         fragmentList.add(NewFollowMainFragment.newInstance("my",mUserId));
-        String[] mTitles = {getString(R.string.label_home_page), "动态"};
+        fragmentList.add(OldDocFragment.newInstance(mUserId));
+        String[] mTitles = {getString(R.string.label_home_page), "动态","文章"};
         List<String> titles = new ArrayList<>();
         titles.add(getString(R.string.label_home_page));
         titles.add("动态");
+        titles.add("文章");
         ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
         for (String str: mTitles) {
             mTabEntities.add(new TabEntity(str, R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
@@ -322,6 +325,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         }else if(requestCode == PersonalMainFragment.REQ_BADGE){
             mAdapter.getItem(0).onActivityResult(requestCode,resultCode,data);
         }
+
     }
 
     @OnClick({R.id.tv_follow,R.id.iv_edit,R.id.iv_menu_list,R.id.iv_avatar,R.id.tv_private_msg,R.id.iv_msg})
@@ -413,9 +417,10 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
         }
         mainFragment.setOpenBag(info.isOpenBag());
         mTvTitle.setText(info.getUserName());
+        int hSize = (int) getResources().getDimension(R.dimen.y460);
         Glide.with(this)
-                .load(StringUtils.getUrl(this,ApiService.URL_QINIU + info.getBackground(), DensityUtil.getScreenWidth(this),DensityUtil.dip2px(this,230),false,true))
-                .override(DensityUtil.getScreenWidth(this),DensityUtil.dip2px(this,230))
+                .load(StringUtils.getUrl(this,ApiService.URL_QINIU + info.getBackground(), DensityUtil.getScreenWidth(this),hSize,false,true))
+                .override(DensityUtil.getScreenWidth(this),hSize)
                 .error(R.drawable.btn_cardbg_defbg)
                 .placeholder(R.drawable.btn_cardbg_defbg)
                 .into(mIvBackGround);
@@ -458,7 +463,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
             }
         }else {
             if(!TextUtils.isEmpty(info.getVipTime())){
-                mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y30),0,0);
+                mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y20),0,0);
             }else {
                 mAvatarRoot.setPadding(0,(int) getResources().getDimension(R.dimen.y40),0,0);
             }
@@ -487,7 +492,7 @@ public class NewPersonalActivity extends BaseAppCompatActivity implements Person
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        int temp = (int) (DensityUtil.dip2px(this,146) - getResources().getDimension(R.dimen.status_bar_height));
+        int temp = (int) (getResources().getDimension(R.dimen.y292) - getResources().getDimension(R.dimen.status_bar_height));
         float percent = (float)Math.abs(verticalOffset) / temp;
         if(percent > 0.4){
             if(!isChanged){

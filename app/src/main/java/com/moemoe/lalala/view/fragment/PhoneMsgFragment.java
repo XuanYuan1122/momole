@@ -53,6 +53,7 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 
 /**
+ * 聊天和手机剧情root界面
  * Created by yi on 2017/9/8.
  */
 
@@ -356,6 +357,7 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
                         if(eventDoneEvent.getType().equals("mobile")){
                             mAdapter.setShowRed(-1);
                             mAdapter.notifyDataSetChanged();
+                            PreferenceUtils.setDot(getContext(),false);
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -418,6 +420,7 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
                     mAdapter.setShowRed(2);
                     mAdapter.notifyDataSetChanged();
                 }
+                PreferenceUtils.setDot(getContext(),true);
             }
         }else {
             String[] id = JuQingUtil.checkJuQingMobile(calendar,role);

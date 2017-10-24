@@ -172,7 +172,7 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         downloadSub = RxDownload.getInstance(this)
-                .maxThread(3)
+                .maxThread(1)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getNovRootPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
@@ -304,7 +304,7 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
             items.add(item);
         }
 
-        MenuItem item = new MenuItem(4, "转发");
+        MenuItem item = new MenuItem(4, "转发到动态");
         items.add(item);
 
         bottomMenuFragment.setMenuItems(items);
@@ -390,14 +390,14 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                                                 dialog.dismiss();
                                                 FileUtil.deleteDir(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
                                                 showToast("下载失败");
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mCurList.get(position).getPath(),false).subscribe();
+                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mCurList.get(position).getPath(),true).subscribe();
                                             }
 
                                             @Override
                                             public void onComplete() {
+                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mCurList.get(position).getPath(),false).subscribe();
                                                 dialog.dismiss();
                                                 goToRead(mCurList.get(position));
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mCurList.get(position).getPath(),false).subscribe();
                                             }
 
                                             @Override
@@ -657,12 +657,12 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
 
     private void createBottomView(final NewFolderEntity entity){
         mBottomView = LayoutInflater.from(this).inflate(R.layout.item_folder_recommend, null);
-        ImageView ivUser = (ImageView) mBottomView.findViewById(R.id.iv_avatar);
-        TextView tvUser = (TextView) mBottomView.findViewById(R.id.tv_user_name);
-        final TextView tvFollow = (TextView) mBottomView.findViewById(R.id.tv_follow);
-        LinearLayout folderRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_folder_root);
-        LinearLayout recommendRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_recommend_root);
-        TextView tvRefresh = (TextView) mBottomView.findViewById(R.id.tv_refresh);
+        ImageView ivUser = mBottomView.findViewById(R.id.iv_avatar);
+        TextView tvUser = mBottomView.findViewById(R.id.tv_user_name);
+        final TextView tvFollow = mBottomView.findViewById(R.id.tv_follow);
+        LinearLayout folderRoot = mBottomView.findViewById(R.id.ll_folder_root);
+        LinearLayout recommendRoot = mBottomView.findViewById(R.id.ll_recommend_root);
+        TextView tvRefresh =  mBottomView.findViewById(R.id.tv_refresh);
 
         Glide.with(this)
                 .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),DensityUtil.dip2px(this,40),DensityUtil.dip2px(this,40),false,true))
@@ -922,7 +922,7 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
     @Override
     public void onBuyFolderSuccess() {
         alertDialogUtil.dismissDialog();
-        mAdapter.setBuy(true);
+        mAdapter.setBuy(false);
         mAdapter.notifyDataSetChanged();
     }
 

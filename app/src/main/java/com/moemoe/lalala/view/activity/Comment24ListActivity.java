@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -66,8 +67,7 @@ public class Comment24ListActivity extends BaseAppCompatActivity implements Comm
         mListDocs.setPadding(DensityUtil.dip2px(this,12),0,DensityUtil.dip2px(this,12),0);
         mAdapter = new Comment24Adapter();
         mListDocs.getRecyclerView().setAdapter(mAdapter);
-        mListDocs.setLayoutManager( new GridLayoutManager(this,3));
-        mListDocs.getRecyclerView().addItemDecoration(new FolderDecoration());
+        mListDocs.setLayoutManager(new LinearLayoutManager(this));
         mListDocs.setLoadMoreEnabled(false);
     }
 

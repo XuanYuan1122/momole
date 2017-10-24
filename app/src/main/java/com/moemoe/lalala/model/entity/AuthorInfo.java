@@ -28,11 +28,15 @@ public class AuthorInfo {
     private int level;
     private boolean openBag;
     private String rcToken;
+    private String vipTime;
+    private int inviteNum;
 
     @Transient
     private boolean inspector;
     @Transient
     private ArrayList<DeskMateEntity> deskMateEntities;
+    @Transient
+    private int ticketNum;
 
     public AuthorInfo(){
         headPath = "";
@@ -51,10 +55,11 @@ public class AuthorInfo {
     }
 
 
-    @Generated(hash = 671368255)
+    @Generated(hash = 2101622612)
     public AuthorInfo(long id, String headPath, String userId, String openId,
             String platform, String token, String password, String phone, int coin,
-            String userName, int level, boolean openBag, String rcToken) {
+            String userName, int level, boolean openBag, String rcToken,
+            String vipTime, int inviteNum) {
         this.id = id;
         this.headPath = headPath;
         this.userId = userId;
@@ -68,8 +73,10 @@ public class AuthorInfo {
         this.level = level;
         this.openBag = openBag;
         this.rcToken = rcToken;
+        this.vipTime = vipTime;
+        this.inviteNum = inviteNum;
     }
-    
+
 
     public long getId() {
         return id;
@@ -193,5 +200,29 @@ public class AuthorInfo {
 
     public void setDeskMateEntities(ArrayList<DeskMateEntity> deskMateEntities) {
         this.deskMateEntities = deskMateEntities;
+    }
+
+    public String getVipTime() {
+        return vipTime;
+    }
+
+    public void setVipTime(String vipTime) {
+        this.vipTime = vipTime;
+    }
+
+    public int getInviteNum() {
+        return inviteNum;
+    }
+
+    public void setInviteNum(int inviteNum) {
+        this.inviteNum = inviteNum;
+    }
+
+    public int getTicketNum() {
+        return ticketNum;
+    }
+
+    public void setTicketNum(int ticketNum) {
+        this.ticketNum = ticketNum;
     }
 }

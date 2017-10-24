@@ -8,6 +8,7 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.MapDbEntity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
@@ -34,7 +35,20 @@ public class MapUtil {
         for(MapDbEntity entity : entities){
             //文件是否存在
             if(FileUtil.isExists(StorageUtils.getMapRootPath() + entity.getFileName())){
-                entity.setDownloadState(2);
+                File file = new File(StorageUtils.getMapRootPath() + entity.getFileName());
+                String md5 = entity.getMd5();
+                if(md5.length() < 32){
+                    int n = 32 - md5.length();
+                    for(int i = 0;i < n;i++){
+                        md5 = "0" + md5;
+                    }
+                }
+                if(!md5.equals(StringUtils.getFileMD5(file))){
+                    FileUtil.deleteFile(StorageUtils.getMapRootPath() + entity.getFileName());
+                    entity.setDownloadState(1);
+                }else {
+                    entity.setDownloadState(2);
+                }
             }else {
                 entity.setDownloadState(1);
             }
@@ -50,7 +64,7 @@ public class MapUtil {
 
     public static void downLoadFiles(Context context, ArrayList<MapDbEntity> entities,Observer<MapDbEntity> callback){//1.未下载 2.下载完成 3.下载失败
         final RxDownload downloadSub = RxDownload.getInstance(context)
-                .maxThread(6)
+                .maxThread(1)
                 .maxRetryCount(6)
                 .defaultSavePath(StorageUtils.getMapRootPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());

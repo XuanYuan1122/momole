@@ -6,8 +6,8 @@ apply plugin: 'org.greenrobot.greendao'
 
 def javaVersion = JavaVersion.VERSION_1_7
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
 
     lintOptions {
         abortOnError false;
@@ -19,15 +19,16 @@ android {
     }
     //recommend
     dexOptions {
+        javaMaxHeapSize "4g"
         jumboMode = true
     }
 
     defaultConfig {
         applicationId "com.moemoe.lalala"
         minSdkVersion 17
-        targetSdkVersion 25
-        versionCode 5000
-        versionName "5.0.0"
+        targetSdkVersion 26
+        versionCode 5030
+        versionName "5.0.3"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "moemoe",
                                 GETUI_APP_ID : "yJYiw8VtVO9wuMk0DgV6p4",
                                 GETUI_APP_KEY : "WaKYr5EG2c7DIAib45aPy3",
@@ -44,6 +45,9 @@ android {
                 abiFilters "armeabi-v7a","x86"
                 cppFlags ""
             }
+        }
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
         }
     }
     signingConfigs{
@@ -116,7 +120,7 @@ android {
         }
     }
     greendao{
-        schemaVersion 6
+        schemaVersion 9
         daoPackage 'com.moemoe.lalala.greendao.gen'
         targetGenDir 'src/main/java'
     }
@@ -209,15 +213,17 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
+    compile 'com.android.support:cardview-v7:26.0.0-alpha1'
+    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    compile 'com.android.support:design:26.0.0-alpha1'
     //    compile 'cn.rongcloud.android:IMLib:2.8.6'
 
     //    compile 'cn.rongcloud.android:IMKit:2.8.6'
     compile 'com.coolerfall:android-app-daemon:1.2.0'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
+    compile 'com.android.support:support-v4:26.0.0-alpha1'
+    compile 'com.android.support:cardview-v7:26.0.0-alpha1'
     //butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
@@ -279,7 +285,11 @@ dependencies {
     //tabLayout
     compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
     //download
-    compile 'zlc.season:rxdownload2:2.0.4'
+
+    // compile 'zlc.season:rxdownload2:2.0.4'
+
+    // compile 'zlc.season:rxdownload3:1.0.8'
+
     //compile 'com.getui:ext:2.0.3'
     compile 'com.facebook.rebound:rebound:0.3.8'
     //jsoup
@@ -306,6 +316,7 @@ dependencies {
     compile project(':pingpp')
     compile files('libs/GetuiSDK2.11.1.0.jar')
     compile project(':kiragame')
+    compile project(':rxdownload2')
 }
 
 def buildTime() {

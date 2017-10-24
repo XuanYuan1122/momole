@@ -7,19 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.TextPaint;
 import android.text.TextUtils;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
@@ -60,17 +51,19 @@ import com.moemoe.lalala.service.DaemonService;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
+import com.moemoe.lalala.utils.DownLoadUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
+import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.IntentUtils;
-import com.moemoe.lalala.utils.JuQingDoneEntity;
+import com.moemoe.lalala.model.entity.JuQingDoneEntity;
 import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.MapUtil;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
-import com.moemoe.lalala.utils.ToolTipUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.di.components.DaggerMapComponent;
 import com.moemoe.lalala.view.widget.map.MapWidget;
@@ -83,10 +76,10 @@ import com.moemoe.lalala.view.widget.map.interfaces.OnMapTilesFinishedLoadingLis
 import com.moemoe.lalala.view.widget.map.interfaces.OnMapTouchListener;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
-import com.moemoe.lalala.view.widget.tooltip.Tooltip;
-import com.moemoe.lalala.view.widget.tooltip.TooltipAnimation;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -95,7 +88,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -104,10 +96,13 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.model.Conversation;
@@ -134,26 +129,16 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     RelativeLayout mMainRoot;
     @BindView(R.id.fl_map_root)
     FrameLayout mMap;
-    @BindView(R.id.iv_bag)
-    ImageView mIvBag;
-    @BindView(R.id.iv_card)
-    ImageView mIvCard;
-    @BindView(R.id.fl_card_root)
-    View mCardRoot;
-    @BindView(R.id.iv_card_dot)
-    View mCardDot;
     @BindView(R.id.rl_main_list_root)
     View mPhoneRoot;
-    @BindView(R.id.iv_sign)
-    ImageView mIvSign;
     @BindView(R.id.tv_msg)
     TextView mTvMsg;
     @BindView(R.id.iv_role)
     ImageView mIvRole;
     @BindView(R.id.iv_create_dynamic)
     ImageView mIvCreatDynamic;
-    @BindView(R.id.iv_create_wenzhang)
-    ImageView mIvCreateWen;
+//    @BindView(R.id.iv_create_wenzhang)
+//    ImageView mIvCreateWen;
     @BindView(R.id.tv_show_text)
     TextView mTvText;
     @BindView(R.id.rl_role_root)
@@ -174,10 +159,11 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     public static String updateApkName;
     private boolean mIsOut = false;
     public static long mUpdateDownloadId = Integer.MIN_VALUE;
-    private boolean mIsSignPress = false;
     private MapMarkContainer mContainer;
+    private MapMarkContainer mContainerEvent;
     private BottomMenuFragment menuFragment;
-    private boolean isLoadDone;
+    private Disposable initDisposable;
+    private Disposable resolvDisposable;
 
     @Override
     protected int getLayoutId() {
@@ -225,7 +211,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mapWidget = new MapWidget(this,map,12);
         mapWidget.centerMap();
         float scale = (float) DensityUtil.getScreenHeight(this) / mapWidget.getOriginalMapHeight();
-        mapWidget.setScale(scale);
+       // mapWidget.setScale(scale);
         OfflineMapConfig config = mapWidget.getConfig();
         mapWidget.scrollMapTo(0,0);
         config.setPinchZoomEnabled(true);
@@ -308,19 +294,12 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         super.onResume();
         showBtn();
         invalidateMap(false);
-        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") ){//|| showDot){
-            mCardDot.setVisibility(View.VISIBLE);
-        }else {
-            mCardDot.setVisibility(View.GONE);
-        }
         String mTime = dateFormat.format(new Date());
         mTvTime.setText(mTime);
-        mPresenter.checkStoryVersion();
-        if(!PreferenceUtils.isLogin()){
-            isLoadDone = false;
-        }
-        if(!isLoadDone){
+        if(PreferenceUtils.isLogin() && !AppSetting.isLoadDone){
             mPresenter.findMyDoneJuQing();
+        }else {
+            mPresenter.checkStoryVersion();
         }
     }
 
@@ -339,40 +318,49 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 .subscribe(new Consumer<ArrayList<JuQingTriggerEntity>>() {
             @Override
             public void accept(ArrayList<JuQingTriggerEntity> id) throws Exception {
-                for(JuQingTriggerEntity entity : id){
-                    if(entity.getType().equals("mobile")){
-                        if(entity.isForce()){
-                            Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
-                                    .appendPath("conversation").appendPath("private")
-                                    .appendQueryParameter("targetId", "juqing:"+ entity.getStoryId() + ":" + entity.getRoleOf()).build();
-                            Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
-                            i2.setData(uri);
-                            startActivity(i2);
-                        }
-                        if(!entity.getStoryId().equals(mEventId)){
-                            String msg = mTvMsg.getText().toString();
-                            if(msg.equals("无新信息")){
-                                msg = "1条新消息";
-                            }else {
-                                msg = (Integer.valueOf(msg.replace("条新消息","").trim()) + 1) + "条新消息";
+                Layer layer = mapWidget.getLayerById(1);
+                mContainerEvent = null;
+                if(layer != null) {
+                    layer.clearAll();
+                    mapWidget.removeLayer(1);
+                }
+                mapWidget.createLayer(1);
+                if(PreferenceUtils.isLogin()){
+                    for(JuQingTriggerEntity entity : id){
+                        if(entity.getType().equals("mobile")){
+                            if(entity.isForce()){
+                                Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
+                                        .appendPath("conversation").appendPath("private")
+                                        .appendQueryParameter("targetId", "juqing:"+ entity.getStoryId() + ":" + entity.getRoleOf()).build();
+                                Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+                                i2.setData(uri);
+                                startActivity(i2);
                             }
-                            mTvMsg.setText(msg);
-                            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(MapActivity.this,R.drawable.ic_inform_reddot),null,null,null);
-                            mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
-                            mEventId = entity.getStoryId();
+                            if(!entity.getStoryId().equals(mEventId)){
+                                String msg = mTvMsg.getText().toString();
+                                if(msg.equals("无新信息")){
+                                    msg = "1条新消息";
+                                }else {
+                                    msg = (Integer.valueOf(msg.replace("条新消息","").trim()) + 1) + "条新消息";
+                                }
+                                mTvMsg.setText(msg);
+                                mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(MapActivity.this,R.drawable.ic_inform_reddot),null,null,null);
+                                mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+                                mEventId = entity.getStoryId();
+                            }
                         }
-                    }
-                    if(entity.getType().equals("map")){
-                        String extra = entity.getExtra();
-                        boolean isForce = entity.isForce();
-                        JsonObject jsonObject = new Gson().fromJson(extra,JsonObject.class);
-                        String eventId = jsonObject.get("map").getAsString();
-                        String icon = jsonObject.get("icon").getAsString();
-                        mPresenter.addEventMark(eventId,icon,mContainer,MapActivity.this,mapWidget,entity.getStoryId());
-                        if(isForce){
-                            Intent i = new Intent(MapActivity.this,MapEventNewActivity.class);
-                            i.putExtra("id",entity.getStoryId());
-                            startActivity(i);
+                        if(entity.getType().equals("map")){
+                            String extra = entity.getExtra();
+                            boolean isForce = entity.isForce();
+                            JsonObject jsonObject = new Gson().fromJson(extra,JsonObject.class);
+                            String eventId = jsonObject.get("map").getAsString();
+                            String icon = jsonObject.get("icon").getAsString();
+                            mPresenter.addEventMark(eventId,icon,mContainer,MapActivity.this,mapWidget,entity.getStoryId());
+                            if(isForce){
+                                Intent i = new Intent(MapActivity.this,MapEventNewActivity.class);
+                                i.putExtra("id",entity.getStoryId());
+                                startActivity(i);
+                            }
                         }
                     }
                 }
@@ -403,8 +391,9 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     public void onFindMyDoneJuQingSuccess(ArrayList<JuQingDoneEntity> entities) {
-        //JuQingUtil.saveJuQingDone(entities);
-        isLoadDone = true;
+        JuQingUtil.saveJuQingDone(entities);
+        AppSetting.isLoadDone = true;
+        mPresenter.checkStoryVersion();
     }
 
     @Override
@@ -441,7 +430,15 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
                     ObjectTouchEvent objectTouchEvent = objectTouchEvents.get(0);
                     Object objectId =  objectTouchEvent.getObjectId();
-                    MapMarkEntity entity = mContainer.getMarkById((String) objectId);
+                    MapMarkEntity entity;
+                    MapMarkEntity entity2 = mContainer.getMarkById((String) objectId);
+                    MapMarkEntity entity1 = null;
+                    if(mContainerEvent!=null)entity1 = mContainerEvent.getMarkById((String) objectId);
+                    if(entity1!=null) {
+                        entity = entity1;
+                    }else {
+                        entity = entity2;
+                    }
                     if(!TextUtils.isEmpty(entity.getSchema())){
                         String temp = entity.getSchema();
                         if(temp.contains("map_event_1.0") || temp.contains("game_1.0")){
@@ -518,33 +515,34 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                             Uri uri = Uri.parse(temp);
                             IntentUtils.toActivityFromUri(MapActivity.this, uri, v);
                         }
-                    }else {
-                        TextView textView = (TextView) LayoutInflater.from(MapActivity.this).inflate(R.layout.tooltip_textview, null);
-                        int viewHeight = mapWidget.getMapHeight();
-                        int type;
-                        if(entity.getY() < viewHeight / 2){
-                            type = Tooltip.BOTTOM;
-                        }else {
-                            type = Tooltip.TOP;
-                        }
-                        int x = xToScreenCoords(entity.getX());
-                        int y = yToScreenCoords(entity.getY());
-                        if(TextUtils.isEmpty(entity.getContent())){
-                            Random random = new Random();
-                            int i = random.nextInt(entity.getContents().size());
-                            ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContents().get(i),type,mapX,mapY,entity.getW(),entity.getH(),true,
-                                    TooltipAnimation.SCALE_AND_FADE,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
-                        }else {
-                            ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContent(),type, mapX,mapY,entity.getW(),entity.getH(),true,
-                                    TooltipAnimation.SCALE_AND_FADE,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                                    ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
-                        }
                     }
+//                    else {
+//                        TextView textView = (TextView) LayoutInflater.from(MapActivity.this).inflate(R.layout.tooltip_textview, null);
+//                        int viewHeight = mapWidget.getMapHeight();
+//                        int type;
+//                        if(entity.getY() < viewHeight / 2){
+//                            type = Tooltip.BOTTOM;
+//                        }else {
+//                            type = Tooltip.TOP;
+//                        }
+//                        int x = xToScreenCoords(entity.getX());
+//                        int y = yToScreenCoords(entity.getY());
+//                        if(TextUtils.isEmpty(entity.getContent())){
+//                            Random random = new Random();
+//                            int i = random.nextInt(entity.getContents().size());
+//                            ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContents().get(i),type,mapX,mapY,entity.getW(),entity.getH(),true,
+//                                    TooltipAnimation.SCALE_AND_FADE,
+//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+//                                    ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
+//                        }else {
+//                            ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContent(),type, mapX,mapY,entity.getW(),entity.getH(),true,
+//                                    TooltipAnimation.SCALE_AND_FADE,
+//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
+//                                    ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
+//                        }
+//                    }
                 }
             }
         });
@@ -573,33 +571,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         });
     }
 
-    private int xToScreenCoords(int mapCoord) {
-        return (int)(mapCoord *  mapWidget.getScale() - mapWidget.getScrollX());
-    }
-
-    private int yToScreenCoords(int mapCoord) {
-        return (int)(mapCoord *  mapWidget.getScale() - mapWidget.getScrollY());
-    }
-
     private void subscribeSearchChangedEvent() {
-        Disposable sysSubscription = RxBus.getInstance()
-                .toObservable(SystemMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SystemMessageEvent>() {
-                    @Override
-                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
-                        if(PreferenceUtils.getMessageDot(MapActivity.this,"neta") || PreferenceUtils.getMessageDot(MapActivity.this,"system") || PreferenceUtils.getMessageDot(MapActivity.this,"at_user")){
-                            mCardDot.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
         Disposable subscription = RxBus.getInstance()
                 .toObservable(BackSchoolEvent.class)
                 .subscribeOn(Schedulers.io())
@@ -674,7 +646,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         RxBus.getInstance().addSubscription(this, subscription);
         RxBus.getInstance().addSubscription(this, subscription1);
         RxBus.getInstance().addSubscription(this, subscription3);
-        RxBus.getInstance().addSubscription(this, sysSubscription);
     }
 
     @Override
@@ -703,18 +674,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     }
 
     @Override
-    public void changeSignState(SignEntity entity,boolean sign) {
-        if(sign) showToast(R.string.label_sign_suc);
-    }
-
-    public void loadPerson(){
-        mPresenter.requestPersonMain();
-    }
-
-    @Override
-    public void onPersonMainLoad(PersonalMainEntity entity) {
-        PersonalLevelActivity.startActivity(this,entity.getLevelName(),entity.getLevelColor(),entity.getScore(),entity.getLevelScoreStart(),entity.getLevelScoreEnd(),entity.getLevel());
-    }
+    public void onMapEventLoaded(MapMarkContainer container){mContainerEvent =container;}
 
     @Override
     public void onMapMarkLoaded(MapMarkContainer container) {
@@ -724,15 +684,30 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     @Override
     public void onLoadMapPics(ArrayList<MapEntity> entities) {
         final ArrayList<MapDbEntity> res = new ArrayList<>();
+        final ArrayList<MapDbEntity> errorList = new ArrayList<>();
         MapUtil.checkAndDownload(this,MapDbEntity.toDb(entities),new Observer<MapDbEntity>() {
             @Override
             public void onSubscribe(@NonNull Disposable d) {
-
+                initDisposable = d;
             }
 
             @Override
             public void onNext(@NonNull MapDbEntity mapDbEntity) {
-                res.add(mapDbEntity);
+                File file = new File(StorageUtils.getMapRootPath() + mapDbEntity.getFileName());
+                String md5 = mapDbEntity.getMd5();
+                if(md5.length() < 32){
+                    int n = 32 - md5.length();
+                    for(int i = 0;i < n;i++){
+                        md5 = "0" + md5;
+                    }
+                }
+                if(!md5.equals(StringUtils.getFileMD5(file)) || mapDbEntity.getDownloadState() == 3){
+                    FileUtil.deleteFile(StorageUtils.getMapRootPath() + mapDbEntity.getFileName());
+                    errorList.add(mapDbEntity);
+                }else {
+                    res.add(mapDbEntity);
+                }
+
             }
 
             @Override
@@ -744,6 +719,54 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             public void onComplete() {
                 GreenDaoManager.getInstance().getSession().getMapDbEntityDao().insertOrReplaceInTx(res);
                 invalidateMap(true);
+                if(errorList.size() > 0){
+                    resolvErrorList(errorList);
+                }
+            }
+        });
+    }
+
+    private void resolvErrorList(ArrayList<MapDbEntity> errorList){
+        final ArrayList<MapDbEntity> errorListTmp = new ArrayList<>();
+        final ArrayList<MapDbEntity> res = new ArrayList<>();
+        MapUtil.checkAndDownload(this,errorList,new Observer<MapDbEntity>() {
+
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+                resolvDisposable = d;
+            }
+
+            @Override
+            public void onNext(@NonNull MapDbEntity mapDbEntity) {
+                File file = new File(StorageUtils.getMapRootPath() + mapDbEntity.getFileName());
+                String md5 = mapDbEntity.getMd5();
+                if(md5.length() < 32){
+                    int n = 32 - md5.length();
+                    for(int i = 0;i < n;i++){
+                        md5 = "0" + md5;
+                    }
+                }
+                if(!md5.equals(StringUtils.getFileMD5(file)) || mapDbEntity.getDownloadState() == 3){
+                    FileUtil.deleteFile(StorageUtils.getMapRootPath() + mapDbEntity.getFileName());
+                    errorListTmp.add(mapDbEntity);
+                }else {
+                    res.add(mapDbEntity);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+                GreenDaoManager.getInstance().getSession().getMapDbEntityDao().insertOrReplaceInTx(res);
+                if(errorListTmp.size() > 0){
+                    resolvErrorList(errorListTmp);
+                }else {
+                    invalidateMap(true);
+                }
             }
         });
     }
@@ -781,41 +804,16 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
 
     @Override
     public void onFailure(int code,String msg) {
-        mIsSignPress = false;
         ErrorCodeUtils.showErrorMsgByCode(MapActivity.this,code,msg);
     }
 
-    @OnClick({R.id.iv_bag,R.id.iv_card,R.id.rl_main_list_root,R.id.iv_sign,R.id.iv_create_dynamic,R.id.iv_create_wenzhang,R.id.iv_role})
+    @OnClick({R.id.rl_main_list_root,R.id.iv_create_dynamic,R.id.iv_create_wenzhang,R.id.iv_role})
     public void onClick(View v){
         switch (v.getId()){
-            case R.id.iv_bag:
-                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
-                    if(PreferenceUtils.getAuthorInfo().isOpenBag()){
-                        Intent i2 = new Intent(MapActivity.this,NewBagActivity.class);
-                        i2.putExtra(UUID,PreferenceUtils.getUUid());
-                        startActivity(i2);
-                    }else {
-                        Intent i2 = new Intent(MapActivity.this,BagOpenActivity.class);
-                        startActivity(i2);
-                    }
-                }
-                break;
-            case R.id.iv_card:
-                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(MapActivity.this)){
-                    Intent i1 = new Intent(MapActivity.this,NewPersonalActivity.class);
-                    i1.putExtra(UUID,PreferenceUtils.getUUid());
-                    startActivity(i1);
-                }
-                break;
             case R.id.rl_main_list_root:
                 Intent i2 = new Intent(MapActivity.this,PhoneMainActivity.class);
+                i2.putExtra("have_dot",!mTvMsg.getText().toString().equals("无新信息"));
                 startActivity(i2);
-                break;
-            case R.id.iv_sign:
-                if(DialogUtils.checkLoginAndShowDlg(MapActivity.this) && !mIsSignPress){
-                    mIsSignPress = true;
-                    mPresenter.getDailyTask();
-                }
                 break;
             case R.id.iv_create_dynamic:
                 clickRole();
@@ -842,7 +840,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mIvRole.setSelected(!mIvRole.isSelected());
         if(mIvRole.isSelected()){
             mIvCreatDynamic.setVisibility(View.VISIBLE);
-            mIvCreateWen.setVisibility(View.VISIBLE);
             mTvText.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mRoleRoot.setLayoutParams(lp);
@@ -859,7 +856,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mIvRole.setLayoutParams(lp1);
         }else {
             mIvCreatDynamic.setVisibility(View.GONE);
-            mIvCreateWen.setVisibility(View.GONE);
+           // mIvCreateWen.setVisibility(View.GONE);
             mTvText.setVisibility(View.GONE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -872,72 +869,32 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
     }
 
-    @Override
-    public void onDailyTaskLoad(DailyTaskEntity entity) {
-        mIsSignPress = false;
-        SignDialog dialog = new SignDialog(MapActivity.this);
-        dialog.setTask(entity);
-        dialog.setAnimationEnable(true)
-                .setPositiveListener(new SignDialog.OnPositiveListener() {
-                    @Override
-                    public void onClick(SignDialog dialog) {
-                        if(NetworkUtils.checkNetworkAndShowError(MapActivity.this)){
-                            mPresenter.signToday(dialog);
-                        }
-                    }
-                }).show();
-    }
-
     private void imgIn(){
-        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mCardRoot,"translationY",-mCardRoot.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
-        cardAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",-mIvBag.getHeight()- DensityUtil.dip2px(this,12),0).setDuration(300);
-        bagAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mPhoneRoot,"translationY",mPhoneRoot.getHeight(),0).setDuration(300);
         phoneAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mIvSign,"translationX",mIvSign.getWidth() + DensityUtil.dip2px(this,14),0).setDuration(300);
-        signAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator roleAnimator = ObjectAnimator.ofFloat(mRoleRoot,"translationY",mRoleRoot.getHeight(),0).setDuration(300);
         roleAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
-        set.play(cardAnimator).with(bagAnimator);
-        set.play(bagAnimator).with(phoneAnimator);
-        set.play(phoneAnimator).with(signAnimator);
-        set.play(signAnimator).with(roleAnimator);
+        set.play(phoneAnimator).with(roleAnimator);
         set.start();
     }
 
     private void imgOut(){
-        ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mCardRoot,"translationY",0,-mCardRoot.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
-        cardAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator bagAnimator = ObjectAnimator.ofFloat(mIvBag,"translationY",0,-mIvBag.getHeight()- DensityUtil.dip2px(this,12)).setDuration(300);
-        bagAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mPhoneRoot,"translationY",0,mPhoneRoot.getHeight()).setDuration(300);
         phoneAnimator.setInterpolator(new OvershootInterpolator());
-        ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mIvSign,"translationX",0,mIvSign.getWidth() + DensityUtil.dip2px(this,14)).setDuration(300);
-        signAnimator.setInterpolator(new OvershootInterpolator());
         ObjectAnimator roleAnimator = ObjectAnimator.ofFloat(mRoleRoot,"translationY",0,mRoleRoot.getHeight()).setDuration(300);
         roleAnimator.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
-        set.play(cardAnimator).with(bagAnimator);
-        set.play(bagAnimator).with(phoneAnimator);
-        set.play(phoneAnimator).with(signAnimator);
-        set.play(signAnimator).with(roleAnimator);
+        set.play(phoneAnimator).with(roleAnimator);
         set.start();
     }
 
     private void showBtn(){
-        mCardRoot.setVisibility(View.VISIBLE);
-        mIvBag.setVisibility(View.VISIBLE);
-        mIvSign.setVisibility(View.VISIBLE);
         mIvRole.setVisibility(View.VISIBLE);
         mPhoneRoot.setVisibility(View.VISIBLE);
     }
 
     private void hideBtn(){
-        mCardRoot.setVisibility(View.INVISIBLE);
-        mIvBag.setVisibility(View.INVISIBLE);
-        mIvSign.setVisibility(View.INVISIBLE);
         mIvRole.setVisibility(View.INVISIBLE);
         mPhoneRoot.setVisibility(View.INVISIBLE);
     }
@@ -970,6 +927,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         RxBus.getInstance().unSubscribe(this);
         AppSetting.isRunning = false;
+        if(initDisposable != null && !initDisposable.isDisposed()) initDisposable.dispose();
+        if(resolvDisposable != null && !resolvDisposable.isDisposed()) resolvDisposable.dispose();
         RongIM.getInstance().removeUnReadMessageCountChangedObserver(this);
         super.onDestroy();
     }
@@ -1017,9 +976,16 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this,R.drawable.ic_inform_reddot),null,null,null);
             mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
         }else {
-            mTvMsg.setText("无新信息");
-            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
-            mTvMsg.setCompoundDrawablePadding(0);
+            if(PreferenceUtils.getDot(this)){
+                mTvMsg.setText("1条新消息");
+                mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this,R.drawable.ic_inform_reddot),null,null,null);
+                mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+            }else {
+                mTvMsg.setText("无新信息");
+                mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+                mTvMsg.setCompoundDrawablePadding(0);
+            }
+
         }
     }
 }

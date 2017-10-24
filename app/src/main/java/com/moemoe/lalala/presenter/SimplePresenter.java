@@ -97,7 +97,9 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo1.setRcToken(entity.getRcToken());
                                 finalInfo1.setLevel(entity.getLevel());
                                 finalInfo1.setOpenBag(entity.isOpenBag());
+                                finalInfo1.setVipTime(entity.getVipTime());
                                 finalInfo1.setInspector(entity.isInspector());
+                                finalInfo1.setInviteNum(entity.getInviteNum());
                                 finalInfo1.setDeskMateEntities(entity.getDeskMateList());
                                 PreferenceUtils.setAuthorInfo(finalInfo1);
                                 if(view != null) view.onSuccess(entity);
@@ -127,7 +129,9 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo.setRcToken(entity.getRcToken());
                                 finalInfo.setLevel(entity.getLevel());
                                 finalInfo.setOpenBag(entity.isOpenBag());
+                                finalInfo.setVipTime(entity.getVipTime());
                                 finalInfo.setInspector(entity.isInspector());
+                                finalInfo.setInviteNum(entity.getInviteNum());
                                 finalInfo.setDeskMateEntities(entity.getDeskMateList());
                                 PreferenceUtils.setAuthorInfo(finalInfo);
                                 if(view != null)  view.onSuccess(entity);

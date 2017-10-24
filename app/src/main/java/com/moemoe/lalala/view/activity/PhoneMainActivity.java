@@ -17,14 +17,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
+import com.moemoe.lalala.di.components.DaggerDetailComponent;
 import com.moemoe.lalala.di.components.DaggerPhoneMainComponent;
+import com.moemoe.lalala.di.modules.DetailModule;
 import com.moemoe.lalala.di.modules.PhoneMainModule;
+import com.moemoe.lalala.dialog.SignDialog;
 import com.moemoe.lalala.event.BackSchoolEvent;
 import com.moemoe.lalala.event.MateChangeEvent;
 import com.moemoe.lalala.event.SystemMessageEvent;
+import com.moemoe.lalala.model.entity.DailyTaskEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.NetaEvent;
+import com.moemoe.lalala.model.entity.PersonalMainEntity;
+import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.presenter.PhoneMainContract;
 import com.moemoe.lalala.presenter.PhoneMainPresenter;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
@@ -66,7 +74,7 @@ import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_
  */
 
 @SuppressWarnings("deprecation")
-public class PhoneMainActivity extends BaseAppCompatActivity{
+public class PhoneMainActivity extends BaseAppCompatActivity implements PhoneMainContract.View,IUnReadMessageObserver{
 
     @BindView(R.id.iv_back)
     ImageView mIvBack;
@@ -78,17 +86,25 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
     ImageView mIvRole;
     @BindView(R.id.iv_create_dynamic)
     ImageView mIvCreatDynamic;
-    @BindView(R.id.iv_create_wenzhang)
-    ImageView mIvCreateWen;
+//    @BindView(R.id.iv_create_wenzhang)
+//    ImageView mIvCreateWen;
     @BindView(R.id.tv_show_text)
     TextView mTvText;
     @BindView(R.id.rl_role_root)
     RelativeLayout mRoleRoot;
+    @BindView(R.id.iv_card_dot)
+    ImageView mCardDot;
+    @BindView(R.id.ll_wenzhang_root)
+    View mHouShanRoot;
+
+    @Inject
+    PhoneMainPresenter mPresenter;
 
     private BaseFragment mCurFragment;
 
     private FragmentTransaction mFragmentTransaction;
     private GestureDetector gestureDetector;
+    private boolean mIsSignPress;
 
     @Override
     protected int getLayoutId() {
@@ -97,6 +113,11 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
+        DaggerPhoneMainComponent.builder()
+                .phoneMainModule(new PhoneMainModule(this))
+                .netComponent(MoeMoeApplication.getInstance().getNetComponent())
+                .build()
+                .inject(this);
         AndroidBug5497Workaround.assistActivity(this);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -115,9 +136,30 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
                 mFragmentTransaction.commit();
             }
         }
+        boolean haveDot = getIntent().getBooleanExtra("have_dot",false);
+        if(haveDot){
+            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null, ContextCompat.getDrawable(this,R.drawable.ic_inform_reddot),null);
+            mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+        }else {
+            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+            mTvMsg.setCompoundDrawablePadding(0);
+        }
         gestureDetector = new GestureDetector(this,onGestureListener);
         subscribeSearchChangedEvent();
         ViewUtils.setRoleButton(mIvRole,mTvText);
+        if(AppSetting.TXBB){
+            mHouShanRoot.setVisibility(View.VISIBLE);
+            mHouShanRoot.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i = new Intent(PhoneMainActivity.this,OldDocActivity.class);
+                    startActivity(i);
+                }
+            });
+        }else {
+            mHouShanRoot.setVisibility(View.INVISIBLE);
+            mHouShanRoot.setOnClickListener(null);
+        }
     }
 
     @Override
@@ -184,25 +226,25 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
                 startActivity(i4);
             }
         });
-        mIvCreateWen.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                clickRole();
-                Intent intent = new Intent(PhoneMainActivity.this, CreateRichDocActivity.class);
-                intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
-                intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
-                intent.putExtra("from_name","书包");
-                intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");
-                startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
-            }
-        });
+//        mIvCreateWen.setOnClickListener(new NoDoubleClickListener() {
+//            @Override
+//            public void onNoDoubleClick(View v) {
+//                clickRole();
+//                Intent intent = new Intent(PhoneMainActivity.this, CreateRichDocActivity.class);
+//                intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
+//                intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
+//                intent.putExtra("from_name","书包");
+//                intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");
+//                startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
+//            }
+//        });
     }
 
     private void clickRole(){
         mIvRole.setSelected(!mIvRole.isSelected());
         if(mIvRole.isSelected()){
             mIvCreatDynamic.setVisibility(View.VISIBLE);
-            mIvCreateWen.setVisibility(View.VISIBLE);
+            //mIvCreateWen.setVisibility(View.VISIBLE);
             mTvText.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mRoleRoot.setLayoutParams(lp);
@@ -219,7 +261,7 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
             mIvRole.setLayoutParams(lp1);
         }else {
             mIvCreatDynamic.setVisibility(View.GONE);
-            mIvCreateWen.setVisibility(View.GONE);
+            //mIvCreateWen.setVisibility(View.GONE);
             mTvText.setVisibility(View.GONE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -238,6 +280,24 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
     }
 
     private void subscribeSearchChangedEvent() {
+        Disposable sysSubscription = RxBus.getInstance()
+                .toObservable(SystemMessageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .distinctUntilChanged()
+                .subscribe(new Consumer<SystemMessageEvent>() {
+                    @Override
+                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
+                        if(PreferenceUtils.getMessageDot(PhoneMainActivity.this,"neta") || PreferenceUtils.getMessageDot(PhoneMainActivity.this,"system") || PreferenceUtils.getMessageDot(PhoneMainActivity.this,"at_user")){
+                            mCardDot.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
         Disposable subscription1 = RxBus.getInstance()
                 .toObservable(MateChangeEvent.class)
                 .subscribeOn(Schedulers.io())
@@ -254,12 +314,25 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
 
                     }
                 });
+        RxBus.getInstance().addSubscription(this, sysSubscription);
         RxBus.getInstance().addSubscription(this, subscription1);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") ){//|| showDot){
+            mCardDot.setVisibility(View.VISIBLE);
+        }else {
+            mCardDot.setVisibility(View.GONE);
+        }
+        if(PreferenceUtils.getDot(this)){
+            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null, ContextCompat.getDrawable(this,R.drawable.ic_inform_reddot),null);
+            mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+        }else {
+            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+            mTvMsg.setCompoundDrawablePadding(0);
+        }
     }
 
     @Override
@@ -287,13 +360,13 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
         mCurFragment = null;
     }
 
-    @OnClick({R.id.ll_menu_root,R.id.ll_msg_root,R.id.ll_mate_root,R.id.ll_album_root,R.id.ll_alarm_root,R.id.ll_shop_root,R.id.ll_search_root,R.id.ll_find_root})
+    @OnClick({R.id.ll_menu_root,R.id.ll_msg_root,R.id.ll_mate_root,R.id.ll_album_root,R.id.ll_alarm_root,R.id.ll_shop_root,R.id.ll_search_root,R.id.ll_find_root,R.id.ll_person_root,R.id.ll_sign_root,R.id.ll_bag_root})
     public void onClick(View v){
-        mMainRoot.setVisibility(View.GONE);
-        mIvBack.setVisibility(View.GONE);
         switch (v.getId()){
             case R.id.ll_menu_root:
                 if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)){
+                    mMainRoot.setVisibility(View.GONE);
+                    mIvBack.setVisibility(View.GONE);
                     mCurFragment = PhoneMenuFragment.newInstance();
                     mFragmentTransaction = getSupportFragmentManager().beginTransaction();
                     mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMateSelectFragment.TAG);
@@ -302,6 +375,8 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
                 break;
             case R.id.ll_msg_root:
                 if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)){
+                    mMainRoot.setVisibility(View.GONE);
+                    mIvBack.setVisibility(View.GONE);
                     mCurFragment = PhoneMsgFragment.newInstance();
                     mFragmentTransaction = getSupportFragmentManager().beginTransaction();
                     mFragmentTransaction.add(R.id.phone_container,mCurFragment,PhoneMsgFragment.TAG);
@@ -310,6 +385,8 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
                 break;
             case R.id.ll_mate_root:
                 if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)) {
+                    mMainRoot.setVisibility(View.GONE);
+                    mIvBack.setVisibility(View.GONE);
                     mCurFragment = PhoneMateFragment.newInstance();
                     mFragmentTransaction = getSupportFragmentManager().beginTransaction();
                     mFragmentTransaction.add(R.id.phone_container, mCurFragment, PhoneMateFragment.TAG);
@@ -318,6 +395,8 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
                 break;
             case R.id.ll_album_root:
                 if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)) {
+                    mMainRoot.setVisibility(View.GONE);
+                    mIvBack.setVisibility(View.GONE);
                     mCurFragment = PhoneJuQingFragment.newInstance();
                     mFragmentTransaction = getSupportFragmentManager().beginTransaction();
                     mFragmentTransaction.add(R.id.phone_container, mCurFragment, PhoneJuQingFragment.TAG);
@@ -326,6 +405,8 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
                 break;
             case R.id.ll_alarm_root:
                 if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)) {
+                    mMainRoot.setVisibility(View.GONE);
+                    mIvBack.setVisibility(View.GONE);
                     mCurFragment = PhoneAlarmFragment.newInstance();
                     mFragmentTransaction = getSupportFragmentManager().beginTransaction();
                     mFragmentTransaction.add(R.id.phone_container, mCurFragment, PhoneAlarmFragment.TAG);
@@ -350,6 +431,37 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
                 Intent i3 = new Intent(PhoneMainActivity.this,WallBlockActivity.class);
                 startActivity(i3);
                 break;
+            case R.id.ll_person_root:
+                mMainRoot.setVisibility(View.VISIBLE);
+                mIvBack.setVisibility(View.VISIBLE);
+                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)){
+                    Intent i1 = new Intent(PhoneMainActivity.this,NewPersonalActivity.class);
+                    i1.putExtra(UUID,PreferenceUtils.getUUid());
+                    startActivity(i1);
+                }
+                break;
+            case R.id.ll_sign_root:
+                if(DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this) && !mIsSignPress){
+                    mIsSignPress = true;
+                    mPresenter.getDailyTask();
+                }
+                break;
+//            case R.id.ll_wenzhang_root:
+//                Intent i = new Intent(this,OldDocActivity.class);
+//                startActivity(i);
+//                break;
+            case R.id.ll_bag_root:
+                if(NetworkUtils.checkNetworkAndShowError(this) && DialogUtils.checkLoginAndShowDlg(PhoneMainActivity.this)) {
+                    if(PreferenceUtils.getAuthorInfo().isOpenBag()){
+                        Intent i2 = new Intent(this,NewBagActivity.class);
+                        i2.putExtra("uuid",PreferenceUtils.getUUid());
+                        startActivity(i2);
+                    }else {
+                        Intent i2 = new Intent(this,BagOpenActivity.class);
+                        startActivity(i2);
+                    }
+                }
+                break;
         }
     }
 
@@ -357,5 +469,51 @@ public class PhoneMainActivity extends BaseAppCompatActivity{
     protected void onDestroy() {
         RxBus.getInstance().unSubscribe(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onFailure(int code, String msg) {
+        mIsSignPress = false;
+    }
+
+    @Override
+    public void onDailyTaskLoad(DailyTaskEntity entity) {
+        mIsSignPress = false;
+        SignDialog dialog = new SignDialog(PhoneMainActivity.this);
+        dialog.setTask(entity);
+        dialog.setAnimationEnable(true)
+                .setPositiveListener(new SignDialog.OnPositiveListener() {
+                    @Override
+                    public void onClick(SignDialog dialog) {
+                        if(NetworkUtils.checkNetworkAndShowError(PhoneMainActivity.this)){
+                            mPresenter.signToday(dialog);
+                        }
+                    }
+                }).show();
+    }
+
+    public void loadPerson(){
+        mPresenter.requestPersonMain();
+    }
+
+    @Override
+    public void onPersonMainLoad(PersonalMainEntity entity) {
+        PersonalLevelActivity.startActivity(this,entity.getLevelName(),entity.getLevelColor(),entity.getScore(),entity.getLevelScoreStart(),entity.getLevelScoreEnd(),entity.getLevel());
+    }
+
+    @Override
+    public void changeSignState(SignEntity entity, boolean sign) {
+        if(sign) showToast(R.string.label_sign_suc);
+    }
+
+    @Override
+    public void onCountChanged(int i) {
+        if(i > 0){
+            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null, ContextCompat.getDrawable(this,R.drawable.ic_inform_reddot),null);
+            mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+        }else {
+            mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+            mTvMsg.setCompoundDrawablePadding(0);
+        }
     }
 }

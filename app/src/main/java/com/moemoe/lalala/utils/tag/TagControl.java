@@ -18,6 +18,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -92,6 +95,19 @@ public class TagControl {
         }
     }
 
+    private final class CompareStart implements Comparator<BaseUrlSpan> {
+        SpannableStringBuilder str;
+
+        public CompareStart(SpannableStringBuilder str) {
+            this.str = str;
+        }
+
+        @Override
+        public int compare(BaseUrlSpan o1, BaseUrlSpan o2) {
+            return str.getSpanStart(o1) - str.getSpanStart(o2);
+        }
+    }
+
     public String paresToString(CharSequence charSequence){
         String res;
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(charSequence);
@@ -99,7 +115,12 @@ public class TagControl {
         res = stringBuilder.toString();
         if(spen.length > 0){
             int step = 0;
-            for (BaseUrlSpan span : spen) {
+            ArrayList<BaseUrlSpan> spanList = new ArrayList<>();
+            for(BaseUrlSpan span : spen){
+                spanList.add(span);
+            }
+            Collections.sort(spanList, new CompareStart(stringBuilder));
+            for (BaseUrlSpan span : spanList) {
                 int before = res.length();
                 String beginStr = res.substring(0,stringBuilder.getSpanStart(span) + step);
                 String str = res.substring(stringBuilder.getSpanStart(span) + step,stringBuilder.getSpanEnd(span) + step);
@@ -116,48 +137,46 @@ public class TagControl {
         return res;
     }
 
-//    public String paresToString(CharSequence charSequence){
-//        String res = "";
-//        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(charSequence);
-//        BaseUrlSpan[] spen = stringBuilder.getSpans(0,stringBuilder.length(),BaseUrlSpan.class);
-//        res = stringBuilder.toString();
-//        if(spen.length > 0){
-//            int step = 0;
-//            for (BaseUrlSpan span : spen) {
-//                int before = res.length();
-//                String beginStr = res.substring(0,stringBuilder.getSpanStart(span) + step);
-//                String str = res.substring(stringBuilder.getSpanStart(span) + step,stringBuilder.getSpanEnd(span) + step);
-//                String endStr = res.substring(stringBuilder.getSpanEnd(span) + step);
-//                //TODO 根据不同的span
-//                str = "<at_user user_id="+ span.getmUrl() + ">" + str + "</at_user>";
-//                res = beginStr + str + endStr;
-//                step += res.length() - before;
-//            }
-//        }
-//        return res;
-//    }
-
     public SpannableStringBuilder paresToSpann(Context context,String s){
         Document document = Jsoup.parse(s);
-        Map<BaseTag,DoubleKeyValueMap<String,Integer,Integer>> resMap = new HashMap<>();
+        Map<BaseTag,DoubleKeyValueMap<HashMap<String,String>,Integer,Integer>> resMap = new HashMap<>();
         try {
             for (BaseTag tag : tags){
                 Elements elements = document.select(tag.getTag());
-                DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
+                DoubleKeyValueMap<HashMap<String,String>,Integer,Integer> map = new DoubleKeyValueMap<>();
                 for(Element element : elements){
+                    int before = s.length();
                     String text = element.text();
-                    String all = "";
+                    String all = element.toString().replace("\n","");
                     String value = "";
+                    HashMap<String,String> attrMap = new HashMap<>();
                     for(String attr : tag.getAttrs().keySet()){
                         value = element.attr(attr);
-                        all = element.toString().replace("\n","").replace("\"" + value + "\"",value).replace(" " + text,text);
+                        all = all.replace("\"" + value + "\"",value);
+                        attrMap.put(attr,value);
                     }
+                    all = all.replace(" " + text,text);
                     String beginStr = s.substring(0,s.indexOf(all));
                     String endStr = s.substring(s.indexOf(all) + all.length());
                     if(!TextUtils.isEmpty(value)){
-                        map.put(value,s.indexOf(all),s.indexOf(all) + text.length());
+                        map.put(attrMap,s.indexOf(all),s.indexOf(all) + text.length());
                     }
+                    int startTemp = s.indexOf(all);
                     s = beginStr + text + endStr;
+                    int step = before - s.length();
+                    for (BaseTag tagTemp : resMap.keySet()){
+                        DoubleKeyValueMap<HashMap<String,String>,Integer,Integer> mapD = resMap.get(tagTemp);
+                        for(HashMap<String,String> tempMap : mapD.getFirstKeys()){
+                            ConcurrentHashMap<Integer, Integer> concurrentHashMap = mapD.get(tempMap);
+                            for(Integer start : concurrentHashMap.keySet()){
+                                if(start > startTemp){
+                                    mapD.remove(tempMap);
+                                    int end = concurrentHashMap.get(start);
+                                    mapD.put(tempMap,start - step,end - step);
+                                }
+                            }
+                        }
+                    }
                 }
                 resMap.put(tag,map);
             }
@@ -166,21 +185,20 @@ public class TagControl {
         }
         SpannableStringBuilder stringBuilder = new SpannableStringBuilder(s);
         for (BaseTag tag : resMap.keySet()){
-            DoubleKeyValueMap<String,Integer,Integer> map = resMap.get(tag);
-            for(String id : map.getFirstKeys()){
-                ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(id);
+            DoubleKeyValueMap<HashMap<String,String>,Integer,Integer> map = resMap.get(tag);
+            for(HashMap<String,String> attrMap : map.getFirstKeys()){
+                ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(attrMap);
                 for(Integer begin : concurrentHashMap.keySet()){
                     int end = concurrentHashMap.get(begin);
-                    tag.getSpan().setmUrl(id);
                     BaseUrlSpan span;
                     BaseTag tag1 = new BaseTag();
                     tag1.setTag(tag.getTag());
-                    tag1.setAttrs(tag.getAttrs());
+                    tag1.setAttrs(attrMap);
                     if(tag.getSpan() instanceof UserUrlSpan){
-                        span = new UserUrlSpan(context,id,tag1);
+                        span = new UserUrlSpan(context,attrMap.get("user_id"),tag1);
                         tag1.setSpan(span);
                     }else {
-                        span = new ImageUrlSpan(context,id,tag1);
+                        span = new ImageUrlSpan(context,attrMap.get("path"),tag1);
                         tag1.setSpan(span);
                     }
                     stringBuilder.setSpan(span,begin,end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

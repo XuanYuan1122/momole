@@ -116,6 +116,23 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         finish();
     }
 
+    private void go2Login(){
+        saveLaunch();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(LoginActivity.EXTRA_KEY_FIRST_RUN, true);
+        Intent i = new Intent(this,LoginActivity.class);
+        i.putExtra(LoginActivity.EXTRA_KEY_SETTING, true);
+        i.putExtras(bundle);
+        startActivity(i);
+        finish();
+    }
+
+    private void saveLaunch(){
+        PreferenceUtils.setAppFirstLaunch(this,false);
+        PreferenceUtils.setVersion2FirstLaunch(this,false);
+        PreferenceUtils.setVersionCode(this,getString(R.string.app_version_code));
+    }
+
     private void goToGuide(){
         Intent intent = new Intent(this, GuideActivity.class);
         startActivity(intent);
@@ -184,7 +201,11 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
                         @Override
                         public void onComplete() {
-                            goToGuide();
+                            if(PreferenceUtils.isLogin()){
+                                goToMain();
+                            }else {
+                                go2Login();
+                            }
                         }
                     });
         }else {

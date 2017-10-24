@@ -144,6 +144,19 @@ public class PreferenceUtils {
         return sp.getString("neta_role","");
     }
 
+    public static void setDot(Context context,boolean dot){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("phone_msg_dot", dot);
+        ed.commit();
+    }
+
+    public static boolean getDot(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getBoolean("phone_msg_dot",false);
+    }
+
     public static void setIp(Context context,String ip){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();

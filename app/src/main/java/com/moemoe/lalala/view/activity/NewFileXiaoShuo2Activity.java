@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -305,14 +304,14 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
 
         View preRoot = mBottomView.findViewById(R.id.ll_pre_root);
         View nextRoot = mBottomView.findViewById(R.id.ll_next_root);
-        RelativeLayout preRl = (RelativeLayout) mBottomView.findViewById(R.id.rl_pre_root);
-        RelativeLayout nextRl = (RelativeLayout) mBottomView.findViewById(R.id.rl_next_root);
-        ImageView ivPre = (ImageView) mBottomView.findViewById(R.id.iv_cover);
-        ImageView ivNext = (ImageView) mBottomView.findViewById(R.id.iv_cover_next);
-        TextView markPre = (TextView) mBottomView.findViewById(R.id.tv_mark);
-        TextView markNext = (TextView) mBottomView.findViewById(R.id.tv_mark_next);
-        TextView titlePre = (TextView) mBottomView.findViewById(R.id.tv_title);
-        TextView titleNext = (TextView) mBottomView.findViewById(R.id.tv_title_next);
+        RelativeLayout preRl = mBottomView.findViewById(R.id.rl_pre_root);
+        RelativeLayout nextRl = mBottomView.findViewById(R.id.rl_next_root);
+        ImageView ivPre = mBottomView.findViewById(R.id.iv_cover);
+        ImageView ivNext = mBottomView.findViewById(R.id.iv_cover_next);
+        TextView markPre = mBottomView.findViewById(R.id.tv_mark);
+        TextView markNext = mBottomView.findViewById(R.id.tv_mark_next);
+        TextView titlePre = mBottomView.findViewById(R.id.tv_title);
+        TextView titleNext = mBottomView.findViewById(R.id.tv_title_next);
         markPre.setVisibility(View.GONE);
         markNext.setVisibility(View.GONE);
         if(mPosition == mManHualist.size()){
@@ -328,8 +327,8 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
         int width = (DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,42)) / 3;
         int height = DensityUtil.dip2px(this,140);
 
-        preRl.setLayoutParams(new LinearLayoutCompat.LayoutParams(width,height));
-        nextRl.setLayoutParams(new LinearLayoutCompat.LayoutParams(width,height));
+        preRl.setLayoutParams(new LinearLayout.LayoutParams(width,height));
+        nextRl.setLayoutParams(new LinearLayout.LayoutParams(width,height));
         if(mPosition > 0){
             Glide.with(this)
                     .load(StringUtils.getUrl(this,mManHualist.get(mPosition - 1).getCover(),width,height, false, true))
@@ -362,7 +361,7 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                                             dialog.dismiss();
                                             FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
                                             showToast("下载失败");
-                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),true).subscribe();
                                         }
 
                                         @Override
@@ -423,7 +422,7 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                                             dialog.dismiss();
                                             FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
                                             showToast("下载失败");
-                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
+                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),true).subscribe();
                                         }
 
                                         @Override

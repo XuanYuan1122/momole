@@ -10,14 +10,14 @@ import android.os.Parcelable;
  */
 
 public class UserTopEntity implements Parcelable {
-    private String userId;
-    private String userName;
-    private String headPath;
-    private String sex;
-    private String levelColor;
-    private int level;
-    private BadgeEntity badge;
-    private boolean vip;
+        private String userId;
+        private String userName;
+        private String headPath;
+        private String sex;
+        private String levelColor;
+        private int level;
+        private BadgeEntity badge;
+        private boolean vip;
 
     @Override
     public int describeContents() {

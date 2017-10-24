@@ -322,7 +322,7 @@ public class ViewUtils {
                             tv.setText("学园里的事情就交给美藤吧！小哥哥有想做的事要跟我说哦？我想现在有不少学部需要你呐！");
                         }
                         if("sari".equals(mate)){
-                            ivRole.setImageResource(R.drawable.btn_mei_sleep);
+                            ivRole.setImageResource(R.drawable.btn_sari_sleep);
                             tv.setText("少年，你是哪位？开玩笑的啦。说好了要和你一起逛逛的，接下来去哪里好？我可是很期待呢。");
                         }
                     }else {
@@ -360,6 +360,8 @@ public class ViewUtils {
                                 ivRole.setImageResource(R.drawable.btn_len_xmas);
                             }else if(mate.getClothesId().equals("6ceba098-1f53-4e67-b61d-ad6fdc59d06a")){
                                 ivRole.setImageResource(R.drawable.btn_len_kimono);
+                            }else if(mate.getClothesId().equals("b940dcb6-e52c-4093-8075-09da6a29794e")){
+                                ivRole.setImageResource(R.drawable.btn_len_halloween);
                             }else {
                                 ivRole.setImageResource(R.drawable.btn_len_normal);
                             }
@@ -370,6 +372,8 @@ public class ViewUtils {
                                 ivRole.setImageResource(R.drawable.btn_mei_normal);
                             }else if(mate.getClothesId().equals("fc745524-df5c-43e6-b6db-3a1ee05c283c")){
                                 ivRole.setImageResource(R.drawable.btn_mei_kimono);
+                            }else if(mate.getClothesId().equals("88d05ace-aefb-4b5a-8997-929294232805")){
+                                ivRole.setImageResource(R.drawable.btn_mei_halloween);
                             }else {
                                 ivRole.setImageResource(R.drawable.btn_mei_normal);
                             }
@@ -380,6 +384,8 @@ public class ViewUtils {
                                 ivRole.setImageResource(R.drawable.btn_sari_normal);
                             }else if(mate.getClothesId().equals("83e2b3cc-6831-4405-a3b5-6da7fd51cd5d")){
                                 ivRole.setImageResource(R.drawable.btn_sari_kimono);
+                            }else if(mate.getClothesId().equals("e0e88782-7615-4222-919e-d8ad14d2a8f4")){
+                                ivRole.setImageResource(R.drawable.btn_sari_halloween);
                             }else {
                                 ivRole.setImageResource(R.drawable.btn_sari_normal);
                             }

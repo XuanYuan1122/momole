@@ -1,6 +1,7 @@
 package com.moemoe.lalala.view.fragment;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
@@ -23,8 +24,11 @@ import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.view.activity.PhoneAlarmActivity;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -144,7 +148,7 @@ public class PhoneAlarmEditFragment extends BaseFragment{
         }
         if(mAlarmClock == null){
             mAlarmClock = new AlarmClockEntity();
-            mAlarmClock.setId(null);
+            mAlarmClock.setId(-1);
             mAlarmClock.setOnOff(true); // 闹钟默认开启
             mAlarmClock.setRepeat("只响一次");
             mAlarmClock.setWeeks(null);
@@ -516,7 +520,18 @@ public class PhoneAlarmEditFragment extends BaseFragment{
     }
 
     public void sendAlarmEvent(boolean isUpdate){
+
         AlarmClockEntityDao dao = GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao();
+        if(mAlarmClock.getId() == -1){
+            AlarmClockEntity entity = dao.queryBuilder().orderDesc(AlarmClockEntityDao.Properties.Id).limit(1).unique();
+            long id;
+            if(entity == null){
+                id = 0;
+            }else {
+                id = entity.getId();
+            }
+            mAlarmClock.setId(id + 1);
+        }
         dao.insertOrReplace(mAlarmClock);
         RxBus.getInstance().post(new AlarmEvent(mAlarmClock,isUpdate?3:1));
     }

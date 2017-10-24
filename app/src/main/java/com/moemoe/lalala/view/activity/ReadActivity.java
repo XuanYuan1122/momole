@@ -145,7 +145,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
             finish();
         }
         downloadSub = RxDownload.getInstance(this)
-                .maxThread(3)
+                .maxThread(1)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getNovRootPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
@@ -402,7 +402,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                                                 dialog.dismiss();
                                                 FileUtil.deleteDir(StorageUtils.getNovRootPath() + bookList.get(0).getId());
                                                 showToast("下载失败");
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  bookList.get(0).getPath(),false).subscribe();
+                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  bookList.get(0).getPath(),true).subscribe();
                                             }
 
                                             @Override

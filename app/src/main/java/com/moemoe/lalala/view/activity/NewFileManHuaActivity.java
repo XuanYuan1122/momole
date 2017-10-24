@@ -272,7 +272,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
             MenuItem item = new MenuItem(2, "举报");
             items.add(item);
         }
-        MenuItem item = new MenuItem(4, "转发");
+        MenuItem item = new MenuItem(4, "转发到动态");
         items.add(item);
         bottomMenuFragment.setMenuItems(items);
         bottomMenuFragment.setShowTop(false);
@@ -728,7 +728,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
     @Override
     public void onBuyFolderSuccess() {
         alertDialogUtil.dismissDialog();
-        mAdapter.setBuy(true);
+        mAdapter.setBuy(false);
         mAdapter.notifyDataSetChanged();
     }
 

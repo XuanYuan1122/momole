@@ -165,7 +165,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         mPlayer.registerCallback(this);
         fragment = new BottomMenuFragment();
         downloadSub = RxDownload.getInstance(mContext)
-                .maxThread(3)
+                .maxThread(1)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
@@ -650,7 +650,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.mIvLongImage.setVisibility(View.GONE);
         }else {
             final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW() * 2, image.getH() * 2, DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,size));
-            if(wh[1] > 2048){
+            if(((float)wh[1] / wh[0]) > 16.0f / 9.0f){
                 holder.mIvImage.setVisibility(View.GONE);
                 holder.mIvLongImage.setVisibility(View.VISIBLE);
                 String temp = EncoderUtils.MD5(ApiService.URL_QINIU + image.getPath()) + ".jpg";
@@ -1264,6 +1264,12 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(mContext))
                 .into(holder.avatar);
+        holder.avatar.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ViewUtils.toPersonal(mContext,entity.getCreateUser().getUserId());
+            }
+        });
         holder.userName.setText(entity.getCreateUser().getUserName());
         LevelSpan levelSpan = new LevelSpan(ContextCompat.getColor(mContext,R.color.white),mContext.getResources().getDimension(R.dimen.x12));
         final String content = "LV" + entity.getCreateUser().getLevel();

@@ -1,1 +1,1 @@
-include ':app', ':IMKit', ':IMLib', ':pingpp', ':kiragame'
+include ':app', ':IMKit', ':IMLib', ':pingpp', ':kiragame', ':rxdownload2'

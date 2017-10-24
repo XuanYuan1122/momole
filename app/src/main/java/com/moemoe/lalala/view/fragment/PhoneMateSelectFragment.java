@@ -1,5 +1,6 @@
 package com.moemoe.lalala.view.fragment;
 
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
@@ -70,10 +71,6 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
     View mSelectRoot;
     @BindView(R.id.tv_set_mate)
     TextView mTvSelectMate;
-//    @BindView(R.id.iv_back)
-//    ImageView mIvBack;
-//    @BindView(R.id.tv_toolbar_title)
-//    TextView mTvTitle;
     @BindView(R.id.tv_col_luyin)
     TextView mTvCol;
 
@@ -104,16 +101,6 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-//        mIvBack.setVisibility(View.VISIBLE);
-//        mIvBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onBackPressed();
-//            }
-//        });
-//        mIvBack.setImageResource(R.drawable.btn_phone_back);
-//        mTvTitle.setTextColor(ContextCompat.getColor(getContext(),R.color.main_cyan));
-//        mTvTitle.setText("同桌");
 
         mListDocs.getSwipeRefreshLayout().setEnabled(false);
         mListDocs.setLoadMoreEnabled(false);
@@ -133,8 +120,11 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
         mAdapter2.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                PhoneFukuEntity entity = mAdapter2.getItem(position);
+                if(entity.isHave()){
+                    mCurFukuId = mAdapter2.getItem(position).getId();
+                }
                 setFukuView(mAdapter2.getItem(position));
-                mCurFukuId = mAdapter2.getItem(position).getId();
                 haveFuku = mAdapter2.getItem(position).isHave();
                 mAdapter2.setSelect(position);
                 mAdapter2.notifyDataSetChanged();
@@ -324,6 +314,7 @@ public class PhoneMateSelectFragment extends BaseFragment implements PhoneMateCo
             shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(like.getLevelColor(), ContextCompat.getColor(getContext(), R.color.main_cyan)));
             mTvRelationship.setBackgroundDrawable(shapeDrawable2);
             mTvRelationship.setText(like.getLevelName());
+            mTvRelationship.setTextColor(Color.WHITE);
             mTvExtra.setText("下一级好感度:");
             mTvExtraContent.setTextColor(ContextCompat.getColor(getContext(),R.color.pink_fb7ba2));
             mTvExtraContent.setText(mate.getLikes() + "/" + like.getEnd());

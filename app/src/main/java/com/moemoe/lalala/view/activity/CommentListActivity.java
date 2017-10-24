@@ -249,11 +249,7 @@ public class CommentListActivity extends BaseAppCompatActivity implements Commen
     public void onLoadCommentsSuccess(ArrayList<CommentV2Entity> commentV2Entities, boolean isPull) {
         mIsLoading = false;
         mRvList.setComplete();
-        if(commentV2Entities.size() >= ApiService.LENGHT){
-            mRvList.setLoadMoreEnabled(true);
-        }else {
-            mRvList.setLoadMoreEnabled(false);
-        }
+        mRvList.setLoadMoreEnabled(true);
         if(isPull){
             mAdapter.setList(commentV2Entities);
         }else {

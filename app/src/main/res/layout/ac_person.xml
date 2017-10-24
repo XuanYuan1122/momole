@@ -44,12 +44,12 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="@dimen/y460"
             android:background="@color/white"
             app:contentScrim="@color/white"
             app:title=""
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="@dimen/x128"
+            app:expandedTitleMarginStart="@dimen/x96"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <RelativeLayout
@@ -61,13 +61,13 @@
                 <ImageView
                     android:id="@+id/iv_background"
                     android:layout_width="match_parent"
-                    android:layout_height="230dp"
+                    android:layout_height="@dimen/y460"
                     android:scaleType="fitXY"
                     android:src="@drawable/bg_default_square"/>
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="@dimen/y200"
                     android:src="@drawable/icon_blackboard_mask"
                     android:layout_alignBottom="@+id/iv_background"
                     android:scaleType="fitXY"/>
@@ -88,8 +88,8 @@
 
                     <ImageView
                         android:id="@+id/iv_vip"
-                        android:layout_width="@dimen/x172"
-                        android:layout_height="@dimen/x189"
+                        android:layout_width="@dimen/x160"
+                        android:layout_height="@dimen/x160"
                         android:src="@drawable/ic_userhead_vip_big"
                         android:visibility="gone"/>
                 </FrameLayout>
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/size_2"
+                    android:layout_marginTop="@dimen/y4"
                     android:layout_below="@+id/fl_avatar"
                     android:textSize="@dimen/x36"
                     android:textStyle="bold" />
@@ -111,72 +111,72 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@+id/tv_name"
-                    android:layout_marginTop="@dimen/size_2"
+                    android:layout_marginTop="@dimen/y4"
                     android:textColor="@color/white"
                     android:textSize="@dimen/x20"/>
 
                 <ImageView
                     android:id="@+id/iv_gender"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/size_22"
+                    android:layout_height="@dimen/y44"
                     android:layout_alignBottom="@+id/tv_name"
                     android:layout_toEndOf="@+id/tv_name"
                     android:gravity="center_vertical"
-                    android:layout_marginStart="@dimen/size_3"
+                    android:layout_marginStart="@dimen/x6"
                     android:src="@drawable/ic_girl"
                     android:visibility="gone"/>
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="18dp"
+                    android:layout_height="@dimen/y36"
                     android:gravity="center_vertical"
                     android:layout_alignTop="@+id/tv_fans_num"
                     android:layout_toStartOf="@+id/tv_fans_num"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/size_12"
+                    android:textSize="@dimen/x24"
                     android:text="@string/label_fans"/>
 
                 <TextView
                     android:id="@+id/tv_fans_num"
                     android:layout_width="wrap_content"
-                    android:layout_height="18dp"
+                    android:layout_height="@dimen/y36"
                     android:layout_alignTop="@+id/view_sep_1"
                     android:layout_toStartOf="@+id/view_sep_1"
-                    android:textSize="@dimen/size_12"
+                    android:textSize="@dimen/x24"
                     android:gravity="center_vertical"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:layout_marginStart="@dimen/size_5"/>
+                    android:layout_marginStart="@dimen/x10"/>
 
 
                 <View
                     android:id="@+id/view_sep_1"
-                    android:layout_width="@dimen/size_1"
-                    android:layout_height="18dp"
+                    android:layout_width="@dimen/x2"
+                    android:layout_height="@dimen/y36"
                     android:background="@color/white"
                     android:layout_alignTop="@+id/ll_tv_doc_num"
-                    android:layout_toLeftOf="@+id/ll_tv_doc_num"
                     android:layout_toStartOf="@+id/ll_tv_doc_num"
-                    android:layout_marginLeft="@dimen/size_5"
-                    android:layout_marginStart="@dimen/size_5"
-                    android:layout_marginRight="@dimen/size_5"
-                    android:layout_marginEnd="@dimen/size_5"/>
+                    android:layout_marginLeft="@dimen/x10"
+                    android:layout_marginStart="@dimen/x10"
+                    android:layout_marginRight="@dimen/x10"
+                    android:layout_marginEnd="@dimen/x10"/>
 
                 <LinearLayout
                     android:id="@+id/ll_tv_doc_num"
                     android:layout_width="wrap_content"
-                    android:layout_height="18dp"
+                    android:layout_height="@dimen/y36"
                     android:orientation="horizontal"
                     android:layout_below="@+id/tv_kira_num"
-                    android:layout_marginTop="@dimen/size_2"
+                    android:layout_marginTop="@dimen/y4"
                     android:layout_centerHorizontal="true"
                     android:gravity="center_vertical">
+
                     <TextView
                         android:id="@+id/tv_doc_num_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/size_12"
+                        android:textSize="@dimen/x24"
                         android:text="关注"/>
 
                     <TextView
@@ -185,58 +185,51 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:textStyle="bold"
-                        android:textSize="@dimen/size_12"
-                        android:layout_marginLeft="@dimen/size_5"
-                        android:layout_marginStart="@dimen/size_5" />
+                        android:textSize="@dimen/x24"
+                        android:layout_marginStart="@dimen/x10" />
                 </LinearLayout>
 
                 <View
                     android:id="@+id/view_sep_2"
-                    android:layout_width="@dimen/size_1"
-                    android:layout_height="18dp"
+                    android:layout_width="@dimen/x2"
+                    android:layout_height="@dimen/y36"
                     android:background="@color/white"
                     android:layout_alignTop="@+id/ll_tv_doc_num"
-                    android:layout_toRightOf="@+id/ll_tv_doc_num"
                     android:layout_toEndOf="@+id/ll_tv_doc_num"
-                    android:layout_marginLeft="@dimen/size_5"
-                    android:layout_marginStart="@dimen/size_5"/>
+                    android:layout_marginStart="@dimen/x10"/>
 
                 <TextView
                     android:id="@+id/tv_coin_num_title"
                     android:layout_width="wrap_content"
-                    android:layout_height="18dp"
+                    android:layout_height="@dimen/y36"
                     android:gravity="center_vertical"
                     android:layout_alignTop="@+id/view_sep_2"
-                    android:layout_toRightOf="@+id/view_sep_2"
                     android:layout_toEndOf="@+id/view_sep_2"
-                    android:layout_marginLeft="@dimen/size_5"
-                    android:layout_marginStart="@dimen/size_5"
+                    android:layout_marginStart="@dimen/x10"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/size_12"
+                    android:textSize="@dimen/x24"
                     android:text="@string/label_my_coin"/>
 
                 <TextView
                     android:id="@+id/tv_coin_num"
                     android:layout_width="wrap_content"
-                    android:layout_height="18dp"
+                    android:layout_height="@dimen/y36"
                     android:layout_alignTop="@+id/tv_coin_num_title"
-                    android:layout_toRightOf="@+id/tv_coin_num_title"
                     android:layout_toEndOf="@+id/tv_coin_num_title"
                     android:gravity="center_vertical"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/size_12"
+                    android:textSize="@dimen/x24"
                     android:textStyle="bold"
-                    android:layout_marginLeft="@dimen/size_5"
-                    android:layout_marginStart="@dimen/size_5" />
+                    android:layout_marginStart="@dimen/x10" />
 
                 <TextView
                     android:id="@+id/tv_huiyuan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/size_4"
+                    android:layout_marginTop="@dimen/y8"
                     android:layout_centerHorizontal="true"
                     android:layout_alignBottom="@+id/iv_background"
-                    android:layout_marginBottom="@dimen/size_10"
+                    android:layout_marginBottom="@dimen/y20"
                     android:textColor="@color/yellow_f2cc2c"
                     android:textSize="@dimen/x18" />
 
@@ -246,30 +239,29 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_alignBottom="@+id/iv_background"
-                    android:layout_marginBottom="@dimen/size_6"
+                    android:layout_marginBottom="@dimen/y12"
                     android:layout_centerHorizontal="true"
                     android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_private_msg"
-                        android:layout_width="@dimen/size_80"
-                        android:layout_height="@dimen/size_30"
+                        android:layout_width="@dimen/x160"
+                        android:layout_height="@dimen/y60"
                         android:background="@drawable/shape_rect_border_white_no_background_6"
-                        android:textSize="@dimen/size_15"
+                        android:textSize="@dimen/x30"
                         android:gravity="center"
                         android:textColor="@color/white"
-                        android:layout_marginRight="@dimen/size_8"
-                        android:layout_marginEnd="@dimen/size_8"
+                        android:layout_marginEnd="@dimen/x16"
                         android:text="私信"/>
 
                     <TextView
                         android:id="@+id/tv_follow"
-                        android:layout_width="@dimen/size_80"
-                        android:layout_height="@dimen/size_30"
+                        android:layout_width="@dimen/x160"
+                        android:layout_height="@dimen/y60"
                         android:background="@drawable/btn_rect_corner_cyan_6"
                         android:text="@string/label_follow"
                         android:textColor="@color/txt_white_cyan"
-                        android:textSize="@dimen/size_15"
+                        android:textSize="@dimen/x30"
                         android:gravity="center"
                         android:visibility="visible"/>
                 </LinearLayout>
@@ -280,10 +272,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/iv_background"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="@dimen/size_12"
-                    android:layout_marginRight="@dimen/size_12"
-                    android:layout_marginEnd="@dimen/size_12"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="@dimen/y24"
+                    android:layout_marginEnd="@dimen/x24"
                     android:src="@drawable/btn_cardbg_edit"
                     android:visibility="gone"/>
             </RelativeLayout>
@@ -291,7 +282,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/neta_toolbar"
+                android:layout_height="@dimen/y100"
                 app:navigationIcon="@drawable/btn_back_white_normal"
                 app:layout_collapseMode="pin"
                 android:layout_marginTop="@dimen/status_bar_height"
@@ -310,16 +301,18 @@
 
                         <ImageView
                             android:id="@+id/iv_msg"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="@dimen/x94"
+                            android:layout_height="@dimen/y100"
+                            android:paddingTop="@dimen/y32"
+                            android:paddingBottom="@dimen/y32"
                             android:paddingEnd="@dimen/x18"
                             android:paddingStart="@dimen/x36"
                             android:src="@drawable/btn_person_msg"/>
 
                         <ImageView
                             android:id="@+id/iv_red_msg"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="@dimen/x14"
+                            android:layout_height="@dimen/y14"
                             android:layout_alignEnd="@+id/iv_msg"
                             android:layout_marginEnd="@dimen/x12"
                             android:src="@drawable/ic_inform_reddot"
@@ -329,8 +322,10 @@
 
                     <ImageView
                         android:id="@+id/iv_menu_list"
-                        android:layout_height="match_parent"
-                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/y100"
+                        android:layout_width="@dimen/x86"
+                        android:paddingTop="@dimen/y32"
+                        android:paddingBottom="@dimen/y32"
                         android:paddingEnd="@dimen/x36"
                         android:paddingStart="@dimen/x18"
                         android:src="@drawable/btn_menu_white_normal" />
@@ -341,11 +336,11 @@
             <TextView
                 android:id="@+id/tv_toolbar_title"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/neta_toolbar"
+                android:layout_height="@dimen/y100"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:maxLength="16"
-                android:textSize="18dp"
+                android:textSize="@dimen/x36"
                 android:textStyle="bold"
                 android:text=""
                 android:layout_gravity="center_horizontal|bottom"

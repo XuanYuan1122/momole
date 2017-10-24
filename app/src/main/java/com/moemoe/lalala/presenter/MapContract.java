@@ -13,7 +13,7 @@ import com.moemoe.lalala.model.entity.MapMarkContainer;
 import com.moemoe.lalala.model.entity.NetaEvent;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
-import com.moemoe.lalala.utils.JuQingDoneEntity;
+import com.moemoe.lalala.model.entity.JuQingDoneEntity;
 import com.moemoe.lalala.view.widget.map.MapWidget;
 
 import java.util.ArrayList;
@@ -26,9 +26,6 @@ import java.util.Date;
 public interface MapContract {
     interface Presenter extends BasePresenter{
         void checkVersion();
-        void signToday(SignDialog dialog);
-        void getDailyTask();
-        void requestPersonMain();
         void checkBuild(int buildVersion,int appVersion);
         void getEventList();
         void saveEvent(NetaEvent event);
@@ -43,10 +40,7 @@ public interface MapContract {
     }
 
     interface View extends BaseView{
-        void changeSignState(SignEntity entity, boolean sign);
         void showUpdateDialog(AppUpdateEntity entity);
-        void onDailyTaskLoad(DailyTaskEntity entity);
-        void onPersonMainLoad(PersonalMainEntity entity);
         void checkBuildSuccess(BuildEntity s);
         void getEventSuccess(ArrayList<NetaEvent> events);
         void saveEventSuccess();
@@ -56,6 +50,7 @@ public interface MapContract {
         void onCheckStoryVersionSuccess(int version);
         void onFindMyDoneJuQingSuccess(ArrayList<JuQingDoneEntity> entities);
         void onMapMarkLoaded(MapMarkContainer container);
+        void onMapEventLoaded(MapMarkContainer container);
         void onLoadMapPics(ArrayList<MapEntity> entities);
     }
 }

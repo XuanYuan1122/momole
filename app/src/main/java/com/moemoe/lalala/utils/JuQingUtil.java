@@ -1,11 +1,7 @@
 package com.moemoe.lalala.utils;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.util.Xml;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -18,37 +14,24 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.CircleTimeTrigger;
 import com.moemoe.lalala.model.entity.DeskMateEntity;
 import com.moemoe.lalala.model.entity.ImpressionTrigger;
+import com.moemoe.lalala.model.entity.JuQingDoneEntity;
 import com.moemoe.lalala.model.entity.JuQingMapShowEntity;
 import com.moemoe.lalala.model.entity.JuQingShowEntity;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
 import com.moemoe.lalala.model.entity.LevelTrigger;
-import com.moemoe.lalala.model.entity.MapDbEntity;
 import com.moemoe.lalala.model.entity.PreposeTrigger;
 import com.moemoe.lalala.model.entity.ProgressTrigger;
 import com.moemoe.lalala.model.entity.SpecificTimeTrigger;
 
-import org.xml.sax.XMLReader;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Locale;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -59,7 +42,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import zlc.season.rxdownload2.RxDownload;
 import zlc.season.rxdownload2.entity.DownloadStatus;
@@ -119,6 +101,10 @@ public class JuQingUtil {
             dao.deleteAll();
             dao.insertOrReplaceInTx(entities);
         }
+    }
+
+    public static void clearJuQingDone(){
+        GreenDaoManager.getInstance().getSession().getJuQingDoneEntityDao().deleteAll();
     }
 
     /**
@@ -242,9 +228,50 @@ public class JuQingUtil {
                 res = res && checkLevelTime(item);
             }else if("weather".equals(type)){//天气
                 //TODO 目前没有天气
+                res = false;
+            }else if("vip".equals(type)){
+                res = res && checkVip(item,calendar);
+            }else if("invite".equals(type)){
+                res = res && checkInvite(item);
+            }else {
+                res = false;
             }
         }
         return res;
+    }
+
+    public static boolean checkInvite(JsonObject item){
+        int num = item.get("num").getAsInt();
+        if(!PreferenceUtils.isLogin()){
+            return false;
+        }
+        if(PreferenceUtils.getAuthorInfo().getInviteNum() >= num){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public static boolean checkVip(JsonObject item,Calendar calendar){
+        if(!PreferenceUtils.isLogin()){
+            return false;
+        }
+        if(TextUtils.isEmpty(PreferenceUtils.getAuthorInfo().getVipTime())){
+           return false;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Calendar calendar1 = Calendar.getInstance();
+        try {
+            calendar1.setTime(sdf.parse(PreferenceUtils.getAuthorInfo().getVipTime()));
+            if(StringUtils.matchCurrentTime(calendar,calendar1)){
+                return true;
+            }else {
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static boolean checkCircleTime(JsonObject item,Calendar calendar){
@@ -378,7 +405,7 @@ public class JuQingUtil {
                     if(!name.endsWith(".temp.kira")){
                         name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                     }
-                    entity1.getVol().setLocalPath(StorageUtils.getMapRootPath() + name);
+                    entity1.getVol().setLocalPath(StorageUtils.getEventRootPath() + name);
                 }
 
                 JsonObject bgm = json.get("bgm").getAsJsonObject();
@@ -389,7 +416,7 @@ public class JuQingUtil {
                     if(!name.endsWith(".temp.kira")){
                         name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                     }
-                    entity1.getBgm().setLocalPath(StorageUtils.getMapRootPath() + name);
+                    entity1.getBgm().setLocalPath(StorageUtils.getEventRootPath() + name);
                 }
 
                 JsonObject talk = json.get("talk").getAsJsonObject();
@@ -405,7 +432,7 @@ public class JuQingUtil {
                     if(!name.endsWith(".temp.kira")){
                         name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                     }
-                    entity1.getPose().setLocalPath(StorageUtils.getMapRootPath() + name);
+                    entity1.getPose().setLocalPath(StorageUtils.getEventRootPath() + name);
                 }
 
                 JsonObject face = json.get("character_face").getAsJsonObject();
@@ -417,7 +444,7 @@ public class JuQingUtil {
                     if(!name.endsWith(".temp.kira")){
                         name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                     }
-                    entity1.getFace().setLocalPath(StorageUtils.getMapRootPath() + name);
+                    entity1.getFace().setLocalPath(StorageUtils.getEventRootPath() + name);
                 }
 
                 JsonObject extra = json.get("character_extra").getAsJsonObject();
@@ -429,7 +456,7 @@ public class JuQingUtil {
                     if(!name.endsWith(".temp.kira")){
                         name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                     }
-                    entity1.getExtra().setLocalPath(StorageUtils.getMapRootPath() + name);
+                    entity1.getExtra().setLocalPath(StorageUtils.getEventRootPath() + name);
                 }
 
                 JsonObject cg = json.get("CG").getAsJsonObject();
@@ -441,7 +468,7 @@ public class JuQingUtil {
                     if(!name.endsWith(".temp.kira")){
                         name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                     }
-                    entity1.getCg().setLocalPath(StorageUtils.getMapRootPath() + name);
+                    entity1.getCg().setLocalPath(StorageUtils.getEventRootPath() + name);
                 }
 
                 JsonObject bg = json.get("background").getAsJsonObject();
@@ -453,7 +480,7 @@ public class JuQingUtil {
                     if(!name.endsWith(".temp.kira")){
                         name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                     }
-                    entity1.getBg().setLocalPath(StorageUtils.getMapRootPath() + name);
+                    entity1.getBg().setLocalPath(StorageUtils.getEventRootPath() + name);
                 }
 
                 JsonObject item = json.get("item").getAsJsonObject();
@@ -465,7 +492,7 @@ public class JuQingUtil {
                     if(!name.endsWith(".temp.kira")){
                         name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                     }
-                    entity1.getItem().setLocalPath(StorageUtils.getMapRootPath() + name);
+                    entity1.getItem().setLocalPath(StorageUtils.getEventRootPath() + name);
                 }
 
                 if(json.has("option")){
@@ -517,9 +544,9 @@ public class JuQingUtil {
 
     public static void downLoadFiles(Context context, HashSet<String> entities, Observer<String> callback){//1.未下载 2.下载完成 3.下载失败
         final RxDownload downloadSub = RxDownload.getInstance(context)
-                .maxThread(6)
+                .maxThread(1)
                 .maxRetryCount(6)
-                .defaultSavePath(StorageUtils.getMapRootPath())
+                .defaultSavePath(StorageUtils.getEventRootPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
         Observable.fromIterable(entities)
                 .subscribeOn(Schedulers.io())

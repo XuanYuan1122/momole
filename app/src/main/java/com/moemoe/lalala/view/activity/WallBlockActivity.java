@@ -82,8 +82,8 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     ImageView mIvRole;
     @BindView(R.id.iv_create_dynamic)
     ImageView mIvCreatDynamic;
-    @BindView(R.id.iv_create_wenzhang)
-    ImageView mIvCreateWen;
+//    @BindView(R.id.iv_create_wenzhang)
+//    ImageView mIvCreateWen;
     @BindView(R.id.tv_show_text)
     TextView mTvText;
     @BindView(R.id.rl_role_root)
@@ -266,18 +266,18 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                 startActivity(i4);
             }
         });
-        mIvCreateWen.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                clickRole();
-                Intent intent = new Intent(WallBlockActivity.this, CreateRichDocActivity.class);
-                intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
-                intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
-                intent.putExtra("from_name","书包");
-                intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");
-                startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
-            }
-        });
+//        mIvCreateWen.setOnClickListener(new NoDoubleClickListener() {
+//            @Override
+//            public void onNoDoubleClick(View v) {
+//                clickRole();
+//                Intent intent = new Intent(WallBlockActivity.this, CreateRichDocActivity.class);
+//                intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
+//                intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
+//                intent.putExtra("from_name","书包");
+//                intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");
+//                startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
+//            }
+//        });
     }
 
     public void hideRole(){
@@ -296,7 +296,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         mIvRole.setSelected(!mIvRole.isSelected());
         if(mIvRole.isSelected()){
             mIvCreatDynamic.setVisibility(View.VISIBLE);
-            mIvCreateWen.setVisibility(View.VISIBLE);
+            //mIvCreateWen.setVisibility(View.VISIBLE);
             mTvText.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mRoleRoot.setLayoutParams(lp);
@@ -313,7 +313,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
             mIvRole.setLayoutParams(lp1);
         }else {
             mIvCreatDynamic.setVisibility(View.GONE);
-            mIvCreateWen.setVisibility(View.GONE);
+            //mIvCreateWen.setVisibility(View.GONE);
             mTvText.setVisibility(View.GONE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);

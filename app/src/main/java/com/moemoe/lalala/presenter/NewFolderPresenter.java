@@ -37,20 +37,38 @@ public class NewFolderPresenter implements NewFolderContract.Presenter {
     @Override
     public void loadFolderList(String folderType, final int index, String userId,String type) {
         if(folderType.equals(FolderType.WZ.toString())){
-            apiService.loadWenZhangList(userId,ApiService.LENGHT,index)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetResultSubscriber<ArrayList<WenZhangFolderEntity>>() {
-                        @Override
-                        public void onSuccess(ArrayList<WenZhangFolderEntity> wenZhangFolderEntities) {
-                            if(view != null) view.onLoadFolderListSuccess(wenZhangFolderEntities, index == 0);
-                        }
+            if(type.equals("my")){
+                apiService.loadWenZhangList(userId,ApiService.LENGHT,index)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new NetResultSubscriber<ArrayList<WenZhangFolderEntity>>() {
+                            @Override
+                            public void onSuccess(ArrayList<WenZhangFolderEntity> wenZhangFolderEntities) {
+                                if(view != null) view.onLoadFolderListSuccess(wenZhangFolderEntities, index == 0);
+                            }
 
-                        @Override
-                        public void onFail(int code, String msg) {
-                            if(view != null) view.onFailure(code, msg);
-                        }
-                    });
+                            @Override
+                            public void onFail(int code, String msg) {
+                                if(view != null) view.onFailure(code, msg);
+                            }
+                        });
+            }else {
+                apiService.loadWenZhangFollowList(userId,ApiService.LENGHT,index)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new NetResultSubscriber<ArrayList<WenZhangFolderEntity>>() {
+                            @Override
+                            public void onSuccess(ArrayList<WenZhangFolderEntity> wenZhangFolderEntities) {
+                                if(view != null) view.onLoadFolderListSuccess(wenZhangFolderEntities, index == 0);
+                            }
+
+                            @Override
+                            public void onFail(int code, String msg) {
+                                if(view != null) view.onFailure(code, msg);
+                            }
+                        });
+            }
+
         }else {
             if(type.equals("my")){
                 apiService.loadFolderList(userId,folderType,ApiService.LENGHT,index)

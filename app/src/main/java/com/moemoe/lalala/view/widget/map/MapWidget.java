@@ -49,6 +49,7 @@ import android.widget.Scroller;
 import android.widget.ZoomButtonsController;
 import android.widget.ZoomButtonsController.OnZoomListener;
 
+import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.view.widget.map.config.GPSConfig;
 import com.moemoe.lalala.view.widget.map.config.MapConfigParser;
 import com.moemoe.lalala.view.widget.map.config.MapGraphicsConfig;
@@ -167,6 +168,8 @@ public class MapWidget extends View implements MapLocationListener {
 	private int mLastMapW;
 	private int mLastMapH;
 	private boolean mIsZoomIn = true;
+	private float mMinScale;
+	private float mMaxScale;
 
 	/**
 	 * Creates instance of map widget.
@@ -337,7 +340,9 @@ public class MapWidget extends View implements MapLocationListener {
 			} else {
 				grid = new Grid(this, config, tileProvider, zoomLevel);
 			}
-
+			scale = (float) DensityUtil.getScreenHeight(getContext()) / getOriginalMapHeight();
+			mMinScale = scale;
+			mMaxScale = scale * 4;
 			this.scale = scale;
 			grid.setInternalScale(scale);
 
@@ -1230,10 +1235,10 @@ public class MapWidget extends View implements MapLocationListener {
 
 		return null;
 	}
-
 	public void zoomIn(final int pivotX, final int pivotY) {
-		if(getZoomLevel() == 14){
+		if(scale >= mMaxScale){
 			mIsZoomIn = false;
+			return;
 		}else {
 			mIsZoomIn = true;
 		}
@@ -1247,14 +1252,14 @@ public class MapWidget extends View implements MapLocationListener {
 			return;
 		}
 
-		if (!config.isSoftwareZoomEnabled()
-				&& getZoomLevel() == grid.getMaxZoomLevel()) {
-			return;
-		} else if (config.isSoftwareZoomEnabled()
-				&& config.getMaxZoomLevelLimit() != 0
-				&& getZoomLevel() >= config.getMaxZoomLevelLimit()) {
-			return;
-		}
+//		if (!config.isSoftwareZoomEnabled()
+//				&& getZoomLevel() == grid.getMaxZoomLevel()) {
+//			return;
+//		} else if (config.isSoftwareZoomEnabled()
+//				&& config.getMaxZoomLevelLimit() != 0
+//				&& getZoomLevel() >= config.getMaxZoomLevelLimit()) {
+//			return;
+//		}
 
 		if (Looper.myLooper() == null) {
 			throw new IllegalThreadStateException(
@@ -1267,7 +1272,7 @@ public class MapWidget extends View implements MapLocationListener {
 		doNotZoom = true;
 
 		if (!isAnimationEnabled) {
-			doZoom(getZoomLevel() + 1, pivotX, pivotY);
+			doZoom(true, pivotX, pivotY);
 			isZooming = false;
 			doCorrectPosition();
 			return;
@@ -1276,7 +1281,7 @@ public class MapWidget extends View implements MapLocationListener {
 		performAfterZoom = new Runnable() {
 			@Override
 			public void run() {
-				doZoom(getZoomLevel() + 1, pivotX, pivotY);
+				doZoom(true, pivotX, pivotY);
 				isZooming = false;
 				doCorrectPosition(true);
 			}
@@ -1285,18 +1290,70 @@ public class MapWidget extends View implements MapLocationListener {
 		animateZoomIn(null, pivotX, pivotY);
 	}
 
+//	public void zoomIn(final int pivotX, final int pivotY) {
+//		if(getZoomLevel() == 14){
+//			mIsZoomIn = false;
+//		}else {
+//			mIsZoomIn = true;
+//		}
+//		if (doNotZoom) {
+//			Log.d(TAG, "Zoom is in progress. Skipped...");
+//			return;
+//		}
+//
+//		if (config == null) {
+//			Log.w(TAG, "Zoom in skipped. Map was not initialized properly");
+//			return;
+//		}
+//
+//		if (!config.isSoftwareZoomEnabled()
+//				&& getZoomLevel() == grid.getMaxZoomLevel()) {
+//			return;
+//		} else if (config.isSoftwareZoomEnabled()
+//				&& config.getMaxZoomLevelLimit() != 0
+//				&& getZoomLevel() >= config.getMaxZoomLevelLimit()) {
+//			return;
+//		}
+//
+//		if (Looper.myLooper() == null) {
+//			throw new IllegalThreadStateException(
+//					"Should be called from UI thread");
+//		}
+//
+//		notifyAboutPreZoomIn(mapEventsListeners);
+//
+//		isZooming = true;
+//		doNotZoom = true;
+//
+//		if (!isAnimationEnabled) {
+//			doZoom(getZoomLevel() + 1, pivotX, pivotY);
+//			isZooming = false;
+//			doCorrectPosition();
+//			return;
+//		}
+//
+//		performAfterZoom = new Runnable() {
+//			@Override
+//			public void run() {
+//				doZoom(getZoomLevel() + 1, pivotX, pivotY);
+//				isZooming = false;
+//				doCorrectPosition(true);
+//			}
+//		};
+//		//fillAbsoluteOffset();
+//		animateZoomIn(null, pivotX, pivotY);
+//	}
+
 	public void zoomOut(){
 		int pivotX = getWidth() / 2;
 		int pivotY = getHeight() / 2;
 		zoomOut(pivotX,pivotY);
 	}
 
-	/**
-	 * Zooms map out by one zoom level.
-	 */
 	public void zoomOut(final int pivotX, final int pivotY) {
-		if(getZoomLevel() == 12){
+		if(scale <= mMinScale){
 			mIsZoomIn = true;
+			return;
 		}else {
 			mIsZoomIn = false;
 		}
@@ -1310,12 +1367,12 @@ public class MapWidget extends View implements MapLocationListener {
 			return;
 		}
 
-		int currZoomLevel = getZoomLevel();
+		//int currZoomLevel = getZoomLevel();
 
-		if (currZoomLevel == 0
-				|| currZoomLevel <= config.getMinZoomLevelLimit()) {
-			return;
-		}
+//		if (currZoomLevel == 0
+//				|| currZoomLevel <= config.getMinZoomLevelLimit()) {
+//			return;
+//		}
 
 		doNotZoom = true;
 
@@ -1332,7 +1389,8 @@ public class MapWidget extends View implements MapLocationListener {
 
 		notifyAboutPreZoomOut(mapEventsListeners);
 
-		doZoom(currZoomLevel - 1, pivotX, pivotY);
+		//doZoom(currZoomLevel - 1, pivotX, pivotY);
+		doZoom(false, pivotX, pivotY);
 
 		if (!isAnimationEnabled) {
 			doNotZoom = false;
@@ -1352,6 +1410,68 @@ public class MapWidget extends View implements MapLocationListener {
 		//fillAbsoluteOffset();
 		animateZoomOut(null);
 	}
+
+	/**
+	 * Zooms map out by one zoom level.
+	 */
+//	public void zoomOut(final int pivotX, final int pivotY) {
+//		if(getZoomLevel() == 12){
+//			mIsZoomIn = true;
+//		}else {
+//			mIsZoomIn = false;
+//		}
+//		if (doNotZoom) {
+//			Log.d(TAG, "Zoom is in progress. Skipped...");
+//			return;
+//		}
+//
+//		if (config == null) {
+//			Log.w(TAG, "Zoom in skipped. Map was not initialized properly");
+//			return;
+//		}
+//
+//		int currZoomLevel = getZoomLevel();
+//
+//		if (currZoomLevel == 0
+//				|| currZoomLevel <= config.getMinZoomLevelLimit()) {
+//			return;
+//		}
+//
+//		doNotZoom = true;
+//
+//		if (grid == null) {
+//			Log.w(TAG, "zoomOut() grid is null");
+//			doNotZoom = false;
+//			return;
+//		}
+//
+//		if (Looper.myLooper() == null) {
+//			throw new IllegalThreadStateException(
+//					"Should be called from UI thread");
+//		}
+//
+//		notifyAboutPreZoomOut(mapEventsListeners);
+//
+//		doZoom(currZoomLevel - 1, pivotX, pivotY);
+//
+//		if (!isAnimationEnabled) {
+//			doNotZoom = false;
+//			isZooming = false;
+//			doCorrectPosition();
+//			return;
+//		}
+//
+//		isZooming = true;
+//
+//		performAfterZoom = new Runnable() {
+//			public void run() {
+//				isZooming = false;
+//				doCorrectPosition(true);
+//			}
+//		};
+//		//fillAbsoluteOffset();
+//		animateZoomOut(null);
+//	}
 
 	@Override
 	protected void onAnimationEnd() {
@@ -1598,15 +1718,11 @@ public class MapWidget extends View implements MapLocationListener {
 		}
 	}
 
-	private void doZoom(int zoomLevel, int pivotX, int pivotY) {
+	private void doZoom(boolean zoomIn, int pivotX, int pivotY) {
 		if (grid == null) {
 			doNotZoom = false;
 			return;
 		}
-
-		int maxZoomLevel = OfflineMapUtil.getMaxZoomLevel(
-				config.getImageWidth(), config.getImageHeight());
-		int currZoomLevel = getZoomLevel();
 
 		prevGrid = grid;
 
@@ -1615,7 +1731,13 @@ public class MapWidget extends View implements MapLocationListener {
 		final int gWidth = grid.getWidth();
 		final int gHeight = grid.getHeight();
 
-		float newScale = (float) Math.pow(2, zoomLevel - getZoomLevel());
+		//float newScale = (float) Math.pow(2, zoomLevel - getZoomLevel());
+		float newScale;
+		if(zoomIn){
+			newScale = 2.0f;
+		}else {
+			newScale = 0.5f;
+		}
 
 		// Resolving offsets that we need to move the map in order pivot point
 		// become in the center of the screen.
@@ -1625,39 +1747,19 @@ public class MapWidget extends View implements MapLocationListener {
 		final Rect transformed = TransformUtils.scaleRect(currRect, newScale,
 				pivotX, pivotY);
 
-		boolean zoomIn = zoomLevel > currZoomLevel;
+		//boolean zoomIn = zoomLevel > currZoomLevel;
+		//boolean zoomIn = zoomLevel > currZoomLevel;
 
-		if ((zoomIn && currZoomLevel < maxZoomLevel)
-				|| (!zoomIn && currZoomLevel > 0) && scale == 1.0f) {
+		scale *= newScale;
 
-			grid = new Grid(this, config, tileProvider, zoomLevel);
-
-			grid.setOnReadyListener(new OnGridReadyListener() {
-
-				@Override
-				public void onReady() {
-					grid.setOnReadyListener(null);
-					prevGrid = null;
-
-					if (mapTilesReadyListener != null) {
-						mapTilesReadyListener.onMapTilesFinishedLoading();
-					}
-				}
-			});
-
-			prevGrid.setInternalScale(newScale);
-		} else {
-			scale *= newScale;
-
-			if (prevGrid != null) {
-				prevGrid = null;
-			}
-
-			grid.setOnReadyListener(null);
-			grid.setLoadTiles(false);
-			grid.setInternalScale(scale);
-			grid.setLoadTiles(true);
+		if (prevGrid != null) {
+			prevGrid = null;
 		}
+
+		grid.setOnReadyListener(null);
+		grid.setLoadTiles(false);
+		grid.setInternalScale(scale);
+		grid.setLoadTiles(true);
 
 		updateZoomButtons();
 		float scale_temp = getScale();
@@ -1672,6 +1774,82 @@ public class MapWidget extends View implements MapLocationListener {
 			notifyAboutPostZoomOut(mapEventsListeners);
 		}
 	}
+
+//	private void doZoom(int zoomLevel, int pivotX, int pivotY) {
+//		if (grid == null) {
+//			doNotZoom = false;
+//			return;
+//		}
+//
+//		int maxZoomLevel = OfflineMapUtil.getMaxZoomLevel(
+//				config.getImageWidth(), config.getImageHeight());
+//		int currZoomLevel = getZoomLevel();
+//
+//		prevGrid = grid;
+//
+//		prevGrid.setLoadTiles(false);
+//
+//		final int gWidth = grid.getWidth();
+//		final int gHeight = grid.getHeight();
+//
+//		float newScale = (float) Math.pow(2, zoomLevel - getZoomLevel());
+//
+//		// Resolving offsets that we need to move the map in order pivot point
+//		// become in the center of the screen.
+//		final Rect currRect = new Rect(-getScrollX(), -getScrollY(), gWidth
+//				- getScrollX(), gHeight - getScrollY());
+//
+//		final Rect transformed = TransformUtils.scaleRect(currRect, newScale,
+//				pivotX, pivotY);
+//
+//		//boolean zoomIn = zoomLevel > currZoomLevel;
+//		boolean zoomIn = zoomLevel > currZoomLevel;
+//
+//		if ((zoomIn && currZoomLevel < maxZoomLevel)
+//				|| (!zoomIn && currZoomLevel > 0) && scale == 1.0f) {
+//
+//			grid = new Grid(this, config, tileProvider, zoomLevel);
+//
+//			grid.setOnReadyListener(new OnGridReadyListener() {
+//
+//				@Override
+//				public void onReady() {
+//					grid.setOnReadyListener(null);
+//					prevGrid = null;
+//
+//					if (mapTilesReadyListener != null) {
+//						mapTilesReadyListener.onMapTilesFinishedLoading();
+//					}
+//				}
+//			});
+//
+//			prevGrid.setInternalScale(newScale);
+//		} else {
+//			scale *= newScale;
+//
+//			if (prevGrid != null) {
+//				prevGrid = null;
+//			}
+//
+//			grid.setOnReadyListener(null);
+//			grid.setLoadTiles(false);
+//			grid.setInternalScale(scale);
+//			grid.setLoadTiles(true);
+//		}
+//
+//		updateZoomButtons();
+//		float scale_temp = getScale();
+//		setScaleToOtherDrawables(scale_temp);
+//		scrollTo(-transformed.left, -transformed.top);
+//
+//		doNotZoom = false;
+//
+//		if (zoomIn) {
+//			notifyAboutPostZoomIn(mapEventsListeners);
+//		} else {
+//			notifyAboutPostZoomOut(mapEventsListeners);
+//		}
+//	}
 
 	private Animation getZoomInAnimation(float pivotX, float pivotY) {
 		float fromX = 1.0f;
@@ -2224,13 +2402,18 @@ public class MapWidget extends View implements MapLocationListener {
 				result = onDoubleTapListener.onDoubleTap(MapWidget.this, mapTouchedEvent);
 			}
 			
-			if (result == false) {
+			if (!result) {
 				float pivotX = e.getX();
 				float pivotY = e.getY();
-				if (getZoomLevel() == 14){
+//				if (getZoomLevel() == 14){
+//					mIsZoomIn = false;
+//				}
+//				if(getZoomLevel() == 12){
+//					mIsZoomIn = true;
+//				}
+				if(scale >= mMaxScale){
 					mIsZoomIn = false;
-				}
-				if(getZoomLevel() == 12){
+				}else if (scale <= mMinScale){
 					mIsZoomIn = true;
 				}
 				if(mIsZoomIn){
@@ -2344,28 +2527,6 @@ public class MapWidget extends View implements MapLocationListener {
 			int viewHeight = getHeight();
 			int gridWidth = getMapWidth();
 			int gridHeight = getMapHeight();
-//			if(gridWidth < viewWidth){
-//
-//			}else if(gridHeight < viewHeight){
-//
-//			}else {
-//				if(absoluteOffsetX - distanceX > 0){
-//					distanceX = 0;
-//					absoluteOffsetX = 0;
-//				}else if(absoluteOffsetX - distanceX < viewWidth - gridWidth){
-//					distanceX = 0;
-//					absoluteOffsetX = viewWidth - gridWidth;
-//				}
-//				if(absoluteOffsetY - distanceY > 0){
-//					distanceY = 0;
-//					absoluteOffsetY = 0;
-//				}else if(absoluteOffsetY - distanceY < viewHeight - gridHeight){
-//					distanceY = 0;
-//					absoluteOffsetY = viewHeight - gridHeight;
-//				}
-//			}
-//			absoluteOffsetX -= distanceX;
-//			absoluteOffsetY -= distanceY;
 			if (gridWidth > viewWidth) {
 				int dx2 = gridWidth - getScrollX();
 				if (getScrollX() < 0) {

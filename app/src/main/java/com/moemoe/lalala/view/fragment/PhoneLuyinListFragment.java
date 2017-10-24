@@ -28,6 +28,7 @@ import com.moemoe.lalala.presenter.PhoneLuyinContract;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.AudioPlayer;
 import com.moemoe.lalala.utils.FileUtil;
+import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.view.activity.PhoneMainActivity;
@@ -113,21 +114,25 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
             public void onItemClick(View view, final int position) {
                 final LuYinEntity entity = mAdapter.getItem(position);
                 if(!entity.isFlag()){
-                    final AlertDialogUtil dialogUtil = AlertDialogUtil.getInstance();
-                    dialogUtil.createPromptNormalDialog(getContext(),"是否消耗录音券解锁");
-                    dialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
-                        @Override
-                        public void CancelOnClick() {
-                            dialogUtil.dismissDialog();
-                        }
+                    if(PreferenceUtils.getAuthorInfo().getTicketNum() > 0){
+                        final AlertDialogUtil dialogUtil = AlertDialogUtil.getInstance();
+                        dialogUtil.createPromptNormalDialog(getContext(),"是否消耗次元币解锁");
+                        dialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                            @Override
+                            public void CancelOnClick() {
+                                dialogUtil.dismissDialog();
+                            }
 
-                        @Override
-                        public void ConfirmOnClick() {
-                            mPresenter.unlockLuYin(entity.getId(),position);
-                            dialogUtil.dismissDialog();
-                        }
-                    });
-                    dialogUtil.showDialog();
+                            @Override
+                            public void ConfirmOnClick() {
+                                mPresenter.unlockLuYin(entity.getId(),position);
+                                dialogUtil.dismissDialog();
+                            }
+                        });
+                        dialogUtil.showDialog();
+                    }else {
+                        ToastUtils.showShortToast(getContext(),"没有足够的次元币了，快去商店看看吧");
+                    }
                 }
             }
 
@@ -243,11 +248,12 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
 
     @Override
     public void onUnlockSuccess(int position) {
+        PreferenceUtils.getAuthorInfo().setTicketNum(PreferenceUtils.getAuthorInfo().getTicketNum()-1);
+        RxBus.getInstance().post(new MateBackPressEvent("次元币: " +  PreferenceUtils.getAuthorInfo().getTicketNum()));
         mAdapter.getItem(position).setFlag(true);
         mAdapter.notifyItemChanged(position);
         LuYinEntity entity = mAdapter.getItem(position);
         downloadMusic(entity,false);
-
     }
 
     private void downloadMusic(final LuYinEntity entity, final boolean play){
@@ -259,6 +265,7 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
             dialog.setIcon(R.drawable.ic_launcher);
             dialog.setTitle("下载中");
             RxDownload.getInstance(getContext())
+                    .maxThread(1)
                     .download(ApiService.URL_QINIU + entity.getSound(),entity.getSound().substring(entity.getSound().lastIndexOf("/") + 1),StorageUtils.getMusicRootPath())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

@@ -297,6 +297,36 @@ public class CreateRichDocPresenter implements CreateRichDocContract.Presenter {
                                                 if(view != null) view.onFailure(code,msg);
                                             }
                                         });
+                            }else if(docType == 2){
+                                apiService.createSwimPoolDoc(doc)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new NetSimpleResultSubscriber() {
+                                            @Override
+                                            public void onSuccess() {
+                                                if(view != null) view.onSendSuccess("","");
+                                            }
+
+                                            @Override
+                                            public void onFail(int code,String msg) {
+                                                if(view != null) view.onFailure(code,msg);
+                                            }
+                                        });
+                            }else if(docType == 1){
+                                apiService.createNormalDoc(doc)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new NetSimpleResultSubscriber() {
+                                            @Override
+                                            public void onSuccess() {
+                                                if(view != null) view.onSendSuccess("","");
+                                            }
+
+                                            @Override
+                                            public void onFail(int code,String msg ){
+                                                if(view != null) view.onFailure(code,msg);
+                                            }
+                                        });
                             }
                         }else {
                             apiService.updateDoc(doc,docId)

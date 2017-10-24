@@ -28,6 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_title"
+        android:layout_marginTop="@dimen/y4"
         android:layout_alignStart="@+id/tv_title"
         android:gravity="center_vertical">
 
@@ -46,6 +47,7 @@
             android:id="@+id/tv_juqing_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/x6"
             android:textSize="@dimen/x20"
             android:textColor="@color/white" />
     </LinearLayout>
@@ -55,6 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_pro_root"
+        android:layout_marginTop="@dimen/y4"
         android:textSize="@dimen/x20"
         android:textColor="@color/white"
         android:layout_alignStart="@+id/tv_title"/>
@@ -64,6 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
+        android:layout_marginTop="@dimen/y4"
         android:textSize="@dimen/x20"
         android:layout_marginEnd="@dimen/x24"
         android:maxLines="3"
@@ -79,6 +83,16 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/y24"
         android:layout_marginEnd="@dimen/x32"/>
+
+    <ImageView
+        android:id="@+id/iv_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/y24"
+        android:layout_marginEnd="@dimen/x32"
+        android:src="@drawable/ic_album_completed"
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/iv_front"

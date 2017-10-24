@@ -90,6 +90,8 @@ public class LoginPresenter implements LoginContract.Presenter {
                                 authorInfo.setCoin(entity.getCoin());
                                 authorInfo.setLevel(entity.getLevel());
                                 authorInfo.setOpenBag(entity.isOpenBag());
+                                authorInfo.setVipTime(entity.getVipTime());
+                                authorInfo.setInviteNum(entity.getInviteNum());
                                 authorInfo.setInspector(entity.isInspector());
                                 if(entity.isNew()){
                                     ModifyEntity entity1 = new ModifyEntity();

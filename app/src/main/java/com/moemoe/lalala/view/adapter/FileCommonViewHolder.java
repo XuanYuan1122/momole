@@ -120,7 +120,7 @@ public class FileCommonViewHolder extends ClickableViewHolder {
                     cover.setLayoutParams(new RelativeLayout.LayoutParams(1,1));
                 }else {
                     final int[] wh = Utils.getDocIconSize(entity.getAttr().get("w").getAsInt(), entity.getAttr().get("h").getAsInt(), DensityUtil.getScreenWidth(itemView.getContext()));
-                    if(wh[1] > 2048){
+                    if(((float)(wh[1] / wh[0])) > 16.0f / 9.0f){
                         cover.setVisibility(View.GONE);
                         longCover.setVisibility(View.VISIBLE);
                         String temp = EncoderUtils.MD5(ApiService.URL_QINIU + entity.getPath()) + ".jpg";

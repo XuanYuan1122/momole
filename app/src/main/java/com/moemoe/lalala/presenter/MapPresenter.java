@@ -25,9 +25,8 @@ import com.moemoe.lalala.model.entity.PersonalMainEntity;
 import com.moemoe.lalala.model.entity.SignEntity;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.GreenDaoManager;
-import com.moemoe.lalala.utils.JuQingDoneEntity;
+import com.moemoe.lalala.model.entity.JuQingDoneEntity;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.utils.ResourceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.widget.map.MapWidget;
@@ -164,7 +163,6 @@ public class MapPresenter implements MapContract.Presenter {
                         if(view != null) view.onFailure(code, msg);
                     }
                 });
-
     }
 
     @Override
@@ -242,15 +240,15 @@ public class MapPresenter implements MapContract.Presenter {
         }
         Layer layer = map.getLayerById(1);
 
-        if(layer == null){
-            layer = map.createLayer(1);//1 地图剧情
-        }
+       // if(layer == null){
+        // Layer layer = map.createLayer(1);//1 地图剧情
+        //  }
         MapObject object = layer.getMapObject("地图剧情" + id);
         if(object == null){
             MapMarkEntity entity1 = new MapMarkEntity("地图剧情" + id,x,y,"neta://com.moemoe.lalala/map_event_1.0?id="+storyId,iconId,140,140);
             container.addMark(entity1);
             addMarkToMap(context,entity1,layer);
-            view.onMapMarkLoaded(container);
+            view.onMapEventLoaded(container);
         }
     }
 
@@ -317,24 +315,6 @@ public class MapPresenter implements MapContract.Presenter {
     }
 
     @Override
-    public void requestPersonMain() {
-        apiService.getPersonalMain(PreferenceUtils.getUUid())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetResultSubscriber<PersonalMainEntity>() {
-                    @Override
-                    public void onSuccess(PersonalMainEntity personalMainEntity) {
-                        if(view != null) view.onPersonMainLoad(personalMainEntity);
-                    }
-
-                    @Override
-                    public void onFail(int code,String msg) {
-                        if(view != null) view.onFailure(code,msg);
-                    }
-                });
-    }
-
-    @Override
     public void checkBuild(int buildVersion,int appVersion) {
         apiService.checkBuild(buildVersion,appVersion)
                 .subscribeOn(Schedulers.io())
@@ -348,47 +328,6 @@ public class MapPresenter implements MapContract.Presenter {
                     @Override
                     public void onFail(int code, String msg) {
 
-                    }
-                });
-    }
-
-    @Override
-    public void getDailyTask() {
-        apiService.getDailyTask()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetResultSubscriber<DailyTaskEntity>() {
-                    @Override
-                    public void onSuccess(DailyTaskEntity dailyTaskEntity) {
-                        if(view != null) view.onDailyTaskLoad(dailyTaskEntity);
-                    }
-
-                    @Override
-                    public void onFail(int code, String msg) {
-                        if(view != null) view.onFailure(code,msg);
-                    }
-                });
-    }
-
-    @Override
-    public void signToday(final SignDialog dialog) {
-        apiService.signToday()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetResultSubscriber<SignEntity>() {
-                    @Override
-                    public void onSuccess(SignEntity entity) {
-                        if(view != null) {
-                            view.changeSignState(entity, true);
-                            dialog.setIsSign(true)
-                                    .setSignDay(entity.getDay())
-                                    .changeSignState();
-                        }
-                    }
-
-                    @Override
-                    public void onFail(int code,String msg) {
-                        if(view != null) view.onFailure(code,msg);
                     }
                 });
     }

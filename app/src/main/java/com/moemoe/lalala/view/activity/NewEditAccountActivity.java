@@ -193,7 +193,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
         super.onDestroy();
     }
 
-    @OnClick({R.id.tv_menu,R.id.ll_head_root,R.id.ll_bg_root,R.id.ll_birthday,R.id.ll_gender,R.id.ll_secret,R.id.ll_nickname,R.id.ll_sign})
+    @OnClick({R.id.tv_menu,R.id.ll_head_root,R.id.ll_bg_root,R.id.ll_birthday,R.id.ll_gender,R.id.ll_nickname,R.id.ll_sign})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.tv_menu:
@@ -215,13 +215,6 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
                 break;
             case R.id.ll_gender:
                 showListDialog();
-                break;
-            case R.id.ll_secret:
-                Intent i = new Intent(this,SecretSettingActivity.class);
-                i.putExtra("show_fans",mInfo.isShowFans());
-                i.putExtra("show_favorite",mInfo.isShowFavorite());
-                i.putExtra("show_follow",mInfo.isShowFollow());
-                startActivityForResult(i,REQ_SECRET);
                 break;
             case R.id.ll_nickname:
                 mKlCommentBoard.setVisibility(View.VISIBLE);

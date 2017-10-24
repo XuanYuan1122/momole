@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/iv_vip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/x80"
+        android:layout_height="@dimen/x80"
         android:src="@drawable/ic_userhead_vip_mini"
         android:layout_alignStart="@+id/iv_avatar"
         android:layout_alignBottom="@+id/iv_avatar"

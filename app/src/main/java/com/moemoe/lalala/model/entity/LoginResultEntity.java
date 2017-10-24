@@ -31,6 +31,10 @@ public class LoginResultEntity {
     private String rcToken;
     @SerializedName("deskMateList")
     private ArrayList<DeskMateEntity> deskMateList;
+    @SerializedName("vipTime")
+    private String vipTime;
+    @SerializedName("inviteNum")
+    private int inviteNum;
 
     public LoginResultEntity(){
         deskMateList = new ArrayList<>();
@@ -124,4 +128,19 @@ public class LoginResultEntity {
         this.deskMateList = deskMateList;
     }
 
+    public String getVipTime() {
+        return vipTime;
+    }
+
+    public void setVipTime(String vipTime) {
+        this.vipTime = vipTime;
+    }
+
+    public int getInviteNum() {
+        return inviteNum;
+    }
+
+    public void setInviteNum(int inviteNum) {
+        this.inviteNum = inviteNum;
+    }
 }

@@ -3,6 +3,8 @@ package com.moemoe.lalala.broadcast;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 
 import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
@@ -11,13 +13,15 @@ import com.moemoe.lalala.utils.Utils;
 import com.moemoe.lalala.view.activity.PhoneAlarmActivity;
 
 /**
+ *
  * Created by yi on 2017/9/12.
  */
 
 public class AlarmClockBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        AlarmClockEntity alarmClock = intent.getParcelableExtra("alarm");
+        Bundle bundle = intent.getBundleExtra("bundle");
+        AlarmClockEntity alarmClock =  bundle.getParcelable("alarm");
         if (alarmClock != null) {
             // 单次响铃
             if (alarmClock.getWeeks() == null) {

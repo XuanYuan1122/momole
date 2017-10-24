@@ -49,7 +49,7 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
         mPlayList = new PlayList();
         mPlayer.setOnCompletionListener(this);
         downloadSub = RxDownload.getInstance(context)
-                .maxThread(3)
+                .maxThread(1)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getMusicRootPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());

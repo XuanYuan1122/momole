@@ -16,6 +16,14 @@
 #   public *;
 #}
 #glide
+-dontnote retrofit2.Platform
+-dontwarn retrofit2.Platform$Java8
+-keepattributes Signature
+-keepattributes Exceptions
+
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
 -keepattributes EnclosingMethod
 #指定代码的压缩级别
 -optimizationpasses 5

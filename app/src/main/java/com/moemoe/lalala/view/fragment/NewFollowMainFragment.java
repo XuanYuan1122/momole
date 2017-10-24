@@ -48,8 +48,6 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
 
     @BindView(R.id.list)
     PullAndLoadView mListDocs;
-    @BindView(R.id.iv_to_wen)
-    ImageView mIvWen;
 
     @Inject
     FeedPresenter mPresenter;
@@ -87,15 +85,6 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
                 .inject(this);
         final String type = getArguments().getString("type");
         final String userId = getArguments().getString("id");
-        if("my".equals(type)){
-            mIvWen.setVisibility(View.VISIBLE);
-            mIvWen.setOnClickListener(new NoDoubleClickListener() {
-                @Override
-                public void onNoDoubleClick(View v) {
-                    NewFolderWenZhangActivity.startActivity(getContext(),userId, FolderType.WZ.toString());
-                }
-            });
-        }
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListDocs.setLoadMoreEnabled(false);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));

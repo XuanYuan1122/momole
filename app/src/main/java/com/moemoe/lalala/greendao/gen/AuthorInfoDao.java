@@ -37,6 +37,8 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
         public final static Property Level = new Property(10, int.class, "level", false, "LEVEL");
         public final static Property OpenBag = new Property(11, boolean.class, "openBag", false, "OPEN_BAG");
         public final static Property RcToken = new Property(12, String.class, "rcToken", false, "RC_TOKEN");
+        public final static Property VipTime = new Property(13, String.class, "vipTime", false, "VIP_TIME");
+        public final static Property InviteNum = new Property(14, int.class, "inviteNum", false, "INVITE_NUM");
     }
 
 
@@ -64,7 +66,9 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
                 "\"USER_NAME\" TEXT," + // 9: userName
                 "\"LEVEL\" INTEGER NOT NULL ," + // 10: level
                 "\"OPEN_BAG\" INTEGER NOT NULL ," + // 11: openBag
-                "\"RC_TOKEN\" TEXT);"); // 12: rcToken
+                "\"RC_TOKEN\" TEXT," + // 12: rcToken
+                "\"VIP_TIME\" TEXT," + // 13: vipTime
+                "\"INVITE_NUM\" INTEGER NOT NULL );"); // 14: inviteNum
     }
 
     /** Drops the underlying database table. */
@@ -125,6 +129,12 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
         if (rcToken != null) {
             stmt.bindString(13, rcToken);
         }
+ 
+        String vipTime = entity.getVipTime();
+        if (vipTime != null) {
+            stmt.bindString(14, vipTime);
+        }
+        stmt.bindLong(15, entity.getInviteNum());
     }
 
     @Override
@@ -179,6 +189,12 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
         if (rcToken != null) {
             stmt.bindString(13, rcToken);
         }
+ 
+        String vipTime = entity.getVipTime();
+        if (vipTime != null) {
+            stmt.bindString(14, vipTime);
+        }
+        stmt.bindLong(15, entity.getInviteNum());
     }
 
     @Override
@@ -201,7 +217,9 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // userName
             cursor.getInt(offset + 10), // level
             cursor.getShort(offset + 11) != 0, // openBag
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // rcToken
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // rcToken
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // vipTime
+            cursor.getInt(offset + 14) // inviteNum
         );
         return entity;
     }
@@ -221,6 +239,8 @@ public class AuthorInfoDao extends AbstractDao<AuthorInfo, Long> {
         entity.setLevel(cursor.getInt(offset + 10));
         entity.setOpenBag(cursor.getShort(offset + 11) != 0);
         entity.setRcToken(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setVipTime(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setInviteNum(cursor.getInt(offset + 14));
      }
     
     @Override

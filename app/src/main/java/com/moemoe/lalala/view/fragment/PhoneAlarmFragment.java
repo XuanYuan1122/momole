@@ -133,14 +133,14 @@ public class PhoneAlarmFragment extends BaseFragment{
 
     private void addList(AlarmClockEntity entity){
         mAlarmClockList.clear();
-        int id = entity.getId().intValue();
+        int id = (int) entity.getId();
         int count = 0;
         int position = 0;
         AlarmClockEntityDao dao = GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao();
         List<AlarmClockEntity> list = dao.loadAll();
         for (AlarmClockEntity entity1 : list){
             mAlarmClockList.add(entity1);
-            if(id == entity1.getId().intValue()){
+            if(id == (int)entity1.getId()){
                 position = count;
                 if(entity1.isOnOff()){
                     Utils.startAlarmClock(getContext(),entity1);
@@ -189,11 +189,11 @@ public class PhoneAlarmFragment extends BaseFragment{
                             addList(alarmEvent.getEntity());
                         }else if(alarmEvent.getType() == 2){
                             GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().delete(alarmEvent.getEntity());
-                            Utils.cancelAlarmClock(getContext(),alarmEvent.getEntity().getId().intValue());
+                            Utils.cancelAlarmClock(getContext(), (int) alarmEvent.getEntity().getId());
                             NotificationManager notificationManager = (NotificationManager) getContext()
                                     .getSystemService(Activity.NOTIFICATION_SERVICE);
                             // 取消下拉列表通知消息
-                            notificationManager.cancel(alarmEvent.getEntity().getId().intValue());
+                            notificationManager.cancel((int) alarmEvent.getEntity().getId());
                             onBackPressed();
                             deleteList();
                         }else {

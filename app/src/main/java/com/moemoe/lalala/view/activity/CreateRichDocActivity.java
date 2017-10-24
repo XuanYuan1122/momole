@@ -128,8 +128,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private ArrayList<String> mUserIds;
     private BottomMenuFragment bottomFragment;
     private String mFolderType;
-    private String mBgCover;
-    private int coverSize;
+    private String mBgCover = "";
+    private int coverSize = -1;
     private boolean mIsCover = true;
 
     @Override
@@ -229,8 +229,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             if(!TextUtils.isEmpty(mDoc.getBgCover())){
                 int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x36) * 2);
                 int h = (int) getResources().getDimension(R.dimen.y200);
-                mRichEt.setCover(StringUtils.getUrl(this,mDoc.getBgCover(),w,h,false,true));
                 mBgCover = mDoc.getBgCover();
+                mRichEt.setCover(StringUtils.getUrl(this,mBgCover,w,h,false,true));
                 coverSize = -1;
             }
             mHideType = mDoc.isHidType();
@@ -368,8 +368,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             showToast(R.string.msg_doc_content_cannot_null);
         } else if(mRichEt.getmTags() != null && mRichEt.getmTags().size() < 1){
             showToast(R.string.msg_need_one_tag);
-        }else if(TextUtils.isEmpty(mBgCover)){
-            showToast("封面不能为空");
         }else {
             createDialog();
             mTvMenuRight.setEnabled(false);
@@ -497,6 +495,14 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         } else {
             showToast(R.string.msg_create_doc_9_jpg);
         }
+    }
+
+    public boolean ismIsCover() {
+        return mIsCover;
+    }
+
+    public void setmIsCover(boolean mIsCover) {
+        this.mIsCover = mIsCover;
     }
 
     @Override

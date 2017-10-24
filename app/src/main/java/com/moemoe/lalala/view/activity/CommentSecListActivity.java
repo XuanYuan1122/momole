@@ -114,10 +114,10 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
         fragment = new BottomMenuFragment();
         mRvList.setLoadMoreEnabled(false);
         mRvList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mRvList.getSwipeRefreshLayout().setEnabled(false);
         mAdapter = new CommentSecListAdapter();
         mRvList.getRecyclerView().setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
+
             @Override
             public void onItemClick(View view, int position) {
                 showCommentMenu(mAdapter.getItem(position),position);
@@ -140,6 +140,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
             @Override
             public void onRefresh() {
                 mIsLoading = true;
+                mPresenter.loadCommentsList(mComment.getCommentId(),sortTime,0);
             }
 
             @Override
@@ -190,7 +191,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
             @Override
             public void OnMenuItemClick(int itemId) {
                 if (itemId == 0) {
-                    CreateCommentActivity.startActivity(CommentSecListActivity.this,bean.getCommentId(),true,bean.getCreateUser().getUserId(),true);
+                    CreateCommentActivity.startActivity(CommentSecListActivity.this,mComment.getCommentId(),true,bean.getCreateUser().getUserId(),true);
                 } else if (itemId == 2) {
                     Intent intent = new Intent(CommentSecListActivity.this, JuBaoActivity.class);
                     intent.putExtra(JuBaoActivity.EXTRA_NAME, bean.getCreateUser().getUserName());
@@ -228,13 +229,14 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
         TextView userComment = (TextView) v.findViewById(R.id.tv_comment);
         LinearLayout imgRoot = (LinearLayout) v.findViewById(R.id.ll_comment_img);
         TextView userTime = (TextView) v.findViewById(R.id.tv_comment_time);
+        ImageView avatar = (ImageView) v.findViewById(R.id.iv_avatar);
         int size = (int) getResources().getDimension(R.dimen.x72);
         Glide.with(this)
                 .load(StringUtils.getUrl(this,mComment.getCreateUser().getHeadPath(),size,size,false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(this))
-                .into((ImageView) $(R.id.iv_avatar));
+                .into(avatar);
         userName.setText(mComment.getCreateUser().getUserName());
         LevelSpan levelSpan = new LevelSpan(ContextCompat.getColor(this,R.color.white),getResources().getDimension(R.dimen.x12));
         final String content = "LV" + mComment.getCreateUser().getLevel();
@@ -282,7 +284,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
                             startActivity(intent);
                         }
                     });
-                    ((LinearLayout)$(R.id.ll_comment_img)).addView(imageView,((LinearLayout)$(R.id.ll_comment_img)).getChildCount(),params);
+                    imgRoot.addView(imageView,imgRoot.getChildCount(),params);
                 }else {
                     ImageView imageView = new ImageView(this);
                     setImage(image, imageView,params);
@@ -296,7 +298,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
                             startActivity(intent);
                         }
                     });
-                    ((LinearLayout)$(R.id.ll_comment_img)).addView(imageView,((LinearLayout)$(R.id.ll_comment_img)).getChildCount(),params);
+                    imgRoot.addView(imageView,imgRoot.getChildCount(),params);
                 }
             }
         }else {
@@ -314,6 +316,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
                 mPresenter.loadCommentsList(mComment.getCommentId(),sortTime,0);
             }
         });
+        mAdapter.addHeaderView(v);
     }
 
     private void setGif(Image image, ImageView gifImageView, LinearLayout.LayoutParams params){
@@ -386,11 +389,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
     public void onLoadCommentsSuccess(ArrayList<CommentV2SecEntity> commentV2Entities, boolean isPull) {
         mIsLoading = false;
         mRvList.setComplete();
-        if(commentV2Entities.size() >= ApiService.LENGHT){
-            mRvList.setLoadMoreEnabled(true);
-        }else {
-            mRvList.setLoadMoreEnabled(false);
-        }
+        mRvList.setLoadMoreEnabled(true);
         if(isPull){
             mAdapter.setList(commentV2Entities);
         }else {

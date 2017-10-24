@@ -12,10 +12,10 @@
     <ImageView
         android:id="@+id/iv_mask"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y100"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:scaleType="fitXY"
-        android:src="@drawable/icon_blackboard_mask"/>
+        android:src="@color/alph_60"/>
 
     <TextView
         android:id="@+id/tv_mark"

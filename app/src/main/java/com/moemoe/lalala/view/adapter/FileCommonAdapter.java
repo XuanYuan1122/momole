@@ -36,7 +36,7 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
         isSelect = false;
         isBuy = true;
         downloadSub = RxDownload.getInstance(context)
-                .maxThread(3)
+                .maxThread(1)
                 .maxRetryCount(3)
                 .defaultSavePath(StorageUtils.getGalleryDirPath())
                 .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());

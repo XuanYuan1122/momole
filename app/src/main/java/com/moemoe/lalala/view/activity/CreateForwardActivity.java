@@ -185,7 +185,13 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
                 return;
             }
             mId = mDynamic.getId();
-            mEtContent.setText(TagControl.getInstance().paresToSpann(this,"//" + mDynamic.getText()));
+            String temp;
+            if(!"DYNAMIC".equals(mDynamic.getType())){
+                temp = "//<at_user user_id=" + mDynamic.getCreateUser().getUserId() + ">@" + mDynamic.getCreateUser().getUserName() + "</at_user>: " + mDynamic.getText();
+            }else {
+                temp = "";
+            }
+            mEtContent.setText(TagControl.getInstance().paresToSpann(this,temp));
             mEtContent.setSelection(0);
             mSelectAdapter = new SelectItemAdapter(this);
             mSelectAdapter.setSelectSize(0);
@@ -466,6 +472,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
             showToast(R.string.msg_doc_content_cannot_null);
             return;
         }
+       // String text = TagControl.getInstance().paresToString(mEtContent.getText());
         if(mEtContent.getText().length() > LIMIT_CONTENT){
             showToast("超过字数限制");
             return;
@@ -475,7 +482,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
             ForwardSendEntity entity = new ForwardSendEntity();
             entity.rt = mCbComment.isChecked();
             entity.dynamicId = mId;
-            entity.etText = TagControl.getInstance().paresToString(mEtContent.getText());
+            entity.etText =  TagControl.getInstance().paresToString(mEtContent.getText());
             entity.type = mRtType;
             if(mPaths.size() > 0){
                 Image image = new Image();

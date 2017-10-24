@@ -11,6 +11,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -121,7 +123,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
     private boolean mIsLoading;
     private NewDynamicEntity mDynamic;
     private BottomMenuFragment fragment;
-    private int commentType = 0;//0 转发 1 评论
+    private int commentType = 1;//0 转发 1 评论
     private boolean sortTime = false;
     private boolean tagFlag;
     private ArrayList<DocTagEntity> mTags;
@@ -178,12 +180,11 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         fragment = new BottomMenuFragment();
         mRvList.setLoadMoreEnabled(false);
         mRvList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mRvList.getSwipeRefreshLayout().setEnabled(false);
         mAdapter = new CommentListAdapter(mDynamic.getId());
         mAdapter.setOnItemClickListener(new BaseRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                showCommentMenu(mAdapter.getItem(position),position);
+                if(commentType == 1) showCommentMenu(mAdapter.getItem(position),position);
             }
 
             @Override
@@ -194,6 +195,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         mRvList.getRecyclerView().setAdapter(mAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRvList.setLayoutManager(layoutManager);
+        mRvList.setLoadMoreEnabled(false);
         mRvList.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
@@ -204,6 +206,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             @Override
             public void onRefresh() {
                 mIsLoading = true;
+                mPresenter.loadCommentsList(mDynamic.getId(),commentType,sortTime,0);
             }
 
             @Override
@@ -221,25 +224,27 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             @Override
             public void onKeyBoardStateChange(int state) {
                 if (state == KeyboardListenerLayout.KEYBOARD_STATE_HIDE) {
-                    tagFlag = false;
-                    if(mTags.size() > 0){
-                        DocTagEntity entity = mTags.get(mTags.size() - 1);
-                        if(!TextUtils.isEmpty(entity.getName())){
-                            if(checkLabel(entity.getName())){
-                                mTags.get(mTags.size() - 1).setEdit(false);
-                                if (DialogUtils.checkLoginAndShowDlg(DynamicActivity.this)) {
-                                    createDialog();
-                                    TagSendEntity bean = new TagSendEntity(mDynamic.getId(),entity.getName());
-                                    mPresenter.sendTag(bean);
+                    if(tagFlag){
+                        tagFlag = false;
+                        if(mTags.size() > 0){
+                            DocTagEntity entity = mTags.get(mTags.size() - 1);
+                            if(!TextUtils.isEmpty(entity.getName())){
+                                if(checkLabel(entity.getName())){
+                                    mTags.get(mTags.size() - 1).setEdit(false);
+                                    if (DialogUtils.checkLoginAndShowDlg(DynamicActivity.this)) {
+                                        createDialog();
+                                        TagSendEntity bean = new TagSendEntity(mDynamic.getId(),entity.getName());
+                                        mPresenter.sendTag(bean);
+                                    }
+                                }else {
+                                    entity.setName("");
+                                    ToastUtils.showShortToast(DynamicActivity.this,R.string.msg_tag_already_exit);
                                 }
                             }else {
-                                entity.setName("");
-                                ToastUtils.showShortToast(DynamicActivity.this,R.string.msg_tag_already_exit);
+                                mTags.remove(entity);
                             }
-                        }else {
-                            mTags.remove(entity);
+                            if(docLabel != null)docLabel.notifyAdapter();
                         }
-                        if(docLabel != null)docLabel.notifyAdapter();
                     }
                 }
             }
@@ -336,7 +341,9 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         TextView time = (TextView) v.findViewById(R.id.tv_time);
         TextView text = (TextView) v.findViewById(R.id.tv_content);
         LinearLayout root = (LinearLayout) v.findViewById(R.id.ll_img_root);
-        
+        RelativeLayout root1 = (RelativeLayout) v.findViewById(R.id.rl_card_root);
+        LinearLayout cardRoot = (LinearLayout) v.findViewById(R.id.ll_card_root);
+
         //user top
         if(mDynamic.getCreateUser().isVip()){
             ivVip.setVisibility(View.VISIBLE);
@@ -389,21 +396,27 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         text.setText(TagControl.getInstance().paresToSpann(this, mDynamic.getText()));
         text.setMovementMethod(LinkMovementMethod.getInstance());
         //extra
-        root.setVisibility(View.VISIBLE);
+        root.setVisibility(View.GONE);
         root.removeAllViews();
         root.setOnClickListener(null);
+        root1.setVisibility(View.GONE);
+        cardRoot.removeAllViews();
+        root1.setOnClickListener(null);
         if("DELETE".equals(mDynamic.getType())){//已被删除
+            root.setVisibility(View.VISIBLE);
+            root.setBackgroundColor(Color.WHITE);
             TextView tv = new TextView(this);
             tv.setText("该内容已被删除");
             tv.setTextColor(ContextCompat.getColor(this,R.color.white));
             tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,this.getResources().getDimension(R.dimen.x36));
             tv.setGravity(Gravity.CENTER);
-            tv.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
+            tv.setBackgroundColor(ContextCompat.getColor(this,R.color.gray_e8e8e8));
             int h = (int) getResources().getDimension(R.dimen.y320);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,h);
             tv.setLayoutParams(lp);
             root.addView(tv);
         }else if("DYNAMIC".equals(mDynamic.getType())){
+            root.setVisibility(View.VISIBLE);
             root.setBackgroundColor(Color.WHITE);
             DynamicContentEntity dynamicContentEntity = new Gson().fromJson(mDynamic.getDetail(),DynamicContentEntity.class);
             if(dynamicContentEntity.getImages() != null && dynamicContentEntity.getImages().size() > 0){
@@ -412,6 +425,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 root.setVisibility(View.GONE);
             }
         }else if("FOLDER".equals(mDynamic.getType())){
+            root1.setVisibility(View.VISIBLE);
             final ShareFolderEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),ShareFolderEntity.class);
             View folder = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
             folder.findViewById(R.id.tv_title).setVisibility(View.GONE);
@@ -471,9 +485,9 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             });
             userName1.setText(folderEntity.getCreateUser().getUserName());
             time1.setText("上一次更新:" + StringUtils.timeFormate(folderEntity.getUpdateTime()));
-            root.addView(folder);
+            cardRoot.addView(folder);
 
-            root.setOnClickListener(new NoDoubleClickListener() {
+            root1.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
                     if(folderEntity.getFolderType().equals(FolderType.ZH.toString())){
@@ -488,6 +502,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }
             });
         }else if("ARTICLE".equals(mDynamic.getType())){
+            root1.setVisibility(View.VISIBLE);
             final ShareArticleEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),ShareArticleEntity.class);
             View article = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
             TextView title = (TextView) article.findViewById(R.id.tv_title);
@@ -496,7 +511,6 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             TextView mark = (TextView) article.findViewById(R.id.tv_mark);
             article.findViewById(R.id.tv_folder_name).setVisibility(View.GONE);
             article.findViewById(R.id.tv_tag).setVisibility(View.GONE);
-            article.findViewById(R.id.iv_mask).setVisibility(View.GONE);
             int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
             int h = (int) getResources().getDimension(R.dimen.y320);
             Glide.with(this)
@@ -526,8 +540,8 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             });
             userName1.setText(folderEntity.getDocCreateUser().getUserName());
             time1.setText(StringUtils.timeFormate(folderEntity.getCreateTime()));
-            root.addView(article);
-            root.setOnClickListener(new NoDoubleClickListener() {
+            cardRoot.addView(article);
+            root1.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
                     if (!TextUtils.isEmpty(folderEntity.getDocId())) {
@@ -538,6 +552,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }
             });
         }else if("RETWEET".equals(mDynamic.getType())){
+            root.setVisibility(View.VISIBLE);
             RetweetEntity retweetEntity = new Gson().fromJson(mDynamic.getDetail(),RetweetEntity.class);
             if(!TextUtils.isEmpty(retweetEntity.getContent())){
                 TextView tv = new TextView(this);
@@ -559,13 +574,11 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                     root.setVisibility(View.GONE);
                 }
             }
-        }else {
-            root.setVisibility(View.GONE);
         }
         //label
         docLabel = (DocLabelView)v.findViewById(R.id.dv_doc_label_root);
         docLabel.setVisibility(View.VISIBLE);
-        docLabelAdapter = new NewDocLabelAdapter(this,true);
+        docLabelAdapter = new NewDocLabelAdapter(this,false);
         docLabel.setDocLabelAdapter(docLabelAdapter);
         docLabel.setItemClickListener(new DocLabelView.LabelItemClickListener() {
             @Override
@@ -603,11 +616,21 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         if(mDynamic.isTag()){
             tRoot.setVisibility(View.VISIBLE);
             root.setBackgroundColor(Color.TRANSPARENT);
+            root1.setBackgroundColor(Color.TRANSPARENT);
             docLabel.setBackgroundColor(Color.TRANSPARENT);
+            if("ARTICLE".equals(mDynamic.getType()) || "FOLDER".equals(mDynamic.getType())){
+                int py = (int) getResources().getDimension(R.dimen.y24);
+                root1.setPadding(0,0,0,py);
+            }
         }else {
             tRoot.setVisibility(View.INVISIBLE);
             root.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
+            root1.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
             docLabel.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
+            if("ARTICLE".equals(mDynamic.getType()) || "FOLDER".equals(mDynamic.getType())){
+                int py = (int) getResources().getDimension(R.dimen.y24);
+                root1.setPadding(0,py,0,py);
+            }
         }
         fRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -686,11 +709,11 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }else {
                     ArrayList<CommentV2Entity> temp = mPreComments;
                     mPreComments = mAdapter.getList();
-                    if(temp.size() % ApiService.LENGHT == 0){
-                        mRvList.setLoadMoreEnabled(true);
-                    }else {
-                        mRvList.setLoadMoreEnabled(false);
-                    }
+//                    if(temp.size() % ApiService.LENGHT == 0){
+//                        mRvList.setLoadMoreEnabled(true);
+//                    }else {
+//                        mRvList.setLoadMoreEnabled(false);
+//                    }
                     int pre = mPrePosition;
                     if(commentType == 0){
                         mAdapter.setShowFavorite(false);
@@ -707,6 +730,8 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             public void onTabReselect(int position) {
             }
         });
+        pageIndicator.setCurrentTab(1);
+        mTvSort.setVisibility(View.VISIBLE);
         mTvSort.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
@@ -1012,11 +1037,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
     public void onLoadCommentsSuccess(ArrayList<CommentV2Entity> commentV2Entities,boolean isPull) {
         mIsLoading = false;
         mRvList.setComplete();
-        if(commentV2Entities.size() >= ApiService.LENGHT){
-            mRvList.setLoadMoreEnabled(true);
-        }else {
-            mRvList.setLoadMoreEnabled(false);
-        }
+        mRvList.setLoadMoreEnabled(true);
         if(isPull){
             mAdapter.setList(commentV2Entities);
         }else {

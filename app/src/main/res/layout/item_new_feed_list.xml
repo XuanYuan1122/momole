@@ -24,8 +24,8 @@
 
         <ImageView
             android:id="@+id/iv_vip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/x80"
+            android:layout_height="@dimen/x80"
             android:src="@drawable/ic_userhead_vip_mini"
             android:layout_alignStart="@+id/iv_avatar"
             android:layout_alignBottom="@+id/iv_avatar"
@@ -125,10 +125,27 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/x30"
+        android:lineSpacingExtra="@dimen/y12"
+        android:textColor="@color/black_1e1e1e"
+        android:layout_marginTop="@dimen/y12"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginBottom="@dimen/x24"
+        android:maxLines="1"
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:ellipsize="end"/>
+
+    <TextView
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/x30"
+        android:lineSpacingExtra="@dimen/y12"
         android:textColor="@color/black_1e1e1e"
         android:layout_marginTop="@dimen/y12"
         android:layout_marginStart="@dimen/x24"
@@ -148,6 +165,30 @@
         android:visibility="gone">
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_card_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/y24">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/x24"
+            android:layout_marginEnd="@dimen/x24"
+            android:layout_marginBottom="@dimen/y12"
+            app:cardBackgroundColor="@color/white"
+            app:cardElevation="5dp">
+            <LinearLayout
+                android:id="@+id/ll_card_root"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
 
     <com.moemoe.lalala.view.widget.view.DocLabelView
         android:id="@+id/dv_doc_label_root"

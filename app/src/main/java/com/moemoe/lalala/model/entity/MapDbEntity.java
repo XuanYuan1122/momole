@@ -28,6 +28,7 @@ public class MapDbEntity {
     private String shows;// 时间段显示
     private String fileName;
     private int downloadState;//1.未下载 2.下载完成 3.下载失败
+    private String md5;
 
     public MapDbEntity(MapEntity entity){
         id = entity.getId();
@@ -41,21 +42,14 @@ public class MapDbEntity {
         shows = entity.getShows();
         name = entity.getName();
         fileName = entity.getId() + image_path.substring(image_path.lastIndexOf("."));
+        md5 = entity.getMd5();
         downloadState = 1;
     }
 
-    public static ArrayList<MapDbEntity> toDb(ArrayList<MapEntity> entities){
-        ArrayList<MapDbEntity> res = new ArrayList<>();
-        for(MapEntity entity : entities){
-         MapDbEntity entity1 = new MapDbEntity(entity);
-            res.add(entity1);
-        }
-        return res;
-    }
-
-    @Generated(hash = 711105374)
-    public MapDbEntity(String id, String name, String image_path, int image_w, int image_h, String schema, int pointX,
-            int pointY, String text, String shows, String fileName, int downloadState) {
+    @Generated(hash = 67326735)
+    public MapDbEntity(String id, String name, String image_path, int image_w, int image_h,
+            String schema, int pointX, int pointY, String text, String shows, String fileName,
+            int downloadState, String md5) {
         this.id = id;
         this.name = name;
         this.image_path = image_path;
@@ -68,10 +62,28 @@ public class MapDbEntity {
         this.shows = shows;
         this.fileName = fileName;
         this.downloadState = downloadState;
+        this.md5 = md5;
     }
 
     @Generated(hash = 921294398)
     public MapDbEntity() {
+    }
+
+    public static ArrayList<MapDbEntity> toDb(ArrayList<MapEntity> entities){
+        ArrayList<MapDbEntity> res = new ArrayList<>();
+        for(MapEntity entity : entities){
+         MapDbEntity entity1 = new MapDbEntity(entity);
+            res.add(entity1);
+        }
+        return res;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
     }
 
     public String getFileName() {

@@ -207,34 +207,6 @@
                 android:gravity="right"
                 android:textColor="@color/txt_gray_929292_red"/>
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/ll_secret"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/size_10"
-            android:background="@drawable/bg_normal_white_btn">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_15"
-                android:textColor="@color/black"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/size_15"
-                android:layout_marginStart="@dimen/size_15"
-                android:text="隐私设置"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/size_15"
-                android:layout_marginEnd="@dimen/size_15"
-                android:src="@drawable/ic_array_right_gray"/>
-        </LinearLayout>
-
     </LinearLayout>
 
     </ScrollView>

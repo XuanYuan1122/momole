@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -153,7 +154,7 @@ public class CommentListHolder extends ClickableViewHolder {
             for(final CommentV2SecEntity secEntity : entity.getHotComments()){
                 TextView tv = new TextView(itemView.getContext());
                 tv.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.gray_444444));
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,itemView.getResources().getDimension(R.dimen.x20));
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,itemView.getResources().getDimension(R.dimen.x24));
 
                 String retweetContent = "@" + secEntity.getCreateUser().getUserName();
                 if(!TextUtils.isEmpty(secEntity.getCommentTo())){
@@ -169,29 +170,41 @@ public class CommentListHolder extends ClickableViewHolder {
                     UserUrlSpan span1 = new UserUrlSpan(itemView.getContext(),secEntity.getCommentTo(),null);
                     style1.setSpan(span1, retweetContent.indexOf(retweetColorStr1), retweetContent.indexOf(retweetColorStr1) + retweetColorStr1.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.topMargin = (int) context.getResources().getDimension(R.dimen.y4);
+                tv.setLayoutParams(lp);
                 tv.setText(style1);
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
-                tv.setOnClickListener(new NoDoubleClickListener() {
-                    @Override
-                    public void onNoDoubleClick(View v) {
-                        CreateCommentActivity.startActivity(context,secEntity.getCommentId(),true,secEntity.getCreateUser().getUserId(),false);
-                    }
-                });
+//                tv.setOnClickListener(new NoDoubleClickListener() {
+//                    @Override
+//                    public void onNoDoubleClick(View v) {
+//                        CreateCommentActivity.startActivity(context,entity.getCommentId(),true,secEntity.getCreateUser().getUserId(),false);
+//                    }
+//                });
                 ((LinearLayout)$(R.id.ll_comment_root)).addView(tv);
             }
             if(entity.getComments() > entity.getHotComments().size()){
                 TextView tv = new TextView(itemView.getContext());
                 tv.setTextColor(ContextCompat.getColor(itemView.getContext(),R.color.main_cyan));
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,itemView.getResources().getDimension(R.dimen.x20));
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,itemView.getResources().getDimension(R.dimen.x24));
                 tv.setText("全部" + StringUtils.getNumberInLengthLimit(entity.getComments(),3) + "条回复");
-                tv.setOnClickListener(new NoDoubleClickListener() {
-                    @Override
-                    public void onNoDoubleClick(View v) {
-                        CommentSecListActivity.startActivity(context,entity,parentId);
-                    }
-                });
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.topMargin = (int) context.getResources().getDimension(R.dimen.y4);
+                tv.setLayoutParams(lp);
+//                tv.setOnClickListener(new NoDoubleClickListener() {
+//                    @Override
+//                    public void onNoDoubleClick(View v) {
+//                        CommentSecListActivity.startActivity(context,entity,parentId);
+//                    }
+//                });
                 ((LinearLayout)$(R.id.ll_comment_root)).addView(tv);
             }
+            $(R.id.ll_comment_root).setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    CommentSecListActivity.startActivity(context,entity,parentId);
+                }
+            });
         }else {
             setVisible(R.id.ll_comment_root,false);
         }

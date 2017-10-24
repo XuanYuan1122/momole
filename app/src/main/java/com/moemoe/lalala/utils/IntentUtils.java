@@ -53,6 +53,7 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         sSupportSchame.add("event_1.0");
         sSupportSchame.add(context.getResources().getString(R.string.label_map_event_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_game_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_luntan_action));
     }
 
     public static void haveShareWeb(Context context, Uri uri, View v){

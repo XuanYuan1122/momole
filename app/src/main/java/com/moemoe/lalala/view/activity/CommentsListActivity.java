@@ -87,6 +87,7 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
         mAdapter = new PersonListAdapter(this,4);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));
+        mListDocs.setLoadMoreEnabled(true);
         mListDocs.getRecyclerView().setHasFixedSize(true);
         mListDocs.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
         mEdtCommentInput.setHint("输入留言");
@@ -228,11 +229,6 @@ public class CommentsListActivity extends BaseAppCompatActivity  implements Comm
         finalizeDialog();
         mIsLoading = false;
         mListDocs.setComplete();
-        if(entities.size() == 0){
-            mListDocs.setLoadMoreEnabled(false);
-        }else {
-            mListDocs.setLoadMoreEnabled(true);
-        }
         if(pull){
             mAdapter.setData(entities);
         }else {

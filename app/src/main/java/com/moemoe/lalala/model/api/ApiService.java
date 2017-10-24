@@ -2,104 +2,7 @@ package com.moemoe.lalala.model.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.moemoe.lalala.model.entity.AddressEntity;
-import com.moemoe.lalala.model.entity.ApiResult;
-import com.moemoe.lalala.model.entity.AppUpdateEntity;
-import com.moemoe.lalala.model.entity.BadgeEntity;
-import com.moemoe.lalala.model.entity.BagDirEntity;
-import com.moemoe.lalala.model.entity.BagEntity;
-import com.moemoe.lalala.model.entity.BagFolderInfo;
-import com.moemoe.lalala.model.entity.BagModifyEntity;
-import com.moemoe.lalala.model.entity.BagMyEntity;
-import com.moemoe.lalala.model.entity.BannerEntity;
-import com.moemoe.lalala.model.entity.BuildEntity;
-import com.moemoe.lalala.model.entity.CalendarDayItemEntity;
-import com.moemoe.lalala.model.entity.CodeEntity;
-import com.moemoe.lalala.model.entity.CoinDetailEntity;
-import com.moemoe.lalala.model.entity.CoinShopEntity;
-import com.moemoe.lalala.model.entity.Comment24Entity;
-import com.moemoe.lalala.model.entity.CommentDetailEntity;
-import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
-import com.moemoe.lalala.model.entity.CommentListSendEntity;
-import com.moemoe.lalala.model.entity.CommentSendEntity;
-import com.moemoe.lalala.model.entity.CommentSendV2Entity;
-import com.moemoe.lalala.model.entity.CommentV2Entity;
-import com.moemoe.lalala.model.entity.CommentV2SecEntity;
-import com.moemoe.lalala.model.entity.CopyFileEntity;
-import com.moemoe.lalala.model.entity.CreateOrderEntity;
-import com.moemoe.lalala.model.entity.DailyTaskEntity;
-import com.moemoe.lalala.model.entity.DelCommentEntity;
-import com.moemoe.lalala.model.entity.DelTagEntity;
-import com.moemoe.lalala.model.entity.DepartmentEntity;
-import com.moemoe.lalala.model.entity.DocDetailEntity;
-import com.moemoe.lalala.model.entity.DocListEntity;
-import com.moemoe.lalala.model.entity.DocPut;
-import com.moemoe.lalala.model.entity.DocTagEntity;
-import com.moemoe.lalala.model.entity.DonationInfoEntity;
-import com.moemoe.lalala.model.entity.DynamicEntity;
-import com.moemoe.lalala.model.entity.DynamicSendEntity;
-import com.moemoe.lalala.model.entity.DynamicTopEntity;
-import com.moemoe.lalala.model.entity.FeaturedEntity;
-import com.moemoe.lalala.model.entity.FileEntity;
-import com.moemoe.lalala.model.entity.FolderRepEntity;
-import com.moemoe.lalala.model.entity.ForwardSendEntity;
-import com.moemoe.lalala.model.entity.GiveCoinEntity;
-import com.moemoe.lalala.model.entity.InviteUserEntity;
-import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
-import com.moemoe.lalala.model.entity.JuQingEntity;
-import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
-import com.moemoe.lalala.model.entity.LoginEntity;
-import com.moemoe.lalala.model.entity.LoginResultEntity;
-import com.moemoe.lalala.model.entity.LuYinEntity;
-import com.moemoe.lalala.model.entity.ManHua2Entity;
-import com.moemoe.lalala.model.entity.ManHuaUploadEntity;
-import com.moemoe.lalala.model.entity.MapEntity;
-import com.moemoe.lalala.model.entity.ModifyEntity;
-import com.moemoe.lalala.model.entity.ModifyFileEntity;
-import com.moemoe.lalala.model.entity.MoveFileEntity;
-import com.moemoe.lalala.model.entity.NetaEvent;
-import com.moemoe.lalala.model.entity.NetaMsgEntity;
-import com.moemoe.lalala.model.entity.NewBagEntity;
-import com.moemoe.lalala.model.entity.NewCommentEntity;
-import com.moemoe.lalala.model.entity.NewDynamicEntity;
-import com.moemoe.lalala.model.entity.NewFolderEntity;
-import com.moemoe.lalala.model.entity.NewUploadEntity;
-import com.moemoe.lalala.model.entity.OldSimpleResult;
-import com.moemoe.lalala.model.entity.OrderEntity;
-import com.moemoe.lalala.model.entity.PayReqEntity;
-import com.moemoe.lalala.model.entity.PayResEntity;
-import com.moemoe.lalala.model.entity.PersonDocEntity;
-import com.moemoe.lalala.model.entity.PersonFollowEntity;
-import com.moemoe.lalala.model.entity.PersonalMainEntity;
-import com.moemoe.lalala.model.entity.PhoneFukuEntity;
-import com.moemoe.lalala.model.entity.PhoneMateEntity;
-import com.moemoe.lalala.model.entity.PhoneMenuEntity;
-import com.moemoe.lalala.model.entity.RegisterEntity;
-import com.moemoe.lalala.model.entity.RejectEntity;
-import com.moemoe.lalala.model.entity.ReplyEntity;
-import com.moemoe.lalala.model.entity.ReportEntity;
-import com.moemoe.lalala.model.entity.SearchEntity;
-import com.moemoe.lalala.model.entity.SendSubmissionEntity;
-import com.moemoe.lalala.model.entity.ShareArticleSendEntity;
-import com.moemoe.lalala.model.entity.ShareFolderSendEntity;
-import com.moemoe.lalala.model.entity.ShowFolderEntity;
-import com.moemoe.lalala.model.entity.SignEntity;
-import com.moemoe.lalala.model.entity.SubmissionDepartmentEntity;
-import com.moemoe.lalala.model.entity.SubmissionItemEntity;
-import com.moemoe.lalala.model.entity.TagLikeEntity;
-import com.moemoe.lalala.model.entity.TagNodeEntity;
-import com.moemoe.lalala.model.entity.TagSendEntity;
-import com.moemoe.lalala.model.entity.ThirdLoginEntity;
-import com.moemoe.lalala.model.entity.TrashEntity;
-import com.moemoe.lalala.model.entity.TrashOperationEntity;
-import com.moemoe.lalala.model.entity.TrashPut;
-import com.moemoe.lalala.model.entity.UploadEntity;
-import com.moemoe.lalala.model.entity.UploadResultEntity;
-import com.moemoe.lalala.model.entity.UserInfo;
-import com.moemoe.lalala.model.entity.WallBlock;
-import com.moemoe.lalala.model.entity.WenZhangFolderEntity;
-import com.moemoe.lalala.model.entity.XianChongEntity;
-import com.moemoe.lalala.utils.JuQingDoneEntity;
+import com.moemoe.lalala.model.entity.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -108,7 +11,6 @@ import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -644,7 +546,10 @@ public interface ApiService {
     @GET("v2/kira/bag/{userId}/article/list")
     Observable<ApiResult<ArrayList<WenZhangFolderEntity>>> loadWenZhangList(@Path("userId")String userId,@Query("size")int size,@Query("index")int index);
 
-    @POST("v2/kira/bag/delete/cartoon/{parentFolderId}/{folderId}/file/")
+    @GET("v2/kira/bag/{userId}/favorite/article/list")
+    Observable<ApiResult<ArrayList<WenZhangFolderEntity>>> loadWenZhangFollowList(@Path("userId")String userId,@Query("size")int size,@Query("index")int index);
+
+    @POST("v2/kira/bag/delete/cartoon/{parentFolderId}/{folderId}/file")
     Observable<ApiResult> deleteManHuaFile(@Path("parentFolderId")String parentId,@Path("folderId")String folderId,@Body ArrayList<String> fileIds);
 
     @GET("v2/kira/bag/follow/{type}/folder/list")
@@ -826,4 +731,7 @@ public interface ApiService {
 
     @GET("v2/kira/dynamic/get/{dynamicId}/dynamic")
     Observable<ApiResult<NewDynamicEntity>> getDynamic(@Path("dynamicId")String id);
+
+    @GET("v2/kira/doc/get/doc/{departmentType}/list")
+    Observable<ApiResult<ArrayList<DocResponse>>> loadOldDocList(@Path("departmentType")String type,@Query("timestamp")long timestamp);
 }

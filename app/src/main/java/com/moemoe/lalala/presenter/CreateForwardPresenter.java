@@ -98,14 +98,16 @@ public class CreateForwardPresenter implements CreateForwardContract.Presenter {
                     public void onNext(UploadResultEntity uploadResultEntity) {
                         Image image = new Image();
                         image.setPath(uploadResultEntity.getPath());
-                        try {
-                            JSONObject jsonObject = new JSONObject(uploadResultEntity.getAttr());
-                            image.setH(jsonObject.getInt("h"));
-                            image.setW(jsonObject.getInt("w"));
-                            ((ForwardSendEntity) entity).img = image;
-                        } catch (JSONException e) {
-                            ((ForwardSendEntity) entity).img = new Image();
-                            e.printStackTrace();
+                        if(!TextUtils.isEmpty(uploadResultEntity.getAttr())){
+                            try {
+                                JSONObject jsonObject = new JSONObject(uploadResultEntity.getAttr());
+                                image.setH(jsonObject.getInt("h"));
+                                image.setW(jsonObject.getInt("w"));
+                                ((ForwardSendEntity) entity).img = image;
+                            } catch (JSONException e) {
+                                ((ForwardSendEntity) entity).img = new Image();
+                                e.printStackTrace();
+                            }
                         }
                     }
                 });

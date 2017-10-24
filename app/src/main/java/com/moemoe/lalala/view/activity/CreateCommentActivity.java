@@ -169,8 +169,7 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
         mTvMenuLeft.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                SoftKeyboardUtils.dismissSoftKeyboard(CreateCommentActivity.this);
-                finish();
+               onBackPressed();
             }
         });
         mTvTitle.setVisibility(View.VISIBLE);
@@ -300,6 +299,12 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
     public void onFailure(int code, String msg) {
         finalizeDialog();
         ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
+    }
+
+    @Override
+    public void onBackPressed() {
+        SoftKeyboardUtils.dismissSoftKeyboard(this);
+        super.onBackPressed();
     }
 
     @Override

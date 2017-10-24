@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cmbkb_caption">CMB Safe Input</string>
+    <string name="cmbkb_caption" >CMB Safe Input</string>
     <string name="cmbkb_finish">Finish</string>
     <string name="cmbkb_more">More</string>
     <string name="cmbkb_please_input">Please Input</string>
