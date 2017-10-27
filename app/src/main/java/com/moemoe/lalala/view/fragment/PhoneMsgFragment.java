@@ -248,7 +248,7 @@ public class PhoneMsgFragment extends BaseFragment implements PhoneMsgContract.V
         uri = Uri.parse("rong://" + getContext().getApplicationInfo().packageName).buildUpon()
                 .appendPath("conversationlist")
                 .appendQueryParameter(Conversation.ConversationType.PRIVATE.getName(), "false") //设置私聊会话是否聚合显示
-                .appendQueryParameter(Conversation.ConversationType.GROUP.getName(), "false")//群组
+                .appendQueryParameter(Conversation.ConversationType.GROUP.getName(), "true")//群组
                 .appendQueryParameter(Conversation.ConversationType.PUBLIC_SERVICE.getName(), "false")//公共服务号
                 .appendQueryParameter(Conversation.ConversationType.APP_PUBLIC_SERVICE.getName(), "false")//订阅号
                 .appendQueryParameter(Conversation.ConversationType.SYSTEM.getName(), "false")//系统

@@ -18,9 +18,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.FileXiaoShuoEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.FileUtil;
@@ -49,8 +53,6 @@ import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * 通常文件列表
@@ -73,7 +75,7 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
     private View mBottomView;
     private ArrayList<FileXiaoShuoEntity> mManHualist;
     private int mPosition;
-    private RxDownload downloadSub;
+   // private RxDownload downloadSub;
     private int mbBufferLen;
     private MappedByteBuffer mbBuff;
     private int curEndPos;
@@ -112,11 +114,11 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
-        downloadSub = RxDownload.getInstance(this)
-                .maxThread(3)
-                .maxRetryCount(3)
-                .defaultSavePath(StorageUtils.getNovRootPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(this)
+//                .maxThread(3)
+//                .maxRetryCount(3)
+//                .defaultSavePath(StorageUtils.getNovRootPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
 
         mUserId = getIntent().getStringExtra(UUID);
         mManHualist = getIntent().getParcelableArrayListExtra("folders");
@@ -352,36 +354,69 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                             dialog.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
                             dialog.setIcon(R.drawable.ic_launcher);// 设置提示的title的图标，默认是没有的
                             dialog.setTitle("下载中");
-                            downloadSub.download(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),mManHualist.get(mPosition).getFileName(),StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId())
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Observer<DownloadStatus>() {
+                            FileDownloader.getImpl().create(ApiService.URL_QINIU + mManHualist.get(mPosition).getPath())
+                                    .setPath(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId() + "/"  + mManHualist.get(mPosition).getFileName())
+                                    .setCallbackProgressTimes(1)
+                                    .setListener(new FileDownloadListener() {
                                         @Override
-                                        public void onError(Throwable e) {
+                                        protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                        }
+
+                                        @Override
+                                        protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                            dialog.setMax(totalBytes);
+                                            dialog.setProgress(soFarBytes);
+                                        }
+
+                                        @Override
+                                        protected void completed(BaseDownloadTask task) {
+                                            dialog.dismiss();
+                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
+                                        }
+
+                                        @Override
+                                        protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                        }
+
+                                        @Override
+                                        protected void error(BaseDownloadTask task, Throwable e) {
                                             dialog.dismiss();
                                             FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
                                             showToast("下载失败");
-                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),true).subscribe();
                                         }
 
                                         @Override
-                                        public void onComplete() {
-                                            dialog.dismiss();
-                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
-                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
-                                        }
-
-                                        @Override
-                                        public void onSubscribe(@NonNull Disposable d) {
+                                        protected void warn(BaseDownloadTask task) {
 
                                         }
-
-                                        @Override
-                                        public void onNext(DownloadStatus downloadStatus) {
-                                            dialog.setMax((int) downloadStatus.getTotalSize());
-                                            dialog.setProgress((int) downloadStatus.getDownloadSize());
-                                        }
-                                    });
+                                    }).start();
+//                            downloadSub.download(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),mManHualist.get(mPosition).getFileName(),StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId())
+//                                    .subscribeOn(Schedulers.io())
+//                                    .observeOn(AndroidSchedulers.mainThread())
+//                                    .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                        @Override
+//                                        public void onSuccess() {
+//                                            dialog.dismiss();
+//                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
+//                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
+//                                        }
+//
+//                                        @Override
+//                                        public void onLoading(DownloadStatus res) {
+//                                            dialog.setMax((int) res.getTotalSize());
+//                                            dialog.setProgress((int) res.getDownloadSize());
+//                                        }
+//
+//                                        @Override
+//                                        public void onFail(Throwable e) {
+//                                            dialog.dismiss();
+//                                            FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
+//                                            showToast("下载失败");
+//                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),true).subscribe();
+//                                        }
+//                                    });
                             dialog.show();
                         }
                     }
@@ -412,37 +447,69 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
                             dialog.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
                             dialog.setIcon(R.drawable.ic_launcher);// 设置提示的title的图标，默认是没有的
                             dialog.setTitle("下载中");
-                            downloadSub.download(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),mManHualist.get(mPosition).getFileName(),StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId())
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Observer<DownloadStatus>() {
+                            FileDownloader.getImpl().create(ApiService.URL_QINIU + mManHualist.get(mPosition).getPath())
+                                    .setPath(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId() + "/"  + mManHualist.get(mPosition).getFileName())
+                                    .setCallbackProgressTimes(1)
+                                    .setListener(new FileDownloadListener() {
+                                        @Override
+                                        protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                        }
 
                                         @Override
-                                        public void onError(Throwable e) {
+                                        protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                            dialog.setMax(totalBytes);
+                                            dialog.setProgress(soFarBytes);
+                                        }
+
+                                        @Override
+                                        protected void completed(BaseDownloadTask task) {
+                                            dialog.dismiss();
+                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
+                                        }
+
+                                        @Override
+                                        protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                        }
+
+                                        @Override
+                                        protected void error(BaseDownloadTask task, Throwable e) {
                                             dialog.dismiss();
                                             FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
                                             showToast("下载失败");
-                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),true).subscribe();
                                         }
 
                                         @Override
-                                        public void onComplete() {
-                                            dialog.dismiss();
-                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
-                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
-                                        }
-
-                                        @Override
-                                        public void onSubscribe(@NonNull Disposable d) {
+                                        protected void warn(BaseDownloadTask task) {
 
                                         }
-
-                                        @Override
-                                        public void onNext(DownloadStatus downloadStatus) {
-                                            dialog.setMax((int) downloadStatus.getTotalSize());
-                                            dialog.setProgress((int) downloadStatus.getDownloadSize());
-                                        }
-                                    });
+                                    }).start();
+//                            downloadSub.download(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),mManHualist.get(mPosition).getFileName(),StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId())
+//                                    .subscribeOn(Schedulers.io())
+//                                    .observeOn(AndroidSchedulers.mainThread())
+//                                    .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                        @Override
+//                                        public void onSuccess() {
+//                                            dialog.dismiss();
+//                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
+//                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
+//                                        }
+//
+//                                        @Override
+//                                        public void onLoading(DownloadStatus res) {
+//                                            dialog.setMax((int) res.getTotalSize());
+//                                            dialog.setProgress((int) res.getDownloadSize());
+//                                        }
+//
+//                                        @Override
+//                                        public void onFail(Throwable e) {
+//                                            dialog.dismiss();
+//                                            FileUtil.deleteDir(StorageUtils.getNovRootPath() + mManHualist.get(mPosition).getFileId());
+//                                            showToast("下载失败");
+//                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),true).subscribe();
+//                                        }
+//                                    });
                             dialog.show();
                         }
                     }

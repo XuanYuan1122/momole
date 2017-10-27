@@ -3,8 +3,12 @@ package com.moemoe.lalala.netamusic.player;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.netamusic.data.model.PlayList;
 import com.moemoe.lalala.netamusic.data.model.Song;
 import com.moemoe.lalala.utils.CommonUtils;
@@ -20,10 +24,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
+ *
  * Created by yi on 2016/10/31.
  */
 
@@ -42,17 +45,17 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
     private boolean isPaused;
 
     private boolean isStarted;
-    private RxDownload downloadSub;
+   // private RxDownload downloadSub;
 
     private Player(Context context){
         mPlayer = new MediaPlayer();
         mPlayList = new PlayList();
         mPlayer.setOnCompletionListener(this);
-        downloadSub = RxDownload.getInstance(context)
-                .maxThread(1)
-                .maxRetryCount(3)
-                .defaultSavePath(StorageUtils.getMusicRootPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(context)
+//                .maxThread(1)
+//                .maxRetryCount(3)
+//                .defaultSavePath(StorageUtils.getMusicRootPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     public static Player getInstance(Context context){
@@ -92,22 +95,22 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
                     mPlayer.start();
                     notifyPlayStatusChanged(true);
                 }else {
-                    downloadSub.download(url,song.getDisplayName(),null)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<DownloadStatus>() {
+                    FileDownloader.getImpl().create(url)
+                            .setPath(StorageUtils.getMusicRootPath() + song.getDisplayName())
+                            .setCallbackProgressTimes(1)
+                            .setListener(new FileDownloadListener() {
                                 @Override
-                                public void onSubscribe(@NonNull Disposable d) {
+                                protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                 }
 
                                 @Override
-                                public void onNext(@NonNull DownloadStatus downloadStatus) {
+                                protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
                                     if(mPlayList != null && mPlayList.getCurrentSong() != null ){
-                                        long totalSize =  downloadStatus.getTotalSize();
-                                        long downloaded = downloadStatus.getDownloadSize();
-                                        double downloadSize = downloaded / 1024f / 1024;
-                                        double fileSize = totalSize / 1024f / 1024;
+                                      //  long totalSize =  totalBytes;
+                                      //  long downloaded = soFarBytes;
+                                        double downloadSize = soFarBytes / 1024f / 1024;
+                                        double fileSize = totalBytes / 1024f / 1024;
                                         downloadSize = CommonUtils.formatNumber(downloadSize);
                                         fileSize = CommonUtils.formatNumber(fileSize);
                                         int progress = (int) (downloadSize * 100 / fileSize);
@@ -126,15 +129,64 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
                                 }
 
                                 @Override
-                                public void onError(@NonNull Throwable e) {
-                                    downloadSub.deleteServiceDownload(url,false).subscribe();
+                                protected void completed(BaseDownloadTask task) {
+
                                 }
 
                                 @Override
-                                public void onComplete() {
-                                    downloadSub.deleteServiceDownload(url,false).subscribe();
+                                protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                 }
-                            });
+
+                                @Override
+                                protected void error(BaseDownloadTask task, Throwable e) {
+
+                                }
+
+                                @Override
+                                protected void warn(BaseDownloadTask task) {
+
+                                }
+                            }).start();
+//                    downloadSub.download(url,song.getDisplayName(),null)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//
+//                                @Override
+//                                public void onSuccess() {
+//                                    downloadSub.deleteServiceDownload(url,false).subscribe();
+//                                }
+//
+//                                @Override
+//                                public void onLoading(DownloadStatus res) {
+//                                    if(mPlayList != null && mPlayList.getCurrentSong() != null ){
+//                                        long totalSize =  res.getTotalSize();
+//                                        long downloaded = res.getDownloadSize();
+//                                        double downloadSize = downloaded / 1024f / 1024;
+//                                        double fileSize = totalSize / 1024f / 1024;
+//                                        downloadSize = CommonUtils.formatNumber(downloadSize);
+//                                        fileSize = CommonUtils.formatNumber(fileSize);
+//                                        int progress = (int) (downloadSize * 100 / fileSize);
+//                                        if(!isStarted && progress > 10){
+//                                            try {
+//                                                mPlayer.setDataSource(StorageUtils.getMusicPath(song.getDisplayName()));
+//                                                mPlayer.prepare();
+//                                                mPlayer.start();
+//                                                notifyPlayStatusChanged(true);
+//                                            } catch (IOException e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                            isStarted = true;
+//                                        }
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onFail(Throwable e) {
+//                                    downloadSub.deleteServiceDownload(url,false).subscribe();
+//                                }
+//                            });
                     isStarted = false;
                 }
             }catch (IOException e){

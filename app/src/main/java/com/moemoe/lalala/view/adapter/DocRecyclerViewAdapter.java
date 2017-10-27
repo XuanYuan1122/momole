@@ -30,9 +30,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.CommentV2Entity;
@@ -94,8 +98,8 @@ import io.reactivex.disposables.Disposable;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
+//import zlc.season.rxdownload2.RxDownload;
+//import zlc.season.rxdownload2.entity.DownloadStatus;
 
 
 /**
@@ -119,7 +123,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_TITLE = 13;
 
     private static final long UPDATE_PROGRESS_INTERVAL = 1000;
-    private RxDownload downloadSub;
+  //  private RxDownload downloadSub;
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private Player mPlayer;
@@ -164,11 +168,11 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         mPlayer = Player.getInstance(mContext);
         mPlayer.registerCallback(this);
         fragment = new BottomMenuFragment();
-        downloadSub = RxDownload.getInstance(mContext)
-                .maxThread(1)
-                .maxRetryCount(3)
-                .defaultSavePath(StorageUtils.getGalleryDirPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(mContext)
+//                .maxThread(1)
+//                .maxRetryCount(3)
+//                .defaultSavePath(StorageUtils.getGalleryDirPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     public void releaseAdapter(){
@@ -662,34 +666,64 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 if(longImage.exists()){
                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                 }else {
-                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<DownloadStatus>() {
-
+                    FileDownloader.getImpl().create(ApiService.URL_QINIU + image.getPath())
+                            .setPath(StorageUtils.getGalleryDirPath() + temp)
+                            .setCallbackProgressTimes(1)
+                            .setListener(new FileDownloadListener() {
                                 @Override
-                                public void onError(Throwable e) {
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+                                protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                 }
 
                                 @Override
-                                public void onComplete() {
+                                protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                }
+
+                                @Override
+                                protected void completed(BaseDownloadTask task) {
                                     BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                     notifyItemChanged(position);
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
-                                public void onSubscribe(@NonNull Disposable d) {
+                                protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                 }
 
                                 @Override
-                                public void onNext(DownloadStatus downloadStatus) {
+                                protected void error(BaseDownloadTask task, Throwable e) {
 
                                 }
-                            });
+
+                                @Override
+                                protected void warn(BaseDownloadTask task) {
+
+                                }
+                            }).start();
+//                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                @Override
+//                                public void onSuccess() {
+//                                    BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
+//                                    holder.mIvLongImage.setImage(longImage.getAbsolutePath());
+//                                    notifyItemChanged(position);
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                }
+//
+//                                @Override
+//                                public void onLoading(DownloadStatus res) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onFail(Throwable e) {
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                }
+//                            });
                 }
             }else {
                 holder.mIvImage.setVisibility(View.VISIBLE);
@@ -756,34 +790,64 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 if(longImage.exists()){
                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                 }else {
-                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<DownloadStatus>() {
-
+                    FileDownloader.getImpl().create(ApiService.URL_QINIU + image.getPath())
+                            .setPath(StorageUtils.getGalleryDirPath() + temp)
+                            .setCallbackProgressTimes(1)
+                            .setListener(new FileDownloadListener() {
                                 @Override
-                                public void onError(Throwable e) {
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+                                protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                 }
 
                                 @Override
-                                public void onComplete() {
+                                protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                }
+
+                                @Override
+                                protected void completed(BaseDownloadTask task) {
                                     BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                     holder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                     notifyItemChanged(position);
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
-                                public void onSubscribe(@NonNull Disposable d) {
+                                protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                 }
 
                                 @Override
-                                public void onNext(DownloadStatus downloadStatus) {
+                                protected void error(BaseDownloadTask task, Throwable e) {
 
                                 }
-                            });
+
+                                @Override
+                                protected void warn(BaseDownloadTask task) {
+
+                                }
+                            }).start();
+//                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                @Override
+//                                public void onSuccess() {
+//                                    BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
+//                                    holder.mIvLongImage.setImage(longImage.getAbsolutePath());
+//                                    notifyItemChanged(position);
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                }
+//
+//                                @Override
+//                                public void onLoading(DownloadStatus res) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onFail(Throwable e) {
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                }
+//                            });
                 }
             }else {
                 if(FileUtil.isGif(image.getPath())){
@@ -890,33 +954,64 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     if(longImage.exists()){
                         mMusicHolder.mIvLongImage.setImage(longImage.getAbsolutePath());
                     }else {
-                        downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Observer<DownloadStatus>() {
+                        FileDownloader.getImpl().create(ApiService.URL_QINIU + image.getPath())
+                                .setPath(StorageUtils.getGalleryDirPath() + temp)
+                                .setCallbackProgressTimes(1)
+                                .setListener(new FileDownloadListener() {
                                     @Override
-                                    public void onError(Throwable e) {
-                                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+                                    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                     }
 
                                     @Override
-                                    public void onComplete() {
+                                    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                    }
+
+                                    @Override
+                                    protected void completed(BaseDownloadTask task) {
                                         BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
                                         mMusicHolder.mIvLongImage.setImage(longImage.getAbsolutePath());
                                         notifyItemChanged(position);
-                                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                     }
 
                                     @Override
-                                    public void onSubscribe(@NonNull Disposable d) {
+                                    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                     }
 
                                     @Override
-                                    public void onNext(DownloadStatus downloadStatus) {
+                                    protected void error(BaseDownloadTask task, Throwable e) {
 
                                     }
-                                });
+
+                                    @Override
+                                    protected void warn(BaseDownloadTask task) {
+
+                                    }
+                                }).start();
+//                        downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
+//                                .subscribeOn(Schedulers.io())
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                    @Override
+//                                    public void onSuccess() {
+//                                        BitmapUtils.galleryAddPic(mContext, longImage.getAbsolutePath());
+//                                        mMusicHolder.mIvLongImage.setImage(longImage.getAbsolutePath());
+//                                        notifyItemChanged(position);
+//                                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                    }
+//
+//                                    @Override
+//                                    public void onLoading(DownloadStatus res) {
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onFail(Throwable e) {
+//                                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                    }
+//                                });
                     }
                 }else {
                     if(FileUtil.isGif(image.getPath())){

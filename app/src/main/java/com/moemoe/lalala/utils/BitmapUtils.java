@@ -1,18 +1,24 @@
 package com.moemoe.lalala.utils;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.moemoe.lalala.model.entity.Image;
+import com.moemoe.lalala.view.activity.DownLoadListActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -303,13 +309,37 @@ public class BitmapUtils {
     /**
      * 添加到图库
      */
-    public static void galleryAddPic(Context context, String path) {
-        Intent mediaScanIntent = new Intent(
-                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+    public static void galleryAddPic(final Context context, String path) {
         File f = new File(path);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        context.sendBroadcast(mediaScanIntent);
+        addToMediaStore(context,f);
+//        try {
+//            MediaStore.Images.Media.insertImage(context.getContentResolver(), f.getAbsolutePath(), f.getName(), "图片: " + f.getName());
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        MediaScannerConnection.scanFile(context,
+//                new String[]{f.getParentFile().getAbsolutePath()},
+//                new String[]{"image/*"},
+//                new MediaScannerConnection.OnScanCompletedListener() {
+//                    @Override
+//                    public void onScanCompleted(String path, Uri uri) {
+//                        ToastUtils.showShortToast(context,"完成:" + path);
+//                    }
+//                });
+//
+//
+//        Intent mediaScanIntent = new Intent(
+//                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        Uri contentUri = Uri.fromFile(f);
+//        mediaScanIntent.setData(contentUri);
+//        context.sendBroadcast(mediaScanIntent);
+    }
+
+    private static void addToMediaStore(Context context,File f) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DATA, f.getAbsolutePath());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
+        context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
     }
 
     /**

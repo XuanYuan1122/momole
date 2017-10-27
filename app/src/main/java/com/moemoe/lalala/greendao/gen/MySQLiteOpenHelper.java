@@ -25,7 +25,8 @@ public class MySQLiteOpenHelper extends DaoMaster.OpenHelper {
                     JuQingDoneEntityDao.class,
                     JuQingTriggerEntityDao.class,
                     JuQIngStoryEntityDao.class,
-                    MapDbEntityDao.class);
+                    MapDbEntityDao.class,
+                    DownloadEntityDao.class);
         }catch (Exception e){
             e.printStackTrace();
         }

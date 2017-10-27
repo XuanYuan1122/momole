@@ -373,6 +373,7 @@ public class MapPresenter implements MapContract.Presenter {
         if(!TextUtils.isEmpty(entity.getPath())){
             drawable = Drawable.createFromPath(StorageUtils.getMapRootPath() + entity.getPath());
         }else {
+            if(entity.getBg() == 0) return;
             drawable = ContextCompat.getDrawable(context,entity.getBg());
         }
         if(drawable != null){

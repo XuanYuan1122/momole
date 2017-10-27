@@ -17,11 +17,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerTrashComponent;
 import com.moemoe.lalala.di.modules.TrashModule;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
@@ -60,8 +64,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2016/12/14.
@@ -98,7 +100,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
 
     @Inject
     TrashPresenter mPresenter;
-    private RxDownload downloadSub;
+   // private RxDownload downloadSub;
     private String mType;
    // private String mId;
     private NewDocLabelAdapter docLabelAdapter;
@@ -131,11 +133,11 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
                 .inject(this);
         mType = getIntent().getStringExtra("type");
         mEntity = getIntent().getParcelableExtra("item");
-        downloadSub = RxDownload.getInstance(this)
-                .maxThread(1)
-                .maxRetryCount(3)
-                .defaultSavePath(StorageUtils.getGalleryDirPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(this)
+//                .maxThread(1)
+//                .maxRetryCount(3)
+//                .defaultSavePath(StorageUtils.getGalleryDirPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
         if("text".equals(mType)){
             mContent.setVisibility(View.VISIBLE);
             mIvContent.setVisibility(View.GONE);
@@ -396,33 +398,62 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
                 if(longImage.exists()){
                     mLongImage.setImage(longImage.getAbsolutePath());
                 }else {
-                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<DownloadStatus>() {
-
+                    FileDownloader.getImpl().create(ApiService.URL_QINIU + image.getPath())
+                            .setPath(StorageUtils.getGalleryDirPath() + temp)
+                            .setCallbackProgressTimes(1)
+                            .setListener(new FileDownloadListener() {
                                 @Override
-                                public void onError(Throwable e) {
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+                                protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                 }
 
                                 @Override
-                                public void onComplete() {
+                                protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                }
+
+                                @Override
+                                protected void completed(BaseDownloadTask task) {
                                     BitmapUtils.galleryAddPic(TrashDetailActivity.this, longImage.getAbsolutePath());
                                     mLongImage.setImage(longImage.getAbsolutePath());
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
 
                                 @Override
-                                public void onSubscribe(@NonNull Disposable d) {
+                                protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                 }
 
                                 @Override
-                                public void onNext(DownloadStatus downloadStatus) {
+                                protected void error(BaseDownloadTask task, Throwable e) {
 
                                 }
-                            });
+
+                                @Override
+                                protected void warn(BaseDownloadTask task) {
+
+                                }
+                            }).start();
+//                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                @Override
+//                                public void onSuccess() {
+//                                    BitmapUtils.galleryAddPic(TrashDetailActivity.this, longImage.getAbsolutePath());
+//                                    mLongImage.setImage(longImage.getAbsolutePath());
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                }
+//
+//                                @Override
+//                                public void onLoading(DownloadStatus res) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onFail(Throwable e) {
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                }
+//                            });
                 }
             }else {
                 mIvContent.setVisibility(View.VISIBLE);

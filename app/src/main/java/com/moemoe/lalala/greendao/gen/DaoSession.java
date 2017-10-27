@@ -10,6 +10,7 @@ import org.greenrobot.greendao.internal.DaoConfig;
 
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
 import com.moemoe.lalala.model.entity.AuthorInfo;
+import com.moemoe.lalala.model.entity.DownloadEntity;
 import com.moemoe.lalala.model.entity.JuQingDoneEntity;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
@@ -18,6 +19,7 @@ import com.moemoe.lalala.model.entity.NetaDb;
 
 import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
 import com.moemoe.lalala.greendao.gen.AuthorInfoDao;
+import com.moemoe.lalala.greendao.gen.DownloadEntityDao;
 import com.moemoe.lalala.greendao.gen.JuQingDoneEntityDao;
 import com.moemoe.lalala.greendao.gen.JuQIngStoryEntityDao;
 import com.moemoe.lalala.greendao.gen.JuQingTriggerEntityDao;
@@ -35,6 +37,7 @@ public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig alarmClockEntityDaoConfig;
     private final DaoConfig authorInfoDaoConfig;
+    private final DaoConfig downloadEntityDaoConfig;
     private final DaoConfig juQingDoneEntityDaoConfig;
     private final DaoConfig juQIngStoryEntityDaoConfig;
     private final DaoConfig juQingTriggerEntityDaoConfig;
@@ -43,6 +46,7 @@ public class DaoSession extends AbstractDaoSession {
 
     private final AlarmClockEntityDao alarmClockEntityDao;
     private final AuthorInfoDao authorInfoDao;
+    private final DownloadEntityDao downloadEntityDao;
     private final JuQingDoneEntityDao juQingDoneEntityDao;
     private final JuQIngStoryEntityDao juQIngStoryEntityDao;
     private final JuQingTriggerEntityDao juQingTriggerEntityDao;
@@ -58,6 +62,9 @@ public class DaoSession extends AbstractDaoSession {
 
         authorInfoDaoConfig = daoConfigMap.get(AuthorInfoDao.class).clone();
         authorInfoDaoConfig.initIdentityScope(type);
+
+        downloadEntityDaoConfig = daoConfigMap.get(DownloadEntityDao.class).clone();
+        downloadEntityDaoConfig.initIdentityScope(type);
 
         juQingDoneEntityDaoConfig = daoConfigMap.get(JuQingDoneEntityDao.class).clone();
         juQingDoneEntityDaoConfig.initIdentityScope(type);
@@ -76,6 +83,7 @@ public class DaoSession extends AbstractDaoSession {
 
         alarmClockEntityDao = new AlarmClockEntityDao(alarmClockEntityDaoConfig, this);
         authorInfoDao = new AuthorInfoDao(authorInfoDaoConfig, this);
+        downloadEntityDao = new DownloadEntityDao(downloadEntityDaoConfig, this);
         juQingDoneEntityDao = new JuQingDoneEntityDao(juQingDoneEntityDaoConfig, this);
         juQIngStoryEntityDao = new JuQIngStoryEntityDao(juQIngStoryEntityDaoConfig, this);
         juQingTriggerEntityDao = new JuQingTriggerEntityDao(juQingTriggerEntityDaoConfig, this);
@@ -84,6 +92,7 @@ public class DaoSession extends AbstractDaoSession {
 
         registerDao(AlarmClockEntity.class, alarmClockEntityDao);
         registerDao(AuthorInfo.class, authorInfoDao);
+        registerDao(DownloadEntity.class, downloadEntityDao);
         registerDao(JuQingDoneEntity.class, juQingDoneEntityDao);
         registerDao(JuQIngStoryEntity.class, juQIngStoryEntityDao);
         registerDao(JuQingTriggerEntity.class, juQingTriggerEntityDao);
@@ -94,6 +103,7 @@ public class DaoSession extends AbstractDaoSession {
     public void clear() {
         alarmClockEntityDaoConfig.clearIdentityScope();
         authorInfoDaoConfig.clearIdentityScope();
+        downloadEntityDaoConfig.clearIdentityScope();
         juQingDoneEntityDaoConfig.clearIdentityScope();
         juQIngStoryEntityDaoConfig.clearIdentityScope();
         juQingTriggerEntityDaoConfig.clearIdentityScope();
@@ -107,6 +117,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public AuthorInfoDao getAuthorInfoDao() {
         return authorInfoDao;
+    }
+
+    public DownloadEntityDao getDownloadEntityDao() {
+        return downloadEntityDao;
     }
 
     public JuQingDoneEntityDao getJuQingDoneEntityDao() {

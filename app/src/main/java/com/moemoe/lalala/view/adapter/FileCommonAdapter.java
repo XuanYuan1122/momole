@@ -9,8 +9,6 @@ import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 
-import zlc.season.rxdownload2.RxDownload;
-
 
 /**
  *
@@ -22,7 +20,7 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
     private boolean isSelect;
     private boolean isGrid;
     private boolean  isBuy;
-    private RxDownload downloadSub;
+   // private RxDownload downloadSub;
 
     public FileCommonAdapter(String folderType, Context context) {
         super(null);
@@ -35,11 +33,11 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
         }
         isSelect = false;
         isBuy = true;
-        downloadSub = RxDownload.getInstance(context)
-                .maxThread(1)
-                .maxRetryCount(3)
-                .defaultSavePath(StorageUtils.getGalleryDirPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(context)
+//                .maxThread(1)
+//                .maxRetryCount(3)
+//                .defaultSavePath(StorageUtils.getGalleryDirPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
 
@@ -48,7 +46,7 @@ public class FileCommonAdapter extends BaseRecyclerViewAdapter<CommonFileEntity,
         if(isGrid){
             helper.createItem(item,isSelect,isBuy);
         }else {
-            helper.createLinearItem(item,isSelect,downloadSub,this,position,isBuy);
+            helper.createLinearItem(item,isSelect,this,position,isBuy);
         }
     }
 

@@ -18,13 +18,16 @@ import io.rong.imkit.DefaultExtensionModule;
 import io.rong.imkit.IExtensionModule;
 import io.rong.imkit.RongExtensionManager;
 import io.rong.imkit.RongIM;
+import io.rong.imkit.model.GroupNotificationMessageData;
 import io.rong.imkit.model.GroupUserInfo;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Group;
 import io.rong.imlib.model.Message;
+import io.rong.imlib.model.MessageContent;
 import io.rong.imlib.model.UserInfo;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import io.rong.message.GroupNotificationMessage;
 
 /**
  * 事件监听集合类
@@ -130,6 +133,12 @@ public class MoeMoeAppListener implements RongIMClient.OnReceiveMessageListener,
 
     @Override
     public boolean onReceived(Message message, int i) {
+        MessageContent messageContent = message.getContent();
+        if (messageContent instanceof GroupNotificationMessage){
+            GroupNotificationMessage groupNotificationMessage = (GroupNotificationMessage) messageContent;
+            String groupID = message.getTargetId();
+            GroupNotificationMessageData data = null;
+        }
         return false;
     }
 }

@@ -16,15 +16,22 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
+import com.moemoe.lalala.model.entity.DownloadEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.utils.AnimationUtil;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.EncoderUtils;
 import com.moemoe.lalala.utils.FileUtil;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
@@ -47,9 +54,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadBean;
-import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2016/11/30.
@@ -82,7 +86,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
     private int mFirstShowIndex = 0;
     private boolean mSelectMode = false; // 预留选取功能
     private int mTotalCount = 0;
-    private RxDownload downloadSub;
+   // private RxDownload downloadSub;
 
     @Override
     protected int getLayoutId() {
@@ -134,11 +138,11 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
             mTvSaveToGallery.setVisibility(View.VISIBLE);
             mTvRaw.setVisibility(View.VISIBLE);
         }
-        downloadSub = RxDownload.getInstance(this)
-                    .maxThread(1)
-                    .maxRetryCount(3)
-                    .defaultSavePath(StorageUtils.getGalleryDirPath())
-                    .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(this)
+//                    .maxThread(1)
+//                    .maxRetryCount(3)
+//                    .defaultSavePath(StorageUtils.getGalleryDirPath())
+//                    .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     /**
@@ -270,38 +274,68 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                 View viewTemp = View.inflate(ImageBigSelectActivity.this,R.layout.item_longimage,null);
                 final LongImageView imageView = viewTemp.findViewById(R.id.imageView);
                 imageView.setOnClickListener(clickListener);
-                String temp = EncoderUtils.MD5(ApiService.URL_QINIU + fb.getPath()) + ".jpg";
+                String temp = EncoderUtils.MD5(StringUtils.getUrl(fb.getPath())) + ".jpg";
                 final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
                 if(longImage.exists()){
                     imageView.setImage(longImage.getAbsolutePath());
                 }else {
-                    downloadSub.download(ApiService.URL_QINIU + fb.getPath(),temp,null)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<DownloadStatus>() {
-
+                    FileDownloader.getImpl().create(StringUtils.getUrl(fb.getPath()))
+                            .setPath(StorageUtils.getGalleryDirPath() + temp)
+                            .setCallbackProgressTimes(1)
+                            .setListener(new FileDownloadListener() {
                                 @Override
-                                public void onError(Throwable e) {
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),true).subscribe();
+                                protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                 }
 
                                 @Override
-                                public void onComplete() {
+                                protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                }
+
+                                @Override
+                                protected void completed(BaseDownloadTask task) {
                                     BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
                                     imageView.setImage(longImage.getAbsolutePath());
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),false).subscribe();
                                 }
 
                                 @Override
-                                public void onSubscribe(@NonNull Disposable d) {
+                                protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                 }
 
                                 @Override
-                                public void onNext(DownloadStatus downloadStatus) {
+                                protected void error(BaseDownloadTask task, Throwable e) {
 
                                 }
-                            });
+
+                                @Override
+                                protected void warn(BaseDownloadTask task) {
+
+                                }
+                            }).start();
+
+//                    downloadSub.download(ApiService.URL_QINIU + fb.getPath(),temp,null)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                @Override
+//                                public void onSuccess() {
+//                                    BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
+//                                    imageView.setImage(longImage.getAbsolutePath());
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),false).subscribe();
+//                                }
+//
+//                                @Override
+//                                public void onLoading(DownloadStatus res) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onFail(Throwable e) {
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),true).subscribe();
+//                                }
+//                            });
                 }
                 container.addView(viewTemp);
                 view = viewTemp;
@@ -310,7 +344,7 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
                 if (FileUtil.isGif(fb.getPath())) {
                     ImageView imageView = new ImageView(ImageBigSelectActivity.this);
                     Glide.with(ImageBigSelectActivity.this)
-                            .load(StringUtils.getUrl(ApiService.URL_QINIU + fb.getPath()))
+                            .load(StringUtils.getUrl(fb.getPath()))
                             .asGif()
                             .placeholder(R.drawable.bg_default_square)
                             .error(R.drawable.bg_default_square)
@@ -439,45 +473,99 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
 
     public void downloadRaw(){
         final Image image = mImages.get(mViewPager.getCurrentItem());
-        String temp = StringUtils.createImageFile(FileUtil.isGif(ApiService.URL_QINIU + image.getPath()));
-        final File longImage = new File(StorageUtils.getDownloadRootPath(), temp);
-        DownloadBean downloadBean = new DownloadBean
-                .Builder(ApiService.URL_QINIU + image.getPath())
-                .setSaveName(temp)
-                .setSavePath(StorageUtils.getDownloadRootPath())
-                .setExtra1(image.getPath())
-                .setExtra2(longImage.getName())
-                .setExtra3("image")
-                .setExtra4(longImage.getAbsolutePath())
-                .build();
-        createDialog();
-        downloadSub.download(downloadBean)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DownloadStatus>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
+        final String temp = StringUtils.createImageFile(FileUtil.isGif(ApiService.URL_QINIU + image.getPath()));
+        final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
+//        DownloadBean downloadBean = new DownloadBean
+//                .Builder(ApiService.URL_QINIU + image.getPath())
+//                .setSaveName(temp)
+//                .setSavePath(StorageUtils.getGalleryDirPath())
+//                .setExtra1(image.getPath())
+//                .setExtra2(longImage.getName())
+//                .setExtra3("image")
+//                .setExtra4(longImage.getAbsolutePath())
+//                .build();
 
-                    }
+        if(!FileUtil.isExists(longImage.getAbsolutePath())){
+           // FileUtil.deleteFile(longImage.getAbsolutePath());
+            createDialog();
+            BaseDownloadTask task =  FileDownloader.getImpl().create(StringUtils.getUrl(image.getPath()))
+                    .setPath(StorageUtils.getGalleryDirPath() + temp)
+                    .setForceReDownload(true)
+                    .setCallbackProgressTimes(1)
+                    .setListener(new FileDownloadListener() {
+                        @Override
+                        protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
-                    @Override
-                    public void onNext(@NonNull DownloadStatus downloadStatus) {
+                        }
 
-                    }
+                        @Override
+                        protected void started(BaseDownloadTask task) {
+                            showToast("开始下载");
+                        }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        finalizeDialog();
-                        showToast("保存失败，请重试");
-                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU + image.getPath(),true).subscribe();
-                    }
+                        @Override
+                        protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
-                    @Override
-                    public void onComplete() {
-                        finalizeDialog();
-                        BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
-                        showToast(getString(R.string.msg_register_to_gallery_success, longImage.getAbsolutePath()));
-                    }
-                });
+                        }
+
+                        @Override
+                        protected void completed(BaseDownloadTask task) {
+                            finalizeDialog();
+                            BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
+                            showToast(getString(R.string.msg_register_to_gallery_success, longImage.getAbsolutePath()));
+                        }
+
+                        @Override
+                        protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                        }
+
+                        @Override
+                        protected void error(BaseDownloadTask task, Throwable e) {
+                            finalizeDialog();
+                            showToast("保存失败，请重试");
+                        }
+
+                        @Override
+                        protected void warn(BaseDownloadTask task) {
+
+                        }
+                    });
+            DownloadEntity downloadEntity = new DownloadEntity();
+            downloadEntity.setUrl(image.getPath());
+            downloadEntity.setDirPath(StorageUtils.getGalleryDirPath());
+            downloadEntity.setFileName(temp);
+            downloadEntity.setPath(StorageUtils.getGalleryDirPath() + temp);
+            downloadEntity.setType("image");
+            downloadEntity.setId((long) task.getId());
+            GreenDaoManager.getInstance().getSession().getDownloadEntityDao().insertOrReplace(downloadEntity);
+            task.start();
+        }else {
+            showToast(getString(R.string.msg_register_to_gallery_success, longImage.getAbsolutePath()));
+        }
+//        downloadSub.download(downloadBean)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                    @Override
+//                    public void onSuccess() {
+//                        finalizeDialog();
+//                        BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
+//                        showToast(getString(R.string.msg_register_to_gallery_success, longImage.getAbsolutePath()));
+//                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU + image.getPath(),false).subscribe();
+//                    }
+//
+//                    @Override
+//                    public void onLoading(DownloadStatus res) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onFail(Throwable e) {
+//                        finalizeDialog();
+//                        showToast("保存失败，请重试");
+//                        downloadSub.deleteServiceDownload(ApiService.URL_QINIU + image.getPath(),true).subscribe();
+//                    }
+//                });
     }
 }

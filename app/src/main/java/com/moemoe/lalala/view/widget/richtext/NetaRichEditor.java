@@ -26,11 +26,15 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.RichEntity;
@@ -64,8 +68,6 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.glide.transformations.CropTransformation;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/5/11.
@@ -95,7 +97,7 @@ public class NetaRichEditor extends ScrollView {
     private boolean tagFlag;
     private String mTagNameDef;
     private LinearLayout root;
-    private RxDownload downloadSub;
+   // private RxDownload downloadSub;
     private EditText mEtTitle;
     private TextView mTvTitleCount;
     private ImageView mCover;
@@ -198,11 +200,11 @@ public class NetaRichEditor extends ScrollView {
             }
         };
 
-        downloadSub = RxDownload.getInstance(getContext())
-                .maxThread(1)
-                .maxRetryCount(3)
-                .defaultSavePath(StorageUtils.getGalleryDirPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(getContext())
+//                .maxThread(1)
+//                .maxRetryCount(3)
+//                .defaultSavePath(StorageUtils.getGalleryDirPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     public void createFirstEdit(){
@@ -716,32 +718,62 @@ public class NetaRichEditor extends ScrollView {
                 if(longImage.exists()){
                     longImageView.setImage(longImage.getAbsolutePath());
                 }else {
-                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<DownloadStatus>() {
+                    FileDownloader.getImpl().create(ApiService.URL_QINIU + image.getPath())
+                            .setPath(StorageUtils.getGalleryDirPath() + temp)
+                            .setCallbackProgressTimes(1)
+                            .setListener(new FileDownloadListener() {
                                 @Override
-                                public void onSubscribe(@NonNull Disposable d) {
+                                protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                 }
 
                                 @Override
-                                public void onNext(@NonNull DownloadStatus downloadStatus) {
+                                protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                 }
 
                                 @Override
-                                public void onError(@NonNull Throwable e) {
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
-                                }
-
-                                @Override
-                                public void onComplete() {
+                                protected void completed(BaseDownloadTask task) {
                                     BitmapUtils.galleryAddPic(getContext(), longImage.getAbsolutePath());
                                     longImageView.setImage(longImage.getAbsolutePath());
-                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
                                 }
-                            });
+
+                                @Override
+                                protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                }
+
+                                @Override
+                                protected void error(BaseDownloadTask task, Throwable e) {
+
+                                }
+
+                                @Override
+                                protected void warn(BaseDownloadTask task) {
+
+                                }
+                            }).start();
+//                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
+//                            .subscribeOn(Schedulers.io())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                @Override
+//                                public void onSuccess() {
+//                                    BitmapUtils.galleryAddPic(getContext(), longImage.getAbsolutePath());
+//                                    longImageView.setImage(longImage.getAbsolutePath());
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                }
+//
+//                                @Override
+//                                public void onLoading(DownloadStatus res) {
+//
+//                                }
+//
+//                                @Override
+//                                public void onFail(Throwable e) {
+//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
+//                                }
+//                            });
                 }
             }else {
                 longImageView.setImage(imagePath);

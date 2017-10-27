@@ -4,6 +4,8 @@ import android.app.Application;
 import android.support.multidex.BuildConfig;
 import android.support.multidex.MultiDex;
 
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.connection.FileDownloadUrlConnection;
 import com.moemoe.lalala.di.components.DaggerNetComponent;
 import com.moemoe.lalala.di.components.NetComponent;
 import com.moemoe.lalala.di.modules.NetModule;
@@ -15,6 +17,8 @@ import com.orhanobut.logger.Logger;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.greendao.query.QueryBuilder;
+
+import java.net.Proxy;
 
 import io.rong.imkit.RongIM;
 
@@ -43,6 +47,14 @@ public class MoeMoeApplication extends Application {
         UnCaughtException caughtException = UnCaughtException.getInstance();
         TagControl.getInstance().init(this);
         caughtException.init(this);
+        FileDownloader.setupOnApplicationOnCreate(this)
+                .connectionCreator(new FileDownloadUrlConnection
+                    .Creator(new FileDownloadUrlConnection.Configuration()
+                    .connectTimeout(15_000) // set connection timeout.
+                    .readTimeout(15_000) // set read timeout.
+                    .proxy(Proxy.NO_PROXY) // set proxy
+                ))
+                .commit();
         //初始化Leak内存泄露检测工具
         //LeakCanary.install(this);
     }

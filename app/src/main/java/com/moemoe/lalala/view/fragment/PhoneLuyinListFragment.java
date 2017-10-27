@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
@@ -48,8 +51,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/9/4.
@@ -264,43 +265,85 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
             dialog.setCanceledOnTouchOutside(false);
             dialog.setIcon(R.drawable.ic_launcher);
             dialog.setTitle("下载中");
-            RxDownload.getInstance(getContext())
-                    .maxThread(1)
-                    .download(ApiService.URL_QINIU + entity.getSound(),entity.getSound().substring(entity.getSound().lastIndexOf("/") + 1),StorageUtils.getMusicRootPath())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<DownloadStatus>() {
+            FileDownloader.getImpl().create(ApiService.URL_QINIU + entity.getSound())
+                    .setPath(StorageUtils.getMusicRootPath() + entity.getSound().substring(entity.getSound().lastIndexOf("/") + 1))
+                    .setCallbackProgressTimes(1)
+                    .setListener(new FileDownloadListener() {
                         @Override
-                        public void onSubscribe(@NonNull Disposable d) {
+                        protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                         }
 
                         @Override
-                        public void onNext(@NonNull DownloadStatus downloadStatus) {
-                            dialog.setMax((int) downloadStatus.getTotalSize());
-                            dialog.setProgress((int) downloadStatus.getDownloadSize());
+                        protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                            dialog.setMax(totalBytes);
+                            dialog.setProgress(soFarBytes);
                         }
 
                         @Override
-                        public void onError(@NonNull Throwable e) {
+                        protected void completed(BaseDownloadTask task) {
+                            dialog.dismiss();
+                            if(play){
+                                mAdapter.notifyItemChanged(mAdapter.getPlayingPosition());
+                            }
+                        }
+
+                        @Override
+                        protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                        }
+
+                        @Override
+                        protected void error(BaseDownloadTask task, Throwable e) {
                             ToastUtils.showShortToast(getContext(),"下载失败，请重试");
                             dialog.dismiss();
-                            RxDownload.getInstance(getContext()).deleteServiceDownload(ApiService.URL_QINIU +  entity.getSound(),false).subscribe();
                             if(play){
                                 mAdapter.setPlayingPosition(-1);
                             }
                         }
 
                         @Override
-                        public void onComplete() {
-                            dialog.dismiss();
-                            RxDownload.getInstance(getContext()).deleteServiceDownload(ApiService.URL_QINIU +  entity.getSound(),false).subscribe();
-                            if(play){
-                                mAdapter.notifyItemChanged(mAdapter.getPlayingPosition());
-                                //mHandler.postDelayed(mProgressCallback,1000);
-                            }
+                        protected void warn(BaseDownloadTask task) {
+
                         }
-                    });
+                    }).start();
+//            RxDownload.getInstance(getContext())
+//                    .maxThread(1)
+//                    .download(ApiService.URL_QINIU + entity.getSound(),entity.getSound().substring(entity.getSound().lastIndexOf("/") + 1),StorageUtils.getMusicRootPath())
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<DownloadStatus>() {
+//                        @Override
+//                        public void onSubscribe(@NonNull Disposable d) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onNext(@NonNull DownloadStatus downloadStatus) {
+//                            dialog.setMax((int) downloadStatus.getTotalSize());
+//                            dialog.setProgress((int) downloadStatus.getDownloadSize());
+//                        }
+//
+//                        @Override
+//                        public void onError(@NonNull Throwable e) {
+//                            ToastUtils.showShortToast(getContext(),"下载失败，请重试");
+//                            dialog.dismiss();
+//                            RxDownload.getInstance(getContext()).deleteServiceDownload(ApiService.URL_QINIU +  entity.getSound(),false).subscribe();
+//                            if(play){
+//                                mAdapter.setPlayingPosition(-1);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            dialog.dismiss();
+//                            RxDownload.getInstance(getContext()).deleteServiceDownload(ApiService.URL_QINIU +  entity.getSound(),false).subscribe();
+//                            if(play){
+//                                mAdapter.notifyItemChanged(mAdapter.getPlayingPosition());
+//                                //mHandler.postDelayed(mProgressCallback,1000);
+//                            }
+//                        }
+//                    });
         }
     }
 }

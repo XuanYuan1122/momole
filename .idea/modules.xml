@@ -8,7 +8,6 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/kiragame/kiragame.iml" filepath="$PROJECT_DIR$/kiragame/kiragame.iml" />
       <module fileurl="file://$PROJECT_DIR$/pingpp/pingpp.iml" filepath="$PROJECT_DIR$/pingpp/pingpp.iml" />
-      <module fileurl="file://$PROJECT_DIR$/rxdownload2/rxdownload2.iml" filepath="$PROJECT_DIR$/rxdownload2/rxdownload2.iml" />
     </modules>
   </component>
 </project>

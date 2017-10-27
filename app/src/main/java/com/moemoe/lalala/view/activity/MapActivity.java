@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
@@ -183,6 +188,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+        FileDownloader.getImpl().bindService();
         initMap("map_asa");
         final Conversation.ConversationType[] conversationTypes = {
                 Conversation.ConversationType.PRIVATE
@@ -238,9 +244,20 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
     }
 
+    private void checkHasEvent(){
+        if(mapWidget.getLayerById(1) != null){
+            if(PreferenceUtils.isLogin() && !AppSetting.isLoadDone){
+                mPresenter.findMyDoneJuQing();
+            }else {
+                mPresenter.checkStoryVersion();
+            }
+        }
+    }
+
     private void invalidateMap(boolean shouldChange){
         if(StringUtils.isasa()) {
             if (mMapState != MAP_SCHOOL_ASA || shouldChange) {
+                checkHasEvent();
                 clearMap();
                 mMapState = MAP_SCHOOL_ASA;
                 initMap("map_asa");
@@ -249,6 +266,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         if(StringUtils.issyougo()) {
             if (mMapState != MAP_SCHOOL_SYOUGO || shouldChange) {
+                checkHasEvent();
                 clearMap();
                 mMapState = MAP_SCHOOL_SYOUGO;
                 initMap("map_syougo");
@@ -257,6 +275,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         if(StringUtils.isgogo()) {
             if (mMapState != MAP_SCHOOL_GOGO || shouldChange) {
+                checkHasEvent();
                 clearMap();
                 mMapState = MAP_SCHOOL_GOGO;
                 initMap("map_gogo");
@@ -265,6 +284,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         if(StringUtils.istasogare()) {
             if (mMapState != MAP_SCHOOL_TASOGARE || shouldChange) {
+                checkHasEvent();
                 clearMap();
                 mMapState = MAP_SCHOOL_TASOGARE;
                 initMap("map_tasogare");
@@ -273,6 +293,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         if(StringUtils.isyoru2()) {
             if (mMapState != MAP_SCHOOL_YORU || shouldChange) {
+                checkHasEvent();
                 clearMap();
                 mMapState = MAP_SCHOOL_YORU;
                 initMap("map_yoru");
@@ -281,6 +302,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         }
         if(StringUtils.ismayonaka()) {
             if (mMapState != MAP_SCHOOL_MAYONAKA || shouldChange) {
+                checkHasEvent();
                 clearMap();
                 mMapState = MAP_SCHOOL_MAYONAKA;
                 initMap("map_mayonaka");
@@ -701,7 +723,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                         md5 = "0" + md5;
                     }
                 }
-                if(!md5.equals(StringUtils.getFileMD5(file)) || mapDbEntity.getDownloadState() == 3){
+                if( mapDbEntity.getDownloadState() == 3 || !md5.equals(StringUtils.getFileMD5(file))){
                     FileUtil.deleteFile(StorageUtils.getMapRootPath() + mapDbEntity.getFileName());
                     errorList.add(mapDbEntity);
                 }else {
@@ -926,6 +948,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             isGisterReciver = false;
         }
         RxBus.getInstance().unSubscribe(this);
+        FileDownloader.getImpl().pauseAll();
+        FileDownloader.getImpl().unBindService();
         AppSetting.isRunning = false;
         if(initDisposable != null && !initDisposable.isDisposed()) initDisposable.dispose();
         if(resolvDisposable != null && !resolvDisposable.isDisposed()) resolvDisposable.dispose();

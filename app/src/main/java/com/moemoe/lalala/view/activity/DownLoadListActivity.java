@@ -15,7 +15,9 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.DownloadEntity;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.TasksManager;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.DownloadListAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
@@ -28,10 +30,6 @@ import java.util.List;
 import butterknife.BindView;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadRecord;
-import zlc.season.rxdownload2.function.Utils;
-
 /**
  * 下载管理列表
  * Created by yi on 2017/10/11.
@@ -84,11 +82,11 @@ public class DownLoadListActivity extends BaseAppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 DownloadEntity entity = mAdapter.getItem(position);
-                String type = entity.record.getExtra3();
+                String type = entity.getType();
                 if("image".equals(type)){
                     ArrayList<Image> temp = new ArrayList<>();
                     Image image = new Image();
-                    String str = entity.record.getUrl();
+                    String str = entity.getUrl();
                     image.setPath(str);
                     temp.add(image);
                     Intent intent = new Intent(DownLoadListActivity.this, ImageBigSelectActivity.class);
@@ -97,16 +95,16 @@ public class DownLoadListActivity extends BaseAppCompatActivity {
                             0);
                     startActivity(intent);
                 }else if("txt".equals(type)){
-                    NewFileXiaoShuo2Activity.startActivity(DownLoadListActivity.this,entity.record.getExtra4());
+                    NewFileXiaoShuo2Activity.startActivity(DownLoadListActivity.this,entity.getPath());
                 }else if("movie".equals(type)){
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     String type1 = "video/* ";
-                    File file = new File(entity.record.getExtra4());
+                    File file = new File(entity.getPath());
                     Uri uri;
                     // 判断版本大于等于7.0
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {// "com.moemoe.lalala.FileProvider"即是在清单文件中配置的authorities
                         uri = FileProvider.getUriForFile(DownLoadListActivity.this, "com.moemoe.lalala.FileProvider", file);// 给目标应用一个临时授权
-                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } else {
                         uri = Uri.fromFile(file);
                     }
@@ -132,35 +130,38 @@ public class DownLoadListActivity extends BaseAppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        List<DownloadEntity> list = mAdapter.getList();
-        for (DownloadEntity each : list) {
-            Utils.dispose(each.disposable);
-        }
+        TasksManager.getImpl().release();
+//        List<DownloadEntity> list = mAdapter.getList();
+//        for (DownloadEntity each : list) {
+//           // Utils.dispose(each.disposable);
+//        }
     }
 
         private void loadData() {
-        RxDownload.getInstance(this).getTotalDownloadRecords()
-                .map(new Function<List<DownloadRecord>, List<DownloadEntity>>() {
-                    @Override
-                    public List<DownloadEntity> apply(List<DownloadRecord> downloadRecords) throws Exception {
-                        List<DownloadEntity> result = new ArrayList<>();
-                        for (DownloadRecord each : downloadRecords) {
-                            if(!TextUtils.isEmpty(each.getExtra1())){
-                                DownloadEntity bean = new DownloadEntity();
-                                bean.record = each;
-                                result.add(bean);
-                            }else {
-                                RxDownload.getInstance(DownLoadListActivity.this).deleteServiceDownload(each.getUrl(),false).subscribe();
-                            }
-                        }
-                        return result;
-                    }
-                })
-                .subscribe(new Consumer<List<DownloadEntity>>() {
-                    @Override
-                    public void accept(List<DownloadEntity> downloadBeen) throws Exception {
-                        mAdapter.addList((ArrayList<DownloadEntity>) downloadBeen);
-                    }
-                });
+            mAdapter.setList(TasksManager.getImpl().getAll());
+
+//        RxDownload.getInstance(this).getTotalDownloadRecords()
+//                .map(new Function<List<DownloadRecord>, List<DownloadEntity>>() {
+//                    @Override
+//                    public List<DownloadEntity> apply(List<DownloadRecord> downloadRecords) throws Exception {
+//                        List<DownloadEntity> result = new ArrayList<>();
+//                        for (DownloadRecord each : downloadRecords) {
+//                            if(!TextUtils.isEmpty(each.getExtra1())){
+//                                DownloadEntity bean = new DownloadEntity();
+//                                bean.record = each;
+//                                result.add(bean);
+//                            }else {
+//                                RxDownload.getInstance(DownLoadListActivity.this).deleteServiceDownload(each.getUrl(),false).subscribe();
+//                            }
+//                        }
+//                        return result;
+//                    }
+//                })
+//                .subscribe(new Consumer<List<DownloadEntity>>() {
+//                    @Override
+//                    public void accept(List<DownloadEntity> downloadBeen) throws Exception {
+//                        mAdapter.addList((ArrayList<DownloadEntity>) downloadBeen);
+//                    }
+//                });
     }
 }

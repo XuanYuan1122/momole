@@ -26,11 +26,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerNewFileComponent;
 import com.moemoe.lalala.di.modules.NewFileModule;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.CommonFileEntity;
 import com.moemoe.lalala.model.entity.FolderType;
@@ -77,8 +81,6 @@ import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
 
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_CREATE_FOLDER;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_DETAIL_FILES;
@@ -140,7 +142,7 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
     private boolean mIsGrid;
     private NewFolderEntity mFolderInfo;
     private ArrayList<CommonFileEntity> mCurList;
-    private RxDownload downloadSub;
+  //  private RxDownload downloadSub;
     private FileItemDecoration mItemDecoration;
     private int mCurPage = 1;
 
@@ -171,11 +173,11 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                 .build()
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
-        downloadSub = RxDownload.getInstance(this)
-                .maxThread(1)
-                .maxRetryCount(3)
-                .defaultSavePath(StorageUtils.getNovRootPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(this)
+//                .maxThread(1)
+//                .maxRetryCount(3)
+//                .defaultSavePath(StorageUtils.getNovRootPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
         mCurList = new ArrayList<>();
         mUserId = getIntent().getStringExtra(UUID);
         mFolderType = getIntent().getStringExtra("folderType");
@@ -381,36 +383,69 @@ public class NewFileCommonActivity extends BaseAppCompatActivity implements NewF
                                 dialog.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
                                 dialog.setIcon(R.drawable.ic_launcher);// 设置提示的title的图标，默认是没有的
                                 dialog.setTitle("下载中");
-                                downloadSub.download(ApiService.URL_QINIU +  mCurList.get(position).getPath(),temp,StorageUtils.getNovRootPath() + mCurList.get(position).getFileId())
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Observer<DownloadStatus>() {
+                                FileDownloader.getImpl().create(ApiService.URL_QINIU + mCurList.get(position).getPath())
+                                        .setPath(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId() + "/" + temp)
+                                        .setCallbackProgressTimes(1)
+                                        .setListener(new FileDownloadListener() {
                                             @Override
-                                            public void onError(Throwable e) {
-                                                dialog.dismiss();
-                                                FileUtil.deleteDir(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
-                                                showToast("下载失败");
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mCurList.get(position).getPath(),true).subscribe();
+                                            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                             }
 
                                             @Override
-                                            public void onComplete() {
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mCurList.get(position).getPath(),false).subscribe();
+                                            protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                                dialog.setMax(totalBytes);
+                                                dialog.setProgress(soFarBytes);
+                                            }
+
+                                            @Override
+                                            protected void completed(BaseDownloadTask task) {
                                                 dialog.dismiss();
                                                 goToRead(mCurList.get(position));
                                             }
 
                                             @Override
-                                            public void onSubscribe(@NonNull Disposable d) {
+                                            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                             }
 
                                             @Override
-                                            public void onNext(DownloadStatus downloadStatus) {
-                                                dialog.setMax((int) downloadStatus.getTotalSize());
-                                                dialog.setProgress((int) downloadStatus.getDownloadSize());
+                                            protected void error(BaseDownloadTask task, Throwable e) {
+                                                dialog.dismiss();
+                                                FileUtil.deleteDir(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
+                                                showToast("下载失败");
                                             }
-                                        });
+
+                                            @Override
+                                            protected void warn(BaseDownloadTask task) {
+
+                                            }
+                                        }).start();
+//                                downloadSub.download(ApiService.URL_QINIU +  mCurList.get(position).getPath(),temp,StorageUtils.getNovRootPath() + mCurList.get(position).getFileId())
+//                                        .subscribeOn(Schedulers.io())
+//                                        .observeOn(AndroidSchedulers.mainThread())
+//                                        .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                            @Override
+//                                            public void onSuccess() {
+//                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mCurList.get(position).getPath(),false).subscribe();
+//                                                dialog.dismiss();
+//                                                goToRead(mCurList.get(position));
+//                                            }
+//
+//                                            @Override
+//                                            public void onLoading(DownloadStatus res) {
+//                                                dialog.setMax((int) res.getTotalSize());
+//                                                dialog.setProgress((int) res.getDownloadSize());
+//                                            }
+//
+//                                            @Override
+//                                            public void onFail(Throwable e) {
+//                                                dialog.dismiss();
+//                                                FileUtil.deleteDir(StorageUtils.getNovRootPath() + mCurList.get(position).getFileId());
+//                                                showToast("下载失败");
+//                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mCurList.get(position).getPath(),true).subscribe();
+//                                            }
+//                                        });
                                 dialog.show();
                             }
                         }

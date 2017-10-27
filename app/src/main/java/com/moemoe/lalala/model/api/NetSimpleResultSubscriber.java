@@ -21,13 +21,17 @@ public abstract class NetSimpleResultSubscriber implements Observer<ApiResult> {
 
     @Override
     public void onComplete() {
-
+        if(mDisposable != null && !mDisposable.isDisposed()){
+            mDisposable.dispose();
+        }
     }
 
     @Override
     public void onError(Throwable e) {
         onFail(-1,"");
-        mDisposable.dispose();
+        if(mDisposable != null && !mDisposable.isDisposed()){
+            mDisposable.dispose();
+        }
     }
 
     @Override

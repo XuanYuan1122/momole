@@ -6,11 +6,15 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.greendao.gen.JuQIngStoryEntityDao;
 import com.moemoe.lalala.greendao.gen.JuQingDoneEntityDao;
 import com.moemoe.lalala.greendao.gen.JuQingTriggerEntityDao;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.CircleTimeTrigger;
 import com.moemoe.lalala.model.entity.DeskMateEntity;
 import com.moemoe.lalala.model.entity.ImpressionTrigger;
@@ -43,8 +47,6 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/9/27.
@@ -542,12 +544,7 @@ public class JuQingUtil {
         return resList;
     }
 
-    public static void downLoadFiles(Context context, HashSet<String> entities, Observer<String> callback){//1.未下载 2.下载完成 3.下载失败
-        final RxDownload downloadSub = RxDownload.getInstance(context)
-                .maxThread(1)
-                .maxRetryCount(6)
-                .defaultSavePath(StorageUtils.getEventRootPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+    public static void downLoadFiles(Context context, HashSet<String> entities, Observer<String> callback) {//1.未下载 2.下载完成 3.下载失败
         Observable.fromIterable(entities)
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Function<String, ObservableSource<String>>() {
@@ -561,39 +558,41 @@ public class JuQingUtil {
                                     name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
                                 }
                                 final String finalName = name;
-                                downloadSub.download(ApiService.URL_QINIU + str,name)
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(Schedulers.io())
-                                        .subscribe(new Observer<DownloadStatus>() {
-
-                                            private Disposable disposable;
-
+                                FileDownloader.getImpl().create(ApiService.URL_QINIU + str)
+                                        .setPath(StorageUtils.getEventRootPath() + name)
+                                        .setCallbackProgressTimes(1)
+                                        .setListener(new FileDownloadListener() {
                                             @Override
-                                            public void onError(Throwable e) {
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU + str,true).subscribe();
-                                                res.onError(e);
-                                                if(disposable != null && !disposable.isDisposed()){
-                                                    disposable.dispose();
-                                                }
+                                            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                             }
 
                                             @Override
-                                            public void onComplete() {
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU + str,false).subscribe();
+                                            protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+                                            }
+
+                                            @Override
+                                            protected void completed(BaseDownloadTask task) {
                                                 res.onNext(finalName);
                                                 res.onComplete();
                                             }
 
                                             @Override
-                                            public void onSubscribe(@NonNull Disposable d) {
-                                                disposable = d;
+                                            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                             }
 
                                             @Override
-                                            public void onNext(DownloadStatus downloadStatus) {
+                                            protected void error(BaseDownloadTask task, Throwable e) {
+                                                res.onError(e);
+                                            }
+
+                                            @Override
+                                            protected void warn(BaseDownloadTask task) {
 
                                             }
-                                        });
+                                        }).start();
                             }
                         });
                     }
@@ -602,6 +601,56 @@ public class JuQingUtil {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback);
     }
+
+//    public static void downLoadFiles(Context context, HashSet<String> entities, Observer<String> callback){//1.未下载 2.下载完成 3.下载失败
+//        final RxDownload downloadSub = RxDownload.getInstance(context)
+//                .maxThread(1)
+//                .maxRetryCount(6)
+//                .defaultSavePath(StorageUtils.getEventRootPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        Observable.fromIterable(entities)
+//                .subscribeOn(Schedulers.io())
+//                .flatMap(new Function<String, ObservableSource<String>>() {
+//                    @Override
+//                    public ObservableSource<String> apply(@NonNull final String str) throws Exception {
+//                        return  Observable.create(new ObservableOnSubscribe<String>() {
+//                            @Override
+//                            public void subscribe(@NonNull final ObservableEmitter<String> res) throws Exception {
+//                                String name = str.substring(str.lastIndexOf("/") + 1);
+//                                if(!name.endsWith(".temp.kira")){
+//                                    name = name.substring(0,name.indexOf(".")) + ".temp.kira";   //png.kira
+//                                }
+//                                final String finalName = name;
+//                                downloadSub.download(ApiService.URL_QINIU + str,name)
+//                                        .subscribeOn(Schedulers.io())
+//                                        .observeOn(Schedulers.io())
+//                                        .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                            @Override
+//                                            public void onSuccess() {
+//                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU + str,false).subscribe();
+//                                                res.onNext(finalName);
+//                                                res.onComplete();
+//                                            }
+//
+//                                            @Override
+//                                            public void onLoading(DownloadStatus res) {
+//
+//                                            }
+//
+//                                            @Override
+//                                            public void onFail(Throwable e) {
+//                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU + str,true).subscribe();
+//                                                res.onError(e);
+//                                            }
+//                                        });
+//                            }
+//                        });
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(callback);
+//    }
 
 
 }

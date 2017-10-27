@@ -15,11 +15,15 @@ import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFileComponent;
 import com.moemoe.lalala.di.modules.FileModule;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.presenter.FilesContract;
@@ -45,8 +49,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import zlc.season.rxdownload2.RxDownload;
-import zlc.season.rxdownload2.entity.DownloadStatus;
+//import zlc.season.rxdownload2.RxDownload;
+//import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by yi on 2017/3/28.
@@ -88,7 +92,7 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
     private boolean mIsFromSD;
     private boolean startRead = false;
     private int currentChapter = 1;
-    private RxDownload downloadSub;
+   // private RxDownload downloadSub;
     private String mUserId;
     private String mFolderId;
     private boolean change = false;
@@ -144,11 +148,11 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
             //目前没做网络阅读
             finish();
         }
-        downloadSub = RxDownload.getInstance(this)
-                .maxThread(1)
-                .maxRetryCount(3)
-                .defaultSavePath(StorageUtils.getNovRootPath())
-                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
+//        downloadSub = RxDownload.getInstance(this)
+//                .maxThread(1)
+//                .maxRetryCount(3)
+//                .defaultSavePath(StorageUtils.getNovRootPath())
+//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     public void showChapterRead(int chapter){
@@ -393,20 +397,23 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                                 dialog.setCanceledOnTouchOutside(false);// 设置在点击Dialog外是否取消Dialog进度条
                                 dialog.setIcon(R.drawable.ic_launcher);// 设置提示的title的图标，默认是没有的
                                 dialog.setTitle("下载中");
-                                downloadSub.download(ApiService.URL_QINIU +  bookList.get(0).getPath(),temp,StorageUtils.getNovRootPath() + bookList.get(0).getId())
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Observer<DownloadStatus>() {
+                                FileDownloader.getImpl().create(ApiService.URL_QINIU + bookList.get(0).getPath())
+                                        .setPath(StorageUtils.getNovRootPath() + bookList.get(0).getId() + "/"  + temp)
+                                        .setCallbackProgressTimes(1)
+                                        .setListener(new FileDownloadListener() {
                                             @Override
-                                            public void onError(Throwable e) {
-                                                dialog.dismiss();
-                                                FileUtil.deleteDir(StorageUtils.getNovRootPath() + bookList.get(0).getId());
-                                                showToast("下载失败");
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  bookList.get(0).getPath(),true).subscribe();
+                                            protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
                                             }
 
                                             @Override
-                                            public void onComplete() {
+                                            protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+                                                dialog.setMax(totalBytes);
+                                                dialog.setProgress(soFarBytes);
+                                            }
+
+                                            @Override
+                                            protected void completed(BaseDownloadTask task) {
                                                 dialog.dismiss();
                                                 mBook = bookList.get(0);
                                                 mBookId = bookList.get(0).getId();
@@ -421,20 +428,62 @@ public class ReadActivity extends BaseAppCompatActivity implements FilesContract
                                                 currentChapter = 1;
                                                 showChapterRead(1);
                                                 bookList.remove(0);
-                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  bookList.get(0).getPath(),false).subscribe();
                                             }
 
                                             @Override
-                                            public void onSubscribe(@NonNull Disposable d) {
+                                            protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
 
                                             }
 
                                             @Override
-                                            public void onNext(DownloadStatus downloadStatus) {
-                                                dialog.setMax((int) downloadStatus.getTotalSize());
-                                                dialog.setProgress((int) downloadStatus.getDownloadSize());
+                                            protected void error(BaseDownloadTask task, Throwable e) {
+                                                dialog.dismiss();
+                                                FileUtil.deleteDir(StorageUtils.getNovRootPath() + bookList.get(0).getId());
+                                                showToast("下载失败");
                                             }
-                                        });
+
+                                            @Override
+                                            protected void warn(BaseDownloadTask task) {
+
+                                            }
+                                        }).start();
+//                                downloadSub.download(ApiService.URL_QINIU +  bookList.get(0).getPath(),temp,StorageUtils.getNovRootPath() + bookList.get(0).getId())
+//                                        .subscribeOn(Schedulers.io())
+//                                        .observeOn(AndroidSchedulers.mainThread())
+//                                        .subscribe(new NetTResultSubscriber<DownloadStatus>() {
+//                                            @Override
+//                                            public void onSuccess() {
+//                                                dialog.dismiss();
+//                                                mBook = bookList.get(0);
+//                                                mBookId = bookList.get(0).getId();
+//                                                mTvTitle.setText(mBook.getTitle());
+//                                                mPageWidget.setBookId(mBookId);
+//                                                mSeekBarRead.setMax(100);
+//                                                int a = PreferenceUtils.getReadProgress(ReadActivity.this,mBookId)[2];
+//                                                int b = (int) new File(StorageUtils.getNovRootPath() + mBookId + File.separator + "1.txt").length();
+//                                                float progress = (float) a / b * 100;
+//                                                mSeekBarRead.setProgress((int) progress);
+//                                                startRead = false;
+//                                                currentChapter = 1;
+//                                                showChapterRead(1);
+//                                                bookList.remove(0);
+//                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  bookList.get(0).getPath(),false).subscribe();
+//                                            }
+//
+//                                            @Override
+//                                            public void onLoading(DownloadStatus res) {
+//                                                dialog.setMax((int) res.getTotalSize());
+//                                                dialog.setProgress((int) res.getDownloadSize());
+//                                            }
+//
+//                                            @Override
+//                                            public void onFail(Throwable e) {
+//                                                dialog.dismiss();
+//                                                FileUtil.deleteDir(StorageUtils.getNovRootPath() + bookList.get(0).getId());
+//                                                showToast("下载失败");
+//                                                downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  bookList.get(0).getPath(),true).subscribe();
+//                                            }
+//                                        });
                                 dialog.show();
                             }
                             alertDialogUtil.dismissDialog();
