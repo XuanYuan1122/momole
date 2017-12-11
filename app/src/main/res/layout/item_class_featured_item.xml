@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="5dp"
+    android:layout_width="@dimen/y200"
+    android:layout_height="@dimen/y200"
+    android:layout_marginStart="@dimen/x20"
+    android:layout_marginTop="@dimen/y10"
     android:background="@drawable/btn_white_border_selector_5">
 
     <ImageView
@@ -13,16 +12,15 @@
         android:layout_height="match_parent"
         android:scaleType="fitXY"/>
 
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="22dp"
-        android:text="龙与公主"
+        android:layout_height="@dimen/y44"
+        android:text=""
         android:maxLines="1"
         android:ellipsize="end"
         android:textColor="@color/white"
-        android:textSize="12dp"
+        android:textSize="@dimen/x24"
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_rect_text_gray"/>

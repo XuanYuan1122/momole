@@ -9,6 +9,7 @@ import com.moemoe.lalala.view.activity.BadgeActivity;
 import dagger.Component;
 
 /**
+ *
  * Created by yi on 2016/11/27.
  */
 @UserScope

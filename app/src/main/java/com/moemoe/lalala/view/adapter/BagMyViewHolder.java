@@ -88,7 +88,7 @@ public class BagMyViewHolder extends ClickableViewHolder {
                 llRoot.setVisibility(View.VISIBLE);
                 tvMore.setText("显示全部");
                 tvMore.setCompoundDrawablesWithIntrinsicBounds (null,null, ContextCompat.getDrawable(itemView.getContext(),R.drawable.ic_bag_more),null);
-                tvMore.setCompoundDrawablePadding(DensityUtil.dip2px(itemView.getContext(),4));
+                tvMore.setCompoundDrawablePadding((int)itemView.getContext().getResources().getDimension(R.dimen.x8));
                 tvMore.setOnClickListener(new NoDoubleClickListener() {
                     @Override
                     public void onNoDoubleClick(View v) {
@@ -123,14 +123,14 @@ public class BagMyViewHolder extends ClickableViewHolder {
                     tag.setText(tagStr);
                     mark.setText(entity.getTitle());
                     mark.setBackgroundResource(entity.getMark());
-                    int width = (DensityUtil.getScreenWidth(itemView.getContext()) - DensityUtil.dip2px(itemView.getContext(),42)) / 3;
-                    int height = DensityUtil.dip2px(itemView.getContext(),140);
+                    int width = (DensityUtil.getScreenWidth(itemView.getContext()) - (int)itemView.getContext().getResources().getDimension(R.dimen.x84)) / 3;
+                    int height = (int)itemView.getContext().getResources().getDimension(R.dimen.y280);
 
                     RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                     RecyclerView.LayoutParams lp2;
                     if(n == 1 || n == 2){
-                        lp2 = new RecyclerView.LayoutParams(width + DensityUtil.dip2px(itemView.getContext(),9),height);
-                        v.setPadding(DensityUtil.dip2px(itemView.getContext(),9),0,0,0);
+                        lp2 = new RecyclerView.LayoutParams(width + (int)itemView.getContext().getResources().getDimension(R.dimen.x18),height);
+                        v.setPadding((int)itemView.getContext().getResources().getDimension(R.dimen.x18),0,0,0);
                     }else {
                         lp2 = new RecyclerView.LayoutParams(width,height);
                         v.setPadding(0,0,0,0);
@@ -141,7 +141,7 @@ public class BagMyViewHolder extends ClickableViewHolder {
                             .load(StringUtils.getUrl(itemView.getContext(),item.getCover(),width,height, false, true))
                             .placeholder(R.drawable.bg_default_square)
                             .error(R.drawable.bg_default_square)
-                            .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
+                            .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),(int)itemView.getContext().getResources().getDimension(R.dimen.y8),0))
                             .into(iv);
                     v.setOnClickListener(new NoDoubleClickListener() {
                         @Override
@@ -164,7 +164,7 @@ public class BagMyViewHolder extends ClickableViewHolder {
                 if(type.equals("my")){
                     tvMore.setText("添加");
                     tvMore.setCompoundDrawablesWithIntrinsicBounds (null,null, ContextCompat.getDrawable(itemView.getContext(),R.drawable.ic_bag_add),null);
-                    tvMore.setCompoundDrawablePadding(DensityUtil.dip2px(itemView.getContext(),4));
+                    tvMore.setCompoundDrawablePadding((int)itemView.getContext().getResources().getDimension(R.dimen.x8));
                     tvMore.setOnClickListener(new NoDoubleClickListener() {
                         @Override
                         public void onNoDoubleClick(View v) {
@@ -189,11 +189,11 @@ public class BagMyViewHolder extends ClickableViewHolder {
                // if(type.equals("my")){
                     tvMore.setText("显示全部");
                     tvMore.setCompoundDrawablesWithIntrinsicBounds (null,null, ContextCompat.getDrawable(itemView.getContext(),R.drawable.ic_bag_more),null);
-                    tvMore.setCompoundDrawablePadding(DensityUtil.dip2px(itemView.getContext(),4));
+                    tvMore.setCompoundDrawablePadding((int)itemView.getContext().getResources().getDimension(R.dimen.x8));
                     tvMore.setOnClickListener(new NoDoubleClickListener() {
                         @Override
                         public void onNoDoubleClick(View v) {
-                            NewFolderWenZhangActivity.startActivity(itemView.getContext(),userId, FolderType.WZ.toString(),type);
+                            NewFolderWenZhangActivity.startActivity(itemView.getContext(),userId, FolderType.WZ.toString(),type,false);
                         }
                     });
               //  }else {
@@ -203,7 +203,7 @@ public class BagMyViewHolder extends ClickableViewHolder {
                 if(type.equals("my")){
                     tvMore.setText("添加");
                     tvMore.setCompoundDrawablesWithIntrinsicBounds (null,null, ContextCompat.getDrawable(itemView.getContext(),R.drawable.ic_bag_add),null);
-                    tvMore.setCompoundDrawablePadding(DensityUtil.dip2px(itemView.getContext(),4));
+                    tvMore.setCompoundDrawablePadding((int)itemView.getContext().getResources().getDimension(R.dimen.x8));
                     tvMore.setOnClickListener(new NoDoubleClickListener() {
                         @Override
                         public void onNoDoubleClick(View v) {

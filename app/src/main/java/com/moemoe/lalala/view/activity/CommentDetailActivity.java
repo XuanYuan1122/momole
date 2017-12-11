@@ -396,14 +396,14 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
         }
         mCommentEntity = entity.getDocComment();
         Glide.with(this)
-                .load(StringUtils.getUrl(this, ApiService.URL_QINIU + mCommentEntity.getFromUserIcon().getPath(), DensityUtil.dip2px(this,35), DensityUtil.dip2px(this,35), false, false))
-                .override(DensityUtil.dip2px(this,35), DensityUtil.dip2px(this,35))
+                .load(StringUtils.getUrl(this, ApiService.URL_QINIU + mCommentEntity.getFromUserIcon().getPath(), (int)getResources().getDimension(R.dimen.y70), (int)getResources().getDimension(R.dimen.y70), false, false))
+                .override((int)getResources().getDimension(R.dimen.y70), (int)getResources().getDimension(R.dimen.y70))
                 .placeholder(R.drawable.bg_default_circle)
                 .error(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(this))
                 .into(mIvCreator);
         mTvCreatorName.setText(mCommentEntity.getFromUserName());
-        mTvTime.setText(StringUtils.timeFormate(mCommentEntity.getCreateTime()));
+        mTvTime.setText(StringUtils.timeFormat(mCommentEntity.getCreateTime()));
         if(mCommentEntity.isDeleteFlag()){
             mTvContent.setText(getString(R.string.label_comment_already));
             llImg.setVisibility(View.GONE);
@@ -425,7 +425,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
                     Image image = mCommentEntity.getImages().get(i);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.topMargin = DensityUtil.dip2px(this,5);
+                    params.topMargin = (int)getResources().getDimension(R.dimen.y10);
                     if(FileUtil.isGif(image.getPath())){
                         ImageView imageView = new ImageView(this);
                         setGif(image, imageView,params);
@@ -463,7 +463,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
             }
         }
         mTvLevel.setText(String.valueOf(mCommentEntity.getFromUserLevel()));
-        int radius1 = DensityUtil.dip2px(this,5);
+        int radius1 = (int)getResources().getDimension(R.dimen.y10);
         float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
         RoundRectShape roundRectShape1 = new RoundRectShape(outerR1, null, null);
         ShapeDrawable shapeDrawable1 = new ShapeDrawable();
@@ -508,9 +508,9 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
                 tv.setText(badgeEntity.getTitle());
                 tv.setText(badgeEntity.getTitle());
                 tv.setBackgroundResource(R.drawable.bg_badge_cover);
-                int px = DensityUtil.dip2px(this,4);
+                int px = (int)getResources().getDimension(R.dimen.x8);
                 tv.setPadding(px,0,px,0);
-                int radius2 = DensityUtil.dip2px(this,2);
+                int radius2 = (int)getResources().getDimension(R.dimen.y4);
                 float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
                 RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
                 ShapeDrawable shapeDrawable2 = new ShapeDrawable();
@@ -542,7 +542,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
             public void onNoDoubleClick(View v) {
                 String uuid =  mCommentEntity.getFromUserId();
                 if (!TextUtils.isEmpty(uuid) && !uuid.equals(PreferenceUtils.getUUid())) {
-                    Intent i = new Intent(CommentDetailActivity.this,NewPersonalActivity.class);
+                    Intent i = new Intent(CommentDetailActivity.this,PersonalV2Activity.class);
                     i.putExtra(BaseAppCompatActivity.UUID,uuid);
                     startActivity(i);
                 }
@@ -568,7 +568,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
     }
 
     private void setGif(Image image, ImageView gifImageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,66));
+        final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x132));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(this)
@@ -581,7 +581,7 @@ public class CommentDetailActivity extends BaseAppCompatActivity implements Comm
     }
 
     private void setImage(Image image, final ImageView imageView, LinearLayout.LayoutParams params){
-        final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,66));
+        final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x132));
         params.width = wh[0];
         params.height = wh[1];
         Glide.with(this)

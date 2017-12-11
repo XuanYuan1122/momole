@@ -2,26 +2,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/size_28">
+    android:paddingTop="@dimen/y56">
 
     <ImageView
         android:id="@+id/iv_bg"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginStart="@dimen/size_18"
-        android:layout_marginLeft="@dimen/size_18"
-        android:layout_marginRight="@dimen/size_18"
-        android:layout_marginEnd="@dimen/size_18"
+        android:layout_height="@dimen/y240"
+        android:layout_marginStart="@dimen/x36"
+        android:layout_marginEnd="@dimen/x36"
         android:scaleType="fitXY"/>
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginEnd="@dimen/size_18"
-        android:layout_marginLeft="@dimen/size_18"
-        android:layout_marginRight="@dimen/size_18"
-        android:layout_marginStart="@dimen/size_18"
+        android:layout_height="@dimen/y240"
+        android:layout_marginEnd="@dimen/x36"
+        android:layout_marginStart="@dimen/x36"
         android:background="@drawable/shape_bg_5" />
 
     <TextView
@@ -29,34 +25,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_bag_mask_green"
-        android:layout_marginStart="@dimen/size_18"
-        android:layout_marginLeft="@dimen/size_18"
+        android:layout_marginStart="@dimen/x36"
         android:textColor="@color/white"
-        android:textSize="@dimen/size_15"
+        android:textSize="@dimen/x30"
         android:textStyle="bold"
         android:gravity="center_vertical"
-        android:paddingLeft="@dimen/size_8"
-        android:paddingStart="@dimen/size_8"
+        android:paddingStart="@dimen/x16"
         android:text="已拥有"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|bottom|end"
-        android:layout_marginRight="@dimen/size_18"
-        android:layout_marginEnd="@dimen/size_18"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/x36"
         android:orientation="vertical"
-        android:paddingBottom="8dp"
-        android:gravity="right|end"
-        android:paddingEnd="@dimen/size_8"
-        android:paddingRight="@dimen/size_8">
+        android:paddingBottom="@dimen/y16"
+        android:gravity="end"
+        android:paddingEnd="@dimen/x16">
 
         <TextView
             android:id="@+id/tv_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_18"
+            android:textSize="@dimen/x36"
             android:textStyle="bold"
             android:text=""/>
 
@@ -66,10 +58,10 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:layout_marginTop="@dimen/size_2"
+            android:layout_marginTop="@dimen/y4"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textSize="@dimen/size_27"
+            android:textSize="@dimen/x54"
             android:text=""/>
 
         <TextView
@@ -77,10 +69,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_10"
+            android:textSize="@dimen/x20"
             android:maxLines="1"
             android:ellipsize="end"
-            android:layout_marginTop="@dimen/size_2"
+            android:layout_marginTop="@dimen/y4"
             android:text=""/>
 
     </LinearLayout>
@@ -89,10 +81,9 @@
         android:id="@+id/iv_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|end"
-        android:layout_marginTop="@dimen/size_8"
-        android:layout_marginRight="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/y16"
+        android:layout_marginEnd="@dimen/x48"
         android:visibility="gone"
         android:src="@drawable/btn_select_normal"/>
 

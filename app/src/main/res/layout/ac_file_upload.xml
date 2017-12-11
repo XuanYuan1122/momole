@@ -20,16 +20,16 @@
         <TextView
             android:id="@+id/tv_num"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_30"
+            android:layout_height="@dimen/y60"
             android:background="@color/main_cyan"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_12"/>
+            android:textSize="@dimen/x24"/>
 
         <RelativeLayout
             android:id="@+id/ll_images"
             android:layout_width="match_parent"
-            android:layout_height="166dp"
+            android:layout_height="@dimen/y332"
             android:orientation="horizontal"
             android:layout_below="@+id/tv_num"
             android:background="@color/gray_383d3f">
@@ -37,15 +37,15 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_img"
                 android:layout_width="match_parent"
-                android:layout_height="110dp"
+                android:layout_height="@dimen/y220"
                 android:layout_centerVertical="true"
                 android:visibility="gone"/>
 
 
             <RelativeLayout
                 android:id="@+id/rl_zip_root"
-                android:layout_width="@dimen/size_110"
-                android:layout_height="@dimen/size_110"
+                android:layout_width="@dimen/y220"
+                android:layout_height="@dimen/y220"
                 android:layout_centerInParent="true"
                 android:background="@color/white_20"
                 android:visibility="gone">
@@ -55,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/size_15"
+                    android:layout_marginTop="@dimen/y30"
                     android:src="@drawable/ic_bag_zip"/>
 
                 <TextView
@@ -64,16 +64,15 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/iv_zip"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/size_10"/>
+                    android:layout_marginTop="@dimen/y20"/>
 
                 <ImageView
                     android:id="@+id/iv_del_img"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="3dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginEnd="3dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/y6"
+                    android:layout_marginEnd="@dimen/x6"
                     android:src="@drawable/btn_doc_reply_pic_cancel"/>
             </RelativeLayout>
         </RelativeLayout>
@@ -87,10 +86,10 @@
             <TextView
                 android:id="@+id/tv_upload_zip"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="@dimen/size_12"
+                android:layout_height="@dimen/y112"
+                android:layout_marginTop="@dimen/y24"
                 android:background="@color/white"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/main_cyan"
                 android:gravity="center"
                 android:visibility="gone"
@@ -99,9 +98,9 @@
             <LinearLayout
                 android:id="@+id/ll_bg_root"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="@dimen/y140"
                 android:orientation="horizontal"
-                android:layout_marginTop="@dimen/size_12"
+                android:layout_marginTop="@dimen/x24"
                 android:visibility="gone"
                 android:background="@drawable/bg_normal_white_btn">
 
@@ -109,40 +108,37 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_15"
+                    android:textSize="@dimen/x30"
                     android:textColor="@color/black"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/size_15"
-                    android:layout_marginStart="@dimen/size_15"
+                    android:layout_marginStart="@dimen/x30"
                     android:text="@string/label_cover"/>
 
                 <ImageView
                     android:id="@+id/iv_cover"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="@dimen/y112"
+                    android:layout_height="@dimen/y112"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerCrop"
-                    android:layout_marginRight="@dimen/size_15"
-                    android:layout_marginEnd="@dimen/size_15"/>
+                    android:layout_marginEnd="@dimen/x30"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:id="@+id/ll_name_root"
-                android:layout_height="70dp"
+                android:layout_height="@dimen/y140"
                 android:orientation="horizontal"
                 android:background="@drawable/bg_normal_white_btn"
                 android:visibility="gone"
-                android:layout_marginTop="@dimen/size_10">
+                android:layout_marginTop="@dimen/y20">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_15"
+                    android:textSize="@dimen/x30"
                     android:textColor="@color/black"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/size_15"
-                    android:layout_marginStart="@dimen/size_15"
+                    android:layout_marginStart="@dimen/x30"
                     android:text="名称" />
 
                 <TextView
@@ -151,11 +147,10 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/size_15"
-                    android:layout_marginEnd="@dimen/size_15"
+                    android:layout_marginEnd="@dimen/x30"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/size_15"
+                    android:textSize="@dimen/x30"
                     android:gravity="end" />
             </LinearLayout>
         </LinearLayout>

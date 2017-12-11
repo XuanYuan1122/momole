@@ -40,17 +40,17 @@
 
             <View
                 style="@style/HorizontalSep"
-                android:layout_marginTop="15dp" />
+                android:layout_marginTop="@dimen/y30" />
 
             <TextView
                 android:id="@+id/set_log_out"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="@dimen/y100"
                 android:background="@drawable/bg_logout"
                 android:gravity="center"
                 android:text="@string/label_log_out"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_14" />
+                android:textSize="@dimen/x28" />
 
             <View style="@style/HorizontalSep" />
 

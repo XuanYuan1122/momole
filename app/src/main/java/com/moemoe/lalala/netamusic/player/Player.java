@@ -6,9 +6,6 @@ import android.media.MediaPlayer;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
-import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.netamusic.data.model.PlayList;
 import com.moemoe.lalala.netamusic.data.model.Song;
 import com.moemoe.lalala.utils.CommonUtils;
@@ -19,14 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
 /**
- *
+ * 音乐播放控制
  * Created by yi on 2016/10/31.
  */
 
@@ -41,21 +32,14 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
     private PlayList mPlayList;
     //Default size 2: for service and UI
     private List<Callback> mCallbacks = new ArrayList<>(2);
-    //Player status
     private boolean isPaused;
 
     private boolean isStarted;
-   // private RxDownload downloadSub;
 
     private Player(Context context){
         mPlayer = new MediaPlayer();
         mPlayList = new PlayList();
         mPlayer.setOnCompletionListener(this);
-//        downloadSub = RxDownload.getInstance(context)
-//                .maxThread(1)
-//                .maxRetryCount(3)
-//                .defaultSavePath(StorageUtils.getMusicRootPath())
-//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     public static Player getInstance(Context context){
@@ -95,6 +79,16 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
                     mPlayer.start();
                     notifyPlayStatusChanged(true);
                 }else {
+                    mPlayer.setDataSource(url);
+                    mPlayer.prepareAsync();
+                    mPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            mPlayer.start();
+                        }
+                    });
+                    isStarted = false;
                     FileDownloader.getImpl().create(url)
                             .setPath(StorageUtils.getMusicRootPath() + song.getDisplayName())
                             .setCallbackProgressTimes(1)
@@ -106,26 +100,24 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
 
                                 @Override
                                 protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                                    if(mPlayList != null && mPlayList.getCurrentSong() != null ){
-                                      //  long totalSize =  totalBytes;
-                                      //  long downloaded = soFarBytes;
-                                        double downloadSize = soFarBytes / 1024f / 1024;
-                                        double fileSize = totalBytes / 1024f / 1024;
-                                        downloadSize = CommonUtils.formatNumber(downloadSize);
-                                        fileSize = CommonUtils.formatNumber(fileSize);
-                                        int progress = (int) (downloadSize * 100 / fileSize);
-                                        if(!isStarted && progress > 10){
-                                            try {
-                                                mPlayer.setDataSource(StorageUtils.getMusicPath(song.getDisplayName()));
-                                                mPlayer.prepare();
-                                                mPlayer.start();
-                                                notifyPlayStatusChanged(true);
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                            isStarted = true;
-                                        }
-                                    }
+//                                    if(mPlayList != null && mPlayList.getCurrentSong() != null ){
+//                                        double downloadSize = soFarBytes / 1024f / 1024;
+//                                        double fileSize = totalBytes / 1024f / 1024;
+//                                        downloadSize = CommonUtils.formatNumber(downloadSize);
+//                                        fileSize = CommonUtils.formatNumber(fileSize);
+//                                        int progress = (int) (downloadSize * 100 / fileSize);
+//                                        if(!isStarted && progress > 3){
+//                                            try {
+//                                                mPlayer.setDataSource(StorageUtils.getMusicPath(song.getDisplayName()));
+//                                                mPlayer.prepare();
+//                                                mPlayer.start();
+//                                                notifyPlayStatusChanged(true);
+//                                            } catch (IOException e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                            isStarted = true;
+//                                        }
+//                                    }
                                 }
 
                                 @Override
@@ -148,46 +140,6 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
 
                                 }
                             }).start();
-//                    downloadSub.download(url,song.getDisplayName(),null)
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
-//
-//                                @Override
-//                                public void onSuccess() {
-//                                    downloadSub.deleteServiceDownload(url,false).subscribe();
-//                                }
-//
-//                                @Override
-//                                public void onLoading(DownloadStatus res) {
-//                                    if(mPlayList != null && mPlayList.getCurrentSong() != null ){
-//                                        long totalSize =  res.getTotalSize();
-//                                        long downloaded = res.getDownloadSize();
-//                                        double downloadSize = downloaded / 1024f / 1024;
-//                                        double fileSize = totalSize / 1024f / 1024;
-//                                        downloadSize = CommonUtils.formatNumber(downloadSize);
-//                                        fileSize = CommonUtils.formatNumber(fileSize);
-//                                        int progress = (int) (downloadSize * 100 / fileSize);
-//                                        if(!isStarted && progress > 10){
-//                                            try {
-//                                                mPlayer.setDataSource(StorageUtils.getMusicPath(song.getDisplayName()));
-//                                                mPlayer.prepare();
-//                                                mPlayer.start();
-//                                                notifyPlayStatusChanged(true);
-//                                            } catch (IOException e) {
-//                                                e.printStackTrace();
-//                                            }
-//                                            isStarted = true;
-//                                        }
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onFail(Throwable e) {
-//                                    downloadSub.deleteServiceDownload(url,false).subscribe();
-//                                }
-//                            });
-                    isStarted = false;
                 }
             }catch (IOException e){
                 FileUtil.deleteFile(StorageUtils.getMusicPath(song.getDisplayName()));
@@ -255,11 +207,13 @@ public class Player implements IPlayBack,MediaPlayer.OnCompletionListener {
 
     @Override
     public boolean pause() {
-        if(mPlayer.isPlaying()){
-            mPlayer.pause();
-            isPaused = true;
-            notifyPlayStatusChanged(false);
-            return true;
+        if(mPlayer != null){
+            if(mPlayer.isPlaying()){
+                mPlayer.pause();
+                isPaused = true;
+                notifyPlayStatusChanged(false);
+                return true;
+            }
         }
         return false;
     }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="@dimen/x180"
+        android:layout_height="@dimen/y220">
+
+        <ImageView
+            android:id="@+id/iv_img"
+            android:layout_width="@dimen/x180"
+            android:layout_height="@dimen/y220" />
+
+        <ImageView
+            android:id="@+id/iv_select"
+            android:layout_width="@dimen/x44"
+            android:layout_height="@dimen/x44"
+            android:layout_gravity="bottom|end"
+            android:visibility="gone"
+            android:src="@drawable/ic_select_hover"/>
+
+        <TextView
+            android:id="@+id/tv_edit_role"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y40"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:textColor="@color/white"
+            android:text="使用中"
+            android:visibility="gone"
+            android:background="@color/black_1e1e1e_40"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/y16"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_like"
+            android:layout_width="@dimen/x34"
+            android:layout_height="@dimen/y32"
+            android:src="@drawable/btn_feed_like"/>
+
+        <TextView
+            android:id="@+id/tv_like_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x24"
+            android:layout_marginStart="@dimen/x10"
+            android:textColor="@color/pink_fb7ba2"/>
+    </LinearLayout>
+</LinearLayout>

@@ -86,7 +86,7 @@ public class InviteAddActivity extends BaseAppCompatActivity implements InviteCo
         int type = getIntent().getIntExtra("type",0);
         if(type == 0){
             mTvLeft.setVisibility(View.VISIBLE);
-            ViewUtils.setLeftMargins(mTvLeft, DensityUtil.dip2px(this,18));
+            ViewUtils.setLeftMargins(mTvLeft, (int)getResources().getDimension(R.dimen.x36));
             mTvLeft.setText("跳过");
             mTvLeft.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
             mTvLeft.setOnClickListener(new NoDoubleClickListener() {

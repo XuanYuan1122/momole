@@ -68,6 +68,13 @@ public class DocDetailEntity {
     private String cover;
     @SerializedName("vip")
     private boolean vip;
+    @SerializedName("maxNum")
+    private Integer maxNum;
+    @SerializedName("nowNum")
+    private Integer nowNum;
+    @SerializedName("rtNum")
+    private int rtNum;
+
 
     public class Detail<T>{
         @SerializedName("type")
@@ -250,6 +257,30 @@ public class DocDetailEntity {
                 this.color = color;
             }
         }
+    }
+
+    public int getRtNum() {
+        return rtNum;
+    }
+
+    public void setRtNum(int rtNum) {
+        this.rtNum = rtNum;
+    }
+
+    public Integer getMaxNum() {
+        return maxNum;
+    }
+
+    public void setMaxNum(Integer maxNum) {
+        this.maxNum = maxNum;
+    }
+
+    public Integer getNowNum() {
+        return nowNum;
+    }
+
+    public void setNowNum(Integer nowNum) {
+        this.nowNum = nowNum;
     }
 
     public boolean isVip() {

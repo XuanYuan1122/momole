@@ -3,9 +3,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/x52"
-    android:paddingRight="@dimen/x52"
-    android:paddingTop="@dimen/y48"
+    android:paddingLeft="@dimen/x34"
+    android:paddingRight="@dimen/x34"
+    android:paddingTop="@dimen/y24"
     android:background="@drawable/bg_phone_wallpaper">
 
     <LinearLayout
@@ -15,63 +15,218 @@
 
         <LinearLayout
             android:id="@+id/ll_menu_root"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/y166"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
                 android:src="@drawable/btn_phone_menu" />
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
+                android:layout_marginTop="@dimen/y8"
                 android:text="通讯录"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15" />
+                android:textSize="@dimen/x30" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/ll_msg_root"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_msg"
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/btn_phone_msg" />
+
+            <TextView
+                android:id="@+id/tv_msg_dot"
+                android:layout_width="@dimen/y36"
+                android:layout_height="@dimen/y36"
+                android:layout_gravity="end"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x20"
+                android:layout_marginEnd="-9dp"
+                android:layout_alignEnd="@+id/iv_msg"
+                android:gravity="center"
+                android:background="@drawable/shape_dot_y18"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tv_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y8"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/iv_msg"
+                android:text="聊天"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x30" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ll_sys_msg_root"
+            android:layout_width="@dimen/y166"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_sys_msg"
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/btn_phone_sys_msg" />
+
+            <TextView
+                android:id="@+id/tv_sys_msg_dot"
+                android:layout_width="@dimen/y36"
+                android:layout_height="@dimen/y36"
+                android:layout_gravity="end"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x20"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:background="@drawable/shape_dot_y18"
+                android:visibility="gone"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y8"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/iv_sys_msg"
+                android:text="通知"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x30" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y28"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_bag_root"
+            android:layout_width="@dimen/y166"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
+                android:src="@drawable/btn_phone_bag" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y8"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x30"
+                android:text="书包"/>
+
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_msg_root"
+            android:id="@+id/ll_alarm_root"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
+
             <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_msg" />
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
+                android:src="@drawable/btn_phone_alarm" />
 
             <TextView
-                android:id="@+id/tv_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:text="消息"
+                android:layout_marginTop="@dimen/y8"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15" />
+                android:textSize="@dimen/x30"
+                android:text="同桌电话"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_album_root"
+            android:layout_width="@dimen/y166"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
+                android:src="@drawable/btn_phone_album" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y8"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x30"
+                android:text="剧情"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y28"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_mate_root"
+            android:layout_width="@dimen/y166"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
+                android:src="@drawable/btn_phone_mate" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y8"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x30"
+                android:text="同桌"/>
+
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_person_root"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132">
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130">
 
                 <ImageView
-                    android:layout_width="@dimen/x132"
-                    android:layout_height="@dimen/y132"
+                    android:layout_width="@dimen/y130"
+                    android:layout_height="@dimen/y130"
                     android:src="@drawable/btn_map_card" />
 
                 <ImageView
@@ -88,83 +243,31 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
+                android:layout_marginTop="@dimen/y8"
                 android:text="个人中心"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15" />
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y36"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/ll_bag_root"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_bag" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="书包"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_find_root"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_map_main" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="动态"/>
+                android:textSize="@dimen/x30" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_wenzhang_root"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/y166"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
                 android:src="@drawable/btn_phone_wenzhang" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
+                android:layout_marginTop="@dimen/y8"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:text="论坛"/>
 
         </LinearLayout>
@@ -173,105 +276,32 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y36"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/ll_mate_root"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_mate" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="同桌"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_album_root"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_album" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="剧情"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_alarm_root"
-            android:layout_width="@dimen/x132"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-
-            <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
-                android:src="@drawable/btn_phone_alarm" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
-                android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
-                android:text="提醒"/>
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/y36"
+        android:layout_marginTop="@dimen/y28"
         android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/ll_shop_root"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/y166"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
                 android:src="@drawable/btn_phone_shop" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
+                android:layout_marginTop="@dimen/y8"
                 android:text="商店"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15" />
+                android:textSize="@dimen/x30" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_sign_root"
+            android:id="@+id/ll_live2d_shop_root"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -279,37 +309,84 @@
             android:orientation="vertical">
 
             <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
+                android:src="@drawable/btn_phone_live2d_shop" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y8"
+                android:text="Live2D商城"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x30" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/y166"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y28"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_sign_root"
+            android:layout_width="@dimen/y166"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
                 android:src="@drawable/btn_map_sign" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
+                android:layout_marginTop="@dimen/y8"
                 android:text="每日任务"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15" />
+                android:textSize="@dimen/x30" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_search_root"
-            android:layout_width="@dimen/x132"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
+
             <ImageView
-                android:layout_width="@dimen/x132"
-                android:layout_height="@dimen/y132"
+                android:layout_width="@dimen/y130"
+                android:layout_height="@dimen/y130"
                 android:src="@drawable/btn_phone_search" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/y24"
+                android:layout_marginTop="@dimen/y8"
                 android:text="搜索"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15" />
+                android:textSize="@dimen/x30" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="@dimen/y166"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

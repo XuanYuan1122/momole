@@ -8,6 +8,9 @@
 
 package cn.sharesdk.onekeyshare.themes.classic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.graphics.drawable.ColorDrawable;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -20,16 +23,13 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.mob.tools.gui.PullToRequestView;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.onekeyshare.OnekeySharePage;
 import cn.sharesdk.onekeyshare.OnekeyShareThemeImpl;
 import cn.sharesdk.onekeyshare.themes.classic.FriendAdapter.Following;
+
+import com.mob.tools.gui.PullToRequestView;
+import com.mob.tools.utils.ResHelper;
 
 /** 编辑界面，@好友时，弹出的好友列表 */
 public abstract class FriendListPage extends OnekeySharePage implements OnClickListener, OnItemClickListener {
@@ -107,7 +107,7 @@ public abstract class FriendListPage extends OnekeySharePage implements OnClickL
 		tvCancel.setTextColor(0xff3b3b3b);
 		tvCancel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 		tvCancel.setGravity(Gravity.CENTER);
-		int resId = com.mob.tools.utils.R.getStringRes(activity, "ssdk_oks_cancel");
+		int resId = ResHelper.getStringRes(activity, "ssdk_oks_cancel");
 		if (resId > 0) {
 			tvCancel.setText(resId);
 		}
@@ -121,7 +121,7 @@ public abstract class FriendListPage extends OnekeySharePage implements OnClickL
 		tvTitle.setTextColor(0xff3b3b3b);
 		tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
 		tvTitle.setGravity(Gravity.CENTER);
-		resId = com.mob.tools.utils.R.getStringRes(activity, "ssdk_oks_contacts");
+		resId = ResHelper.getStringRes(activity, "ssdk_oks_contacts");
 		if (resId > 0) {
 			tvTitle.setText(resId);
 		}
@@ -133,7 +133,7 @@ public abstract class FriendListPage extends OnekeySharePage implements OnClickL
 		tvConfirm.setTextColor(0xffff6d11);
 		tvConfirm.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 		tvConfirm.setGravity(Gravity.CENTER);
-		resId = com.mob.tools.utils.R.getStringRes(activity, "ssdk_oks_confirm");
+		resId = ResHelper.getStringRes(activity, "ssdk_oks_confirm");
 		if (resId > 0) {
 			tvConfirm.setText(resId);
 		}
@@ -185,7 +185,7 @@ public abstract class FriendListPage extends OnekeySharePage implements OnClickL
 	}
 
 	private void updateConfirmView() {
-		int resId = com.mob.tools.utils.R.getStringRes(activity, "ssdk_oks_confirm");
+		int resId = ResHelper.getStringRes(activity, "ssdk_oks_confirm");
 		String confirm = "Confirm";
 		if(resId > 0) {
 			confirm = getContext().getResources().getString(resId);

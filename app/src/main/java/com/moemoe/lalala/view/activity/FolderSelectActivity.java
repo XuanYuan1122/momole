@@ -77,7 +77,7 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
         mFolderType = getIntent().getStringExtra("folderType");
         mTvDone.setVisibility(View.VISIBLE);
         mTvDone.getPaint().setFakeBoldText(true);
-        ViewUtils.setRightMargins(mTvDone,DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvDone,(int)getResources().getDimension(R.dimen.x36));
         mTvDone.setText(getString(R.string.label_done));
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new BagCollectionTopAdapter();
@@ -86,7 +86,7 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
         mListDocs.getRecyclerView().addItemDecoration(new FolderDecoration());
         mListDocs.setLayoutManager(layoutManager);
-        mListDocs.getRecyclerView().addItemDecoration(new GridItemDecoration(DensityUtil.dip2px(this,10)));
+        mListDocs.getRecyclerView().addItemDecoration(new GridItemDecoration((int)getResources().getDimension(R.dimen.x20)));
         mListDocs.setLoadMoreEnabled(false);
         mTitle.setText("选择文件夹");
 
@@ -141,16 +141,6 @@ public class FolderSelectActivity extends BaseAppCompatActivity implements BagCo
             @Override
             public void onItemLongClick(View view, int position) {
 
-            }
-        });
-        mListDocs.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(!isFinishing()) Glide.with(FolderSelectActivity.this).resumeRequests();
-                } else {
-                    if(!isFinishing())Glide.with(FolderSelectActivity.this).pauseRequests();
-                }
             }
         });
         mListDocs.setPullCallback(new PullCallback() {

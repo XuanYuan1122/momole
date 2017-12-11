@@ -2,19 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
-    android:layout_height="24dp"
+    android:layout_height="@dimen/y48"
     android:background="@drawable/bg_rect_corner_cyan_5">
 
     <TextView
         android:id="@+id/tv_chapter_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="1"
+        android:text=""
         android:gravity="center"
-        android:minWidth="40dp"
-        android:paddingRight="4dp"
-        android:paddingLeft="4dp"
-        android:textSize="@dimen/size_15"
+        android:minWidth="@dimen/x80"
+        android:paddingRight="@dimen/x8"
+        android:paddingLeft="@dimen/x8"
+        android:textSize="@dimen/x30"
         android:textColor="@color/white"
         />
 </LinearLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y100"
+    android:background="@color/white"
+    android:layout_marginBottom="@dimen/y24">
+
+    <ImageView
+        android:id="@+id/iv_group_img"
+        android:layout_width="@dimen/y80"
+        android:layout_height="@dimen/y80"
+        android:layout_marginStart="@dimen/x20"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/tv_group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/x30"
+        android:textStyle="bold"
+        android:textColor="@color/black_1e1e1e"
+        android:layout_toEndOf="@+id/iv_group_img"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginTop="@dimen/y16"/>
+
+    <TextView
+        android:id="@+id/tv_group_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_group_name"
+        android:layout_below="@+id/tv_group_name"
+        android:layout_marginTop="@dimen/y5"
+        android:textColor="@color/gray_929292"
+        android:textSize="@dimen/x24"/>
+
+    <ImageView
+        android:id="@+id/iv_add_group"
+        android:layout_width="@dimen/x170"
+        android:layout_height="@dimen/y74"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/x20"
+        android:src="@drawable/btn_add_department_group"/>
+</RelativeLayout>

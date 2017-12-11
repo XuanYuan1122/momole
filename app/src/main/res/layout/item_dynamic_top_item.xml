@@ -16,8 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/main_cyan"
-        android:layout_marginLeft="@dimen/size_4"
-        android:layout_marginStart="@dimen/size_4"
+        android:layout_marginStart="@dimen/x8"
         android:textSize="@dimen/x24"
         android:layout_gravity="center_vertical"/>
 
@@ -25,8 +24,7 @@
         android:id="@+id/tv_extra"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/size_4"
-        android:layout_marginStart="@dimen/size_4"
+        android:layout_marginStart="@dimen/x8"
         android:textColor="@color/black_1e1e1e"
         android:textSize="@dimen/x24"
         android:layout_gravity="center_vertical"/>

@@ -706,7 +706,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
                     .setListener(new FileDownloadListener() {
                         @Override
                         protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
+                            int i = 0;
                         }
 
                         @Override

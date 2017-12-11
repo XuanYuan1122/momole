@@ -28,6 +28,7 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.activity.SplashActivity;
 
 /**
+ * 推送接收广播
  * Created by yi on 2016/11/28.
  */
 
@@ -40,6 +41,10 @@ public class PushReceiver extends BroadcastReceiver {
         ReceiverInfo info = new ReceiverInfo();
         info.readFromJsonContent(result);
         if(info.type.equals("SCHEMA")){//跳转
+            if(!TextUtils.isEmpty(info.messageType) && "group".equals(info.messageType)){
+                int dotNum = PreferenceUtils.getGroupDotNum(context) + 1;
+                PreferenceUtils.setGroupDotNum(context,dotNum);
+            }
             if (info.showNotify){
                 showNotification(context,info);
             }
@@ -53,6 +58,18 @@ public class PushReceiver extends BroadcastReceiver {
     private void showNotification(Context context, final ReceiverInfo info,String talkId){
         if(!TextUtils.isEmpty(info.messageType)) {
             PreferenceUtils.setMessageDot(context,info.messageType,true);
+            if("neta".equals(info.messageType)){
+                PreferenceUtils.setNetaMsgDotNum(context,PreferenceUtils.getNetaMsgDotNum(context) + 1);
+            }
+            if("system".equals(info.messageType)){
+                PreferenceUtils.setSysMsgDotNum(context,PreferenceUtils.getSysMsgDotNum(context) + 1);
+            }
+            if("at_user".equals(info.messageType)){
+                PreferenceUtils.setAtUserMsgDotNum(context,PreferenceUtils.getAtUserMsgDotNum(context) + 1);
+            }
+            if("normal".equals(info.messageType)){
+                PreferenceUtils.setNormalMsgDotNum(context,PreferenceUtils.getNormalMsgDotNum(context) + 1);
+            }
             RxBus.getInstance().post(new SystemMessageEvent(info.messageType));
         }
         Bitmap btm = BitmapFactory.decodeResource(context.getResources(),

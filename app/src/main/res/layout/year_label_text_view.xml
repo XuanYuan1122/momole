@@ -1,3 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.moemoe.lalala.view.widget.datetimepicker.date.TextViewWithCircularIndicator android:textSize="@dimen/size_22" android:textColor="@color/date_picker_year_selector" android:gravity="center" android:layout_gravity="center" android:id="@id/month_text_view" android:layout_width="fill_parent" android:layout_height="@dimen/size_64"
+<com.moemoe.lalala.view.widget.datetimepicker.date.TextViewWithCircularIndicator
+    android:textSize="@dimen/x44"
+    android:textColor="@color/date_picker_year_selector"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:id="@id/month_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y128"
   xmlns:android="http://schemas.android.com/apk/res/android" />

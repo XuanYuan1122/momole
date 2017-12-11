@@ -84,7 +84,7 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(),2);
         mListDocs.setLayoutManager(layoutManager);
-        mListDocs.getRecyclerView().addItemDecoration(new GridItemDecoration(DensityUtil.dip2px(getContext(),10)));
+        mListDocs.getRecyclerView().addItemDecoration(new GridItemDecoration((int)getResources().getDimension(R.dimen.x20)));
         mListDocs.setLoadMoreEnabled(false);
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override

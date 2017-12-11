@@ -35,4 +35,8 @@ public class CommentListAdapter extends BaseRecyclerViewAdapter<CommentV2Entity,
     public void setShowFavorite(boolean showFavorite){
         this.showFavorite = showFavorite;
     }
+
+    public boolean isShowFavorite() {
+        return showFavorite;
+    }
 }

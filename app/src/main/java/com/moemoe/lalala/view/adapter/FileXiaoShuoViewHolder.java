@@ -42,17 +42,17 @@ public class FileXiaoShuoViewHolder extends ClickableViewHolder {
         select.setSelected(entity.isSelect());
         if(!isBuy){
             Glide.with(itemView.getContext())
-                    .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74),false,true))
+                    .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),(int)context.getResources().getDimension(R.dimen.x112),(int)context.getResources().getDimension(R.dimen.y148),false,true))
                     .error(R.drawable.bg_default_square)
                     .placeholder(R.drawable.bg_default_square)
-                    .bitmapTransform(new CropTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74)))
+                    .bitmapTransform(new CropTransformation(itemView.getContext(),(int)context.getResources().getDimension(R.dimen.x112),(int)context.getResources().getDimension(R.dimen.y148)))
                     .into(cover);
         }else {
             Glide.with(itemView.getContext())
-                    .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74),false,true))
+                    .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),(int)context.getResources().getDimension(R.dimen.x112),(int)context.getResources().getDimension(R.dimen.y148),false,true))
                     .error(R.drawable.bg_default_square)
                     .placeholder(R.drawable.bg_default_square)
-                    .bitmapTransform(new CropTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74)),new BlurTransformation(context,10,4))
+                    .bitmapTransform(new CropTransformation(itemView.getContext(),(int)context.getResources().getDimension(R.dimen.x112),(int)context.getResources().getDimension(R.dimen.y148)),new BlurTransformation(context,10,4))
                     .into(cover);
         }
         title.setText(entity.getTitle());

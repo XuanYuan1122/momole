@@ -20,6 +20,7 @@ import com.moemoe.lalala.model.entity.DeskMateEntity;
 import com.moemoe.lalala.model.entity.ImpressionTrigger;
 import com.moemoe.lalala.model.entity.JuQingDoneEntity;
 import com.moemoe.lalala.model.entity.JuQingMapShowEntity;
+import com.moemoe.lalala.model.entity.JuQingNormalEvent;
 import com.moemoe.lalala.model.entity.JuQingShowEntity;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
@@ -61,6 +62,10 @@ public class JuQingUtil {
     public static void saveJuQingTrigger(JuQingTriggerEntity entity){
         JuQingTriggerEntityDao dao = GreenDaoManager.getInstance().getSession().getJuQingTriggerEntityDao();
         dao.insertOrReplace(entity);
+    }
+
+    public static void saveJuQingNormal(JuQingNormalEvent event){
+        GreenDaoManager.getInstance().getSession().insertOrReplace(event);
     }
 
     /**
@@ -132,6 +137,10 @@ public class JuQingUtil {
         for(JuQingTriggerEntity entity : list){
             JuQingDoneEntity tmp = GreenDaoManager.getInstance().getSession().getJuQingDoneEntityDao().load(entity.getStoryId());
             if(tmp != null) continue;
+            if(entity.getLevel() == 3){
+                JuQingNormalEvent event = GreenDaoManager.getInstance().getSession().getJuQingNormalEventDao().load(entity.getStoryId());
+                if(event != null) continue;
+            }
             JsonArray condition = new Gson().fromJson(entity.getConditionStr(),JsonArray.class);
             if(condition.size() > 0){
                 try {

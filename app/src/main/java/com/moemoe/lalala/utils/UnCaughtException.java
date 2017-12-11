@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
+ * 异常捕捉类
  * Created by Haru on 2016/5/13 0013.
  */
 public class UnCaughtException implements Thread.UncaughtExceptionHandler {

@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,7 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.BadgeActivity;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.NewBagActivity;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
+import com.moemoe.lalala.view.activity.PersonalV2Activity;
 import com.moemoe.lalala.view.activity.TagControlActivity;
 
 import java.util.ArrayList;
@@ -180,14 +179,14 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final PersonDocEntity entity = (PersonDocEntity) getItem(position);
             SearchDocViewHolder searchDocViewHolder = (SearchDocViewHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getImage(), DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80),false,true))
-                    .override(DensityUtil.dip2px(context,80),DensityUtil.dip2px(context,80))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getImage(), (int)context.getResources().getDimension(R.dimen.y160),(int)context.getResources().getDimension(R.dimen.y160),false,true))
+                    .override((int)context.getResources().getDimension(R.dimen.y160),(int)context.getResources().getDimension(R.dimen.y160))
                     .error(R.drawable.bg_cardbg_nopic)
                     .placeholder(R.drawable.bg_cardbg_nopic)
                     .into(searchDocViewHolder.img);
             searchDocViewHolder.title.setText(entity.getTitle());
             searchDocViewHolder.content.setText(entity.getDesc());
-            searchDocViewHolder.time.setText(StringUtils.timeFormate(entity.getCreateTime()));
+            searchDocViewHolder.time.setText(StringUtils.timeFormat(entity.getCreateTime()));
             // 点赞/评论
             searchDocViewHolder.commentNum.setText(StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
             searchDocViewHolder.likeNum.setText(StringUtils.getNumberInLengthLimit(entity.getLikes(), 3));
@@ -196,7 +195,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onNoDoubleClick(View v) {
                     if(!entity.getCreateUserId().equals(PreferenceUtils.getUUid())){
-                        Intent i = new Intent(context, NewPersonalActivity.class);
+                        Intent i = new Intent(context, PersonalV2Activity.class);
                         i.putExtra("uuid",entity.getCreateUserId());
                         context.startActivity(i);
                     }
@@ -216,14 +215,14 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             PersonFollowEntity entity = (PersonFollowEntity) getItem(position);
             final FollowViewHolder followViewHolder = (FollowViewHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getUserIcon(), DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50),false,true))
-                    .override(DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getUserIcon(),(int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100),false,true))
+                    .override((int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100))
                     .bitmapTransform(new CropCircleTransformation(context))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .into(followViewHolder.img);
             followViewHolder.level.setText(String.valueOf(entity.getUserLevel()));
-            int radius1 = DensityUtil.dip2px(context,5);
+            int radius1 = (int)context.getResources().getDimension(R.dimen.y10);
             float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
             RoundRectShape roundRectShape1 = new RoundRectShape(outerR1, null, null);
             ShapeDrawable shapeDrawable1 = new ShapeDrawable();
@@ -267,9 +266,9 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     tv.setText(badgeEntity.getTitle());
                     tv.setText(badgeEntity.getTitle());
                     tv.setBackgroundResource(R.drawable.bg_badge_cover);
-                    int px = DensityUtil.dip2px(context,4);
+                    int px = (int)context.getResources().getDimension(R.dimen.x8);
                     tv.setPadding(px,0,px,0);
-                    int radius2 = DensityUtil.dip2px(context,2);
+                    int radius2 = (int)context.getResources().getDimension(R.dimen.y4);
                     float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
                     RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
                     ShapeDrawable shapeDrawable2 = new ShapeDrawable();
@@ -286,20 +285,20 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 ReplyEntity bean = (ReplyEntity) getItem(position - 3);
                 MsgViewHolder msgViewHolder = (MsgViewHolder) holder;
                 Glide.with(context)
-                        .load(StringUtils.getUrl(context, ApiService.URL_QINIU + bean.getFromIcon().getPath(), DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50),false,false))
+                        .load(StringUtils.getUrl(context, ApiService.URL_QINIU + bean.getFromIcon().getPath(),(int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100),false,false))
                         .placeholder(R.drawable.bg_default_circle)
                         .error(R.drawable.bg_default_circle)
                         .bitmapTransform(new CropCircleTransformation(context))
                         .into(msgViewHolder.ivAvatar);
                 msgViewHolder.tvName.setText(bean.getFromName());
-                msgViewHolder.tvDate.setText(StringUtils.timeFormate(bean.getCreateTime()));
+                msgViewHolder.tvDate.setText(StringUtils.timeFormat(bean.getCreateTime()));
                 msgViewHolder.tvContent.setText(bean.getContent());
             }else {
                 RedMsgViewHolder viewHolder = (RedMsgViewHolder) holder;
                 if(position == 0){
                     Glide.with(context)
                             .load(R.drawable.ic_inform_notice)
-                            .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
+                            .override((int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
                             .into(viewHolder.ivImg);
@@ -312,7 +311,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 }else if(position == 1){
                     Glide.with(context)
                             .load(R.drawable.ic_inform_at)
-                            .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
+                            .override((int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
                             .into(viewHolder.ivImg);
@@ -325,7 +324,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 }else {
                     Glide.with(context)
                             .load(R.drawable.ic_inform_official)
-                            .override(DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50))
+                            .override((int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
                             .into(viewHolder.ivImg);
@@ -356,19 +355,19 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 coinViewHolder.tvType.setTextColor(ContextCompat.getColor(context,R.color.gray_d7d7d7));
             }
             coinViewHolder.tvType.setText(entity.getType());
-            coinViewHolder.tvTime.setText(StringUtils.timeFormate(entity.getCreateTime()));
+            coinViewHolder.tvTime.setText(StringUtils.timeFormat(entity.getCreateTime()));
         }else if(mType == 4){
             final NewCommentEntity commentEntity = (NewCommentEntity) getItem(position);
             final CommentHolder commentHolder = (CommentHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + commentEntity.getFromUserIcon().getPath(), DensityUtil.dip2px(context,35), DensityUtil.dip2px(context,35), false, false))
-                    .override(DensityUtil.dip2px(context,35), DensityUtil.dip2px(context,35))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + commentEntity.getFromUserIcon().getPath(),(int)context.getResources().getDimension(R.dimen.y70),(int)context.getResources().getDimension(R.dimen.y70), false, false))
+                    .override((int)context.getResources().getDimension(R.dimen.y70),(int)context.getResources().getDimension(R.dimen.y70))
                     .placeholder(R.drawable.bg_default_circle)
                     .error(R.drawable.bg_default_circle)
                     .bitmapTransform(new CropCircleTransformation(context))
                     .into(commentHolder.ivCreator);
             commentHolder.tvCreatorName.setText(commentEntity.getFromUserName());
-            commentHolder.tvTime.setText(StringUtils.timeFormate(commentEntity.getCreateTime()));
+            commentHolder.tvTime.setText(StringUtils.timeFormat(commentEntity.getCreateTime()));
             if(commentEntity.isDeleteFlag()){
                 commentHolder.tvContent.setText(context.getString(R.string.label_comment_already));
             }else {
@@ -383,7 +382,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 commentHolder.tvContent.setMovementMethod(LinkMovementMethod.getInstance());
             }
             commentHolder.tvLevel.setText(String.valueOf(commentEntity.getFromUserLevel()));
-            int radius1 = DensityUtil.dip2px(context,5);
+            int radius1 = (int)context.getResources().getDimension(R.dimen.y10);
             float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
             RoundRectShape roundRectShape1 = new RoundRectShape(outerR1, null, null);
             ShapeDrawable shapeDrawable1 = new ShapeDrawable();
@@ -427,9 +426,9 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                     tv.setText(badgeEntity.getTitle());
                     tv.setText(badgeEntity.getTitle());
                     tv.setBackgroundResource(R.drawable.bg_badge_cover);
-                    int px = DensityUtil.dip2px(context,4);
+                    int px = (int)context.getResources().getDimension(R.dimen.x8);
                     tv.setPadding(px,0,px,0);
-                    int radius2 = DensityUtil.dip2px(context,2);
+                    int radius2 = (int)context.getResources().getDimension(R.dimen.y4);
                     float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
                     RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
                     ShapeDrawable shapeDrawable2 = new ShapeDrawable();
@@ -443,7 +442,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onClick(View view) {
                     if (!TextUtils.isEmpty(commentEntity.getFromUserId()) && !commentEntity.getFromUserId().equals(PreferenceUtils.getUUid())) {
-                        Intent i = new Intent(context,NewPersonalActivity.class);
+                        Intent i = new Intent(context,PersonalV2Activity.class);
                         i.putExtra(BaseAppCompatActivity.UUID,commentEntity.getFromUserId());
                         context.startActivity(i);
                     }
@@ -453,8 +452,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             BadgeEntity badgeEntity = (BadgeEntity) getItem(position);
             BadgeHolder badgeHolder = (BadgeHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + badgeEntity.getImg(), DensityUtil.dip2px(context,80), DensityUtil.dip2px(context,80), false, false))
-                    .override(DensityUtil.dip2px(context,80), DensityUtil.dip2px(context,80))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + badgeEntity.getImg(), (int)context.getResources().getDimension(R.dimen.y160), (int)context.getResources().getDimension(R.dimen.y160), false, false))
+                    .override((int)context.getResources().getDimension(R.dimen.y160), (int)context.getResources().getDimension(R.dimen.y160))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .into(badgeHolder.ivImg);
@@ -473,8 +472,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final BadgeEntity badgeEntity = (BadgeEntity) getItem(position);
             BadgeAllHolder badgeHolder = (BadgeAllHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + badgeEntity.getImg(), DensityUtil.dip2px(context,80), DensityUtil.dip2px(context,80), false, false))
-                    .override(DensityUtil.dip2px(context,80), DensityUtil.dip2px(context,80))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + badgeEntity.getImg(), (int)context.getResources().getDimension(R.dimen.y160), (int)context.getResources().getDimension(R.dimen.y160), false, false))
+                    .override((int)context.getResources().getDimension(R.dimen.y160), (int)context.getResources().getDimension(R.dimen.y160))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .into(badgeHolder.ivImg);
@@ -499,8 +498,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             BagDirEntity entity = (BagDirEntity) getItem(position);
             BagFavoriteHolder bagFavoriteHolder = (BagFavoriteHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getCover(), DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,36), DensityUtil.dip2px(context,120), false, true))
-                    .override(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,36), DensityUtil.dip2px(context,120))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getCover(), DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x72), (int)context.getResources().getDimension(R.dimen.y240), false, true))
+                    .override(DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x72), (int)context.getResources().getDimension(R.dimen.y240))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .transform(new GlideRoundTransform(context,5))
@@ -509,7 +508,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             bagFavoriteHolder.ivSelect.setSelected(entity.isSelect());
             bagFavoriteHolder.tvNum.setText(entity.getNumber() + "项");
             bagFavoriteHolder.tvName.setText(entity.getName());
-            bagFavoriteHolder.tvTime.setText(StringUtils.timeFormate(entity.getUpdateTime()) + " 更新");
+            bagFavoriteHolder.tvTime.setText(StringUtils.timeFormat(entity.getUpdateTime()) + " 更新");
         }else if(mType == 8){
             final DocTagEntity entity = (DocTagEntity) getItem(position);
             TagHolder tagHolder = (TagHolder) holder;
@@ -529,7 +528,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }else {
                 msgHolder.watch.setVisibility(View.INVISIBLE);
             }
-            msgHolder.time.setText(StringUtils.timeFormate(entity.getCreateTime()));
+            msgHolder.time.setText(StringUtils.timeFormat(entity.getCreateTime()));
         } else if(mType == 11){
             BagItemViewHolder viewHolder = (BagItemViewHolder) holder;
             final ShowFolderEntity entity = (ShowFolderEntity) getItem(position);
@@ -537,15 +536,15 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if(entity.getCover().startsWith("/")){
                 path = entity.getCover();
             }else {
-                path = StringUtils.getUrl(context, ApiService.URL_QINIU +  entity.getCover(), (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2 ,(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2, false, true);
+                path = StringUtils.getUrl(context, ApiService.URL_QINIU +  entity.getCover(), (DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x60))/2 ,(DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x60))/2, false, true);
             }
             Glide.with(context)
                     .load(path)
-                    .override((DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2,(DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2)
+                    .override((DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x60))/2,(DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x60))/2)
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .centerCrop()
-                    .bitmapTransform(new CropSquareTransformation(context),new RoundedCornersTransformation(context,DensityUtil.dip2px(context,4),0))
+                    .bitmapTransform(new CropSquareTransformation(context),new RoundedCornersTransformation(context,(int)context.getResources().getDimension(R.dimen.y8),0))
                     .into(viewHolder.ivBg);
             if(entity.getType().equals(FolderType.ZH.toString())){
                 viewHolder.tvMark.setText("综合");
@@ -578,7 +577,7 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 @Override
                 public void onNoDoubleClick(View v) {
                     if(!entity.getCreateUser().equals(PreferenceUtils.getUUid())){
-                        Intent i = new Intent(context, NewPersonalActivity.class);
+                        Intent i = new Intent(context, PersonalV2Activity.class);
                         i.putExtra("uuid",entity.getCreateUser());
                         context.startActivity(i);
                     }
@@ -691,9 +690,9 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         RedMsgViewHolder(View itemView) {
             super(itemView);
-            ivImg = (ImageView) itemView.findViewById(R.id.iv_img);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            ivRed = (ImageView) itemView.findViewById(R.id.iv_red_msg);
+            ivImg = itemView.findViewById(R.id.iv_img);
+            tvName = itemView.findViewById(R.id.tv_name);
+            ivRed = itemView.findViewById(R.id.iv_red_msg);
         }
     }
 
@@ -703,10 +702,10 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         CoinViewHolder(View itemView) {
             super(itemView);
-            tvCoin = (TextView) itemView.findViewById(R.id.tv_coin);
-            tvLabel = (TextView) itemView.findViewById(R.id.tv_label);
-            tvType = (TextView) itemView.findViewById(R.id.tv_type);
-            tvTime = (TextView) itemView.findViewById(R.id.tv_time);
+            tvCoin = itemView.findViewById(R.id.tv_coin);
+            tvLabel = itemView.findViewById(R.id.tv_label);
+            tvType = itemView.findViewById(R.id.tv_type);
+            tvTime = itemView.findViewById(R.id.tv_time);
         }
     }
 
@@ -787,15 +786,15 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public BagFavoriteHolder(View itemView) {
             super(itemView);
-            ivBg = (ImageView) itemView.findViewById(R.id.iv_bg);
-            ivSelect = (ImageView) itemView.findViewById(R.id.iv_select);
-            tvNum = (TextView) itemView.findViewById(R.id.tv_num);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvTime = (TextView) itemView.findViewById(R.id.tv_time);
+            ivBg = itemView.findViewById(R.id.iv_bg);
+            ivSelect = itemView.findViewById(R.id.iv_select);
+            tvNum = itemView.findViewById(R.id.tv_num);
+            tvName = itemView.findViewById(R.id.tv_name);
+            tvTime = itemView.findViewById(R.id.tv_time);
 
             ViewGroup.LayoutParams layoutParams = ivBg.getLayoutParams();
-            layoutParams.height = DensityUtil.dip2px(context,120);
-            layoutParams.width = DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,36);
+            layoutParams.height = (int)context.getResources().getDimension(R.dimen.y240);
+            layoutParams.width = DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x72);
             ivBg.setLayoutParams(layoutParams);
         }
     }
@@ -807,8 +806,8 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public TagHolder(View itemView) {
             super(itemView);
-            content = (TextView) itemView.findViewById(R.id.tv_content);
-            del = (ImageView) itemView.findViewById(R.id.iv_del);
+            content = itemView.findViewById(R.id.tv_content);
+            del = itemView.findViewById(R.id.iv_del);
         }
     }
 
@@ -818,9 +817,9 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public SysMsgHolder(View itemView) {
             super(itemView);
-            content = (TextView) itemView.findViewById(R.id.tv_content);
-            watch = (TextView) itemView.findViewById(R.id.tv_watch);
-            time = (TextView) itemView.findViewById(R.id.tv_time);
+            content = itemView.findViewById(R.id.tv_content);
+            watch = itemView.findViewById(R.id.tv_watch);
+            time = itemView.findViewById(R.id.tv_time);
         }
     }
 
@@ -830,14 +829,14 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView title,content,time,likeNum,commentNum,name,address;
         SearchDocViewHolder(View itemView) {
             super(itemView);
-            img = (ImageView) itemView.findViewById(R.id.iv_img);
-            title = (TextView) itemView.findViewById(R.id.tv_title);
-            content = (TextView) itemView.findViewById(R.id.tv_content);
-            time = (TextView) itemView.findViewById(R.id.tv_time);
-            likeNum = (TextView) itemView.findViewById(R.id.tv_post_pants_num);
-            commentNum = (TextView) itemView.findViewById(R.id.tv_post_comment_num);
-            name = (TextView) itemView.findViewById(R.id.tv_create_name);
-            address = (TextView) itemView.findViewById(R.id.tv_address);
+            img = itemView.findViewById(R.id.iv_img);
+            title = itemView.findViewById(R.id.tv_title);
+            content = itemView.findViewById(R.id.tv_content);
+            time = itemView.findViewById(R.id.tv_time);
+            likeNum = itemView.findViewById(R.id.tv_post_pants_num);
+            commentNum = itemView.findViewById(R.id.tv_post_comment_num);
+            name = itemView.findViewById(R.id.tv_create_name);
+            address = itemView.findViewById(R.id.tv_address);
         }
     }
 
@@ -851,22 +850,22 @@ public class PersonListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public BagItemViewHolder(View itemView) {
             super(itemView);
             root = itemView.findViewById(R.id.rl_root);
-            tvMark = (TextView) itemView.findViewById(R.id.tv_mark);
-            tvTime = (TextView) itemView.findViewById(R.id.tv_time);
-            tvName = (TextView) itemView.findViewById(R.id.tv_name);
-            tvBag = (TextView) itemView.findViewById(R.id.tv_bag);
-            tvCreator = (TextView) itemView.findViewById(R.id.tv_create_name);
-            ivBg = (ImageView) itemView.findViewById(R.id.iv_bg);
-            ivSelected = (ImageView) itemView.findViewById(R.id.iv_selected);
+            tvMark = itemView.findViewById(R.id.tv_mark);
+            tvTime = itemView.findViewById(R.id.tv_time);
+            tvName = itemView.findViewById(R.id.tv_name);
+            tvBag = itemView.findViewById(R.id.tv_bag);
+            tvCreator = itemView.findViewById(R.id.tv_create_name);
+            ivBg = itemView.findViewById(R.id.iv_bg);
+            ivSelected = itemView.findViewById(R.id.iv_selected);
             ViewGroup.MarginLayoutParams layoutParams1 = (ViewGroup.MarginLayoutParams) root.getLayoutParams();
-            layoutParams1.height = (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2;
-            layoutParams1.width = (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2;
-            layoutParams1.topMargin = DensityUtil.dip2px(context,10);
-            layoutParams1.rightMargin = DensityUtil.dip2px(context,10);
+            layoutParams1.height = (DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x60))/2;
+            layoutParams1.width = (DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x60))/2;
+            layoutParams1.topMargin = (int)context.getResources().getDimension(R.dimen.y20);
+            layoutParams1.rightMargin = (int)context.getResources().getDimension(R.dimen.x20);
             root.setLayoutParams(layoutParams1);
             ViewGroup.LayoutParams layoutParams = ivBg.getLayoutParams();
-            layoutParams.height = (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2;
-            layoutParams.width = (DensityUtil.getScreenWidth(context) - DensityUtil.dip2px(context,30))/2;
+            layoutParams.height = (DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x60))/2;
+            layoutParams.width = (DensityUtil.getScreenWidth(context) - (int)context.getResources().getDimension(R.dimen.x60))/2;
             ivBg.setLayoutParams(layoutParams);
         }
     }

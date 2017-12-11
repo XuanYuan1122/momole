@@ -9,30 +9,30 @@
         android:id="@+id/tv_function_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="@dimen/x50"
         android:textColor="@color/dark_gray"
-        android:textSize="@dimen/size_14"/>
+        android:textSize="@dimen/x28"/>
 
     <TextView
         android:id="@+id/tv_function_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginRight="25dp"
+        android:layout_marginEnd="@dimen/x50"
         android:textColor="@color/gray_d7d7d7"
-        android:layout_toLeftOf="@+id/iv_indicate_img"
-        android:textSize="@dimen/size_14"
+        android:layout_toStartOf="@+id/iv_indicate_img"
+        android:textSize="@dimen/x28"
         android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/iv_indicate_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="25dp"
+        android:layout_marginEnd="@dimen/x50"
         android:src="@drawable/ic_array_right_gray" />
     
     <View style="@style/HorizontalSep"

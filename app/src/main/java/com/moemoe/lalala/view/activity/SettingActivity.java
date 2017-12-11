@@ -78,15 +78,15 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         mTvTitle.setText(R.string.label_setting);
         mIsLogin = PreferenceUtils.isLogin();
         if(mIsLogin){
-            ViewStub personViewStub = (ViewStub) findViewById(R.id.stub_set_person);
+            ViewStub personViewStub = findViewById(R.id.stub_set_person);
             View personSettingView = personViewStub.inflate();
             initPersonSetting(personSettingView);
         }
-        ViewStub systemViewStub = (ViewStub) findViewById(R.id.stub_set_system);
+        ViewStub systemViewStub = findViewById(R.id.stub_set_system);
         View systemSettingView = systemViewStub.inflate();
         initSyetemSetting(systemSettingView);
 
-        TextView logTv = (TextView) findViewById(R.id.set_log_out);
+        TextView logTv = findViewById(R.id.set_log_out);
         logTv.setOnClickListener(this);
         if(mIsLogin){
             logTv.setText(R.string.label_log_out);
@@ -335,6 +335,18 @@ public class SettingActivity extends BaseAppCompatActivity implements View.OnCli
         try {
             AppSetting.isLoadDone = false;
             RongIM.getInstance().logout();
+            PreferenceUtils.setNormalMsgDotNum(this,0);
+            PreferenceUtils.setAtUserMsgDotNum(this,0);
+            PreferenceUtils.setNetaMsgDotNum(this,0);
+            PreferenceUtils.setSysMsgDotNum(this,0);
+            PreferenceUtils.setRCDotNum(this,0);
+            PreferenceUtils.setGroupDotNum(this,0);
+            PreferenceUtils.setJuQingDotNum(this,0);
+            PreferenceUtils.setMessageDot(this,"system",false);
+            PreferenceUtils.setMessageDot(this,"neta",false);
+            PreferenceUtils.setMessageDot(this,"at_user",false);
+            PreferenceUtils.setMessageDot(this,"normal",false);
+
             JuQingUtil.clearJuQingDone();
             if(isThirdParty(PreferenceUtils.getAuthorInfo().getPlatform())){
                 Platform p = ShareSDK.getPlatform(PreferenceUtils.getAuthorInfo().getPlatform());

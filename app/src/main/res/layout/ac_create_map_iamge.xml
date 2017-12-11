@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_f6f6f6">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
+    <include
+        android:id="@+id/include_toolbar"
+        layout="@layout/neta_bar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y140"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/y24"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_1e1e1e"
+                    android:textSize="@dimen/x30"
+                    android:layout_gravity="center_vertical"
+                    android:text="文字"
+                    android:layout_marginStart="@dimen/x36"/>
+
+                <EditText
+                    android:id="@+id/et_name"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="字数不超过6字"
+                    android:gravity="center_vertical|end"
+                    android:layout_marginEnd="@dimen/x36"
+                    android:textColorHint="@color/gray_d7d7d7"
+                    android:textColor="@color/black_1e1e1e"
+                    android:textSize="@dimen/x30"
+                    android:maxLines="1" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_1_px"
+                android:background="@color/gray_e8e8e8"/>
+
+            <LinearLayout
+                android:id="@+id/ll_address_root"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y140"
+                android:orientation="horizontal"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_1e1e1e"
+                    android:textSize="@dimen/x30"
+                    android:layout_gravity="center_vertical"
+                    android:text="地点"
+                    android:layout_marginStart="@dimen/x36"/>
+
+                <TextView
+                    android:id="@+id/tv_address"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="end"
+                    android:textColor="@color/main_cyan"
+                    android:textSize="@dimen/x30"
+                    android:layout_marginEnd="@dimen/x36" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="角色形象"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y40"
+                android:textSize="@dimen/x24"
+                android:textColor="@color/black_1e1e1e"/>
+
+            <FrameLayout
+                android:id="@+id/rl_select_root"
+                android:layout_width="@dimen/x180"
+                android:layout_height="@dimen/y220"
+                android:layout_marginTop="@dimen/y20"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/shape_rect_border_gray_no_background">
+
+                <ImageView
+                    android:id="@+id/iv_select_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/btn_cardbg_role_add"/>
+            </FrameLayout>
+
+            <ImageView
+                android:layout_width="@dimen/x68"
+                android:layout_height="@dimen/y53"
+                android:layout_gravity="center_horizontal"
+                android:rotation="90"
+                android:layout_marginTop="@dimen/y30"
+                android:src="@drawable/btn_cardbg_role_change"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="预览显示"
+                android:layout_marginTop="@dimen/y30"
+                android:layout_gravity="center_horizontal"
+                android:textSize="@dimen/x24"
+                android:textColor="@color/black_1e1e1e"/>
+
+            <FrameLayout
+                android:layout_width="@dimen/x500"
+                android:layout_height="@dimen/y400"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y16"
+                android:background="@drawable/bg_cardbg_role_background">
+
+                <ImageView
+                    android:id="@+id/iv_map_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

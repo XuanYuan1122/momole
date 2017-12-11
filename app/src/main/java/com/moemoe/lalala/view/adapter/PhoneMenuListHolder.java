@@ -38,7 +38,7 @@ public class PhoneMenuListHolder extends ClickableViewHolder {
                 .load(StringUtils.getUrl(itemView.getContext(),entity.getUserIcon(), (int)itemView.getContext().getResources().getDimension(R.dimen.x64),(int)itemView.getContext().getResources().getDimension(R.dimen.y64),false,true))
                 .error(R.drawable.bg_default_square)
                 .placeholder(R.drawable.bg_default_square)
-                .bitmapTransform(new CropSquareTransformation(itemView.getContext()),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
+                .bitmapTransform(new CropSquareTransformation(itemView.getContext()),new RoundedCornersTransformation(itemView.getContext(),(int)context.getResources().getDimension(R.dimen.y8),0))
                 .into((ImageView) $(R.id.iv_avatar));
 
         setText(R.id.tv_name,entity.getUserName());

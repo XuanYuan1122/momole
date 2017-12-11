@@ -19,6 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -228,6 +229,22 @@ public class PersonaListPresenter implements PersonalListContract.Presenter {
                         @Override
                         public void onSuccess(ArrayList<PersonDocEntity> personDocEntities) {
                             if(view != null) view.onSuccess(personDocEntities,index == 0);
+                        }
+
+                        @Override
+                        public void onFail(int code,String msg) {
+                            if(view != null) view.onFailure(code,msg);
+                        }
+                    });
+        }else if(type == 11){
+            SearchEntity entity = new SearchEntity(index,id);
+            apiService.getSearchKira(entity)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetResultSubscriber<ArrayList<PersonFollowEntity>>() {
+                        @Override
+                        public void onSuccess(ArrayList<PersonFollowEntity> personEntities) {
+                            if(view != null) view.onSuccess(personEntities,index == 1);
                         }
 
                         @Override

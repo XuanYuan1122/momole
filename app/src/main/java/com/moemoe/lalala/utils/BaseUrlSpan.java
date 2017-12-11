@@ -1,7 +1,6 @@
 package com.moemoe.lalala.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
@@ -9,8 +8,6 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.tag.BaseTag;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
-import com.moemoe.lalala.view.activity.WebViewActivity;
 
 /**
  * Created by Haru on 2016/4/27 0027.

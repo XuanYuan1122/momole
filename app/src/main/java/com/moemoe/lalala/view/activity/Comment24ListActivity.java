@@ -64,7 +64,7 @@ public class Comment24ListActivity extends BaseAppCompatActivity implements Comm
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mTitle.setText("热门评论");
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mListDocs.setPadding(DensityUtil.dip2px(this,12),0,DensityUtil.dip2px(this,12),0);
+        mListDocs.setPadding((int)getResources().getDimension(R.dimen.x24),0,(int)getResources().getDimension(R.dimen.x24),0);
         mAdapter = new Comment24Adapter();
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(this));

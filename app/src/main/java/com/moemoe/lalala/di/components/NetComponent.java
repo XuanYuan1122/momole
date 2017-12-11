@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 /**
+ *
  * Created by yi on 2016/11/27.
  */
 @Component(modules = NetModule.class)

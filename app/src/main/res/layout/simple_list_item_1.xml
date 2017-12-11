@@ -18,13 +18,13 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_48"
+    android:layout_height="@dimen/y96"
     android:ellipsize="end"
     android:gravity="center_vertical"
     android:maxLines="2"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:paddingLeft="@dimen/size_12"
-    android:paddingRight="@dimen/size_12"
+    android:paddingLeft="@dimen/x24"
+    android:paddingRight="@dimen/x24"
     android:textAppearance="?android:attr/textAppearanceLarge"
     android:textColor="@color/dark_gray"
-    android:textSize="@dimen/size_16" />
+    android:textSize="@dimen/x32" />

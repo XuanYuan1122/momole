@@ -5,15 +5,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
-import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,23 +17,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.BadgeEntity;
-import com.moemoe.lalala.model.entity.DepartmentEntity;
 import com.moemoe.lalala.model.entity.DocResponse;
-import com.moemoe.lalala.model.entity.DynamicContentEntity;
-import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
-import com.moemoe.lalala.model.entity.NewDynamicEntity;
 import com.moemoe.lalala.model.entity.REPORT;
-import com.moemoe.lalala.model.entity.RetweetEntity;
 import com.moemoe.lalala.model.entity.ShareArticleEntity;
-import com.moemoe.lalala.model.entity.ShareFolderEntity;
 import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
-import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
@@ -45,13 +33,8 @@ import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.CreateForwardActivity;
-import com.moemoe.lalala.view.activity.DynamicActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.activity.JuBaoActivity;
-import com.moemoe.lalala.view.activity.NewDocDetailActivity;
-import com.moemoe.lalala.view.activity.NewFileCommonActivity;
-import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
-import com.moemoe.lalala.view.activity.NewFileXiaoshuoActivity;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
@@ -61,7 +44,6 @@ import com.moemoe.lalala.view.widget.view.NewDocLabelAdapter;
 import java.util.ArrayList;
 
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import jp.wasabeef.glide.transformations.CropTransformation;
 
 /**
  *
@@ -135,7 +117,7 @@ public class OldDocHolder extends ClickableViewHolder {
                 showMenu(entity.getCreateUser().getUserName(),entity.getContent(),entity.getId());
             }
         });
-        setText(R.id.tv_time,StringUtils.timeFormate(entity.getCreateTime()));
+        setText(R.id.tv_time,StringUtils.timeFormat(entity.getCreateTime()));
         //content
         if(!TextUtils.isEmpty(entity.getTitle())){
             setVisible(R.id.tv_title,true);
@@ -176,6 +158,9 @@ public class OldDocHolder extends ClickableViewHolder {
 
         setText(R.id.tv_forward_num, StringUtils.getNumberInLengthLimit(entity.getRetweets(), 3));
         setText(R.id.tv_comment_num, StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
+        TextView tagNum= $(R.id.tv_tag_num);
+        tagNum.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(context,R.drawable.btn_feed_tab),null,null,null);
+        tagNum.setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.x10));
         setText(R.id.tv_tag_num, StringUtils.getNumberInLengthLimit(entity.getLikes(), 3));
         $(R.id.fl_forward_root).setOnClickListener(new NoDoubleClickListener() {
             @Override

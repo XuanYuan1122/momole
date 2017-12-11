@@ -148,11 +148,6 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
             boolean isChange = false;
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(!isFinishing())Glide.with(ClubPostListActivity.this).resumeRequests();
-                }else {
-                    if(!isFinishing())Glide.with(ClubPostListActivity.this).pauseRequests();
-                }
             }
 
             @Override
@@ -233,7 +228,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     }
 
     private void sendBtnIn(){
-        ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvSendDoc,"translationY",mIvSendDoc.getHeight()+ DensityUtil.dip2px(this,10),0).setDuration(300);
+        ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvSendDoc,"translationY",mIvSendDoc.getHeight() + (int)getResources().getDimension(R.dimen.y20),0).setDuration(300);
         sendPostIn.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(sendPostIn);
@@ -241,7 +236,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
     }
 
     private void sendBtnOut(){
-        ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvSendDoc,"translationY",0,mIvSendDoc.getHeight()+DensityUtil.dip2px(this,10)).setDuration(300);
+        ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvSendDoc,"translationY",0,mIvSendDoc.getHeight() + (int)getResources().getDimension(R.dimen.y20)).setDuration(300);
         sendPostOut.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(sendPostOut);
@@ -255,14 +250,12 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
 
     @Override
     protected void onResume() {
-        Glide.with(this).resumeRequests();
         super.onResume();
         mAppBarLayout.addOnOffsetChangedListener(this);
     }
 
     @Override
     protected void onPause() {
-        Glide.with(this).pauseRequests();
         super.onPause();
         mAppBarLayout.removeOnOffsetChangedListener(this);
     }
@@ -301,8 +294,8 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         if(entity.getIcon() != null && !mHasLoadClub){
             // 这个页面的社团头像只会加载一次
             Glide.with(this)
-                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + entity.getIcon().getPath(),DensityUtil.dip2px(this,80),DensityUtil.dip2px(this,80),false,true))
-                    .override(DensityUtil.dip2px(this,80), DensityUtil.dip2px(this,80))
+                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + entity.getIcon().getPath(),(int)getResources().getDimension(R.dimen.y160),(int)getResources().getDimension(R.dimen.y160),false,true))
+                    .override((int)getResources().getDimension(R.dimen.y160), (int)getResources().getDimension(R.dimen.y160))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .transform(new GlideRoundTransform(this,5))
@@ -314,8 +307,8 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         if (entity.getBg() != null) {
             if (!mIsLoadedBackground) {
                 Glide.with(this)
-                        .load(StringUtils.getUrl(this,ApiService.URL_QINIU +  entity.getBg().getPath(), DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,175), false, true))
-                        .override(DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,175))
+                        .load(StringUtils.getUrl(this,ApiService.URL_QINIU +  entity.getBg().getPath(), DensityUtil.getScreenWidth(this), (int)getResources().getDimension(R.dimen.y350), false, true))
+                        .override(DensityUtil.getScreenWidth(this), (int)getResources().getDimension(R.dimen.y350))
                         .placeholder(R.drawable.bg_netaschool)
                         .error(R.drawable.bg_netaschool)
                         .into(mIvClubBackground);
@@ -429,7 +422,7 @@ public class ClubPostListActivity extends BaseAppCompatActivity implements ClubP
         }else {
             mListPost.setEnabled(false);
         }
-        int temp = (int) (DensityUtil.dip2px(this,146) - getResources().getDimension(R.dimen.status_bar_height));
+        int temp = (int) ((int)getResources().getDimension(R.dimen.y292) - getResources().getDimension(R.dimen.status_bar_height));
         float percent = (float)Math.abs(verticalOffset) / temp;
 
         if(percent > 0.4){

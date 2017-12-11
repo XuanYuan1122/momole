@@ -11,7 +11,44 @@ public class RetweetEntity {
     private String createUserName; //创建人
     private String createUserId;//创建人ID
     private String content;
+    private String oldDynamicId;
     private ArrayList<Image> images;
+    private String createTime;
+    private int likes;
+    private int comments;
+    private int rtNum;
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getComments() {
+        return comments;
+    }
+
+    public void setComments(int comments) {
+        this.comments = comments;
+    }
+
+    public int getRtNum() {
+        return rtNum;
+    }
+
+    public void setRtNum(int rtNum) {
+        this.rtNum = rtNum;
+    }
 
     public String getCreateUserName() {
         return createUserName;
@@ -43,5 +80,13 @@ public class RetweetEntity {
 
     public void setImages(ArrayList<Image> images) {
         this.images = images;
+    }
+
+    public String getOldDynamicId() {
+        return oldDynamicId;
+    }
+
+    public void setOldDynamicId(String oldDynamicId) {
+        this.oldDynamicId = oldDynamicId;
     }
 }

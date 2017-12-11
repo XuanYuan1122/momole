@@ -169,7 +169,7 @@ public class DownloadListHolder extends ClickableViewHolder {
                     .into(mImg);
         } else {
             Glide.with(context)
-                    .load(StringUtils.getUrl(context,param.getUrl(), DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50),false,true))
+                    .load(StringUtils.getUrl(context,param.getUrl(), (int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100),false,true))
                     .error(R.mipmap.ic_file_download)
                     .placeholder(R.mipmap.ic_file_download)
                     .into(mImg);

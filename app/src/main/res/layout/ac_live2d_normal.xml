@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/iv_sound_load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y24"
+        android:layout_marginEnd="@dimen/x24"
+        android:visibility="gone"
+        android:src="@drawable/ic_gal_voiceloading"/>
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="@dimen/x200"
+        android:layout_height="@dimen/y100"
+        android:gravity="center"
+        android:textSize="@dimen/x36"
+        android:textColor="@color/white"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/y24"
+        android:layout_marginEnd="@dimen/x24"
+        android:text="我要评分"
+        android:background="@drawable/btn_live2d_action"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_root_1"
+        android:layout_width="@dimen/x200"
+        android:layout_height="@dimen/y100"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginBottom="@dimen/y24"
+        android:layout_gravity="bottom"
+        android:background="@drawable/btn_live2d_action">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true">
+
+            <ImageView
+                android:layout_width="@dimen/x22"
+                android:layout_height="@dimen/y19"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_live2dshop_back"/>
+
+            <TextView
+                android:id="@+id/tv_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x36"
+                android:layout_marginStart="@dimen/x12"
+                android:text="返回" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_bizhi"
+        android:layout_width="@dimen/x228"
+        android:layout_height="@dimen/y100"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x30"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/y24"
+        android:layout_marginEnd="@dimen/x24"
+        android:text="设为系统壁纸"
+        android:gravity="center"
+        android:background="@drawable/btn_live2d_alarm"/>
+
+    <ImageView
+        android:id="@+id/iv_download"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/bg_gal_loading_2"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/ll_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x30"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/y20"/>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/download_progress"
+            android:background="@drawable/shape_white_bg_y18"
+            android:progress="100"
+            android:layout_width="@dimen/x562"
+            android:layout_height="@dimen/y36"
+            android:padding="@dimen/y4"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+</FrameLayout>

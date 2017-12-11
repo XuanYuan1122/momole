@@ -131,6 +131,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private String mBgCover = "";
     private int coverSize = -1;
     private boolean mIsCover = true;
+    private String mDepartmentId;
 
     @Override
     protected int getLayoutId() {
@@ -154,6 +155,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         String mTagNameDef = i.getStringExtra(TYPE_TAG_NAME_DEFAULT);
         mFromSchema = i.getStringExtra("from_schema");
         mFromName = i.getStringExtra("from_name");
+        mDepartmentId = i.getStringExtra("departmentId");
         mDocType = i.getIntExtra(TYPE_QIU_MING_SHAN,0);
         mDoc = i.getParcelableExtra("doc");
         mIvAddBag.setVisibility(View.VISIBLE);
@@ -163,7 +165,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mHideList = new ArrayList<>();
         mUserIds = new ArrayList<>();
         mTvMenuLeft.setVisibility(View.VISIBLE);
-        ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
+        ViewUtils.setLeftMargins(mTvMenuLeft,(int)getResources().getDimension(R.dimen.x36));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvMenuLeft.setText(getString(R.string.label_give_up));
         mTvTitle.setVisibility(View.VISIBLE);
@@ -179,12 +181,12 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         }
         mRichEt.setTop();
         mTvMenuRight.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mTvMenuRight,DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvMenuRight,(int)getResources().getDimension(R.dimen.x36));
         mTvMenuRight.setText(getString(R.string.label_menu_publish_doc));
         mTvMenuRight.setTextColor(Color.WHITE);
         mTvMenuRight.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
-        mTvMenuRight.setWidth(DensityUtil.dip2px(this,44));
-        mTvMenuRight.setHeight(DensityUtil.dip2px(this,24));
+        mTvMenuRight.setWidth((int)getResources().getDimension(R.dimen.x88));
+        mTvMenuRight.setHeight((int)getResources().getDimension(R.dimen.y48));
         mTvMenuRight.setBackgroundResource(R.drawable.shape_rect_border_main_background_2);
         initPopupMenus();
     }
@@ -372,6 +374,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             createDialog();
             mTvMenuRight.setEnabled(false);
             DocPut mDocEntity = new DocPut();
+            mDocEntity.departmentId = mDepartmentId;
             mDocEntity.docType = mFromName;
             mDocEntity.docTypeSchema = mFromSchema;
             mDocEntity.bagFolderId = mFolderId;

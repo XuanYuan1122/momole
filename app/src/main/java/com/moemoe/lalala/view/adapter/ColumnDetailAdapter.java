@@ -134,8 +134,8 @@ public class ColumnDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 linearVViewHolder.mTvTag.setVisibility(View.GONE);
             }
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + doc.getIcon().getPath(), DensityUtil.dip2px(context,90),DensityUtil.dip2px(context,90),false,true))
-                    .override(DensityUtil.dip2px(context,90), DensityUtil.dip2px(context,90))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + doc.getIcon().getPath(), (int)context.getResources().getDimension(R.dimen.y180),(int)context.getResources().getDimension(R.dimen.y180),false,true))
+                    .override((int)context.getResources().getDimension(R.dimen.y180), (int)context.getResources().getDimension(R.dimen.y180))
                     .centerCrop()
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
@@ -165,7 +165,7 @@ public class ColumnDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 linearVViewHolder.mIvVideo.setVisibility(View.GONE);
             }
             linearVViewHolder.mTvTitle.setText(doc.getTitle());
-            linearVViewHolder.mTvTime.setText(StringUtils.timeFormate(doc.getUpdateTime()));
+            linearVViewHolder.mTvTime.setText(StringUtils.timeFormat(doc.getUpdateTime()));
             if (linearVViewHolder.mTvName != null){
                 linearVViewHolder.mTvName.setText(doc.getUserName());
             }

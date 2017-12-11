@@ -57,8 +57,8 @@ public class MusicDetailActivity extends BaseAppCompatActivity implements IPlayB
         }
         mTvName.setText(mMusicInfo.getDisplayName());
         Glide.with(MusicDetailActivity.this)
-                .load(StringUtils.getUrl(MusicDetailActivity.this, ApiService.URL_QINIU + mMusicInfo.getCoverPath(), DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,273), false, false))
-                .override(DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,273))
+                .load(StringUtils.getUrl(MusicDetailActivity.this, ApiService.URL_QINIU + mMusicInfo.getCoverPath(), DensityUtil.getScreenWidth(this), (int)getResources().getDimension(R.dimen.y546), false, false))
+                .override(DensityUtil.getScreenWidth(this), (int)getResources().getDimension(R.dimen.y546))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
                 .into(mIvBg);

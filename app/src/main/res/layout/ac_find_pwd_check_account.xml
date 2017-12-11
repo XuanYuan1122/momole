@@ -18,13 +18,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="@dimen/x24">
 
 
         <LinearLayout
             android:id="@+id/ll_tab_root"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/y96"
             android:background="@color/main_cyan"
             android:orientation="horizontal"
             android:visibility="gone" >
@@ -38,12 +38,12 @@
                 android:gravity="center"
                 android:text="@string/label_dlg_find_pwd_by_phone"
                 android:textColor="#ffffff"
-                android:textSize="14dp" />
+                android:textSize="@dimen/x28" />
 
             <View
                 style="@style/VerticalSep"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginBottom="@dimen/y12"
+                android:layout_marginTop="@dimen/y12"
                 android:background="#ffffff"
                 android:visibility="gone" />
 
@@ -56,14 +56,14 @@
                 android:gravity="center"
                 android:text="@string/label_dlg_find_pwd_by_email"
                 android:textColor="#ffffff"
-                android:textSize="14dp" />
+                android:textSize="@dimen/x28" />
         </LinearLayout>
 
         <AutoCompleteTextView
             android:id="@+id/edt_account_name"
             style="@style/EdtLoginInput"
             android:layout_below="@+id/ll_tab_root"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/y64"
             android:hint="@string/label_hint_input_email"
             android:inputType="textEmailAddress"
             android:visibility="gone">
@@ -75,14 +75,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/label_label_find_pwd_info"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp" />
+            android:layout_marginStart="@dimen/x24"
+            android:layout_marginEnd="@dimen/x24" />
 
         <LinearLayout
             android:id="@+id/ll_phone_number_root"
             style="@style/VgOneLine.White"
             android:layout_below="@+id/tv_find_pwd_info"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/y64"
             android:visibility="visible" >
 
             <TextView
@@ -90,16 +90,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:padding="6dp"
+                android:padding="@dimen/x12"
                 android:text="@string/label_country_china"
                 android:textColor="@color/main_cyan"
-                android:textSize="14dp"
+                android:textSize="@dimen/x28"
                 android:visibility="visible" />
 
             <View
                 style="@style/VerticalSep"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginBottom="@dimen/y12"
+                android:layout_marginTop="@dimen/y12"
                 android:visibility="visible" />
 
             <EditText
@@ -109,7 +109,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="0dp"
                 android:layout_marginRight="0dp"
-                android:paddingLeft="6dp"
+                android:paddingLeft="@dimen/x12"
                 android:background="@null"
                 android:hint="@string/label_hint_input_phone_number"
                 android:inputType="phone" />
@@ -117,15 +117,15 @@
 
         <View
             style="@style/HorizontalSep"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginStart="@dimen/x24"
+            android:layout_marginEnd="@dimen/x24"
             android:layout_below="@+id/ll_phone_number_root"/>
 
         <TextView
             android:id="@+id/tv_to_next"
             style="@style/BtnCyanOneLine"
             android:layout_below="@+id/ll_phone_number_root"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/y24"
             android:text="@string/label_next" />
     </RelativeLayout>
 

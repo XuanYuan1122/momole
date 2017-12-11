@@ -78,10 +78,10 @@ public class ReadPageFactory {
         mHeight = height;
         mFontSize = fontSize;
         mLineSpace = mFontSize / 5 * 2;
-        mNumFontSize = DensityUtil.dip2px(context,10);
-        marginHeight = DensityUtil.dip2px(context,20);
-        marginWidth = DensityUtil.dip2px(context,16);
-        mVisibleHeight = mHeight - marginHeight * 2 - mNumFontSize - DensityUtil.dip2px(context,8);
+        mNumFontSize = (int)context.getResources().getDimension(R.dimen.x20);
+        marginHeight = (int)context.getResources().getDimension(R.dimen.y40);
+        marginWidth = (int)context.getResources().getDimension(R.dimen.x32);
+        mVisibleHeight = mHeight - marginHeight * 2 - mNumFontSize - (int)context.getResources().getDimension(R.dimen.y16);
         mVisibleWidth = mWidth - marginWidth * 2;
         mPageLineCount = mVisibleHeight / (mFontSize + mLineSpace);
         rectF = new Rect(0,0,mWidth,mHeight);
@@ -191,15 +191,15 @@ public class ReadPageFactory {
             }
             // 绘制提示内容
             if (batteryBitmap != null) {
-                canvas.drawBitmap(batteryBitmap, DensityUtil.dip2px(mContext,12),
-                        mHeight - marginHeight - DensityUtil.dip2px(mContext,10), mTitlePaint);
+                canvas.drawBitmap(batteryBitmap, (int)mContext.getResources().getDimension(R.dimen.x24),
+                        mHeight - marginHeight -(int)mContext.getResources().getDimension(R.dimen.y20), mTitlePaint);
             }
 
             String mTime = dateFormat.format(new Date());
-            canvas.drawText(mTime, DensityUtil.dip2px(mContext,46), mHeight - marginHeight, mTitlePaint);
+            canvas.drawText(mTime, (int)mContext.getResources().getDimension(R.dimen.x92), mHeight - marginHeight, mTitlePaint);
 
             float percent = (float) curEndPos / mbBufferLen * 100;
-            canvas.drawText(decimalFormat.format(percent) + "%", mWidth - percentLen - DensityUtil.dip2px(mContext,12),
+            canvas.drawText(decimalFormat.format(percent) + "%", mWidth - percentLen - (int)mContext.getResources().getDimension(R.dimen.x24),
                     mHeight - marginHeight, mTitlePaint);
 
             PreferenceUtils.saveReadProgress(mContext,bookId,currentChapter,curBeginPos,curEndPos);
@@ -568,8 +568,8 @@ public class ReadPageFactory {
                         R.drawable.seekbar_battery_bg : R.drawable.seekbar_battery_night_bg));
         batteryView.setProgress(battery);
         batteryView.setDrawingCacheEnabled(true);
-        batteryView.measure(View.MeasureSpec.makeMeasureSpec(DensityUtil.dip2px(mContext,26), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(DensityUtil.dip2px(mContext,12), View.MeasureSpec.EXACTLY));
+        batteryView.measure(View.MeasureSpec.makeMeasureSpec((int)mContext.getResources().getDimension(R.dimen.x52), View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec((int)mContext.getResources().getDimension(R.dimen.y24), View.MeasureSpec.EXACTLY));
         batteryView.layout(0, 0, batteryView.getMeasuredWidth(), batteryView.getMeasuredHeight());
         batteryView.buildDrawingCache();
         //batteryBitmap = batteryView.getDrawingCache();

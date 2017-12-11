@@ -6,6 +6,7 @@ import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.Comment24Entity;
+import com.moemoe.lalala.model.entity.DiscoverEntity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
@@ -200,5 +201,59 @@ public class FeedPresenter implements FeedContract.Presenter {
                         if(view!=null)view.onFailure(code, msg);
                     }
                 });
+    }
+
+    @Override
+    public void likeDynamic(String id, final boolean isLike, final int position) {
+        apiService.likeDynamic(id,!isLike)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view!=null)view.onLikeDynamicSuccess(!isLike,position);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view!=null)view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadDiscoverList(String type,long minIdx, long maxIdx, final boolean isPull) {
+        if("random".equals(type)){
+            apiService.loadDiscoverList(minIdx, maxIdx)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetResultSubscriber<ArrayList<DiscoverEntity>>() {
+                        @Override
+                        public void onSuccess(ArrayList<DiscoverEntity> entities) {
+                            if(view!=null)view.onLoadDiscoverListSuccess(entities,isPull);
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+                            if(view!=null)view.onFailure(code, msg);
+                        }
+                    });
+        }else if("follow".equals(type)){
+            apiService.loadFollowList(minIdx)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetResultSubscriber<ArrayList<DiscoverEntity>>() {
+                        @Override
+                        public void onSuccess(ArrayList<DiscoverEntity> entities) {
+                            if(view!=null)view.onLoadDiscoverListSuccess(entities,isPull);
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+                            if(view!=null)view.onFailure(code, msg);
+                        }
+                    });
+        }
+
     }
 }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_phone">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/y154"
+        android:layout_marginLeft="@dimen/x58"
+        android:layout_marginStart="@dimen/x58"
+        android:layout_marginEnd="@dimen/x58"
+        android:layout_marginRight="@dimen/x58"
+        android:layout_marginBottom="@dimen/y36">
+
+        <include
+            android:id="@+id/layout_phone_main"
+            layout="@layout/frag_phone_main"/>
+
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/neta_bar"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:id="@+id/phone_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/app_bar"
+            android:visibility="gone">
+
+        </FrameLayout>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_back_2"
+        android:layout_width="@dimen/x164"
+        android:layout_height="@dimen/y164"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/x20"
+        android:layout_marginStart="@dimen/x20"
+        android:layout_marginBottom="@dimen/y20"
+        android:src="@drawable/btn_phone_exit"/>
+
+    <include layout="@layout/float_send_layout"/>
+</RelativeLayout>

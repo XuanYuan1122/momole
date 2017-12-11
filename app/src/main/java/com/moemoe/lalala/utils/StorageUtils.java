@@ -9,6 +9,7 @@ import com.orhanobut.logger.Logger;
 import java.io.File;
 
 /**
+ * 文件夹工具
  * Created by yi on 2016/11/28.
  */
 
@@ -65,6 +66,10 @@ public class StorageUtils {
     private static String sDirEvent;
 
     private static String sDirDownload;
+
+    private static String sDirLive2d;
+
+    private static String sDirSplash;
     /**
      *
      * @param context
@@ -93,6 +98,9 @@ public class StorageUtils {
 
         sDirDownload = sDirRoot + "download/";
 
+        sDirLive2d = sDirRoot + ".live2d/";
+        sDirSplash = sDirRoot + ".splash/";
+
         boolean check = checkDir(sDirRoot);
         check &= checkDir(sDirIconImage);
         check &= checkDir(sDirGalleryImage);
@@ -103,6 +111,7 @@ public class StorageUtils {
         check &= checkDir(sDirMap);
         check &= checkDir(sDirEvent);
         check &= checkDir(sDirDownload);
+        check &= checkDir(sDirLive2d);
         //check &= checkDir(sDirLog);
 
         Logger.d("initialStorageDir = " + check + ", paths = " + sDirRoot + "; " + sDirTemp);
@@ -226,6 +235,10 @@ public class StorageUtils {
         return sDirRoot;
     }
 
+    public static String getSplashRootPath(){
+        return sDirSplash;
+    }
+
     public static String getLogRoot(){ return sDirLog;}
 
     public static File getLogFile(String name) {
@@ -283,6 +296,8 @@ public class StorageUtils {
     public static String getMusicPath(String name){
         return sDirMusic + name;
     }
+
+    public static String getLive2dRootPath(){return sDirLive2d;}
 
     public static String shareTemImg(String name){
         return sDirTemp + name;

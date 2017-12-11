@@ -34,7 +34,7 @@ public class NewDocLabelAdapter extends BaseAdapter {
     private boolean mIsNeedAdd;
     private boolean mNeedShow;
 
-    private int[] mBackGround = { R.drawable.shape_rect_label_cyan, R.drawable.shape_rect_label_yellow, R.drawable.shape_rect_label_orange, R.drawable.shape_rect_label_pink, R.drawable.shape_rect_border_green_5, R.drawable.shape_rect_label_purple, R.drawable.shape_rect_label_tab_blue};
+    private int[] mBackGround = { R.drawable.shape_rect_label_cyan, R.drawable.shape_rect_label_yellow, R.drawable.shape_rect_label_orange, R.drawable.shape_rect_label_pink, R.drawable.shape_rect_border_green_y10, R.drawable.shape_rect_label_purple, R.drawable.shape_rect_label_tab_blue};
 
     public NewDocLabelAdapter(Context context, boolean needShow){
         mContext = context;
@@ -103,10 +103,10 @@ public class NewDocLabelAdapter extends BaseAdapter {
             if (type == TYPE_LABEL) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_doc_label, viewGroup,false);
                 holder = new ViewHolder();
-                holder.labelRoot = (LinearLayout) convertView.findViewById(R.id.ll_label_root);
-                holder.labelContent = (TextView) convertView.findViewById(R.id.tv_item_label_content);
-                holder.labelFollowNum = (TextView) convertView.findViewById(R.id.tv_item_label_num);
-                holder.labelEt = (EditText) convertView.findViewById(R.id.et_item_label_add);
+                holder.labelRoot = convertView.findViewById(R.id.ll_label_root);
+                holder.labelContent = convertView.findViewById(R.id.tv_item_label_content);
+                holder.labelFollowNum = convertView.findViewById(R.id.tv_item_label_num);
+                holder.labelEt = convertView.findViewById(R.id.et_item_label_add);
                 convertView.setTag(holder);
             } else if (type == TYPE_ADD) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_doc_label_add, viewGroup,false);

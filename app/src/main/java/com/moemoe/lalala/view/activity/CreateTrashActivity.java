@@ -126,7 +126,7 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
         mTvTitle.setText(R.string.label_create_trash);
         mTvSend.setVisibility(View.VISIBLE);
         mTvSend.getPaint().setFakeBoldText(true);
-        ViewUtils.setRightMargins(mTvSend,DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvSend,(int)getResources().getDimension(R.dimen.x36));
         mTvSend.setText(R.string.label_done);
         mDocLabel.setContentAndNumList(true,mTags);
         mContentRemain = CONTENT_LIMIT;
@@ -337,7 +337,7 @@ public class CreateTrashActivity extends BaseAppCompatActivity implements Create
                 mIconPath = photoPaths.get(0);
                 Glide.with(CreateTrashActivity.this)
                         .load(mIconPath)
-                        .override(DensityUtil.dip2px(CreateTrashActivity.this,115), DensityUtil.dip2px(CreateTrashActivity.this,115))
+                        .override((int)getResources().getDimension(R.dimen.y230),(int)getResources().getDimension(R.dimen.y230))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
                         .centerCrop()

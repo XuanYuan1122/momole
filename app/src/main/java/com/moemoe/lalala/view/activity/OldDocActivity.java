@@ -81,13 +81,6 @@ public class OldDocActivity extends BaseAppCompatActivity implements OldDocContr
             if(!TextUtils.isEmpty(roomId)){
                 mRoomId = roomId;
             }
-//            String title = i.getStringExtra(EXTRA_NAME);
-//            if(!TextUtils.isEmpty(title)){
-//                mTitle.setText(title);
-//                mTitle.setVisibility(View.VISIBLE);
-//            }else {
-//                mTitle.setVisibility(View.GONE);
-//            }
         }
         mTitle.setText("论坛");
         mTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
@@ -143,22 +136,6 @@ public class OldDocActivity extends BaseAppCompatActivity implements OldDocContr
                 startActivity(intent);
             }
         });
-        mListDocs.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(!isFinishing()) Glide.with(OldDocActivity.this).resumeRequests();
-                } else {
-                    if(!isFinishing()) Glide.with(OldDocActivity.this).pauseRequests();
-                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
         mListDocs.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
@@ -204,13 +181,11 @@ public class OldDocActivity extends BaseAppCompatActivity implements OldDocContr
 
     @Override
     protected void onPause() {
-        Glide.with(this).pauseRequests();
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        Glide.with(this).resumeRequests();
         super.onResume();
     }
 

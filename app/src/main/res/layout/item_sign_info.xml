@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="33dp"
-    android:layout_height="33dp"
+    android:layout_width="@dimen/y66"
+    android:layout_height="@dimen/y66"
     android:id="@+id/ll_root"
     android:background="@color/white">
 
@@ -11,10 +11,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/green_93d856"
-            android:layout_marginTop="@dimen/size_7"
+            android:layout_marginTop="@dimen/y14"
             android:layout_gravity="center"
             android:textStyle="bold"
-            android:textSize="6dp"
+            android:textSize="@dimen/x12"
             android:text="@string/label_sign_info_score"/>
 
         <TextView
@@ -22,9 +22,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/size_3"
+            android:layout_marginTop="@dimen/y6"
             android:textColor="@color/green_93d856"
             android:textStyle="bold"
-            android:textSize="6dp"
+            android:textSize="@dimen/x12"
             android:text="@string/label_sign_info_coin"/>
 </LinearLayout>

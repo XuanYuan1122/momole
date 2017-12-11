@@ -8,11 +8,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/size_15"
+        android:textSize="@dimen/x30"
         android:textColor="@color/black"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/size_15"
-        android:layout_marginStart="@dimen/size_15"
+        android:layout_marginStart="@dimen/x30"
         android:text=""
         android:id="@+id/tv_name_label" />
 
@@ -22,10 +21,9 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginRight="@dimen/size_15"
-        android:layout_marginEnd="@dimen/size_15"
+        android:layout_marginEnd="@dimen/x30"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textSize="@dimen/size_15"
+        android:textSize="@dimen/x30"
         android:gravity="end" />
 </LinearLayout>

@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.DeskMateEntity;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
+import com.moemoe.lalala.view.activity.PersonalV2Activity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -278,9 +278,9 @@ public class ViewUtils {
                 tv.setText(badgeEntity.getTitle());
                 tv.setText(badgeEntity.getTitle());
                 tv.setBackgroundResource(R.drawable.bg_badge_cover);
-                int px = DensityUtil.dip2px(context,4);
+                int px = (int)context.getResources().getDimension(R.dimen.x8);
                 tv.setPadding(px,0,px,0);
-                int radius2 = DensityUtil.dip2px(context,2);
+                int radius2 = (int)context.getResources().getDimension(R.dimen.y4);
                 float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
                 RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
                 ShapeDrawable shapeDrawable2 = new ShapeDrawable();
@@ -294,7 +294,7 @@ public class ViewUtils {
 
     public static void toPersonal(Context context,String uuid){
         if(!uuid.equals(PreferenceUtils.getUUid())){
-            Intent i = new Intent(context, NewPersonalActivity.class);
+            Intent i = new Intent(context, PersonalV2Activity.class);
             i.putExtra("uuid",uuid);
             context.startActivity(i);
         }
@@ -333,6 +333,7 @@ public class ViewUtils {
                 }
             }else {
                 ivRole.setImageResource(R.drawable.btn_len_sleep);
+                tv.setText("现在暂时没有需要跑腿或代练游戏的任务，你要做什么都和我没关系……要去隔壁社团看看吗？");
             }
         }else {
             if(PreferenceUtils.isLogin()){
@@ -374,6 +375,8 @@ public class ViewUtils {
                                 ivRole.setImageResource(R.drawable.btn_mei_kimono);
                             }else if(mate.getClothesId().equals("88d05ace-aefb-4b5a-8997-929294232805")){
                                 ivRole.setImageResource(R.drawable.btn_mei_halloween);
+                            }else if(mate.getClothesId().equals("0e8993f7-dcfd-4568-867e-bd8f64e38dd8")){
+                                ivRole.setImageResource(R.drawable.btn_mei_swim);
                             }else {
                                 ivRole.setImageResource(R.drawable.btn_mei_normal);
                             }
@@ -386,6 +389,8 @@ public class ViewUtils {
                                 ivRole.setImageResource(R.drawable.btn_sari_kimono);
                             }else if(mate.getClothesId().equals("e0e88782-7615-4222-919e-d8ad14d2a8f4")){
                                 ivRole.setImageResource(R.drawable.btn_sari_halloween);
+                            }else if(mate.getClothesId().equals("1e7245fc-a05d-498f-aa75-af2533aa35df")){
+                                ivRole.setImageResource(R.drawable.btn_sari_swim);
                             }else {
                                 ivRole.setImageResource(R.drawable.btn_sari_normal);
                             }
@@ -398,6 +403,7 @@ public class ViewUtils {
                 }
             }else {
                 ivRole.setImageResource(R.drawable.btn_len_normal);
+                tv.setText("现在暂时没有需要跑腿或代练游戏的任务，你要做什么都和我没关系……要去隔壁社团看看吗？");
             }
         }
     }

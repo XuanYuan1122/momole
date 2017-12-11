@@ -28,9 +28,9 @@
         <TextView
             android:id="@+id/tv_pingbi"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/y80"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_14"
+            android:textSize="@dimen/x28"
             android:gravity="center"
             android:background="@color/alph_80"
             android:text="你已屏蔽了该用户"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_left"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:layout_marginBottom="@dimen/size_10"
             android:visibility="gone"/>
         

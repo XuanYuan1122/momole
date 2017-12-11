@@ -21,30 +21,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="@dimen/size_9"
+        android:textSize="@dimen/x18"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/size_6"
-        android:layout_marginStart="@dimen/size_5"
-        android:layout_marginLeft="@dimen/size_5"/>
+        android:layout_marginBottom="@dimen/y12"
+        android:layout_marginStart="@dimen/x10" />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="@dimen/size_10"
+        android:textSize="@dimen/x20"
         android:layout_above="@+id/tv_size"
-        android:layout_marginLeft="@dimen/size_5"
-        android:layout_marginStart="@dimen/size_5"/>
+        android:layout_marginStart="@dimen/x10"/>
 
     <ImageView
         android:id="@+id/iv_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_3"
-        android:layout_marginLeft="@dimen/size_3"
-        android:layout_marginStart="@dimen/size_3"
-        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/y6"
+        android:layout_marginStart="@dimen/x6"
         android:layout_alignParentEnd="true"
         android:visibility="gone"
         android:src="@drawable/btn_select_normal"/>

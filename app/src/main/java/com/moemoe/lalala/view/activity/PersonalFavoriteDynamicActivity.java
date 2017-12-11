@@ -9,17 +9,19 @@ import android.widget.TextView;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFeedComponent;
-import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.FeedModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.Comment24Entity;
+import com.moemoe.lalala.model.entity.DiscoverEntity;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
+import com.moemoe.lalala.model.entity.SimpleUserEntity;
 import com.moemoe.lalala.model.entity.XianChongEntity;
 import com.moemoe.lalala.presenter.FeedContract;
 import com.moemoe.lalala.presenter.FeedPresenter;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.FeedAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -66,7 +68,6 @@ public class PersonalFavoriteDynamicActivity extends BaseAppCompatActivity imple
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new LinearLayoutManager(PersonalFavoriteDynamicActivity.this));
         mListDocs.setLoadMoreEnabled(false);
-
         mListDocs.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
@@ -128,6 +129,10 @@ public class PersonalFavoriteDynamicActivity extends BaseAppCompatActivity imple
         super.onDestroy();
     }
 
+    public void likeDynamic(String id,boolean isLie,int position){
+        mPresenter.likeDynamic(id, isLie, position);
+    }
+
     @Override
     public void onLoadListSuccess(ArrayList<NewDynamicEntity> resList, boolean isPull) {
         isLoading = false;
@@ -161,6 +166,33 @@ public class PersonalFavoriteDynamicActivity extends BaseAppCompatActivity imple
 
     @Override
     public void onLoadCommentSuccess(Comment24Entity entity) {
+
+    }
+
+    @Override
+    public void onLikeDynamicSuccess(boolean isLike, int position) {
+        mAdapter.getList().get(position).setThumb(isLike);
+        if(isLike){
+            SimpleUserEntity userEntity = new SimpleUserEntity();
+            userEntity.setUserName(PreferenceUtils.getAuthorInfo().getUserName());
+            userEntity.setUserId(PreferenceUtils.getUUid());
+            userEntity.setUserIcon(PreferenceUtils.getAuthorInfo().getHeadPath());
+            mAdapter.getList().get(position).getThumbUsers().add(0,userEntity);
+            mAdapter.getList().get(position).setThumbs(mAdapter.getList().get(position).getThumbs() + 1);
+        }else {
+            for(SimpleUserEntity userEntity : mAdapter.getList().get(position).getThumbUsers()){
+                if(userEntity.getUserId().equals(PreferenceUtils.getUUid())){
+                    mAdapter.getList().get(position).getThumbUsers().remove(userEntity);
+                    break;
+                }
+            }
+            mAdapter.getList().get(position).setThumbs(mAdapter.getList().get(position).getThumbs() - 1);
+        }
+        mAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onLoadDiscoverListSuccess(ArrayList<DiscoverEntity> entities, boolean isPull) {
 
     }
 }

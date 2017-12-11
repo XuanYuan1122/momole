@@ -149,16 +149,6 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
                 return false;
             }
         });
-        mPastPv.getRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(!isFinishing())Glide.with(ColumnDetailActivity.this).resumeRequests();
-                }else {
-                    if(!isFinishing())Glide.with(ColumnDetailActivity.this).pauseRequests();
-                }
-            }
-        });
         mPresenter.requestPastFresh(mBarId,-1);
     }
 
@@ -175,13 +165,11 @@ public class ColumnDetailActivity extends BaseAppCompatActivity implements Colum
 
     @Override
     protected void onResume() {
-        Glide.with(this).resumeRequests();
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Glide.with(this).pauseRequests();
         super.onPause();
     }
 

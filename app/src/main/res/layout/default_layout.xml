@@ -9,10 +9,10 @@
         android:id="@+id/tv_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="@dimen/y140"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/size_12"
+        android:textSize="@dimen/x24"
         android:textColor="@color/gray_d7d7d7"
         android:textStyle="bold"
         android:visibility="invisible"/>

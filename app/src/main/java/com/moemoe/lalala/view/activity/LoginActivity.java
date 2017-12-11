@@ -37,6 +37,11 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -100,7 +105,6 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
     protected void initViews(Bundle savedInstanceState) {
         ViewUtils.setStatusBarLight(getWindow(), null);
         AndroidBug5497Workaround.assistActivity(this);
-        ShareSDK.initSDK(this);
         DaggerLoginComponent.builder()
                 .loginModule(new LoginModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -295,7 +299,22 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
         authorInfo.setInspector(entity.isInspector());
         authorInfo.setPlatform("neta");
         authorInfo.setDeskMateEntities(entity.getDeskMateList());
-        authorInfo.setVipTime(entity.getVipTime());
+        if(!TextUtils.isEmpty(entity.getVipTime())){
+            try {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date date = format.parse(entity.getVipTime());
+                Date now = new Date();
+                if(date.before(now)){
+                    authorInfo.setVipTime("");
+                }else {
+                    authorInfo.setVipTime(entity.getVipTime());
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else {
+            authorInfo.setVipTime("");
+        }
         authorInfo.setInviteNum(entity.getInviteNum());
         finalizeDialog();
         PreferenceUtils.setAuthorInfo(authorInfo);

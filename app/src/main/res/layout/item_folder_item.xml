@@ -12,11 +12,11 @@
 
     <ImageView
         android:id="@+id/iv_music"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="@dimen/y90"
+        android:layout_height="@dimen/y90"
         android:src="@drawable/ic_bag_musicicon"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="@dimen/y104"
         android:visibility="gone"/>
 
     <LinearLayout
@@ -25,9 +25,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="bottom"
-        android:paddingStart="@dimen/size_8"
-        android:paddingLeft="@dimen/size_8"
-        android:paddingBottom="@dimen/size_8"
+        android:paddingStart="@dimen/x16"
+        android:paddingBottom="@dimen/y16"
         android:visibility="gone">
 
         <TextView
@@ -35,28 +34,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_12" />
+            android:textSize="@dimen/x24" />
 
         <TextView
             android:id="@+id/tv_music_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_10"
-            android:layout_marginTop="@dimen/size_5"/>
+            android:textSize="@dimen/x20"
+            android:layout_marginTop="@dimen/y10"/>
     </LinearLayout>
 
     <CheckBox
         android:id="@+id/iv_multi_toggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|end"
-        android:layout_marginRight="5dp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/x10"
         android:clickable="false"
         android:focusable="false"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/y10"
         android:background="@drawable/ic_image_checkbox"
         android:button="@null"
-        android:elevation="5dp"
         android:visibility="gone"/>
 </FrameLayout>

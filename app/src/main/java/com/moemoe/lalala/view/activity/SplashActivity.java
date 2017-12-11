@@ -8,16 +8,21 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.igexin.sdk.PushManager;
+import com.mob.MobSDK;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
@@ -27,17 +32,23 @@ import com.moemoe.lalala.broadcast.PushIntentService;
 import com.moemoe.lalala.broadcast.PushService;
 import com.moemoe.lalala.di.components.DaggerSimpleComponent;
 import com.moemoe.lalala.di.modules.SimpleModule;
+import com.moemoe.lalala.model.entity.SplashEntity;
 import com.moemoe.lalala.presenter.SimpleContract;
 import com.moemoe.lalala.presenter.SimplePresenter;
 import com.moemoe.lalala.utils.EncoderUtils;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.NetworkUtils;
+import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -63,6 +74,8 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
 
     @BindView(R.id.iv_splash)
     ImageView splashImg;
+    @BindView(R.id.tv_skip)
+    TextView mTvSkip;
 
     @Inject
     SimplePresenter mPresenter;
@@ -78,7 +91,9 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.GET_ACCOUNTS,
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
     };
 
     @Override
@@ -87,8 +102,8 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_splash);
         ButterKnife.bind(SplashActivity.this);
-        int[] splash = new int[]{R.drawable.splash1,R.drawable.splash2,R.drawable.splash3};
-        splashImg.setImageResource(splash[new Random().nextInt(3)]);
+       // int[] splash = new int[]{R.drawable.splash1,R.drawable.splash2,R.drawable.splash3};
+        splashImg.setImageResource(R.drawable.splash);
         //delaySplash();
     }
 
@@ -133,11 +148,11 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         PreferenceUtils.setVersionCode(this,getString(R.string.app_version_code));
     }
 
-    private void goToGuide(){
-        Intent intent = new Intent(this, GuideActivity.class);
-        startActivity(intent);
-        finish();
-    }
+//    private void goToGuide(){
+//        Intent intent = new Intent(this, GuideActivity.class);
+//        startActivity(intent);
+//        finish();
+//    }
 
     private void init(){
         DaggerSimpleComponent.builder()
@@ -149,6 +164,8 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         StorageUtils.initialStorageDir(getApplicationContext());
         EncoderUtils.init(getApplicationContext());
         IntentUtils.init(getApplicationContext());
+        MobSDK.init(this,"10dc41b1eb3b4","d342f319b6d67e143d36519a38b37f0e");
+
         PushManager.getInstance().initialize(this.getApplicationContext(), PushService.class);
         PushManager.getInstance().registerPushIntentService(getApplicationContext(), PushIntentService.class);
         Calendar today = Calendar.getInstance();
@@ -163,6 +180,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         } else if (last.before(today)) {
             AppSetting.isFirstLauncherToday = true;
             AppSetting.isShowBackSchoolAll = false;
+            GreenDaoManager.getInstance().getSession().getJuQingNormalEventDao().deleteAll();
             PreferenceUtils.setAllBackSchool(this,false);
             PreferenceUtils.setBackSchoolDialog(this,false);
         }
@@ -181,58 +199,132 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                 mPresenter.doRequest("bh3rd",9);
             }
         }
-        if(PreferenceUtils.isAppFirstLaunch(this) || PreferenceUtils.isVersion2FirstLaunch(this)){
-            Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Long>() {
-                        @Override
-                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
-
-                        }
-
-                        @Override
-                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            if(PreferenceUtils.isLogin()){
-                                goToMain();
-                            }else {
-                                go2Login();
-                            }
-                        }
-                    });
-        }else {
-            Observable.timer(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Long>() {
-                        @Override
-                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
-
-                        }
-
-                        @Override
-                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
+        splashImg.setImageResource(R.drawable.splash);
+        ArrayList<SplashEntity> entities = (ArrayList<SplashEntity>) GreenDaoManager.getInstance().getSession().getSplashEntityDao().loadAll();
+        if(entities != null && entities.size() > 0){
+            Collections.shuffle(entities);
+            final SplashEntity entity = entities.get(0);
+            mCurTime = entity.getShowSeconds();
+            Glide.with(this)
+                    .load(new File(StorageUtils.getSplashRootPath(),entity.getImagePath().substring(entity.getImagePath().lastIndexOf("/") + 1)))
+                    .into(splashImg);
+            splashImg.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    mHandler.removeCallbacks(timeRun);
+                    Intent i = new Intent(SplashActivity.this,MapActivity.class);
+                    i.putExtra("schema",entity.getTargetUrl());
+                    startActivity(i);
+                    finish();
+                   // IntentUtils.toActivityFromUri(SplashActivity.this,Uri.parse(entity.getTargetUrl()),v);
+                }
+            });
+            if(entity.getSkip()){
+                mTvSkip.setVisibility(View.VISIBLE);
+            }else {
+                mTvSkip.setVisibility(View.GONE);
+            }
+            mTvSkip.setText("点击跳过  " + mCurTime);
+            mTvSkip.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    if(PreferenceUtils.isAppFirstLaunch(SplashActivity.this)){
+                        if(PreferenceUtils.isLogin()){
                             goToMain();
+                        }else {
+                            go2Login();
                         }
-                    });
+                    }else {
+                        goToMain();
+                    }
+                }
+            });
         }
+        mHandler.post(timeRun);
+//        if(PreferenceUtils.isAppFirstLaunch(this)){
+//            Observable.timer(mMaxTime, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<Long>() {
+//                        @Override
+//                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
+//                            mTvSkip.setText("点击跳过  " + aLong);
+//                        }
+//
+//                        @Override
+//                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            if(PreferenceUtils.isLogin()){
+//                                goToMain();
+//                            }else {
+//                                go2Login();
+//                            }
+//                        }
+//                    });
+//        }else {
+//            mTvSkip.setOnClickListener(new NoDoubleClickListener() {
+//                @Override
+//                public void onNoDoubleClick(View v) {
+//                    goToMain();
+//                }
+//            });
+//            Observable.timer(mMaxTime, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+//                    .subscribe(new Observer<Long>() {
+//                        @Override
+//                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
+//                            mTvSkip.setText("点击跳过  " + aLong);
+//                        }
+//
+//                        @Override
+//                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            goToMain();
+//                        }
+//                    });
+//        }
     }
+
+    private Handler mHandler = new Handler();
+    private int mCurTime = 2;
+    private Runnable timeRun = new Runnable() {
+        @Override
+        public void run() {
+            if(mCurTime == 1){
+                mCurTime--;
+                mTvSkip.setText("点击跳过  " + mCurTime);
+                mHandler.removeCallbacks(this);
+                if(PreferenceUtils.isAppFirstLaunch(SplashActivity.this)){
+                    if(PreferenceUtils.isLogin()){
+                        goToMain();
+                    }else {
+                        go2Login();
+                    }
+                }else {
+                    goToMain();
+                }
+            }else {
+                mHandler.postDelayed(this,1000);
+                mCurTime--;
+                mTvSkip.setText("点击跳过  " + mCurTime);
+            }
+        }
+    };
 
     @AfterPermissionGranted(PERMISSON_REQ)
     private void requestCodePermissions(){

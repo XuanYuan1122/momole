@@ -12,18 +12,17 @@
 
     <TextView
         android:id="@+id/tv_mark"
-        android:layout_width="@dimen/size_40"
-        android:layout_height="@dimen/size_24"
+        android:layout_width="@dimen/x80"
+        android:layout_height="@dimen/y48"
         android:background="@drawable/shape_rect_zonghe"
         android:gravity="center"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:textSize="@dimen/size_12"
+        android:textSize="@dimen/x24"
         android:textColor="@color/white"/>
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size_45"
+        android:layout_height="@dimen/y90"
         android:layout_alignParentBottom="true"
         android:scaleType="fitXY"
         android:src="@drawable/bg_bag_cover" />
@@ -40,28 +39,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_10"
+            android:textSize="@dimen/x20"
             android:layout_gravity="center_horizontal"
             android:textStyle="bold"
-            android:paddingBottom="@dimen/size_4"/>
+            android:paddingBottom="@dimen/y8"/>
 
         <TextView
             android:id="@+id/tv_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/size_9"
+            android:textSize="@dimen/x18"
             android:textColor="@color/white_60"
             android:layout_gravity="center_horizontal"
-            android:paddingBottom="@dimen/size_6" />
+            android:paddingBottom="@dimen/y12" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_3"
-        android:layout_marginLeft="@dimen/size_3"
-        android:layout_marginStart="@dimen/size_3"
+        android:layout_marginTop="@dimen/y6"
+        android:layout_marginStart="@dimen/x6"
         android:visibility="gone"
         android:src="@drawable/btn_select_normal"/>
 

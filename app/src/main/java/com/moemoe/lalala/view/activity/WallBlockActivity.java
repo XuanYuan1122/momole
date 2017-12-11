@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.activity;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -36,6 +37,7 @@ import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.presenter.WallContract;
 import com.moemoe.lalala.presenter.WallPresenter;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
+import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -43,6 +45,7 @@ import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
 import com.moemoe.lalala.view.fragment.BaseFragment;
+import com.moemoe.lalala.view.fragment.FeedNoticeFragment;
 import com.moemoe.lalala.view.fragment.NewDiscoverMainFragment;
 import com.moemoe.lalala.view.fragment.NewFollowMainFragment;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
@@ -61,6 +64,7 @@ import io.reactivex.schedulers.Schedulers;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_DOC;
 
 /**
+ *
  * Created by yi on 2016/12/2.
  */
 
@@ -82,8 +86,6 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     ImageView mIvRole;
     @BindView(R.id.iv_create_dynamic)
     ImageView mIvCreatDynamic;
-//    @BindView(R.id.iv_create_wenzhang)
-//    ImageView mIvCreateWen;
     @BindView(R.id.tv_show_text)
     TextView mTvText;
     @BindView(R.id.rl_role_root)
@@ -95,6 +97,19 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
 
     @Inject
     WallPresenter mPresenter;
+    private NewDiscoverMainFragment followFragment;
+    private NewDiscoverMainFragment randomFragment;
+
+    private int mStayTime;
+
+    private Handler mHandler = new Handler();
+    private Runnable timeRunnabel = new Runnable() {
+        @Override
+        public void run() {
+            mStayTime++;
+            mHandler.postDelayed(this,1000);
+        }
+    };
 
     @Override
     protected int getLayoutId() {
@@ -114,28 +129,37 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment("dongtai")
+                .subscribeOn(Schedulers.io())
+                .subscribe();
         classMainFragment = NewFollowMainFragment.newInstance("ground");
         List<BaseFragment> fragmentList = new ArrayList<>();
-        fragmentList.add(NewFollowMainFragment.newInstance("follow"));
-        fragmentList.add(NewDiscoverMainFragment.newInstance("random"));
+        fragmentList.add(FeedNoticeFragment.newInstance());
+        followFragment = NewDiscoverMainFragment.newInstance("follow");
+        fragmentList.add(followFragment);
+        randomFragment = NewDiscoverMainFragment.newInstance("random");
+        fragmentList.add(randomFragment);
         fragmentList.add(classMainFragment);
         List<String> titles = new ArrayList<>();
+        titles.add("通知");
         titles.add(getString(R.string.label_follow));
         titles.add(getString(R.string.label_find));
         titles.add(getString(R.string.label_square));
-        String[] mTitles = {getString(R.string.label_follow),getString(R.string.label_find),getString(R.string.label_square)};
         ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
-        for (int i = 0; i < mTitles.length; i++) {
-            mTabEntities.add(new TabEntity(mTitles[i], R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
+        for (String mTitle : titles) {
+            mTabEntities.add(new TabEntity(mTitle, R.drawable.ic_personal_bag, R.drawable.ic_personal_bag));
         }
         mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
         mDataPager.setAdapter(mAdapter);
-        mDataPager.setCurrentItem(1);
+        mDataPager.setCurrentItem(2);
         mPageIndicator.setTabData(mTabEntities);
-        mPageIndicator.setCurrentTab(1);
+        mPageIndicator.setCurrentTab(2);
         gestureDetector = new GestureDetector(this,onGestureListener);
         subscribeSearchChangedEvent();
         ViewUtils.setRoleButton(mIvRole,mTvText);
+        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") || PreferenceUtils.getMessageDot(this,"normal")){
+            mPageIndicator.showDot(0);
+        }
     }
 
     @Override
@@ -175,6 +199,19 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         return super.dispatchTouchEvent(ev);
     }
 
+    public void likeDynamic(String id,boolean isLike,int position){
+        int page = mDataPager.getCurrentItem();
+        if(page == 1){
+            followFragment.likeDynamic(id, isLike, position);
+        }
+        if(page == 2){
+            randomFragment.likeDynamic(id, isLike, position);
+        }
+        if(page == 3){
+            classMainFragment.likeDynamic(id, isLike, position);
+        }
+    }
+
     @Override
     protected void initListeners() {
         IvBack.setOnClickListener(new NoDoubleClickListener() {
@@ -201,6 +238,17 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
 
             @Override
             public void onPageSelected(int position) {
+                if(position == 0){
+                    PreferenceUtils.setNetaMsgDotNum(WallBlockActivity.this,0);
+                    PreferenceUtils.setSysMsgDotNum(WallBlockActivity.this,0);
+                    PreferenceUtils.setAtUserMsgDotNum(WallBlockActivity.this,0);
+                    PreferenceUtils.setNormalMsgDotNum(WallBlockActivity.this,0);
+                    PreferenceUtils.setMessageDot(WallBlockActivity.this,"neta",false);
+                    PreferenceUtils.setMessageDot(WallBlockActivity.this,"system",false);
+                    PreferenceUtils.setMessageDot(WallBlockActivity.this,"at_user",false);
+                    PreferenceUtils.setMessageDot(WallBlockActivity.this,"normal",false);
+                    mPageIndicator.hideMsg(0);
+                }
                 mPageIndicator.setCurrentTab(position);
             }
 
@@ -260,24 +308,14 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         mIvCreatDynamic.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                clickRole();
-                Intent i4 = new Intent(WallBlockActivity.this,CreateDynamicActivity.class);
-                i4.putExtra("default_tag","广场");
-                startActivity(i4);
+                if(DialogUtils.checkLoginAndShowDlg(WallBlockActivity.this)){
+                    clickRole();
+                    Intent i4 = new Intent(WallBlockActivity.this,CreateDynamicActivity.class);
+                    i4.putExtra("default_tag","广场");
+                    startActivity(i4);
+                }
             }
         });
-//        mIvCreateWen.setOnClickListener(new NoDoubleClickListener() {
-//            @Override
-//            public void onNoDoubleClick(View v) {
-//                clickRole();
-//                Intent intent = new Intent(WallBlockActivity.this, CreateRichDocActivity.class);
-//                intent.putExtra(CreateRichDocActivity.TYPE_QIU_MING_SHAN,3);
-//                intent.putExtra(CreateRichDocActivity.TYPE_TAG_NAME_DEFAULT,"书包");
-//                intent.putExtra("from_name","书包");
-//                intent.putExtra("from_schema","neta://com.moemoe.lalala/bag_2.0");
-//                startActivityForResult(intent, REQUEST_CODE_CREATE_DOC);
-//            }
-//        });
     }
 
     public void hideRole(){
@@ -359,6 +397,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     @Override
     protected void onPause() {
         super.onPause();
+        mHandler.removeCallbacks(timeRunnabel);
     }
 
     private void subscribeSearchChangedEvent() {
@@ -384,11 +423,13 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     @Override
     protected void onResume() {
         super.onResume();
+        ViewUtils.setRoleButton(mIvRole,mTvText);
+        mHandler.post(timeRunnabel);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -396,6 +437,10 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         if (mPresenter != null) mPresenter.release();
         if(mAdapter != null) mAdapter.release();
         RxBus.getInstance().unSubscribe(this);
+        mHandler.removeCallbacks(timeRunnabel);
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment("dongtai",mStayTime)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
         super.onDestroy();
     }
 

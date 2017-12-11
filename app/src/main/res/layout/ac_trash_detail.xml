@@ -37,14 +37,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="34dp"
+                android:layout_marginTop="@dimen/y68"
                 android:textColor="@color/black"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="@dimen/x20"
+                android:layout_marginStart="@dimen/x20"
                 android:textStyle="bold"
-                android:textSize="@dimen/size_18"
+                android:textSize="@dimen/x36"
                 android:text=""/>
 
             <FrameLayout
@@ -53,17 +51,15 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/tv_title"
-                android:layout_marginLeft="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="28dp">
+                android:layout_marginEnd="@dimen/x20"
+                android:layout_marginStart="@dimen/x20"
+                android:layout_marginTop="@dimen/y56">
 
                 <TextView
                     android:id="@+id/tv_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_15"
+                    android:textSize="@dimen/x30"
                     android:textColor="@color/gray_929292"
                     android:text=""/>
 
@@ -87,14 +83,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fl_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginBottom="50dp"
-                android:layout_marginTop="30dp"
-                app:child_view_height="22dp"
+                android:layout_marginStart="@dimen/x24"
+                android:layout_marginEnd="@dimen/x24"
+                android:layout_marginBottom="@dimen/y100"
+                android:layout_marginTop="@dimen/y60"
+                app:child_view_height="@dimen/y44"
                 app:child_view_width="wrap_content"
-                app:line_spacing="7dp"
-                app:label_spacing="7dp">
+                app:line_spacing="@dimen/y14"
+                app:label_spacing="@dimen/x14">
 
             </com.moemoe.lalala.view.widget.view.DocLabelView>
 
@@ -104,10 +100,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_below="@+id/dv_doc_label"
-                android:layout_marginTop="14dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="7dp">
+                android:layout_marginTop="@dimen/y28"
+                android:layout_marginStart="@dimen/x40"
+                android:layout_marginBottom="@dimen/y14">
 
                 <ImageView
                     android:id="@+id/iv_like"
@@ -119,11 +114,10 @@
                     android:id="@+id/tv_like_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_15"
+                    android:textSize="@dimen/x30"
                     android:textColor="@color/yellow_f2cc2c"
-                    android:layout_marginStart="6dp"
+                    android:layout_marginStart="@dimen/x12"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="6dp"
                     android:text=""/>
             </LinearLayout>
 
@@ -131,12 +125,11 @@
                 android:id="@+id/ll_dislike_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/ll_like_container"
+                android:layout_toEndOf="@+id/ll_like_container"
                 android:layout_alignTop="@+id/ll_like_container"
                 android:orientation="horizontal"
-                android:layout_marginLeft="14dp"
-                android:layout_marginStart="14dp"
-                android:layout_marginBottom="7dp">
+                android:layout_marginStart="@dimen/x28"
+                android:layout_marginBottom="@dimen/y14">
 
                 <ImageView
                     android:id="@+id/iv_dislike"
@@ -148,28 +141,25 @@
                     android:id="@+id/tv_dislike_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_15"
+                    android:textSize="@dimen/x30"
                     android:textColor="@color/gray_929292"
-                    android:layout_marginStart="6dp"
+                    android:layout_marginStart="@dimen/x12"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="6dp"
                     android:text=""/>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_favorite"
-                android:layout_width="50dp"
-                android:layout_height="22dp"
+                android:layout_width="@dimen/x100"
+                android:layout_height="@dimen/y44"
                 android:layout_alignBottom="@+id/ll_like_container"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:textColor="@color/txt_white_red"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:text="收藏"
                 android:background="@drawable/btn_trash_favorite"
-                android:layout_marginRight="20dp"
-                android:layout_marginEnd="20dp"/>
+                android:layout_marginEnd="@dimen/x40"/>
 
         </RelativeLayout>
 

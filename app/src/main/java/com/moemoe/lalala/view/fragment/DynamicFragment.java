@@ -95,7 +95,7 @@ public class DynamicFragment extends BaseFragment implements BagDynamicContract.
             }
         });
         mListDocs.setLayoutManager(manager);
-        mListDocs.getRecyclerView().addItemDecoration(new DynamicDecoration(DensityUtil.dip2px(getContext(),4)));
+        mListDocs.getRecyclerView().addItemDecoration(new DynamicDecoration((int)getResources().getDimension(R.dimen.x8)));
         mListDocs.getSwipeRefreshLayout().setEnabled(false);
         mListDocs.setLoadMoreEnabled(false);
         mListDocs.setPullCallback(new PullCallback() {
@@ -141,9 +141,9 @@ public class DynamicFragment extends BaseFragment implements BagDynamicContract.
             }
         });
         View top = LayoutInflater.from(getContext()).inflate(R.layout.item_dynamic_top, null);
-        autoPollRecyclerView = (AutoPollRecyclerView) top.findViewById(R.id.top_list);
+        autoPollRecyclerView = top.findViewById(R.id.top_list);
         autoPollRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        autoPollRecyclerView.addItemDecoration(new MenuVItemDecoration(DensityUtil.dip2px(getContext(),8)));
+        autoPollRecyclerView.addItemDecoration(new MenuVItemDecoration((int)getResources().getDimension(R.dimen.x16)));
         mTopAdapter = new DynamicTopAdapter();
         autoPollRecyclerView.setAdapter(mTopAdapter);
         autoPollRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
@@ -162,8 +162,8 @@ public class DynamicFragment extends BaseFragment implements BagDynamicContract.
         tv.getPaint().setFakeBoldText(true);
         tv.setTextColor(ContextCompat.getColor(getContext(),R.color.black_1e1e1e));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.topMargin = DensityUtil.dip2px(getContext(),18);
-        lp.leftMargin = DensityUtil.dip2px(getContext(),12);
+        lp.topMargin = (int)getContext().getResources().getDimension(R.dimen.y36);
+        lp.leftMargin = (int)getContext().getResources().getDimension(R.dimen.x24);
         tv.setLayoutParams(lp);
         tv.setText("收藏动态");
         mAdapter.addHeaderView(tv);

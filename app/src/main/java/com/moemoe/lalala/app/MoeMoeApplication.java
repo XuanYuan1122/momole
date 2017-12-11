@@ -3,7 +3,6 @@ package com.moemoe.lalala.app;
 import android.app.Application;
 import android.support.multidex.BuildConfig;
 import android.support.multidex.MultiDex;
-
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.connection.FileDownloadUrlConnection;
 import com.moemoe.lalala.di.components.DaggerNetComponent;
@@ -14,15 +13,12 @@ import com.moemoe.lalala.utils.UnCaughtException;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
-import com.umeng.analytics.MobclickAgent;
-
 import org.greenrobot.greendao.query.QueryBuilder;
-
 import java.net.Proxy;
-
 import io.rong.imkit.RongIM;
 
 /**
+ * 应用类
  * Created by yi on 2017/5/11.
  */
 

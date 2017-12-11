@@ -102,13 +102,13 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
         mPathMap = new HashMap<>();
         mImageSize = 0;
         mTvMenuLeft.setVisibility(View.VISIBLE);
-        ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
+        ViewUtils.setLeftMargins(mTvMenuLeft,(int)getResources().getDimension(R.dimen.x36));
         mTvMenuLeft.setText(getString(R.string.label_cancel));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setText(getString(R.string.label_hide_area));
         mTvMenuRight.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
         mTvMenuRight.setText(getString(R.string.label_done));
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         subscribeChangedEvent();

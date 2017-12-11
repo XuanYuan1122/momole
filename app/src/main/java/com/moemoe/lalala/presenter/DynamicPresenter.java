@@ -286,4 +286,22 @@ public class DynamicPresenter implements DynamicContract.Presenter {
                     }
                 });
     }
+
+    @Override
+    public void likeDynamic(String id, final boolean isLike) {
+        apiService.likeDynamic(id,!isLike)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view != null) view.onLikeDynamicSuccess(!isLike);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code,msg);
+                    }
+                });
+    }
 }

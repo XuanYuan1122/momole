@@ -7,26 +7,25 @@
     <RelativeLayout
         android:id="@+id/rl_coin_root"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginTop="@dimen/size_12"
+        android:layout_height="@dimen/y140"
+        android:layout_marginTop="@dimen/y24"
         android:background="@color/white">
 
         <ImageView
             android:id="@+id/iv_left"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="@dimen/y140"
+            android:layout_height="@dimen/y140"
             android:src="@drawable/icon_doc_givecoins_len_give"/>
 
         <TextView
             android:id="@+id/tv_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/iv_left"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/iv_left"
+            android:layout_marginTop="@dimen/y40"
+            android:layout_marginStart="@dimen/x10"
             android:textStyle="bold"
-            android:textSize="@dimen/size_16"
+            android:textSize="@dimen/x32"
             android:textColor="@color/pink_fb7ba2"
             android:text="@string/label_accept_my_coin"/>
 
@@ -35,11 +34,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_top"
-            android:layout_toRightOf="@+id/iv_left"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:textSize="@dimen/size_12"
+            android:layout_toEndOf="@+id/iv_left"
+            android:layout_marginTop="@dimen/y8"
+            android:layout_marginStart="@dimen/x10"
+            android:textSize="@dimen/x24"
             android:textColor="@color/pink_fb7ba2"
             android:text="已收到"/>
 
@@ -48,12 +46,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_top"
-            android:layout_toRightOf="@+id/tv_left"
-            android:layout_marginLeft="2dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@+id/tv_left"
+            android:layout_marginStart="@dimen/x4"
+            android:layout_marginTop="@dimen/y8"
             android:textStyle="bold"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:textColor="@color/pink_fb7ba2"
             android:text="@string/label_got_coin"/>
 
@@ -61,11 +58,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_top"
-            android:layout_toRightOf="@+id/tv_got_coin"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginStart="2dp"
-            android:textSize="@dimen/size_12"
+            android:layout_toEndOf="@+id/tv_got_coin"
+            android:layout_marginTop="@dimen/y8"
+            android:layout_marginStart="@dimen/x4"
+            android:textSize="@dimen/x24"
             android:textColor="@color/pink_fb7ba2"
             android:text="节操"/>
 
@@ -73,34 +69,35 @@
             android:id="@+id/iv_give_coin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="22dp"
-            android:layout_marginEnd="22dp"
+            android:layout_marginEnd="@dimen/x44"
             android:src="@drawable/btn_give_coin"/>
 
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="@dimen/y68"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/size_12"
+        android:layout_marginTop="@dimen/y24"
         android:background="@color/white">
 
         <TextView
+            android:id="@+id/tv_sort"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/size_18"
-            android:drawableStart="@drawable/btn_feed_comment"
-            android:drawablePadding="@dimen/x10"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center_vertical"
+            android:layout_marginEnd="@dimen/x22"
+            android:drawablePadding="@dimen/x6"
+            android:drawableEnd="@drawable/icon_doc_comment_sort"
+            android:textColor="@color/main_cyan"
             android:textSize="@dimen/x24"
-            android:textColor="@color/green_6fc93a"
-            android:text="热门评论"/>
+            android:text="热门排序"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"

@@ -1,7 +1,6 @@
 package com.moemoe.lalala.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
@@ -12,9 +11,6 @@ import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.view.activity.NewFileCommonActivity;
 import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
 import com.moemoe.lalala.view.activity.NewFileXiaoshuoActivity;
-import com.moemoe.lalala.view.activity.NewFolderActivity;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
-import com.moemoe.lalala.view.activity.WebViewActivity;
 
 /**
  * Created by Haru on 2016/4/27 0027.

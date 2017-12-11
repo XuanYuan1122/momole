@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y180"
+    android:background="@color/white"
+    android:paddingStart="@dimen/x16"
+    android:paddingEnd="@dimen/x16">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/gray_e8e8e8"
+        android:layout_alignParentBottom="true"/>
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="@dimen/y148"
+        android:layout_height="@dimen/y148"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black_1e1e1e"
+        android:textSize="@dimen/x36"
+        android:textStyle="bold"
+        android:layout_toEndOf="@+id/iv_cover"
+        android:layout_alignTop="@+id/iv_cover"
+        android:layout_marginStart="@dimen/x16"/>
+
+    <TextView
+        android:id="@+id/tv_state"
+        android:layout_width="@dimen/x112"
+        android:layout_height="@dimen/y32"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/y18"
+        android:gravity="center"
+        android:textSize="@dimen/x20"
+        android:textColor="@color/txt_white_cyan"
+        android:background="@drawable/bg_live2d_shop_state"/>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_title"
+        android:layout_below="@+id/tv_title"
+        android:layout_marginTop="@dimen/y8"
+        android:textColor="@color/black_1e1e1e"
+        android:textSize="@dimen/x24"
+        android:maxLines="2"
+        android:ellipsize="end"/>
+
+    <TextView
+        android:id="@+id/tv_from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/x24"
+        android:textColor="@color/gray_929292"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/y16"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignStart="@+id/tv_title"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/y16"
+        android:gravity="center_vertical">
+
+        <com.moemoe.lalala.view.widget.view.KiraRatingBar
+            android:id="@+id/kira_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srb_fillColor="@color/main_cyan"
+            app:srb_borderColor="@color/main_cyan"
+            app:srb_pressedFillColor="@color/main_cyan"
+            app:srb_pressedBorderColor="@color/main_cyan"
+            app:srb_starSize="@dimen/x21"
+            app:srb_numberOfStars="5"
+            app:srb_stepSize="0.5"
+            app:srb_isIndicator="true"
+            app:srb_starBorderWidth="1.0"/>
+
+        <TextView
+            android:id="@+id/tv_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_929292"
+            android:textSize="@dimen/x18"
+            android:layout_marginStart="@dimen/x18"/>
+    </LinearLayout>
+</RelativeLayout>

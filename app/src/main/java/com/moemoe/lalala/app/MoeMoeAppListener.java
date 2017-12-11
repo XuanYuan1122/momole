@@ -3,13 +3,19 @@ package com.moemoe.lalala.app;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
+import com.moemoe.lalala.model.entity.GroupEntity;
+import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +27,7 @@ import io.rong.imkit.RongIM;
 import io.rong.imkit.model.GroupNotificationMessageData;
 import io.rong.imkit.model.GroupUserInfo;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.Conversation;
 import io.rong.imlib.model.Group;
 import io.rong.imlib.model.Message;
 import io.rong.imlib.model.MessageContent;
@@ -69,6 +76,8 @@ public class MoeMoeAppListener implements RongIMClient.OnReceiveMessageListener,
         RongIM.setGroupInfoProvider(this, true);
         RongIM.getInstance().setGroupMembersProvider(this);
         RongIM.setOnReceiveMessageListener(this);
+        RongIM.getInstance().enableNewComingMessageIcon(true);
+        RongIM.getInstance().enableUnreadMessageIcon(true);
         List<IExtensionModule> moduleList = RongExtensionManager.getInstance().getExtensionModules();
         IExtensionModule defaultModule = null;
         if (moduleList != null) {
@@ -87,17 +96,76 @@ public class MoeMoeAppListener implements RongIMClient.OnReceiveMessageListener,
 
     @Override
     public Group getGroupInfo(String s) {
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().loadGroup(s)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<GroupEntity>() {
+                    @Override
+                    public void onSuccess(GroupEntity entity) {
+                        Group group = new Group(entity.getId(),entity.getGroupName(),Uri.parse(ApiService.URL_QINIU + entity.getCover()));
+                        RongIM.getInstance().refreshGroupInfoCache(group);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
+
         return null;
     }
 
     @Override
-    public GroupUserInfo getGroupUserInfo(String s, String s1) {
+    public GroupUserInfo getGroupUserInfo(final String s, final String s1) {
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().loadSampleUserInfo(s1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<JsonObject>() {
+                    @Override
+                    public void onSuccess(JsonObject jsonObject) {
+                        if(jsonObject != null){
+                            GroupUserInfo info = new GroupUserInfo(s,s1,jsonObject.get("userName").getAsString());
+                            RongIM.getInstance().refreshGroupUserInfoCache(info);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
         return null;
     }
 
     @Override
-    public void getGroupMembers(String s, RongIM.IGroupMemberCallback iGroupMemberCallback) {
+    public void getGroupMembers(String s, final RongIM.IGroupMemberCallback iGroupMemberCallback) {
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().loadGroupMemberList(s,0,0)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<UserTopEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<UserTopEntity> entities) {
+                        List<UserInfo> userInfos = new ArrayList<>();
+                        if (entities != null) {
+                            for (UserTopEntity groupMember : entities) {
+                                if (groupMember != null) {
+                                    String path = groupMember.getHeadPath();
+                                    if(!(path.startsWith("http") || path.startsWith("https"))){
+                                        path = ApiService.URL_QINIU + path;
+                                    }
+                                    UserInfo userInfo = new UserInfo(groupMember.getUserId(), groupMember.getUserName(), Uri.parse(path));
+                                    userInfos.add(userInfo);
+                                }
+                            }
+                        }
+                        iGroupMemberCallback.onGetGroupMembersResult(userInfos);
+                    }
 
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
     }
 
     @Override
@@ -138,7 +206,103 @@ public class MoeMoeAppListener implements RongIMClient.OnReceiveMessageListener,
             GroupNotificationMessage groupNotificationMessage = (GroupNotificationMessage) messageContent;
             String groupID = message.getTargetId();
             GroupNotificationMessageData data = null;
+            try {
+                String currentID = RongIM.getInstance().getCurrentUserId();
+                data = jsonToBean(groupNotificationMessage.getData());
+                if (groupNotificationMessage.getOperation().equals("Dismiss")) {
+                    handleGroupDismiss(groupID);
+                } else if (groupNotificationMessage.getOperation().equals("Kicked")) {
+                    if (data != null) {
+                        List<String> memberIdList = data.getTargetUserIds();
+                        if (memberIdList != null) {
+                            for (String userId : memberIdList) {
+                                if (currentID.equals(userId)) {
+                                    RongIM.getInstance().removeConversation(Conversation.ConversationType.GROUP, message.getTargetId(), new RongIMClient.ResultCallback<Boolean>() {
+                                        @Override
+                                        public void onSuccess(Boolean aBoolean) {
+                                        }
+
+                                        @Override
+                                        public void onError(RongIMClient.ErrorCode e) {
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return false;
+    }
+
+    private void handleGroupDismiss(final String groupID) {
+        RongIM.getInstance().getConversation(Conversation.ConversationType.GROUP, groupID, new RongIMClient.ResultCallback<Conversation>() {
+            @Override
+            public void onSuccess(Conversation conversation) {
+                RongIM.getInstance().clearMessages(Conversation.ConversationType.GROUP, groupID, new RongIMClient.ResultCallback<Boolean>() {
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        RongIM.getInstance().removeConversation(Conversation.ConversationType.GROUP, groupID, null);
+                    }
+
+                    @Override
+                    public void onError(RongIMClient.ErrorCode e) {
+                        int i = 0;
+                    }
+                });
+            }
+
+            @Override
+            public void onError(RongIMClient.ErrorCode e) {
+
+            }
+        });
+    }
+
+    private GroupNotificationMessageData jsonToBean(String data) {
+        GroupNotificationMessageData dataEntity = new GroupNotificationMessageData();
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            if (jsonObject.has("operatorNickname")) {
+                dataEntity.setOperatorNickname(jsonObject.getString("operatorNickname"));
+            }
+            if (jsonObject.has("targetGroupName")) {
+                dataEntity.setTargetGroupName(jsonObject.getString("targetGroupName"));
+            }
+            if (jsonObject.has("timestamp")) {
+                dataEntity.setTimestamp(jsonObject.getLong("timestamp"));
+            }
+            if (jsonObject.has("targetUserIds")) {
+                JSONArray jsonArray = jsonObject.getJSONArray("targetUserIds");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    dataEntity.getTargetUserIds().add(jsonArray.getString(i));
+                }
+            }
+            if (jsonObject.has("targetUserDisplayNames")) {
+                JSONArray jsonArray = jsonObject.getJSONArray("targetUserDisplayNames");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    dataEntity.getTargetUserDisplayNames().add(jsonArray.getString(i));
+                }
+            }
+            if (jsonObject.has("oldCreatorId")) {
+                dataEntity.setOldCreatorId(jsonObject.getString("oldCreatorId"));
+            }
+            if (jsonObject.has("oldCreatorName")) {
+                dataEntity.setOldCreatorName(jsonObject.getString("oldCreatorName"));
+            }
+            if (jsonObject.has("newCreatorId")) {
+                dataEntity.setNewCreatorId(jsonObject.getString("newCreatorId"));
+            }
+            if (jsonObject.has("newCreatorName")) {
+                dataEntity.setNewCreatorName(jsonObject.getString("newCreatorName"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dataEntity;
     }
 }

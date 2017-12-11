@@ -1,5 +1,7 @@
 package com.moemoe.lalala.presenter;
 
+import android.text.TextUtils;
+
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
@@ -11,7 +13,11 @@ import com.moemoe.lalala.model.entity.ThirdLoginEntity;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -90,7 +96,22 @@ public class LoginPresenter implements LoginContract.Presenter {
                                 authorInfo.setCoin(entity.getCoin());
                                 authorInfo.setLevel(entity.getLevel());
                                 authorInfo.setOpenBag(entity.isOpenBag());
-                                authorInfo.setVipTime(entity.getVipTime());
+                                if(!TextUtils.isEmpty(entity.getVipTime())){
+                                    try {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                        Date date = format.parse(entity.getVipTime());
+                                        Date now = new Date();
+                                        if(date.before(now)){
+                                            authorInfo.setVipTime("");
+                                        }else {
+                                            authorInfo.setVipTime(entity.getVipTime());
+                                        }
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }else {
+                                    authorInfo.setVipTime("");
+                                }
                                 authorInfo.setInviteNum(entity.getInviteNum());
                                 authorInfo.setInspector(entity.isInspector());
                                 if(entity.isNew()){

@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -24,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 
@@ -453,8 +456,84 @@ public class BitmapUtils {
         return fbs;
     }
 
+    public static Bitmap loadBitmapFromAssets(Context context,String filePath){
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getResources().getAssets().open(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(inputStream==null) return null;
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inScaled=false;
+        Bitmap bitmap= BitmapFactory.decodeStream(inputStream);
+        return bitmap;
+    }
+
+    /**
+     * 翻转
+     *
+     * @param a
+     * @return
+     */
+    public static Bitmap convert(Bitmap a,int index) {
+        int w = a.getWidth();
+        int h = a.getHeight();
+
+        Bitmap newb = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);// 创建一个新的和SRC长度宽度一样的位图
+        Canvas cv = new Canvas(newb);
+        Matrix m = new Matrix();
+        //
+        if(index==0){
+            m.postScale(-1, 1); // 镜像水平翻转
+        }else{
+            m.postScale(1, -1); // 镜像垂直翻转
+        }
+        // m.postRotate(-90); // 旋转-90度
+        Bitmap new2 = Bitmap.createBitmap(a, 0, 0, w, h, m, true);
+        cv.drawBitmap(new2, new Rect(0, 0, new2.getWidth(), new2.getHeight()),
+                new Rect(0, 0, w, h), null);
+        return newb;
+    }
+
+    /**
+     * 旋转
+     *
+     * @param angle
+     * @param bitmap
+     * @return
+     */
+    public static Bitmap rotaingImageView(int angle, Bitmap bitmap) {
+        // 旋转图片 动作
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        // 创建新的图片
+        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return resizedBitmap;
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(
+            String path, int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(path, options);
+    }
+
 //    public static ArrayList<Image> handleUploadImage(ArrayList<String> paths){
-//        ArrayList<Image> fbs = new ArrayList<>();
+//
+//
+// ArrayList<Image> fbs = new ArrayList<>();
 //        for(int i = 0; i < paths.size(); i++){
 //            if (FileUtil.isGif(paths.get(i))) {
 //                Image fb = new Image();

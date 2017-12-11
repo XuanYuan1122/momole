@@ -30,11 +30,11 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/size_10">
+        android:paddingTop="@dimen/y20">
         <LinearLayout
             android:id="@+id/ll_head_root"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="@dimen/y140"
             android:orientation="horizontal"
             android:background="@drawable/bg_normal_white_btn">
 
@@ -42,11 +42,10 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/size_15"
-                android:layout_marginStart="@dimen/size_15"
+                android:layout_marginStart="@dimen/x30"
                 android:text="头像"/>
 
             <ImageView
@@ -54,52 +53,48 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/size_15"
-                android:layout_marginEnd="@dimen/size_15"/>
+                android:layout_marginEnd="@dimen/x30"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_bg_root"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="@dimen/y140"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/size_2"
+            android:layout_marginTop="@dimen/y4"
             android:background="@drawable/bg_normal_white_btn">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/size_15"
-                android:layout_marginStart="@dimen/size_15"
+                android:layout_marginStart="@dimen/x30"
                 android:text="@string/label_cover"/>
 
             <ImageView
                 android:id="@+id/iv_bg"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="@dimen/y112"
+                android:layout_height="@dimen/y112"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/size_15"
-                android:layout_marginEnd="@dimen/size_15"/>
+                android:layout_marginEnd="@dimen/x30"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_nickname"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="@dimen/y140"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/size_2"
+            android:layout_marginTop="@dimen/y4"
             android:background="@drawable/bg_normal_white_btn">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/size_15"
-                android:layout_marginStart="@dimen/size_15"
+                android:layout_marginStart="@dimen/x30"
                 android:text="昵称"
                 android:id="@+id/textView" />
 
@@ -109,31 +104,29 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/size_15"
-                android:layout_marginEnd="@dimen/size_15"
+                android:layout_marginEnd="@dimen/x30"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textSize="@dimen/size_15"
-                android:gravity="right"
+                android:textSize="@dimen/x30"
+                android:gravity="end"
                 android:textColor="@color/txt_gray_929292_red"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_gender"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="@dimen/y140"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/size_2"
+            android:layout_marginTop="@dimen/y4"
             android:background="@drawable/bg_normal_white_btn">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/size_15"
-                android:layout_marginStart="@dimen/size_15"
+                android:layout_marginStart="@dimen/x30"
                 android:text="性别"/>
 
             <TextView
@@ -141,28 +134,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/size_15"
-                android:layout_marginEnd="@dimen/size_15"
-                android:textSize="@dimen/size_15"
+                android:layout_marginEnd="@dimen/x30"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/gray_929292"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_birthday"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="@dimen/y140"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/size_2"
+            android:layout_marginTop="@dimen/y4"
             android:background="@drawable/bg_normal_white_btn">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/size_15"
-                android:layout_marginStart="@dimen/size_15"
+                android:layout_marginStart="@dimen/x30"
                 android:text="生日"/>
 
             <TextView
@@ -170,27 +161,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/size_15"
-                android:layout_marginEnd="@dimen/size_15"
-                android:textSize="@dimen/size_15"
+                android:layout_marginEnd="@dimen/x30"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/gray_929292"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/ll_sign"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="@dimen/y140"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/size_2"
+            android:layout_marginTop="@dimen/y4"
             android:background="@drawable/bg_normal_white_btn">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/black"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/size_15"
-                android:layout_marginStart="@dimen/size_15"
+                android:layout_marginStart="@dimen/x30"
                 android:text="个性签名"/>
 
             <TextView
@@ -199,14 +188,41 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/size_15"
-                android:layout_marginEnd="@dimen/size_15"
-                android:textSize="@dimen/size_15"
+                android:layout_marginEnd="@dimen/x30"
+                android:textSize="@dimen/x30"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:gravity="right"
+                android:gravity="end"
                 android:textColor="@color/txt_gray_929292_red"/>
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_map_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y140"
+            android:layout_marginTop="@dimen/y4"
+            android:background="@drawable/bg_normal_white_btn">
+
+            <TextView
+                android:id="@+id/tv_function_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/x30"
+                android:textColor="@color/black"
+                android:text="我的地图形象"
+                android:textSize="@dimen/x30"/>
+
+
+            <ImageView
+                android:id="@+id/iv_indicate_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/x50"
+                android:src="@drawable/ic_array_right_gray" />
+        </RelativeLayout>
     </LinearLayout>
 
     </ScrollView>
@@ -219,17 +235,17 @@
         android:gravity="bottom"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:paddingBottom="7dp"
-        android:paddingTop="7dp"
+        android:paddingBottom="@dimen/y14"
+        android:paddingTop="@dimen/y14"
         android:visibility="gone" >
 
         <EditText
             android:id="@+id/edt_comment_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="6dp"
-            android:layout_toLeftOf="@+id/iv_comment_send"
+            android:layout_marginStart="@dimen/x28"
+            android:layout_marginEnd="@dimen/x12"
+            android:layout_toStartOf="@+id/iv_comment_send"
             android:layout_weight="1"
             android:background="@drawable/bg_white_border_gray"
             android:gravity="center_vertical"
@@ -240,19 +256,19 @@
             android:paddingLeft="14dp"
             android:paddingRight="14dp"
             android:paddingTop="4dp"
-            android:textSize="@dimen/size_15" />
+            android:textSize="@dimen/x30" />
 
         <TextView
             android:id="@+id/iv_comment_send"
             android:layout_width="48dp"
             android:layout_height="34dp"
             android:layout_alignBottom="@+id/edt_comment_input"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="@dimen/x24"
             android:background="@drawable/bg_rect_white_click_cyan"
             android:gravity="center"
             android:text="@string/label_confirm"
             android:textColor="@color/txt_white_gray"
-            android:textSize="@dimen/size_15" />
+            android:textSize="@dimen/x30" />
     </com.moemoe.lalala.view.widget.view.KeyboardListenerLayout>
 </RelativeLayout>

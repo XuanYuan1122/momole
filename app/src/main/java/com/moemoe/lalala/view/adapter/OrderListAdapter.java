@@ -32,8 +32,8 @@ public class OrderListAdapter extends BaseRecyclerViewAdapter<OrderEntity,OrderV
     @Override
     protected void convert(OrderViewHolder helper, final OrderEntity item,int position) {
         Glide.with(context)
-                .load(StringUtils.getUrl(context, item.getIcon(), DensityUtil.dip2px(context,75),DensityUtil.dip2px(context,75),false,true))
-                .override(DensityUtil.dip2px(context,75),DensityUtil.dip2px(context,75))
+                .load(StringUtils.getUrl(context, item.getIcon(), (int)context.getResources().getDimension(R.dimen.y150),(int)context.getResources().getDimension(R.dimen.y150),false,true))
+                .override((int)context.getResources().getDimension(R.dimen.y150),(int)context.getResources().getDimension(R.dimen.y150))
                 .error(R.drawable.bg_default_square)
                 .placeholder(R.drawable.bg_default_square)
                 .into(helper.ivCommodity);

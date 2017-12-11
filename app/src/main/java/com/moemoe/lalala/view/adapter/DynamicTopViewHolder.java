@@ -47,7 +47,7 @@ public class DynamicTopViewHolder extends ClickableViewHolder {
 
     public void createItem(final DynamicTopEntity entity){
         Glide.with(itemView.getContext())
-                .load(StringUtils.getUrl(itemView.getContext(),entity.getUserIcon().getPath(),DensityUtil.dip2px(itemView.getContext(),18),DensityUtil.dip2px(itemView.getContext(),18),false,true))
+                .load(StringUtils.getUrl(itemView.getContext(),entity.getUserIcon().getPath(),(int)context.getResources().getDimension(R.dimen.y36),(int)context.getResources().getDimension(R.dimen.y36),false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(itemView.getContext()))

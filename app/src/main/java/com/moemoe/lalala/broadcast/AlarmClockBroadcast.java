@@ -13,7 +13,7 @@ import com.moemoe.lalala.utils.Utils;
 import com.moemoe.lalala.view.activity.PhoneAlarmActivity;
 
 /**
- *
+ * 闹钟广播
  * Created by yi on 2017/9/12.
  */
 

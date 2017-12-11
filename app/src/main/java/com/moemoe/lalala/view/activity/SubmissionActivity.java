@@ -95,7 +95,7 @@ public class SubmissionActivity extends BaseAppCompatActivity implements Submiss
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
         mTvMenuLeft.setVisibility(View.VISIBLE);
-        ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
+        ViewUtils.setLeftMargins(mTvMenuLeft,(int)getResources().getDimension(R.dimen.x36));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvMenuLeft.setText(getString(R.string.label_give_up));
         mTvMenuLeft.setOnClickListener(new NoDoubleClickListener() {
@@ -106,7 +106,7 @@ public class SubmissionActivity extends BaseAppCompatActivity implements Submiss
         });
         mTitle.setText("投稿");
         mMenu.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mMenu, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mMenu, (int)getResources().getDimension(R.dimen.x36));
         mMenu.setText(getString(R.string.label_done));
         mMenu.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -170,7 +170,6 @@ public class SubmissionActivity extends BaseAppCompatActivity implements Submiss
             showToast("没有可投稿的学部");
             finish();
         }
-
     }
 
     @Override

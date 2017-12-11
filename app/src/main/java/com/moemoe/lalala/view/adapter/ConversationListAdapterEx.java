@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
+import com.moemoe.lalala.greendao.gen.GroupNoticeEntityDao;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.PreferenceUtils;
 
 import io.rong.common.RLog;
@@ -46,8 +48,8 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
 
     @Override
     public void remove(int position) {
-        if(position > 2){
-           super.remove(position - 3);
+        if(position > 3){
+           super.remove(position - 4);
         }
     }
 
@@ -104,8 +106,8 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
 
     @Override
     public UIConversation getItem(int position) {
-        if(position > 2){
-            UIConversation item = super.getItem(position - 3);
+        if(position > 3){
+            UIConversation item = super.getItem(position - 4);
             return item;
         }else {
             UIConversation item = new UIConversation();
@@ -120,20 +122,23 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
             if(position == 2){
                 item.setUIConversationTitle("sari");
             }
+            if(position == 3){
+                item.setUIConversationTitle("kira_system");
+            }
             return item;
         }
     }
 
     @Override
     public int getCount() {
-        return super.getCount() + 3;
+        return super.getCount() + 4;
     }
 
     @Override
     protected void bindView(View v, int position, final UIConversation data) {
         ViewHolder holder = (ViewHolder)v.getTag();
         if(data != null) {
-            if(position > 2){
+            if(position > 3){
                 if (data != null) {
                     if (data.getConversationType().equals(Conversation.ConversationType.DISCUSSION))
                         data.setUnreadType(UIConversation.UnreadRemindType.REMIND_ONLY);
@@ -272,24 +277,42 @@ public class ConversationListAdapterEx extends ConversationListAdapter {
                 holder.leftImageLayout.setVisibility(View.VISIBLE);
                 holder.rightImageLayout.setVisibility(View.GONE);
                 holder.layout.setBackgroundDrawable(mContext.getResources().getDrawable(io.rong.imkit.R.drawable.btn_white_border_selector_6));
-                if(position == 0){
-                    holder.leftImageView.setAvatar((String)null, R.drawable.ic_phone_message_len);
-                    holder.kiraName.setText("小莲");
-                    holder.kiraContent.setText(PreferenceUtils.getLenLastContent(mContext));
-                }else if(position == 1){
-                    holder.leftImageView.setAvatar((String)null, R.drawable.ic_phone_message_mei);
-                    holder.kiraName.setText("美藤双树");
-                    holder.kiraContent.setText(PreferenceUtils.getMeiLastContent(mContext));
-                }else if(position == 2){
-                    holder.leftImageView.setAvatar((String)null, R.drawable.ic_phone_message_sari);
-                    holder.kiraName.setText("沙利尔");
-                }
                 if(showRed == position){
                     holder.unReadMsgCount.setVisibility(View.VISIBLE);
                     holder.unReadMsgCount.setText("1");
                 }else {
                     holder.unReadMsgCount.setVisibility(View.GONE);
                 }
+                if(position == 0){
+                    holder.leftImageView.setAvatar(null, R.drawable.ic_phone_message_len);
+                    holder.kiraName.setText("小莲");
+                    holder.kiraContent.setText(PreferenceUtils.getLenLastContent(mContext));
+                }else if(position == 1){
+                    holder.leftImageView.setAvatar(null, R.drawable.ic_phone_message_mei);
+                    holder.kiraName.setText("美藤双树");
+                    holder.kiraContent.setText(PreferenceUtils.getMeiLastContent(mContext));
+                }else if(position == 2){
+                    holder.leftImageView.setAvatar(null, R.drawable.ic_phone_message_sari);
+                    holder.kiraName.setText("沙利尔");
+                    holder.kiraContent.setText(PreferenceUtils.getSariLastContent(mContext));
+                }else if(position == 3){
+                    holder.leftImageView.setAvatar(null, R.drawable.ic_phone_message_sari);//TODO 通知图标
+                    holder.kiraName.setText("群通知");
+                    GroupNoticeEntityDao dao = GreenDaoManager.getInstance().getSession().getGroupNoticeEntityDao();
+                    long count = dao.queryBuilder()
+                            .where(GroupNoticeEntityDao.Properties.IsDeal.eq(false),GroupNoticeEntityDao.Properties.State.eq(true))
+                            .count();
+                    if(count > 0){
+                        holder.unReadMsgCount.setVisibility(View.VISIBLE);
+                        holder.unReadMsgCount.setText(String.valueOf(count));
+                    }else {
+                        holder.unReadMsgCount.setVisibility(View.GONE);
+                    }
+                    String[] contentAndTime = PreferenceUtils.getLastGroupContentAndTime(mContext);
+                    holder.kiraContent.setText(contentAndTime[0]);
+
+                }
+
                 holder.kiraContent.setText(PreferenceUtils.getSariLastContent(mContext));
             }
         }

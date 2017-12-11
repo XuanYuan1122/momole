@@ -30,6 +30,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.BagWenZhangAdapter;
+import com.moemoe.lalala.view.fragment.BaseFragment;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
@@ -44,6 +45,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_DOC;
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_WEN_ZHANG;
 
 /**
  * 新文件夹界面
@@ -60,10 +62,6 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
     TextView mTitle;
     @BindView(R.id.iv_menu_list)
     ImageView mIvMenu;
-    @BindView(R.id.tv_menu)
-    TextView mTvMenuRight;
-    @BindView(R.id.tv_right_menu)
-    TextView mTvTop;
     @BindView(R.id.list)
     PullAndLoadView mListDocs;
     @BindView(R.id.iv_add_folder)
@@ -77,19 +75,37 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
     private boolean isLoading = false;
     private BottomMenuFragment bottomMenuFragment;
     private boolean mIsSelect;
-    private HashMap<Integer,WenZhangFolderEntity> mSelectMap;
 
     @Override
     protected int getLayoutId() {
         return R.layout.ac_folder;
     }
 
-    public static void startActivity(Context context,String userId,String folderType,String type){
+    public static void startActivity(Context context,String userId,String folderType,String type,boolean select){
         Intent i = new Intent(context,NewFolderWenZhangActivity.class);
         i.putExtra(UUID,userId);
         i.putExtra("folderType",folderType);
         i.putExtra("type",type);
+        i.putExtra("select",select);
         context.startActivity(i);
+    }
+
+    public static void startActivityForResult(BaseAppCompatActivity context,String userId,String folderType,String type,boolean select){
+        Intent i = new Intent(context,NewFolderWenZhangActivity.class);
+        i.putExtra(UUID,userId);
+        i.putExtra("folderType",folderType);
+        i.putExtra("type",type);
+        i.putExtra("select",select);
+        context.startActivityForResult(i,REQ_WEN_ZHANG);
+    }
+
+    public static void startActivityForResult(BaseFragment context, String userId, String folderType, String type, boolean select){
+        Intent i = new Intent(context.getContext(),NewFolderWenZhangActivity.class);
+        i.putExtra(UUID,userId);
+        i.putExtra("folderType",folderType);
+        i.putExtra("type",type);
+        i.putExtra("select",select);
+        context.startActivityForResult(i,REQ_WEN_ZHANG);
     }
 
     @Override
@@ -109,11 +125,9 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         mUserId = getIntent().getStringExtra(UUID);
         final String type = getIntent().getStringExtra("type");
         mFolderType = getIntent().getStringExtra("folderType");
-        mIsSelect = false;
+        mIsSelect = getIntent().getBooleanExtra("select",false);
         String title = "";
-        mSelectMap = new HashMap<>();
-        mTvTop.setText("置顶");
-        mTvTop.setTextColor(ContextCompat.getColor(this,R.color.txt_gray_main));
+       // mSelectMap = new HashMap<>();
         title = "文章";
         mTitle.setText(title);
         if(mUserId.equals(PreferenceUtils.getUUid())){
@@ -135,6 +149,7 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         }
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new BagWenZhangAdapter();
+       // mAdapter.setSelect(mIsSelect);
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         RecyclerView.LayoutManager manager;
         if(mFolderType.equals(FolderType.WZ.toString())){
@@ -153,19 +168,18 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                         IntentUtils.toActivityFromUri(NewFolderWenZhangActivity.this, uri,view);
                     }
                 }else {
-                    if(entity.isSelect()){
-                        mSelectMap.remove(position);
-                        entity.setSelect(false);
-                    }else {
-                        mSelectMap.put(position,entity);
-                        entity.setSelect(true);
-                    }
-                    mAdapter.notifyItemChanged(position);
-                    if(mSelectMap.size() > 1){
-                        mTvTop.setEnabled(false);
-                    }else {
-                        mTvTop.setEnabled(true);
-                    }
+//                    if(entity.isSelect()){
+//                        mSelectMap.remove(position);
+//                        entity.setSelect(false);
+//                    }else {
+//                        mSelectMap.put(position,entity);
+//                        entity.setSelect(true);
+//                    }
+//                    mAdapter.notifyItemChanged(position);
+                    Intent i = new Intent();
+                    i.putExtra("docId",entity.getId());
+                    setResult(RESULT_OK,i);
+                    finish();
                 }
             }
 
@@ -202,9 +216,24 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         if(mUserId.equals(PreferenceUtils.getUUid())){
             if(!type.equals("my")){
                 mIvMenu.setVisibility(View.GONE);
+                mIvBack.setVisibility(View.VISIBLE);
             }else {
                 initPopupMenus();
-                mIvMenu.setVisibility(View.VISIBLE);
+                if(mIsSelect){
+                    mIvBack.setVisibility(View.GONE);
+                    mIvMenu.setVisibility(View.GONE);
+                    mTvMenuLeft.setVisibility(View.VISIBLE);
+                    ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
+                    mTvMenuLeft.setText(getString(R.string.label_give_up));
+                    mTvMenuLeft.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.black_1e1e1e));
+//                    mTvMenuRight.setVisibility(View.VISIBLE);
+//                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFolderWenZhangActivity.this,18));
+//                    mTvMenuRight.setText(getString(R.string.label_done));
+//                    mTvMenuRight.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.main_cyan));
+                }else {
+                    mIvBack.setVisibility(View.VISIBLE);
+                    mIvMenu.setVisibility(View.VISIBLE);
+                }
             }
         }else {
             mIvMenu.setVisibility(View.GONE);
@@ -215,9 +244,9 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
     private void initPopupMenus() {
         bottomMenuFragment = new BottomMenuFragment();
         ArrayList<MenuItem> items = new ArrayList<>();
-        MenuItem item = new MenuItem(1, "选择");
-        items.add(item);
-        item = new MenuItem(2, "投稿箱");
+//        MenuItem item = new MenuItem(1, "选择");
+//        items.add(item);
+        MenuItem item = new MenuItem(2, "投稿箱");
         items.add(item);
         bottomMenuFragment.setMenuItems(items);
         bottomMenuFragment.setShowTop(false);
@@ -225,22 +254,21 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         bottomMenuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
             @Override
             public void OnMenuItemClick(int itemId) {
-                if (itemId == 1) {
-                    mIvBack.setVisibility(View.GONE);
-                    mIvMenu.setVisibility(View.GONE);
-                    mTvMenuLeft.setVisibility(View.VISIBLE);
-                    ViewUtils.setLeftMargins(mTvMenuLeft, DensityUtil.dip2px(NewFolderWenZhangActivity.this,18));
-                    mTvMenuLeft.setText(getString(R.string.label_give_up));
-                    mTvMenuLeft.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.black_1e1e1e));
-                    mTvMenuRight.setVisibility(View.VISIBLE);
-                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFolderWenZhangActivity.this,18));
-                    mTvMenuRight.setText(getString(R.string.label_delete));
-                    mTvMenuRight.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.main_cyan));
-                    mTvTop.setVisibility(View.VISIBLE);
-                    mIsSelect = !mIsSelect;
-                    mAdapter.setSelect(mIsSelect);
-                    mAdapter.notifyDataSetChanged();
-                }
+//                if (itemId == 1) {
+//                    mIvBack.setVisibility(View.GONE);
+//                    mIvMenu.setVisibility(View.GONE);
+//                    mTvMenuLeft.setVisibility(View.VISIBLE);
+//                    ViewUtils.setLeftMargins(mTvMenuLeft, DensityUtil.dip2px(NewFolderWenZhangActivity.this,18));
+//                    mTvMenuLeft.setText(getString(R.string.label_give_up));
+//                    mTvMenuLeft.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.black_1e1e1e));
+//                    mTvMenuRight.setVisibility(View.VISIBLE);
+//                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFolderWenZhangActivity.this,18));
+//                    mTvMenuRight.setText(getString(R.string.label_delete));
+//                    mTvMenuRight.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.main_cyan));
+//                    mIsSelect = !mIsSelect;
+//                    mAdapter.setSelect(mIsSelect);
+//                    mAdapter.notifyDataSetChanged();
+//                }
                 if(itemId == 2){
                     Intent i = new Intent(NewFolderWenZhangActivity.this,SubmissionHistoryActivity.class);
                     startActivity(i);
@@ -251,7 +279,6 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-        mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setImageResource(R.drawable.btn_back_black_normal);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
             @Override
@@ -269,44 +296,36 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         mTvMenuLeft.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                mIvBack.setVisibility(View.VISIBLE);
-                mIvMenu.setVisibility(View.VISIBLE);
-                mTvMenuLeft.setVisibility(View.GONE);
-                mTvMenuRight.setVisibility(View.GONE);
-                mTvTop.setVisibility(View.GONE);
-                mIsSelect = !mIsSelect;
-                for(WenZhangFolderEntity entity : mAdapter.getList()){
-                    entity.setSelect(false);
-                }
-                mSelectMap.clear();
-                mAdapter.setSelect(mIsSelect);
-                mAdapter.notifyDataSetChanged();
+//                mIvBack.setVisibility(View.VISIBLE);
+//                mIvMenu.setVisibility(View.VISIBLE);
+//                mTvMenuLeft.setVisibility(View.GONE);
+//                mTvMenuRight.setVisibility(View.GONE);
+//                mIsSelect = !mIsSelect;
+//                for(WenZhangFolderEntity entity : mAdapter.getList()){
+//                    entity.setSelect(false);
+//                }
+//                mSelectMap.clear();
+//                mAdapter.setSelect(mIsSelect);
+//                mAdapter.notifyDataSetChanged();
+                finish();
             }
         });
-        mTvMenuRight.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                if(mSelectMap.size() > 0){
-                    createDialog();
-                    ArrayList<String> ids = new ArrayList<>();
-                    for(WenZhangFolderEntity id : mSelectMap.values()){
-                        //ids.add(id.getFolderId());
-                    }
-                    mPresenter.deleteFolders(ids,mFolderType);
-                }
-            }
-        });
-        mTvTop.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                if(mSelectMap.size() == 1){
-                    createDialog();
-                    for(WenZhangFolderEntity entity : mSelectMap.values()){
-                      //  mPresenter.topFolder(entity.getFolderId());
-                    }
-                }
-            }
-        });
+//        mTvMenuRight.setOnClickListener(new NoDoubleClickListener() {
+//            @Override
+//            public void onNoDoubleClick(View v) {
+////                if(mSelectMap.size() > 0){
+////                    createDialog();
+////                    ArrayList<String> ids = new ArrayList<>();
+////                    for(WenZhangFolderEntity id : mSelectMap.values()){
+////                        ids.add(id.getId());
+////                    }
+////                    mPresenter.deleteFolders(ids,mFolderType);
+////                }
+//                if(mSelectMap.size() == 0){
+//
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -346,23 +365,23 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
 
     @Override
     public void onDeleteFoldersSuccess() {
-        finalizeDialog();
-        for(WenZhangFolderEntity entity : mSelectMap.values()){
-            mAdapter.getList().remove(entity);
-        }
-        mAdapter.notifyDataSetChanged();
-        mSelectMap.clear();
+//        finalizeDialog();
+//        for(WenZhangFolderEntity entity : mSelectMap.values()){
+//            mAdapter.getList().remove(entity);
+//        }
+//        mAdapter.notifyDataSetChanged();
+//        mSelectMap.clear();
     }
 
     @Override
     public void onTopFolderSuccess() {
-        finalizeDialog();
-        for (Integer i : mSelectMap.keySet()){
-            mAdapter.getList().get(i).setSelect(false);
-            WenZhangFolderEntity entity = mAdapter.getList().remove((int)i);
-            mAdapter.getList().add(0,entity);
-            mAdapter.notifyItemRangeChanged(0,i + 1);
-        }
-        mSelectMap.clear();
+//        finalizeDialog();
+//        for (Integer i : mSelectMap.keySet()){
+//            mAdapter.getList().get(i).setSelect(false);
+//            WenZhangFolderEntity entity = mAdapter.getList().remove((int)i);
+//            mAdapter.getList().add(0,entity);
+//            mAdapter.notifyItemRangeChanged(0,i + 1);
+//        }
+//        mSelectMap.clear();
     }
 }

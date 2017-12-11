@@ -3,6 +3,7 @@ package com.moemoe.lalala.presenter;
 import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.Comment24Entity;
+import com.moemoe.lalala.model.entity.DiscoverEntity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
@@ -22,6 +23,8 @@ public interface FeedContract {
         void loadXianChongList();
         void loadFolder();
         void loadComment();
+        void likeDynamic(String id,boolean isLike,int position);
+        void loadDiscoverList(String type,long minIdx,long maxIdx,boolean isPull);
     }
 
     interface View extends BaseView{
@@ -30,5 +33,7 @@ public interface FeedContract {
         void onLoadXianChongSuccess(ArrayList<XianChongEntity> entities);
         void onLoadFolderSuccess(ArrayList<ShowFolderEntity> entities);
         void onLoadCommentSuccess(Comment24Entity entity);
+        void onLikeDynamicSuccess(boolean isLike,int position);
+        void onLoadDiscoverListSuccess(ArrayList<DiscoverEntity> entities,boolean isPull);
     }
 }

@@ -42,8 +42,11 @@ import java.util.regex.Pattern;
 
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.wechat.friends.Wechat;
+import io.rong.imkit.RongContext;
+import io.rong.imkit.utils.RongDateUtils;
 
 /**
+ * 字符串工具类
  * Created by yi on 2016/11/28.
  */
 
@@ -486,17 +489,44 @@ public class StringUtils {
         return new SimpleDateFormat(pares, Locale.getDefault()).format(time);
     }
 
-    public static String timeFormate(String str){
+    public static String timeFormat(long time){
+        if(time > 0L){
+            try {
+                long second = (System.currentTimeMillis() - time)/1000;
+                String res = "";
+                if(second == 0){
+                    res = "刚刚";
+                }else if(second < 30){
+                    res = second + "秒以前";
+                }else if(second >=30 && second < 60){
+                    res = "半分钟前";
+                }else if(second >= 60 && second < 60 * 60){
+                    long minute = second / 60;
+                    res = minute + "分钟前";
+                }else if(second >= 60 * 60 && second < 60 * 60 * 24){
+                    long hour = (second / 60) / 60;
+                    res = hour + "小时前";
+                }else {
+                    Date date1 = new Date(time);
+                    res = getFormateTime(date1,"yyyy-MM-dd");
+                }
+                return res ;
+            }catch (Exception e){
+                return "";
+            }
+        }
+        return "";
+    }
+
+    public static String timeFormat(String str){
         if(!TextUtils.isEmpty(str)){
             try {
-                Calendar calendar = Calendar.getInstance();
                 Calendar c = Calendar.getInstance();
                 try {
                     c.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(str));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-              //  long temp1 = (System.currentTimeMillis() - c.getTimeInMillis())/1000;
                 long second = (System.currentTimeMillis() - c.getTimeInMillis())/1000;
                 Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(str);
                 String res = "";
@@ -511,69 +541,10 @@ public class StringUtils {
                     res = minute + "分钟前";
                 }else if(second >= 60 * 60 && second < 60 * 60 * 24){
                     long hour = (second / 60) / 60;
-                    //if(hour <= 3){
-                        res = hour + "小时前";
-                   /// }else {
-                   //     res = "今天" + getFormateTime(date,"HH:mm");
-                   // }
+                    res = hour + "小时前";
                 }else {
                     res = getFormateTime(date,"yyyy-MM-dd");
                 }
-
-
-//                int year = calendar.get(Calendar.YEAR);
-//                int month = calendar.get(Calendar.MONTH);
-//                int day1 = calendar.get(Calendar.DAY_OF_MONTH);
-//                String nowDay = getFormatDate(String.valueOf(year), String.valueOf(month + 1), String.valueOf(day1));
-//                String res = "";
-//                String[] temp = str.split(" ");
-//                String day = temp[0];
-//                String time = temp[1];
-//                String reDay = day.replace("-","");
-//                if(reDay.equals(nowDay)){
-//                    Calendar c = Calendar.getInstance();
-//                    try {
-//                        c.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(str));
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//                    long temp1 = System.currentTimeMillis() - c.getTimeInMillis();
-//
-//
-//                    StringBuffer sb = new StringBuffer();
-//                    long mill = (long) Math.ceil(temp1 /1000);//秒前
-//                    long minute = (long) Math.ceil(temp1/60/1000.0f);// 分钟前
-//                    long hour = (long) Math.ceil(temp1/60/60/1000.0f);// 小时
-//                    if (hour - 1 > 0) {
-//                        if (hour >= 24) {
-//                            sb.append("1天");
-//                        } else {
-//                            sb.append(hour + "小时");
-//                        }
-//                    }else if (minute - 1 > 0) {
-//                        if (minute == 60) {
-//                            sb.append("1小时");
-//                        } else {
-//                            sb.append(minute + "分钟");
-//                        }
-//                    } else if (mill - 1 > 0) {
-//                        if (mill == 60) {
-//                            sb.append("1分钟");
-//                        } else {
-//                            sb.append(mill + "秒");
-//                        }
-//                    } else {
-//                        sb.append("刚刚");
-//                    }
-//                    if (!sb.toString().equals("刚刚")) {
-//                        sb.append("前");
-//                    }
-//                    res = sb.toString();
-//
-//
-//                }else {
-//                    res = day;
-//                }
                 return res ;
             }catch (Exception e){
                 return "";

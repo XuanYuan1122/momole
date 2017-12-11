@@ -20,4 +20,7 @@ public interface StartActivityConstant {
     int REQ_ALT_USER = 10012;//@user
     int REQ_DELETE_TAG = 10013;//删除标签
     int REQ_INVITE_ADD = 10014;//填写邀请码
+    int REQ_GROUP_DETAIL = 10015;//查看群详情
+    int REQ_WEN_ZHANG = 10016;//选择文章
+    int REQ_SELECT_MAP_IMAGE = 10017;//选择地图形象
 }

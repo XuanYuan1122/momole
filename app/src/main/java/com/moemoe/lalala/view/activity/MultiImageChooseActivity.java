@@ -89,7 +89,7 @@ public class MultiImageChooseActivity extends BaseAppCompatActivity implements V
         mLabelRecent = getResources().getString(R.string.label_recent_photos);
         mTvTitle.setText(getString(R.string.label_recent_photos));
         mTvSave.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mTvSave,DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvSave,(int)getResources().getDimension(R.dimen.x36));
         mTvSave.setOnClickListener(this);
         mSelected = new ArrayList<>();
         if(getIntent() != null){

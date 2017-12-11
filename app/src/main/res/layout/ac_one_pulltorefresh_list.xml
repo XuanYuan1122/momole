@@ -9,7 +9,6 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
     </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
 
@@ -18,9 +17,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/y20"
+        android:layout_marginEnd="@dimen/x20"
         android:visibility="gone"
         android:src="@drawable/bg_send_post_btn" />
 
@@ -39,14 +38,14 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/neta_toolbar">
+            android:layout_height="@dimen/y100">
 
             <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingLeft="@dimen/size_18"
-                android:paddingRight="@dimen/size_18"
+                android:paddingLeft="@dimen/x36"
+                android:paddingRight="@dimen/x36"
                 android:layout_centerVertical="true"
                 android:src="@drawable/btn_back_cover_normal"/>
 
@@ -56,23 +55,21 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/main_cyan"
                 android:layout_centerInParent="true"
-                android:textSize="18dp"
+                android:textSize="@dimen/x36"
                 android:text=""
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_simple_label"
-                android:layout_width="50dp"
-                android:layout_height="20dp"
+                android:layout_width="@dimen/x100"
+                android:layout_height="@dimen/y40"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/size_10"
-                android:layout_marginEnd="@dimen/size_10"
+                android:layout_marginEnd="@dimen/x20"
                 android:gravity="center"
                 android:text="标签精简"
                 android:textColor="@color/txt_cyan_white"
                 android:textStyle="bold"
-                android:textSize="9dp"
-                android:layout_alignParentRight="true"
+                android:textSize="@dimen/x18"
                 android:layout_alignParentEnd="true"
                 android:background="@drawable/btn_only_host_new"
                 android:visibility="gone"/>

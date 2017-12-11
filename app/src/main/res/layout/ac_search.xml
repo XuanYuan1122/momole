@@ -15,12 +15,10 @@
     <LinearLayout
         android:id="@+id/ll_top_root"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/neta_toolbar"
+        android:layout_height="@dimen/y100"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/size_12"
-        android:paddingStart="@dimen/size_12"
-        android:paddingRight="@dimen/size_16"
-        android:paddingEnd="@dimen/size_16"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x32"
         android:background="@color/white">
 
         <RelativeLayout
@@ -29,12 +27,9 @@
             android:layout_weight="1"
             android:layout_height="28dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/size_16"
-            android:layout_marginEnd="@dimen/size_16"
-            android:paddingStart="@dimen/size_10"
-            android:paddingLeft="@dimen/size_10"
-            android:paddingRight="@dimen/size_12"
-            android:paddingEnd="@dimen/size_12"
+            android:layout_marginEnd="@dimen/x32"
+            android:paddingStart="@dimen/x20"
+            android:paddingEnd="@dimen/x24"
             android:background="@drawable/shape_e8e8e8_14">
 
             <LinearLayout
@@ -57,12 +52,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:layout_toRightOf="@+id/iv_search"
-                    android:layout_toEndOf="@+id/iv_search"
-                    android:layout_marginLeft="@dimen/size_8"
-                    android:layout_marginStart="@dimen/size_8"
+                    android:layout_marginStart="@dimen/x16"
                     android:text="搜索你感兴趣的"
-                    android:textSize="@dimen/size_14" />
+                    android:textSize="@dimen/x28" />
             </LinearLayout>
 
             <LinearLayout
@@ -84,17 +76,15 @@
                     android:id="@+id/et_search"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="28dp"
+                    android:layout_height="@dimen/y56"
                     android:background="@null"
                     android:imeOptions="actionSearch"
                     android:textColor="@color/black_1e1e1e"
                     android:singleLine="true"
-                    android:layout_marginLeft="@dimen/size_8"
-                    android:layout_marginStart="@dimen/size_8"
-                    android:layout_marginEnd="@dimen/size_8"
-                    android:layout_marginRight="@dimen/size_8"
+                    android:layout_marginStart="@dimen/x16"
+                    android:layout_marginEnd="@dimen/x16"
                     android:hint="搜索你感兴趣的"
-                    android:textSize="@dimen/size_14"
+                    android:textSize="@dimen/x28"
                     android:textColorHint="@color/white"
                     android:textCursorDrawable="@null"
                     android:text="" />
@@ -115,7 +105,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/main_cyan"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/size_15"
+            android:textSize="@dimen/x30"
             android:text="取消"/>
     </LinearLayout>
 
@@ -123,7 +113,6 @@
         android:id="@+id/indicator_search_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:background="@color/white"
         app:tabSelectedTextColor="@color/main_cyan"
         app:tabIndicatorColor="@color/main_cyan"

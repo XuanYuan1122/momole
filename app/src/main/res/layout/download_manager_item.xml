@@ -4,15 +4,16 @@
               android:layout_width="match_parent"
               android:layout_height="?android:attr/listPreferredItemHeight"
               android:clickable="true"
+              android:focusable="true"
               android:foreground="?android:attr/selectableItemBackground"
               android:orientation="horizontal"
-              android:paddingLeft="5dp"
-              android:paddingRight="5dp">
+              android:paddingLeft="@dimen/x10"
+              android:paddingRight="@dimen/x10">
 
     <ImageView
         android:id="@+id/img"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/y100"
+        android:layout_height="@dimen/y100"
         android:layout_gravity="center"
         android:contentDescription="@null"
         android:src="@mipmap/ic_launcher"/>
@@ -21,10 +22,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginEnd="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginStart="@dimen/x10"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -39,8 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="@dimen/x40"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:gravity="start"
@@ -54,8 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="@dimen/x20"
                 android:gravity="center"
                 android:text="0.00%"/>
         </LinearLayout>
@@ -79,8 +76,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginEnd="@dimen/x40"
                 android:layout_weight="1"
                 android:gravity="start"
                 tools:text="正在下载中"/>
@@ -90,8 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="@dimen/x20"
                 android:gravity="center"
                 android:text="0.0KB/0.0KB"
                 android:textSize="11sp"/>
@@ -101,7 +96,7 @@
 
     <LinearLayout
         style="?android:buttonBarStyle"
-        android:layout_width="80dp"
+        android:layout_width="@dimen/x160"
         android:layout_height="match_parent"
         android:gravity="center_vertical|center_horizontal"
         android:orientation="horizontal">
@@ -109,7 +104,7 @@
         <Button
             android:id="@+id/action"
             style="?android:buttonBarButtonStyle"
-            android:layout_width="50dp"
+            android:layout_width="@dimen/x100"
             android:layout_height="wrap_content"
             android:background="@null"
             android:text="开始"
@@ -118,8 +113,8 @@
         <Button
             android:id="@+id/more"
             style="?android:buttonBarButtonStyle"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="@dimen/y40"
+            android:layout_height="@dimen/y40"
             android:background="@mipmap/ic_more_vert"
             android:textColor="@color/colorAccent"/>
     </LinearLayout>

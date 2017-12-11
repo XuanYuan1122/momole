@@ -7,15 +7,15 @@
         android:id="@+id/edt_title"
         style="@style/EdtNormal"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/y100"
         android:background="@drawable/bg_normal_white_btn"
         android:ellipsize="end"
         android:hint="@string/a_hint_input_title"
         android:minLines="1"
-        android:layout_marginTop="@dimen/size_10"
+        android:layout_marginTop="@dimen/y20"
         android:textColor="@color/txt_gray_red"
         android:textColorHint="@color/gray_c1c1c1"
-        android:textSize="@dimen/size_15" />
+        android:textSize="@dimen/x30" />
 
     <View
         android:id="@+id/sep"

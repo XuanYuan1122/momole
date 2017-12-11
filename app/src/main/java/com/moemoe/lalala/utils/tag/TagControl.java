@@ -11,6 +11,7 @@ import com.moemoe.lalala.model.entity.tag.UserUrlSpan;
 import com.moemoe.lalala.utils.BaseUrlSpan;
 import com.moemoe.lalala.utils.CustomUrlSpan;
 import com.moemoe.lalala.utils.DoubleKeyValueMap;
+import com.moemoe.lalala.utils.StringUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,14 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TagControl {
 
     private static TagControl instance;
-   // private static Map<String,String> tags;
     private static ArrayList<BaseTag> tags;
-
-//    static {
-//        tags = new HashMap<>();
-//        tags.put("at_user","user_id");
-//        tags.put("kira_img","url");
-//    }
 
     private TagControl(){}
 
@@ -116,9 +110,7 @@ public class TagControl {
         if(spen.length > 0){
             int step = 0;
             ArrayList<BaseUrlSpan> spanList = new ArrayList<>();
-            for(BaseUrlSpan span : spen){
-                spanList.add(span);
-            }
+            spanList.addAll(Arrays.asList(spen));
             Collections.sort(spanList, new CompareStart(stringBuilder));
             for (BaseUrlSpan span : spanList) {
                 int before = res.length();
@@ -134,11 +126,20 @@ public class TagControl {
                 step += res.length() - before;
             }
         }
+
+        for(BaseTag tag : tags){
+            res = res.replace("<" + tag.getTag(),"%" + tag.getTag()).replace("</" + tag.getTag() + ">","%/" + tag.getTag() + ">");
+        }
+        res = res.replace("<","%lt%");
+        for(BaseTag tag : tags){
+            res = res.replace("%" + tag.getTag(),"<" + tag.getTag()).replace("%/" + tag.getTag() + ">","</" + tag.getTag() + ">");
+        }
         return res;
     }
 
     public SpannableStringBuilder paresToSpann(Context context,String s){
         Document document = Jsoup.parse(s);
+        s = s.replace("%lt%","<");
         Map<BaseTag,DoubleKeyValueMap<HashMap<String,String>,Integer,Integer>> resMap = new HashMap<>();
         try {
             for (BaseTag tag : tags){
@@ -146,7 +147,7 @@ public class TagControl {
                 DoubleKeyValueMap<HashMap<String,String>,Integer,Integer> map = new DoubleKeyValueMap<>();
                 for(Element element : elements){
                     int before = s.length();
-                    String text = element.text();
+                    String text = element.text().replace("%lt%","<");
                     String all = element.toString().replace("\n","");
                     String value = "";
                     HashMap<String,String> attrMap = new HashMap<>();
@@ -165,14 +166,26 @@ public class TagControl {
                     s = beginStr + text + endStr;
                     int step = before - s.length();
                     for (BaseTag tagTemp : resMap.keySet()){
+                        DoubleKeyValueMap<HashMap<String,String>,Integer,Integer> changeMap = new DoubleKeyValueMap<>();
                         DoubleKeyValueMap<HashMap<String,String>,Integer,Integer> mapD = resMap.get(tagTemp);
                         for(HashMap<String,String> tempMap : mapD.getFirstKeys()){
                             ConcurrentHashMap<Integer, Integer> concurrentHashMap = mapD.get(tempMap);
                             for(Integer start : concurrentHashMap.keySet()){
                                 if(start > startTemp){
-                                    mapD.remove(tempMap);
+                                   // mapD.remove(tempMap);
                                     int end = concurrentHashMap.get(start);
-                                    mapD.put(tempMap,start - step,end - step);
+                                   // mapD.put(tempMap,start - step,end - step);
+                                    changeMap.put(tempMap,start - step,end - step);
+                                }
+                            }
+                        }
+                        if(changeMap.size() > 0){
+                            for(HashMap<String,String> tempMap : changeMap.getFirstKeys()){
+                                mapD.remove(tempMap);
+                                ConcurrentHashMap<Integer, Integer> concurrentHashMap = changeMap.get(tempMap);
+                                for(Integer start : concurrentHashMap.keySet()){
+                                    int end = concurrentHashMap.get(start);
+                                    mapD.put(tempMap,start,end);
                                 }
                             }
                         }
@@ -205,54 +218,9 @@ public class TagControl {
                 }
             }
         }
-        return stringBuilder;
+        return StringUtils.getUrlClickableText(context,stringBuilder);
+       // return stringBuilder;
     }
-
-//    public SpannableStringBuilder paresToSpann(Context context,String s){
-//        s = s.replace(" ","&nbsp;");
-//        for (String tag : tags.keySet()){
-//            s = s.replace("<" + tag + "&nbsp;","<" + tag + " ");
-//        }
-//        Document document = Jsoup.parse(s);
-//        Map<String,DoubleKeyValueMap<String,Integer,Integer>> resMap = new HashMap<>();
-//        for (String tag : tags.keySet()){
-//            Elements elements = document.select(tag);
-//            DoubleKeyValueMap<String,Integer,Integer> map = new DoubleKeyValueMap<>();
-//            for(Element element : elements){
-//                String text = element.text();
-//                String id = element.attr(tags.get(tag));
-//                String all = element.toString().replace("\n","")
-//                        .replace("\"" + id + "\"",id)
-//                        .replace(" ","")
-//                        .replace("&nbsp;"," ");
-//                if(!all.contains("<" + tag + ">")){
-//                    all = all.replace("<" + tag,"<" + tag + " ");
-//                }
-//                s = s.replace("&nbsp;"," ");
-//                String beginStr = s.substring(0,s.indexOf(all));
-//                String endStr = s.substring(s.indexOf(all) + all.length());
-//                map.put(id,s.indexOf(all),s.indexOf(all) + text.length());
-//                s = beginStr + text + endStr;
-//                s = s.replace(" ","&nbsp;").replace("<" + tag + "&nbsp;","<" + tag + " ");
-//            }
-//            resMap.put(tag,map);
-//        }
-//        s = s.replace("&nbsp;"," ");
-//        SpannableStringBuilder stringBuilder = new SpannableStringBuilder(s);
-//        for (String tag : resMap.keySet()){
-//            DoubleKeyValueMap<String,Integer,Integer> map = resMap.get(tag);
-//            for(String id : map.getFirstKeys()){
-//                ConcurrentHashMap<Integer, Integer> concurrentHashMap = map.get(id);
-//                for(Integer begin : concurrentHashMap.keySet()){
-//                    int end = concurrentHashMap.get(begin);
-//                    //TODO 不同的tag不同的点击事件
-//                    CustomUrlSpan span = new CustomUrlSpan(context,null,id);
-//                    stringBuilder.setSpan(span,begin,end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                }
-//            }
-//        }
-//        return stringBuilder;
-//    }
 
     /**
      * 获取指定tag的attrs

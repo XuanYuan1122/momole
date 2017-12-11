@@ -69,10 +69,10 @@ public class BagBuyActivity extends BaseAppCompatActivity implements BagFavorite
         mTitle.setText("书包购买");
         mTvSelect.setVisibility(View.VISIBLE);
         mTvSelect.getPaint().setFakeBoldText(true);
-        ViewUtils.setRightMargins(mTvSelect, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvSelect, (int)getResources().getDimension(R.dimen.x36));
         mTvSelect.setText("选择");
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
-        mListDocs.setPadding(DensityUtil.dip2px(this,12),0,DensityUtil.dip2px(this,12),0);
+        mListDocs.setPadding((int)getResources().getDimension(R.dimen.x24),0,(int)getResources().getDimension(R.dimen.x24),0);
         mAdapter = new BagCollectionTopAdapter();
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager( new GridLayoutManager(this,3));

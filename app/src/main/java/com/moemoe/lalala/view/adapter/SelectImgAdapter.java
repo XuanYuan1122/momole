@@ -56,7 +56,7 @@ public class SelectImgAdapter extends RecyclerView.Adapter<SelectImgAdapter.MyVi
             Glide.with(mContext)
                     .load(R.drawable.ic_add_photo)
                     .asBitmap()
-                    .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
+                    .override((int)mContext.getResources().getDimension(R.dimen.y230), (int)mContext.getResources().getDimension(R.dimen.y230))
                     .into(holder.mIvImg);
             holder.mIvDel.setVisibility(View.GONE);
         }else {
@@ -68,7 +68,7 @@ public class SelectImgAdapter extends RecyclerView.Adapter<SelectImgAdapter.MyVi
                 Glide.with(mContext)
                         .load(path)
                         .centerCrop()
-                        .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
+                        .override((int)mContext.getResources().getDimension(R.dimen.y230), (int)mContext.getResources().getDimension(R.dimen.y230))
                         .into(holder.mIvImg);
             }
             final String del = paths.get(position);

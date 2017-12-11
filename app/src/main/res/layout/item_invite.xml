@@ -9,10 +9,10 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/size_12"
+        android:textSize="@dimen/x24"
         android:textColor="@color/black_1e1e1e"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/size_15" />
+        android:layout_marginStart="@dimen/x30" />
 
     <TextView
         android:id="@+id/tv_id"
@@ -20,10 +20,10 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/size_18"
+        android:layout_marginEnd="@dimen/x36"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textSize="@dimen/size_12"
+        android:textSize="@dimen/x24"
         android:textColor="@color/black_1e1e1e"
         android:gravity="end" />
 </LinearLayout>

@@ -34,9 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/rc_status_bar"
-        android:paddingTop="@dimen/y12"
-        android:paddingLeft="@dimen/x24"
-        android:paddingRight="@dimen/x24"
         android:divider="@null"
         android:background="#f6f6f6"/>
 

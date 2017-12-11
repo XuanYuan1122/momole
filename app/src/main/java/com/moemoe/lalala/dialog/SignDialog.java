@@ -21,10 +21,10 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.DailyTaskEntity;
-import com.moemoe.lalala.view.activity.PhoneMainActivity;
+import com.moemoe.lalala.view.activity.PhoneMainV2Activity;
 
 /**
- *
+ * 签到对话框
  * Created by yi on 2016/11/28.
  */
 
@@ -186,7 +186,7 @@ public class SignDialog extends Dialog implements View.OnClickListener {
                 mPositiveListener.onClick(this);
             }
         }else if(id == R.id.iv_info){
-            ((PhoneMainActivity)mContext).loadPerson();
+            ((PhoneMainV2Activity)mContext).loadPerson();
         }
     }
 

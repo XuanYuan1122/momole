@@ -8,8 +8,8 @@
     <TextView
         android:id="@+id/tv_text"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size_50"
-        android:textSize="@dimen/size_16"
+        android:layout_height="@dimen/y100"
+        android:textSize="@dimen/x32"
         android:textColor="@color/main_cyan"
         android:background="@color/white"
         android:gravity="center"/>

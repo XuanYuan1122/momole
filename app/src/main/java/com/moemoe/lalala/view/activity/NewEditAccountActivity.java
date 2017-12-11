@@ -112,7 +112,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
                 .inject(this);
         mInfo = getIntent().getParcelableExtra("info");
         mTvSave.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mTvSave,DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvSave,(int)getResources().getDimension(R.dimen.x36));
         mTvSave.getPaint().setFakeBoldText(true);
         mTvSave.setText(getString(R.string.label_save_modify));
         mTvTitle.setText(getString(R.string.label_edit_personal_data));
@@ -193,7 +193,7 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
         super.onDestroy();
     }
 
-    @OnClick({R.id.tv_menu,R.id.ll_head_root,R.id.ll_bg_root,R.id.ll_birthday,R.id.ll_gender,R.id.ll_nickname,R.id.ll_sign})
+    @OnClick({R.id.tv_menu,R.id.ll_head_root,R.id.ll_bg_root,R.id.ll_birthday,R.id.ll_gender,R.id.ll_nickname,R.id.ll_sign,R.id.rl_map_root})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.tv_menu:
@@ -231,6 +231,10 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
                 mEdtCommentInput.requestFocus();
                 mIsNickname = false;
                 SoftKeyboardUtils.showSoftKeyboard(this, mEdtCommentInput);
+                break;
+            case R.id.rl_map_root:
+                Intent i = new Intent(NewEditAccountActivity.this,CreateMapImageActivity.class);
+                startActivity(i);
                 break;
         }
     }
@@ -382,8 +386,8 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
         finalizeDialog();
         if(type == 0){
             Glide.with(this)
-                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + path,DensityUtil.dip2px(this,50), DensityUtil.dip2px(this,50),false,true))
-                    .override(DensityUtil.dip2px(this,50), DensityUtil.dip2px(this,50))
+                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + path,(int)getResources().getDimension(R.dimen.y100), (int)getResources().getDimension(R.dimen.y100),false,true))
+                    .override((int)getResources().getDimension(R.dimen.y100), (int)getResources().getDimension(R.dimen.y100))
                     .placeholder(R.drawable.bg_default_circle)
                     .bitmapTransform(new CropCircleTransformation(this))
                     .error(R.drawable.bg_default_circle)
@@ -391,8 +395,8 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
             mUploadPath = path;
         }else {
             Glide.with(this)
-                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + path,DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56),false,true))
-                    .override(DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56))
+                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + path,(int)getResources().getDimension(R.dimen.y112),(int)getResources().getDimension(R.dimen.y112),false,true))
+                    .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .into(mIvBg);
@@ -466,15 +470,15 @@ public class NewEditAccountActivity extends BaseAppCompatActivity implements Edi
 
     private void updateView(){
         Glide.with(this)
-                .load(StringUtils.getUrl(this,mInfo.getHeadPath(), DensityUtil.dip2px(this,50),DensityUtil.dip2px(this,50),false,true))
-                .override(DensityUtil.dip2px(this,50),DensityUtil.dip2px(this,50))
+                .load(StringUtils.getUrl(this,mInfo.getHeadPath(), (int)getResources().getDimension(R.dimen.y100),(int)getResources().getDimension(R.dimen.y100),false,true))
+                .override((int)getResources().getDimension(R.dimen.y100),(int)getResources().getDimension(R.dimen.y100))
                 .bitmapTransform(new CropCircleTransformation(this))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
                 .into(mIvAvatar);
         Glide.with(this)
-                .load(StringUtils.getUrl(this, ApiService.URL_QINIU + mInfo.getBackground(), DensityUtil.dip2px(this,56),DensityUtil.dip2px(this,56),false,true))
-                .override(DensityUtil.dip2px(this,56),DensityUtil.dip2px(this,56))
+                .load(StringUtils.getUrl(this, ApiService.URL_QINIU + mInfo.getBackground(), (int)getResources().getDimension(R.dimen.y112),(int)getResources().getDimension(R.dimen.y112),false,true))
+                .override((int)getResources().getDimension(R.dimen.y112),(int)getResources().getDimension(R.dimen.y112))
                 .error(R.drawable.bg_default_square)
                 .placeholder(R.drawable.bg_default_square)
                 .into(mIvBg);

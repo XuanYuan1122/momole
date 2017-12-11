@@ -29,8 +29,9 @@ public class MapDbEntity {
     private String fileName;
     private int downloadState;//1.未下载 2.下载完成 3.下载失败
     private String md5;
+    private String type;//map allUser birthdayUser followUser nearUser
 
-    public MapDbEntity(MapEntity entity){
+    public MapDbEntity(MapEntity entity,String type){
         id = entity.getId();
         image_path = entity.getImage().getPath();
         image_w = entity.getImage().getW();
@@ -44,12 +45,13 @@ public class MapDbEntity {
         fileName = entity.getId() + image_path.substring(image_path.lastIndexOf("."));
         md5 = entity.getMd5();
         downloadState = 1;
+        this.type = type;
     }
 
-    @Generated(hash = 67326735)
+    @Generated(hash = 500748279)
     public MapDbEntity(String id, String name, String image_path, int image_w, int image_h,
             String schema, int pointX, int pointY, String text, String shows, String fileName,
-            int downloadState, String md5) {
+            int downloadState, String md5, String type) {
         this.id = id;
         this.name = name;
         this.image_path = image_path;
@@ -63,16 +65,17 @@ public class MapDbEntity {
         this.fileName = fileName;
         this.downloadState = downloadState;
         this.md5 = md5;
+        this.type = type;
     }
 
     @Generated(hash = 921294398)
     public MapDbEntity() {
     }
 
-    public static ArrayList<MapDbEntity> toDb(ArrayList<MapEntity> entities){
+    public static ArrayList<MapDbEntity> toDb(ArrayList<MapEntity> entities,String type){
         ArrayList<MapDbEntity> res = new ArrayList<>();
         for(MapEntity entity : entities){
-         MapDbEntity entity1 = new MapDbEntity(entity);
+         MapDbEntity entity1 = new MapDbEntity(entity,type);
             res.add(entity1);
         }
         return res;
@@ -180,5 +183,13 @@ public class MapDbEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

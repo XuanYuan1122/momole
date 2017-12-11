@@ -18,8 +18,8 @@ public class BannerImageLoader extends ImageLoader {
     public void displayImage(Context context, Object path, ImageView imageView) {
         BannerEntity bean = (BannerEntity) path;
         Glide.with(context)
-                .load(StringUtils.getUrl(context, bean.getBg().getPath(), DensityUtil.getScreenWidth(context), DensityUtil.dip2px(context,150), false, true))
-                .override( DensityUtil.getScreenWidth(context), DensityUtil.dip2px(context,150))
+                .load(StringUtils.getUrl(context, bean.getBg().getPath(), DensityUtil.getScreenWidth(context), (int)context.getResources().getDimension(R.dimen.y300), false, true))
+                .override( DensityUtil.getScreenWidth(context), (int)context.getResources().getDimension(R.dimen.y300))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
                 .into(imageView);

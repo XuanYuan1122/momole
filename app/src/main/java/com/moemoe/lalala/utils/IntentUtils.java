@@ -13,13 +13,13 @@ import com.moemoe.lalala.BuildConfig;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
-import com.moemoe.lalala.view.activity.EventActivity;
 import com.moemoe.lalala.view.activity.WebViewActivity;
 
 import java.util.ArrayList;
 import java.util.Set;
 
 /**
+ *
  * Created by yi on 2016/11/28.
  */
 
@@ -54,6 +54,15 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         sSupportSchame.add(context.getResources().getString(R.string.label_map_event_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_game_action));
         sSupportSchame.add(context.getResources().getString(R.string.label_luntan_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_dynamic_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_common_file_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_manhua_file_action));
+        sSupportSchame.add(context.getResources().getString(R.string.label_manhua_file_action));
+        sSupportSchame.add("conversationlist");
+        sSupportSchame.add("conversation");
+        sSupportSchame.add("conversation/private");
+        sSupportSchame.add("conversation/group");
+        sSupportSchame.add("conversation/detail");
     }
 
     public static void haveShareWeb(Context context, Uri uri, View v){
@@ -92,7 +101,7 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
             }
             if(sSupportSchame.contains(path)){
                 if(path.equals("event_1.0")){
-                    showEvent(context);
+                   // showEvent(context);
                 } else if(path.equals(context.getResources().getString(R.string.label_out_url_action))){
                     Uri uri1 = Uri.parse(uri.getQuery());
                     i.setData(uri1);
@@ -198,30 +207,30 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
         }
     }
 
-    private static void showEvent(final Context context){
-        int pass = PreferenceUtils.getPassEvent(context);
-        if(StringUtils.isKillEvent() && pass < 3){
-            if(!AppSetting.isEnterEventToday){
-                final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-                alertDialogUtil.createNormalDialog(context,context.getString(R.string.label_enter_event));
-                alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
-                    @Override
-                    public void CancelOnClick() {
-                        alertDialogUtil.dismissDialog();
-                    }
-
-                    @Override
-                    public void ConfirmOnClick() {
-                        alertDialogUtil.dismissDialog();
-                        Intent i = new Intent(context,EventActivity.class);
-                        context.startActivity(i);
-                    }
-                });
-                alertDialogUtil.showDialog();
-            }
-        }else if((StringUtils.isKillEvent() && pass == 3) || pass > 3){
-            AppSetting.isEnterEventToday = true;
-            WebViewActivity.startActivity(context,false,"http://prize.moemoe.la:8000/netaopera/chap4/?pass=" + pass  + "&user_id=" + PreferenceUtils.getUUid());
-        }
-    }
+//    private static void showEvent(final Context context){
+//        int pass = PreferenceUtils.getPassEvent(context);
+//        if(StringUtils.isKillEvent() && pass < 3){
+//            if(!AppSetting.isEnterEventToday){
+//                final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+//                alertDialogUtil.createNormalDialog(context,context.getString(R.string.label_enter_event));
+//                alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+//                    @Override
+//                    public void CancelOnClick() {
+//                        alertDialogUtil.dismissDialog();
+//                    }
+//
+//                    @Override
+//                    public void ConfirmOnClick() {
+//                        alertDialogUtil.dismissDialog();
+//                        Intent i = new Intent(context,EventActivity.class);
+//                        context.startActivity(i);
+//                    }
+//                });
+//                alertDialogUtil.showDialog();
+//            }
+//        }else if((StringUtils.isKillEvent() && pass == 3) || pass > 3){
+//            AppSetting.isEnterEventToday = true;
+//            WebViewActivity.startActivity(context,false,"http://prize.moemoe.la:8000/netaopera/chap4/?pass=" + pass  + "&user_id=" + PreferenceUtils.getUUid());
+//        }
+//    }
 }

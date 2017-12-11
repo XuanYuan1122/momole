@@ -78,7 +78,7 @@ public class AddMusicActivity extends BaseAppCompatActivity {
             cover = new Image();
         }
         mTvMenuLeft.setVisibility(View.VISIBLE);
-        ViewUtils.setLeftMargins(mTvMenuLeft,DensityUtil.dip2px(this,18));
+        ViewUtils.setLeftMargins(mTvMenuLeft, (int) getResources().getDimension(R.dimen.x36));
         mTvMenuLeft.setText(getString(R.string.label_cancel));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvTitle.setVisibility(View.VISIBLE);
@@ -86,7 +86,7 @@ public class AddMusicActivity extends BaseAppCompatActivity {
         mTvMenuRight.setVisibility(View.VISIBLE);
         mTvMenuRight.getPaint().setFakeBoldText(true);
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-        ViewUtils.setRightMargins(mTvMenuRight,DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvMenuRight, (int) getResources().getDimension(R.dimen.x36));
         mTvMenuRight.setText(getString(R.string.label_done));
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
     }
@@ -117,13 +117,13 @@ public class AddMusicActivity extends BaseAppCompatActivity {
             mTvImg.setText(R.string.label_select_img_finish);
             String path = mIconPaths.get(0);
             if(path.startsWith("image")){
-                path = StringUtils.getUrl(this, ApiService.URL_QINIU + path, DensityUtil.dip2px(this,115),DensityUtil.dip2px(this,115), false, false);
+                path = StringUtils.getUrl(this, ApiService.URL_QINIU + path, (int)getResources().getDimension(R.dimen.x230), (int)getResources().getDimension(R.dimen.x230), false, false);
             }else {
                 path = "file://" + path;
             }
             Glide.with(this)
                     .load( path)
-                    .override(DensityUtil.dip2px(this,115), DensityUtil.dip2px(this,115))
+                    .override((int)getResources().getDimension(R.dimen.x230), (int)getResources().getDimension(R.dimen.x230))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .centerCrop()
@@ -190,7 +190,7 @@ public class AddMusicActivity extends BaseAppCompatActivity {
                     mTvImg.setText(R.string.label_select_img_finish);
                     Glide.with(this)
                             .load( "file://" + mIconPaths.get(0))
-                            .override(DensityUtil.dip2px(this,115), DensityUtil.dip2px(this,115))
+                            .override((int)getResources().getDimension(R.dimen.x230),(int)getResources().getDimension(R.dimen.x230))
                             .placeholder(R.drawable.bg_default_square)
                             .error(R.drawable.bg_default_square)
                             .centerCrop()

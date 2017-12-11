@@ -45,14 +45,14 @@ public class DynamicViewHolder extends ClickableViewHolder {
     }
 
     public void createItem(final DynamicEntity entity){
-        int width = (DensityUtil.getScreenWidth(itemView.getContext()) - DensityUtil.dip2px(itemView.getContext(),28))/2;
+        int width = (DensityUtil.getScreenWidth(itemView.getContext()) - (int)context.getResources().getDimension(R.dimen.x56))/2;
         topRoot.setLayoutParams(new LinearLayout.LayoutParams(width,width));
         ivBg.setLayoutParams(new RelativeLayout.LayoutParams(width,width));
         Glide.with(itemView.getContext())
                 .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),width,width,false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
-                .bitmapTransform(new CropSquareTransformation(itemView.getContext()),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
+                .bitmapTransform(new CropSquareTransformation(itemView.getContext()),new RoundedCornersTransformation(itemView.getContext(),(int)context.getResources().getDimension(R.dimen.y8),0))
                 .into(ivBg);
         tvMark.setVisibility(View.VISIBLE);
 
@@ -92,6 +92,6 @@ public class DynamicViewHolder extends ClickableViewHolder {
             }
         });
 
-        setText(R.id.tv_time,StringUtils.timeFormate(entity.getCreateTime()));
+        setText(R.id.tv_time,StringUtils.timeFormat(entity.getCreateTime()));
     }
 }

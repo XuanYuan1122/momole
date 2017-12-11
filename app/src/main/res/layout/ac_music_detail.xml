@@ -21,30 +21,30 @@
     <ImageView
         android:id="@+id/iv_music_bg"
         android:layout_width="match_parent"
-        android:layout_height="273dp"
-        android:layout_marginTop="75dp"
+        android:layout_height="@dimen/y546"
+        android:layout_marginTop="@dimen/y150"
         android:scaleType="fitCenter"/>
     
     <TextView
         android:id="@+id/tv_music_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="37dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:textSize="@dimen/size_15"
+        android:layout_marginTop="@dimen/y74"
+        android:layout_marginStart="@dimen/x60"
+        android:layout_marginEnd="@dimen/x60"
+        android:textSize="@dimen/x30"
         android:textColor="@color/white"
         android:gravity="center"
-        android:maxLines="1"
+        android:singleLine="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:marqueeRepeatLimit="marquee_forever"
         android:ellipsize="marquee"
-        android:text="Only My RailGun"/>
+        android:text=""/>
 
     <ImageView
         android:id="@+id/iv_music_play"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/y40"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/icon_video_big_play"

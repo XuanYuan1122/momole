@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:textSize="@dimen/size_20"
+        android:textSize="@dimen/x40"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="@dimen/y400"/>
@@ -23,7 +23,7 @@
         android:id="@+id/tv_mark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/size_30"
+        android:textSize="@dimen/x60"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_18"
+                android:textSize="@dimen/x36"
                 android:text="拒绝"/>
         </LinearLayout>
 
@@ -64,7 +64,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:layout_marginLeft="@dimen/x192"
             android:layout_marginStart="@dimen/x192"
             android:orientation="vertical">
 
@@ -77,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_18"
+                android:textSize="@dimen/x36"
                 android:text="接听"/>
         </LinearLayout>
     </LinearLayout>

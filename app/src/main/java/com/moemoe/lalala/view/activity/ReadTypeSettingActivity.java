@@ -52,7 +52,7 @@ public class ReadTypeSettingActivity extends BaseAppCompatActivity{
         }
         mReadType = getIntent().getStringExtra("read_type");
         mTvDone.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvDone, (int)getResources().getDimension(R.dimen.x36));
         mTvDone.getPaint().setFakeBoldText(true);
         mTvDone.setText(R.string.label_done);
         initStyleView(R.id.set_normal);

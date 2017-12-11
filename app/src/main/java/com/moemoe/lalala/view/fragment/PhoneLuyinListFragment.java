@@ -1,13 +1,9 @@
 package com.moemoe.lalala.view.fragment;
 
 import android.app.ProgressDialog;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.widget.SeekBar;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -17,15 +13,9 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPhoneLuYinComponent;
 import com.moemoe.lalala.di.modules.PhoneLuYinModule;
-import com.moemoe.lalala.event.MateBackPressEvent;
-import com.moemoe.lalala.event.MateLuyinEvent;
 import com.moemoe.lalala.event.PhonePlayMusicEvent;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.LuYinEntity;
-import com.moemoe.lalala.netamusic.data.model.PlayList;
-import com.moemoe.lalala.netamusic.data.model.Song;
-import com.moemoe.lalala.netamusic.player.IPlayBack;
-import com.moemoe.lalala.netamusic.player.Player;
 import com.moemoe.lalala.presenter.PhoneLuYinPresenter;
 import com.moemoe.lalala.presenter.PhoneLuyinContract;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -34,7 +24,7 @@ import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.ToastUtils;
-import com.moemoe.lalala.view.activity.PhoneMainActivity;
+import com.moemoe.lalala.view.activity.PhoneMainV2Activity;
 import com.moemoe.lalala.view.adapter.PhoneLuYinListAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -45,14 +35,13 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2017/9/4.
  */
 
@@ -66,21 +55,6 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
     private boolean isLoading = false;
     private String mate;
     private String type;
-
-//    private Handler mHandler = new Handler();
-//    private Runnable mProgressCallback = new Runnable() {
-//        @Override
-//        public void run() {
-//            if (AudioPlayer.getInstance(getContext()).isPlaying()) {
-//                if(mAdapter.getPlayingPosition() != -1){
-//                    mAdapter.notifyItemChanged(mAdapter.getPlayingPosition());
-//                    mHandler.postDelayed(this, 1000);
-//                }
-//            }else {
-//                mHandler.removeCallbacks(this);
-//            }
-//        }
-//    };
 
     public static PhoneLuyinListFragment newInstance(String type,String mate){
         PhoneLuyinListFragment fragment = new PhoneLuyinListFragment();
@@ -250,7 +224,7 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
     @Override
     public void onUnlockSuccess(int position) {
         PreferenceUtils.getAuthorInfo().setTicketNum(PreferenceUtils.getAuthorInfo().getTicketNum()-1);
-        RxBus.getInstance().post(new MateBackPressEvent("次元币: " +  PreferenceUtils.getAuthorInfo().getTicketNum()));
+        ((PhoneMainV2Activity)getContext()).setLuyinMenu("次元币: " +  PreferenceUtils.getAuthorInfo().getTicketNum());
         mAdapter.getItem(position).setFlag(true);
         mAdapter.notifyItemChanged(position);
         LuYinEntity entity = mAdapter.getItem(position);
@@ -307,43 +281,6 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
 
                         }
                     }).start();
-//            RxDownload.getInstance(getContext())
-//                    .maxThread(1)
-//                    .download(ApiService.URL_QINIU + entity.getSound(),entity.getSound().substring(entity.getSound().lastIndexOf("/") + 1),StorageUtils.getMusicRootPath())
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<DownloadStatus>() {
-//                        @Override
-//                        public void onSubscribe(@NonNull Disposable d) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onNext(@NonNull DownloadStatus downloadStatus) {
-//                            dialog.setMax((int) downloadStatus.getTotalSize());
-//                            dialog.setProgress((int) downloadStatus.getDownloadSize());
-//                        }
-//
-//                        @Override
-//                        public void onError(@NonNull Throwable e) {
-//                            ToastUtils.showShortToast(getContext(),"下载失败，请重试");
-//                            dialog.dismiss();
-//                            RxDownload.getInstance(getContext()).deleteServiceDownload(ApiService.URL_QINIU +  entity.getSound(),false).subscribe();
-//                            if(play){
-//                                mAdapter.setPlayingPosition(-1);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            dialog.dismiss();
-//                            RxDownload.getInstance(getContext()).deleteServiceDownload(ApiService.URL_QINIU +  entity.getSound(),false).subscribe();
-//                            if(play){
-//                                mAdapter.notifyItemChanged(mAdapter.getPlayingPosition());
-//                                //mHandler.postDelayed(mProgressCallback,1000);
-//                            }
-//                        }
-//                    });
         }
     }
 }

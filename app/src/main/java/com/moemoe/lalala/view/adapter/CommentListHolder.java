@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
-import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -23,12 +22,10 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.CommentV2Entity;
 import com.moemoe.lalala.model.entity.CommentV2SecEntity;
 import com.moemoe.lalala.model.entity.Image;
-import com.moemoe.lalala.model.entity.WenZhangFolderEntity;
 import com.moemoe.lalala.model.entity.tag.UserUrlSpan;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
@@ -36,7 +33,6 @@ import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.CommentListActivity;
 import com.moemoe.lalala.view.activity.CommentSecListActivity;
-import com.moemoe.lalala.view.activity.CreateCommentActivity;
 import com.moemoe.lalala.view.activity.DynamicActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
@@ -102,7 +98,7 @@ public class CommentListHolder extends ClickableViewHolder {
         }else {
             setVisible(R.id.tv_favorite, false);
         }
-        setText(R.id.tv_comment, TagControl.getInstance().paresToSpann(itemView.getContext(),entity.getContent()));
+        setText(R.id.tv_comment,StringUtils.getUrlClickableText(context,TagControl.getInstance().paresToSpann(itemView.getContext(),entity.getContent())));
         ((TextView)$(R.id.tv_comment)).setMovementMethod(LinkMovementMethod.getInstance());
         if(entity.getImages().size() > 0){
             setVisible(R.id.ll_comment_img,true);
@@ -146,7 +142,7 @@ public class CommentListHolder extends ClickableViewHolder {
         }else {
             setVisible(R.id.ll_comment_img,false);
         }
-        setText(R.id.tv_comment_time,StringUtils.timeFormate(entity.getCreateTime()));
+        setText(R.id.tv_comment_time,StringUtils.timeFormat(entity.getCreateTime()));
         //sec comment
         if(entity.getHotComments() != null && entity.getHotComments().size() > 0){
             setVisible(R.id.ll_comment_root,true);

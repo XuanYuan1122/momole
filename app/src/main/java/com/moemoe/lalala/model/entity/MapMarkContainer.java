@@ -26,5 +26,18 @@ public class MapMarkContainer {
         return null;
     }
 
+    public void removeMarkById(String id){
+        MapMarkEntity tmp =  null;
+        for (MapMarkEntity entity : container){
+            if (entity.getId().equals(id)){
+                tmp = entity;
+                break;
+            }
+        }
+        if(tmp != null){
+            container.remove(tmp);
+        }
+    }
+
     public int size(){return container.size();}
 }

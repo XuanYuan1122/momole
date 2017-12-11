@@ -5,24 +5,26 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.dialog.SignDialog;
+import com.moemoe.lalala.greendao.gen.MapDbEntityDao;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.BuildEntity;
-import com.moemoe.lalala.model.entity.DailyTaskEntity;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
 import com.moemoe.lalala.model.entity.MapDbEntity;
 import com.moemoe.lalala.model.entity.MapEntity;
 import com.moemoe.lalala.model.entity.MapMarkContainer;
 import com.moemoe.lalala.model.entity.MapMarkEntity;
+import com.moemoe.lalala.model.entity.NearUserEntity;
 import com.moemoe.lalala.model.entity.NetaEvent;
-import com.moemoe.lalala.model.entity.PersonalMainEntity;
-import com.moemoe.lalala.model.entity.SignEntity;
+import com.moemoe.lalala.model.entity.SplashEntity;
+import com.moemoe.lalala.model.entity.UserLocationEntity;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.model.entity.JuQingDoneEntity;
@@ -34,7 +36,9 @@ import com.moemoe.lalala.view.widget.map.interfaces.Layer;
 import com.moemoe.lalala.view.widget.map.model.MapObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -89,6 +93,150 @@ public class MapPresenter implements MapContract.Presenter {
                     @Override
                     public void onFail(int code, String msg) {
                         if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadRcToken() {
+        apiService.loadRcToken()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        if(view != null) view.onLoadRcTokenSuccess(s);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onLoadRcTokenFail(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void saveUserLocation(UserLocationEntity entity) {
+        apiService.saveUserLocation(entity)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void loadMapAllUser() {
+        apiService.loadMapAllUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<MapEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<MapEntity> entities) {
+                        if(view != null) view.onLoadMapAllUser(entities);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadMapBirthdayUser() {
+        apiService.loadMapBirthdayUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<MapEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<MapEntity> entities) {
+                        if(view != null) view.onLoadMapBirthDayUser(entities);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadMapEachFollowUser() {
+        apiService.loadMapEachFollowUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<MapEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<MapEntity> entities) {
+                        if(view != null) view.onLoadMapEachFollowUser(entities);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadMapTopUser() {
+        apiService.loadMapTopUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<NearUserEntity>() {
+                    @Override
+                    public void onSuccess(NearUserEntity entities) {
+                        if(view != null) view.onLoadMapTopUser(entities);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadMapNearUser(double lat, double lon) {
+        apiService.loadMapNearUser(lat,lon)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<NearUserEntity>() {
+                    @Override
+                    public void onSuccess(NearUserEntity entities) {
+                        if(view != null) view.onLoadMapNearUser(entities);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadSplashList() {
+        apiService.loadSplashList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<SplashEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<SplashEntity> splashEntity) {
+                        if(view != null) view.onLoadSplashSuccess(splashEntity);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
                     }
                 });
     }
@@ -246,23 +394,85 @@ public class MapPresenter implements MapContract.Presenter {
         MapObject object = layer.getMapObject("地图剧情" + id);
         if(object == null){
             MapMarkEntity entity1 = new MapMarkEntity("地图剧情" + id,x,y,"neta://com.moemoe.lalala/map_event_1.0?id="+storyId,iconId,140,140);
+            container.removeMarkById("地图剧情" + id);
             container.addMark(entity1);
             addMarkToMap(context,entity1,layer);
-            view.onMapEventLoaded(container);
+           // view.onMapEventLoaded(container);
         }
     }
 
     @Override
-    public void addMapMark(Context context, MapWidget map, float scale) {
-        MapMarkContainer container = new MapMarkContainer();
-        addMapMark(context,map,container);
-        view.onMapMarkLoaded(container);
+    public void addMapMark(Context context,MapMarkContainer container, MapWidget map, String type) {
+        addMapMark(context,map,container,type);
+       // view.onMapMarkLoaded(container);
     }
 
-    private void addMapMark(Context context, MapWidget map, MapMarkContainer container) {
-        Layer layer = map.createLayer(0);//0 全天可点击事件
-        ArrayList<MapDbEntity> mapPics = (ArrayList<MapDbEntity>) GreenDaoManager.getInstance().getSession().getMapDbEntityDao().loadAll();
+    private ArrayList<MapDbEntity> getRandom(ArrayList<MapDbEntity> list,ArrayList<NearUserEntity.Point> posList){
+        ArrayList<MapDbEntity> res = new ArrayList<>();
+        int size = list.size();
+        if(list.size() > posList.size()){
+            Collections.shuffle(list);
+            size = posList.size();
+        }
+        for(int i = 0;i < size;i++){
+            MapDbEntity entity = list.get(i);
+            NearUserEntity.Point point = posList.get(i);
+            entity.setPointX(point.getX());
+            entity.setPointY(point.getY());
+            res.add(entity);
+        }
+        return res;
+    }
+
+    private void addMapMark(Context context, MapWidget map, MapMarkContainer container,String type) {
+        Layer layer ;//0 全天可点击事件
+        if("map".equals(type)){
+            layer = map.createLayer(0);
+        }else if("allUser".equals(type)){
+            Layer tmp = map.getLayerById(2);
+            if(tmp != null) map.removeLayer(2);
+            layer = map.createLayer(2);
+        }else if("birthdayUser".equals(type)){
+            Layer tmp = map.getLayerById(3);
+            if(tmp != null) map.removeLayer(3);
+            layer = map.createLayer(3);
+        }else if("followUser".equals(type)){
+            Layer tmp = map.getLayerById(4);
+            if(tmp != null) map.removeLayer(4);
+            layer = map.createLayer(4);
+        }else if("nearUser".equals(type)){
+            Layer tmp = map.getLayerById(5);
+            if(tmp != null) map.removeLayer(5);
+            layer = map.createLayer(5);
+        }else if("topUser".equals(type)){
+            Layer tmp = map.getLayerById(6);
+            if(tmp != null) map.removeLayer(6);
+            layer = map.createLayer(6);
+        }else {
+            Layer tmp = map.getLayerById(100);
+            if(tmp != null) map.removeLayer(100);
+            layer = map.createLayer(100);
+        }
+        ArrayList<MapDbEntity> mapPics = (ArrayList<MapDbEntity>) GreenDaoManager.getInstance().getSession().getMapDbEntityDao()
+                .queryBuilder()
+                .where(MapDbEntityDao.Properties.Type.eq(type))
+                .list();
         if(mapPics != null && mapPics.size() > 0){
+            if("nearUser".equals(type)){
+                String posStr = PreferenceUtils.getNearPosition(context);
+                Gson gson = new Gson();
+                ArrayList<NearUserEntity.Point> posList = gson.fromJson(posStr, new TypeToken<ArrayList<NearUserEntity.Point>>() {}.getType());
+                if(posList != null){
+                    mapPics = getRandom(mapPics,posList);
+                }
+            }else if("topUser".equals(type)){
+                String posStr = PreferenceUtils.getTopUserPosition(context);
+                Gson gson = new Gson();
+                ArrayList<NearUserEntity.Point> posList = gson.fromJson(posStr, new TypeToken<ArrayList<NearUserEntity.Point>>() {}.getType());
+                if(posList != null){
+                    mapPics = getRandom(mapPics,posList);
+                }
+            }
             for(MapDbEntity entity : mapPics){
                 String time = "-1";
                 if(StringUtils.isasa()) {

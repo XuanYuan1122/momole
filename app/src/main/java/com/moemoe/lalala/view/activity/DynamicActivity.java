@@ -11,7 +11,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -36,23 +35,19 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDynamicComponent;
 import com.moemoe.lalala.di.modules.DynamicModule;
-import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.CommentV2Entity;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.DynamicContentEntity;
-import com.moemoe.lalala.model.entity.DynamicEntity;
 import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
-import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.RetweetEntity;
 import com.moemoe.lalala.model.entity.ShareArticleEntity;
 import com.moemoe.lalala.model.entity.ShareFolderEntity;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
-import com.moemoe.lalala.model.entity.tag.UserUrlSpan;
 import com.moemoe.lalala.presenter.DynamicContract;
 import com.moemoe.lalala.presenter.DynamicPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -131,6 +126,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
     private int mPrePosition;
     private boolean mAuto;
     private String mId;
+    private TextView tvTag;
 
     @Override
     protected int getLayoutId() {
@@ -145,7 +141,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
 
     public static void startActivity(Context context,String id){
         Intent i = new Intent(context,DynamicActivity.class);
-        i.putExtra("id",id);
+        i.putExtra(UUID,id);
         context.startActivity(i);
     }
 
@@ -166,7 +162,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 .build()
                 .inject(this);
         mDynamic = getIntent().getParcelableExtra("dynamic");
-        mId = getIntent().getStringExtra("id");
+        mId = getIntent().getStringExtra(UUID);
         mAuto = getIntent().getBooleanExtra("auto",false);
         if(TextUtils.isEmpty(mId)){
             init();
@@ -255,6 +251,17 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 CreateCommentActivity.startActivity(DynamicActivity.this,mDynamic.getId(),false,"",false);
             }
         });
+        mRvList.getRecyclerView().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if(mAuto){
+                    if(mAdapter.getList().size() > 0){
+                        mRvList.getRecyclerView().scrollToPosition(1);
+                    }
+                    mAuto = false;
+                }
+            }
+        });
         setHead();
         mPresenter.loadTags(mDynamic.getId());
         mPresenter.loadCommentsList(mDynamic.getId(),commentType,sortTime,0);
@@ -330,19 +337,19 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
     private void setHead(){
         View v = LayoutInflater.from(this).inflate(R.layout.item_new_feed_list,null);
         v.findViewById(R.id.rl_from_top).setVisibility(View.GONE);
-        ImageView userHead = (ImageView) v.findViewById(R.id.iv_avatar);
-        ImageView ivVip = (ImageView) v.findViewById(R.id.iv_vip);
-        TextView userName = (TextView) v.findViewById(R.id.tv_name);
-        ImageView userSex = (ImageView) v.findViewById(R.id.iv_sex);
-        TextView level = (TextView) v.findViewById(R.id.tv_level);
+        ImageView userHead = v.findViewById(R.id.iv_avatar);
+        ImageView ivVip = v.findViewById(R.id.iv_vip);
+        TextView userName = v.findViewById(R.id.tv_name);
+        ImageView userSex = v.findViewById(R.id.iv_sex);
+        TextView level = v.findViewById(R.id.tv_level);
         View huiRoot = v.findViewById(R.id.fl_huizhang_1);
-        TextView huiTv = (TextView) v.findViewById(R.id.tv_huizhang_1);
+        TextView huiTv = v.findViewById(R.id.tv_huizhang_1);
         v.findViewById(R.id.iv_more).setVisibility(View.GONE);
-        TextView time = (TextView) v.findViewById(R.id.tv_time);
-        TextView text = (TextView) v.findViewById(R.id.tv_content);
-        LinearLayout root = (LinearLayout) v.findViewById(R.id.ll_img_root);
-        RelativeLayout root1 = (RelativeLayout) v.findViewById(R.id.rl_card_root);
-        LinearLayout cardRoot = (LinearLayout) v.findViewById(R.id.ll_card_root);
+        TextView time = v.findViewById(R.id.tv_time);
+        TextView text = v.findViewById(R.id.tv_content);
+        LinearLayout root = v.findViewById(R.id.ll_img_root);
+        RelativeLayout root1 = v.findViewById(R.id.rl_card_root);
+        LinearLayout cardRoot = v.findViewById(R.id.ll_card_root);
 
         //user top
         if(mDynamic.getCreateUser().isVip()){
@@ -390,7 +397,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             huiRoot.setVisibility(View.GONE);
             huiTv.setVisibility(View.GONE);
         }
-        time.setText(StringUtils.timeFormate(mDynamic.getCreateTime()));
+        time.setText(StringUtils.timeFormat(mDynamic.getCreateTime()));
         //content
         text.setMaxLines(100);
         text.setText(TagControl.getInstance().paresToSpann(this, mDynamic.getText()));
@@ -430,12 +437,12 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             View folder = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
             folder.findViewById(R.id.tv_title).setVisibility(View.GONE);
             folder.findViewById(R.id.tv_content).setVisibility(View.GONE);
-            ImageView cover = (ImageView) folder.findViewById(R.id.iv_cover);
-            TextView mark = (TextView) folder.findViewById(R.id.tv_mark);
-            TextView name = (TextView) folder.findViewById(R.id.tv_folder_name);
-            TextView tag = (TextView) folder.findViewById(R.id.tv_tag);
+            ImageView cover = folder.findViewById(R.id.iv_cover);
+            TextView mark = folder.findViewById(R.id.tv_mark);
+            TextView name = folder.findViewById(R.id.tv_folder_name);
+            TextView tag = folder.findViewById(R.id.tv_tag);
             int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
-            int h = (int) getResources().getDimension(R.dimen.y320);
+            int h = (int) getResources().getDimension(R.dimen.y400);
             Glide.with(this)
                     .load(StringUtils.getUrl(this,folderEntity.getFolderCover(),w,h,false,true))
                     .error(R.drawable.bg_default_square)
@@ -467,9 +474,9 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             }
             tag.setText(tagStr);
 
-            ImageView avatar = (ImageView) folder.findViewById(R.id.iv_avatar);
-            TextView userName1 = (TextView) folder.findViewById(R.id.tv_user_name);
-            TextView time1 = (TextView) folder.findViewById(R.id.tv_time);
+            ImageView avatar = folder.findViewById(R.id.iv_avatar);
+            TextView userName1 = folder.findViewById(R.id.tv_user_name);
+            TextView time1 = folder.findViewById(R.id.tv_time);
             size = (int) this.getResources().getDimension(R.dimen.x44);
             Glide.with(this)
                     .load(StringUtils.getUrl(this,folderEntity.getCreateUser().getHeadPath(),size,size,false,true))
@@ -484,7 +491,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }
             });
             userName1.setText(folderEntity.getCreateUser().getUserName());
-            time1.setText("上一次更新:" + StringUtils.timeFormate(folderEntity.getUpdateTime()));
+            time1.setText("上一次更新:" + StringUtils.timeFormat(folderEntity.getUpdateTime()));
             cardRoot.addView(folder);
 
             root1.setOnClickListener(new NoDoubleClickListener() {
@@ -505,14 +512,14 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             root1.setVisibility(View.VISIBLE);
             final ShareArticleEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),ShareArticleEntity.class);
             View article = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
-            TextView title = (TextView) article.findViewById(R.id.tv_title);
-            TextView articleContent = (TextView) article.findViewById(R.id.tv_content);
-            ImageView cover = (ImageView) article.findViewById(R.id.iv_cover);
-            TextView mark = (TextView) article.findViewById(R.id.tv_mark);
+            TextView title = article.findViewById(R.id.tv_title);
+            TextView articleContent = article.findViewById(R.id.tv_content);
+            ImageView cover = article.findViewById(R.id.iv_cover);
+            TextView mark = article.findViewById(R.id.tv_mark);
             article.findViewById(R.id.tv_folder_name).setVisibility(View.GONE);
             article.findViewById(R.id.tv_tag).setVisibility(View.GONE);
             int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
-            int h = (int) getResources().getDimension(R.dimen.y320);
+            int h = (int) getResources().getDimension(R.dimen.y400);
             Glide.with(this)
                     .load(StringUtils.getUrl(this,folderEntity.getCover(),w,h,false,true))
                     .error(R.drawable.bg_default_square)
@@ -522,9 +529,9 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             mark.setText("文章");
             title.setText(folderEntity.getTitle());
             articleContent.setText(folderEntity.getContent());
-            ImageView avatar = (ImageView) article.findViewById(R.id.iv_avatar);
-            TextView userName1 = (TextView) article.findViewById(R.id.tv_user_name);
-            TextView time1 = (TextView) article.findViewById(R.id.tv_time);
+            ImageView avatar = article.findViewById(R.id.iv_avatar);
+            TextView userName1 = article.findViewById(R.id.tv_user_name);
+            TextView time1 = article.findViewById(R.id.tv_time);
             size = (int) getResources().getDimension(R.dimen.x44);
             Glide.with(this)
                     .load(StringUtils.getUrl(this,folderEntity.getDocCreateUser().getHeadPath(),size,size,false,true))
@@ -539,7 +546,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }
             });
             userName1.setText(folderEntity.getDocCreateUser().getUserName());
-            time1.setText(StringUtils.timeFormate(folderEntity.getCreateTime()));
+            time1.setText(StringUtils.timeFormat(folderEntity.getCreateTime()));
             cardRoot.addView(article);
             root1.setOnClickListener(new NoDoubleClickListener() {
                 @Override
@@ -553,19 +560,34 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             });
         }else if("RETWEET".equals(mDynamic.getType())){
             root.setVisibility(View.VISIBLE);
-            RetweetEntity retweetEntity = new Gson().fromJson(mDynamic.getDetail(),RetweetEntity.class);
+            final RetweetEntity retweetEntity = new Gson().fromJson(mDynamic.getDetail(),RetweetEntity.class);
             if(!TextUtils.isEmpty(retweetEntity.getContent())){
                 TextView tv = new TextView(this);
                 tv.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.x24));
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.x30));
+                tv.setLineSpacing(getResources().getDimension(R.dimen.y12),1);
+                tv.setMaxLines(10);
+                tv.setEllipsize(TextUtils.TruncateAt.END);
                 String res = "<at_user user_id="+ retweetEntity.getCreateUserId() + ">" + retweetEntity.getCreateUserName() + ":</at_user>" +  retweetEntity.getContent();
                 tv.setText(TagControl.getInstance().paresToSpann(this,res));
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
+                tv.setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+                        DynamicActivity.startActivity(DynamicActivity.this,retweetEntity.getOldDynamicId());
+                    }
+                });
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 lp.topMargin = (int) getResources().getDimension(R.dimen.y24);
                 lp.bottomMargin = (int) getResources().getDimension(R.dimen.y24);
                 tv.setLayoutParams(lp);
                 root.addView(tv);
+                root.setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+                        DynamicActivity.startActivity(DynamicActivity.this,retweetEntity.getOldDynamicId());
+                    }
+                });
             }
             if(retweetEntity.getImages() != null && retweetEntity.getImages().size() > 0){
                 setImg(retweetEntity.getImages(),root);
@@ -575,8 +597,9 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }
             }
         }
+
         //label
-        docLabel = (DocLabelView)v.findViewById(R.id.dv_doc_label_root);
+        docLabel =v.findViewById(R.id.dv_doc_label_root);
         docLabel.setVisibility(View.VISIBLE);
         docLabelAdapter = new NewDocLabelAdapter(this,false);
         docLabel.setDocLabelAdapter(docLabelAdapter);
@@ -603,13 +626,15 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }
             }
         });
+
         //bottom
-        TextView tvForward = (TextView) v.findViewById(R.id.tv_forward_num);
+        TextView tvForward = v.findViewById(R.id.tv_forward_num);
         tvForward.setCompoundDrawablePadding(0);
-        TextView tvComment = (TextView) v.findViewById(R.id.tv_comment_num);
+        TextView tvComment = v.findViewById(R.id.tv_comment_num);
         tvComment.setCompoundDrawablePadding(0);
-        TextView tvTag = (TextView) v.findViewById(R.id.tv_tag_num);
+        tvTag = v.findViewById(R.id.tv_tag_num);
         tvTag.setCompoundDrawablePadding(0);
+        tvTag.setSelected(mDynamic.isThumb());
         View fRoot = v.findViewById(R.id.fl_forward_root);
         View cRoot = v.findViewById(R.id.fl_comment_root);
         View tRoot = v.findViewById(R.id.fl_tag_root);
@@ -624,9 +649,9 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             }
         }else {
             tRoot.setVisibility(View.INVISIBLE);
-            root.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
-            root1.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
-            docLabel.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_e1f9ff));
+            root.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
+            root1.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
+            docLabel.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
             if("ARTICLE".equals(mDynamic.getType()) || "FOLDER".equals(mDynamic.getType())){
                 int py = (int) getResources().getDimension(R.dimen.y24);
                 root1.setPadding(0,py,0,py);
@@ -644,13 +669,19 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 CreateCommentActivity.startActivity(DynamicActivity.this,mDynamic.getId(),false,"",false);
             }
         });
+        tRoot.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                mPresenter.likeDynamic(mDynamic.getId(),mDynamic.isThumb());
+            }
+        });
         mAdapter.addHeaderView(v);
 
         //mCoin
         View coinV = LayoutInflater.from(this).inflate(R.layout.item_dynamic_coin,null);
-        mCoin = (TextView) coinV.findViewById(R.id.tv_got_coin);
-        ImageView ivGive = (ImageView) coinV.findViewById(R.id.iv_give_coin);
-        mTvSort = (TextView) coinV.findViewById(R.id.tv_sort);
+        mCoin = coinV.findViewById(R.id.tv_got_coin);
+        ImageView ivGive = coinV.findViewById(R.id.iv_give_coin);
+        mTvSort = coinV.findViewById(R.id.tv_sort);
         mTvSort.setVisibility(View.GONE);
         mCoin.setText(getString(R.string.label_got_coin, mDynamic.getReward()));
         if(mDynamic.getCreateUser().getUserId().equals(PreferenceUtils.getUUid())){
@@ -693,7 +724,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         for(String title : mTitles){
             mTabEntities.add(new TabEntity(title, R.drawable.ic_personal_bag,R.drawable.ic_personal_bag));
         }
-        CommonTabLayout pageIndicator = (CommonTabLayout) coinV.findViewById(R.id.indicator_person_data);
+        CommonTabLayout pageIndicator = coinV.findViewById(R.id.indicator_person_data);
         pageIndicator.setTabData(mTabEntities);
         pageIndicator.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -709,11 +740,6 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }else {
                     ArrayList<CommentV2Entity> temp = mPreComments;
                     mPreComments = mAdapter.getList();
-//                    if(temp.size() % ApiService.LENGHT == 0){
-//                        mRvList.setLoadMoreEnabled(true);
-//                    }else {
-//                        mRvList.setLoadMoreEnabled(false);
-//                    }
                     int pre = mPrePosition;
                     if(commentType == 0){
                         mAdapter.setShowFavorite(false);
@@ -936,6 +962,11 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         item = new MenuItem(0,getString(R.string.label_reply));
         items.add(item);
 
+        if(mAdapter.isShowFavorite()){
+            item = new MenuItem(5,"点赞");
+            items.add(item);
+        }
+
         item = new MenuItem(1,getString(R.string.label_copy_dust));
         items.add(item);
 
@@ -977,6 +1008,8 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                     ToastUtils.showShortToast(DynamicActivity.this, DynamicActivity.this.getString(R.string.label_level_copy_success));
                 }else if(itemId == 4){
                     mPresenter.deleteComment(mDynamic.getId(),bean.getCommentId(),position);
+                }else if(itemId == 5){
+                    mPresenter.favoriteComment(mDynamic.getId(),bean.getCommentId(),bean.isLike(),position);
                 }
             }
         });
@@ -1043,12 +1076,6 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         }else {
             mAdapter.addList(commentV2Entities);
         }
-        if(mAuto){
-            if(commentV2Entities.size() > 0){
-                mRvList.getRecyclerView().scrollToPosition(1);
-            }
-            mAuto = false;
-        }
     }
 
     @Override
@@ -1100,5 +1127,11 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         }
         mDynamic = entity;
         init();
+    }
+
+    @Override
+    public void onLikeDynamicSuccess(boolean  isLike) {
+        tvTag.setSelected(isLike);
+        showToast("操作成功");
     }
 }

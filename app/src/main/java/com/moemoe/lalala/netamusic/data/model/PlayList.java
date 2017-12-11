@@ -92,7 +92,7 @@ public class PlayList implements Parcelable {
             case LIST:
             case SINGLE:
                 int newIndex = playingIndex + 1;
-                if(newIndex > songs.size()){
+                if(newIndex >= songs.size()){
                     newIndex = 0;
                 }
                 playingIndex = newIndex;

@@ -46,6 +46,7 @@ import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -375,6 +376,12 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
         SoftKeyboardUtils.dismissSoftKeyboard(this);
         createDialog();
         DynamicSendEntity entity = new DynamicSendEntity();
+        Set<HashMap<String,String>> attr = TagControl.getInstance().getAttr("at_user",mEtContent.getText());
+        ArrayList<String> atUser = new ArrayList<>();
+        for(HashMap<String,String> map : attr){
+            atUser.addAll(map.values());
+        }
+        entity.atUsers = atUser;
         entity.content = TagControl.getInstance().paresToString(mEtContent.getText());
         ArrayList<String> tags = new ArrayList<>();
         for(DocTagEntity tag : mTags){

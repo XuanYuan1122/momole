@@ -43,9 +43,6 @@ public class CropAvatarActivity extends BaseAppCompatActivity implements View.On
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-//        ImmersionBar.with(this)
-//                .transparentNavigationBar()
-//                .init();
         ViewUtils.setStatusBarLight(getWindow(), null);
         String mRawPath = getIntent().getStringExtra(EXTRA_RAW_IMG_PATH);
         int mWRatio = getIntent().getIntExtra(EXTRA_W_RATIO, 1);

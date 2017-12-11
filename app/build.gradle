@@ -4,11 +4,11 @@ apply plugin: 'org.greenrobot.greendao'
 
 def javaVersion = JavaVersion.VERSION_1_7
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion COMPILESDKVERSION as int
+    buildToolsVersion BUILDTOOLSVERSION as String
 
     lintOptions {
-        abortOnError false;
+        abortOnError false
     }
 
     compileOptions {
@@ -17,16 +17,16 @@ android {
     }
     //recommend
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
         jumboMode = true
     }
 
     defaultConfig {
         applicationId "com.moemoe.lalala"
-        minSdkVersion 17
-        targetSdkVersion 26
-        versionCode 5030
-        versionName "5.0.3"
+        minSdkVersion MINSDKVERSION as int
+        targetSdkVersion TARGETSDKVERSION as int
+        versionCode 5300
+        versionName "5.3.0"
         manifestPlaceholders = [UMENG_CHANNEL_VALUE: "moemoe",
                                 GETUI_APP_ID : "yJYiw8VtVO9wuMk0DgV6p4",
                                 GETUI_APP_KEY : "WaKYr5EG2c7DIAib45aPy3",
@@ -110,7 +110,7 @@ android {
                     def outputFile = output.outputFile
                     if (outputFile != null && outputFile.name.endsWith('.apk') && !outputFile.name.endsWith('debug.apk')) {
                         def fileName = "neta_v${defaultConfig.versionName}_${buildTime()}_${variant.productFlavors[0].name}.apk"
-                        outputFileName = new File(outputFile.parent, fileName)
+                        outputFileName = fileName
                     }
 
                 }
@@ -118,7 +118,7 @@ android {
         }
     }
     greendao{
-        schemaVersion 10
+        schemaVersion 14
         daoPackage 'com.moemoe.lalala.greendao.gen'
         targetGenDir 'src/main/java'
     }
@@ -213,49 +213,62 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:cardview-v7:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
+    compile "com.android.support:appcompat-v7:${UPPORTLIBRARYVERSION}"
+    compile "com.android.support:cardview-v7:${UPPORTLIBRARYVERSION}"
+    compile "com.android.support:recyclerview-v7:${UPPORTLIBRARYVERSION}"
+    compile "com.android.support:recyclerview-v7:${UPPORTLIBRARYVERSION}"
+    compile "com.android.support:design:${UPPORTLIBRARYVERSION}"
+
     //    compile 'cn.rongcloud.android:IMLib:2.8.6'
 
     //    compile 'cn.rongcloud.android:IMKit:2.8.6'
     compile 'com.coolerfall:android-app-daemon:1.2.0'
-    compile 'com.android.support:support-v4:26.1.0'
-    compile 'com.android.support:cardview-v7:26.1.0'
+    compile "com.android.support:support-v4:${UPPORTLIBRARYVERSION}"
+    compile "com.android.support:cardview-v7:${UPPORTLIBRARYVERSION}"
+
     //butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
     //google
     compile 'com.google.dagger:dagger:2.7'
     compile 'com.android.support:multidex:1.0.2'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.7'
     compile 'com.google.code.gson:gson:2.7'
     compile 'pub.devrel:easypermissions:0.2.1'
+
     //retrofit okhttp
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+
     //rx
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxjava:2.1.3'
+
     //logger
     compile 'com.orhanobut:logger:1.15'
+
     //java注解
     compile 'org.glassfish:javax.annotation:10.0-b28'
+
     //greenDao
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.3.0'
+
     //glide
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
+
     //三方
-    compile 'com.umeng.analytics:analytics:latest.integration'
+   // compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.qiniu:qiniu-android-sdk:7.2.1'
+
+    //compile 'com.wonderkiln:camerakit:0.12.0'
+
     //compile 'com.getui:sdk:2.9.5.0'
 
     //compile 'com.pingxx:pingpp-core:2.1.7'
@@ -284,30 +297,27 @@ dependencies {
 
     //tabLayout
     compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+
     //download
     compile 'com.liulishuo.filedownloader:library:1.6.8'
+
     // compile 'zlc.season:rxdownload2:2.0.4'
 
     // compile 'zlc.season:rxdownload3:1.0.8'
 
     //compile 'com.getui:ext:2.0.3'
     compile 'com.facebook.rebound:rebound:0.3.8'
+
     //jsoup
     compile 'org.jsoup:jsoup:1.10.3'
+
     //bannar
     compile 'com.youth.banner:banner:1.4.9'
     testCompile 'junit:junit:4.12'
-    compile files('libs/live2d_android.jar')
     compile files('libs/nineoldandroids-library-2.4.0.jar')
+
     //    compile files('libs/libphonenumber-6.2.jar')
-    compile files('libs/MobCommons-2016.1107.1809.jar')
-    compile files('libs/MobTools-2016.1107.1809.jar')
-    compile files('libs/ShareSDK-Core-2.7.10.jar')
-    compile files('libs/ShareSDK-QQ-2.7.10.jar')
-    compile files('libs/ShareSDK-SinaWeibo-2.7.10.jar')
-    compile files('libs/ShareSDK-Wechat-2.7.10.jar')
-    compile files('libs/ShareSDK-Wechat-Core-2.7.10.jar')
-    compile files('libs/ShareSDK-Wechat-Moments-2.7.10.jar')
+    compile files('libs/live2d_android.jar')
     compile files('libs/libphonenumber-8.0.1.jar')
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
@@ -315,8 +325,22 @@ dependencies {
     compile project(':IMKit')
     compile project(':pingpp')
     compile files('libs/GetuiSDK2.11.1.0.jar')
+
     compile project(':kiragame')
-    //compile project(':rxdownload2')
+    compile files('libs/TencentLocationSdk_v6.2.5.1_r26d6bdbd_20171019_204334.jar')
+    compile files('libs/zip4j_1.3.2.jar')
+    compile files('libs/java-unrar-decryption-supported-20120613.jar')
+    compile project(':camerakit')
+    compile files('libs/MobCommons-2017.1024.1907.jar')
+    compile files('libs/MobTools-2017.1024.1907.jar')
+    compile files('libs/ShareSDK-Core-3.1.1.jar')
+    compile files('libs/ShareSDK-QQ-3.1.1.jar')
+    compile files('libs/ShareSDK-QZone-3.1.1.jar')
+    compile files('libs/ShareSDK-SinaWeibo-3.1.1.jar')
+    compile files('libs/ShareSDK-Wechat-3.1.1.jar')
+    compile files('libs/ShareSDK-Wechat-Core-3.1.1.jar')
+    compile files('libs/ShareSDK-Wechat-Moments-3.1.1.jar')
+    //implementation project(':kiragame')
 }
 
 static def buildTime() {

@@ -113,14 +113,14 @@
                 android:id="@+id/iv_alt_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
+                android:layout_marginEnd="@dimen/x48"
                 android:src="@drawable/btn_doc_at"/>
 
             <ImageView
                 android:id="@+id/iv_add_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/size_30"
+                android:layout_marginEnd="@dimen/x60"
                 android:src="@drawable/btn_doc_pic" />
         </LinearLayout>
 

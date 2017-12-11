@@ -8,21 +8,21 @@
    <TextView
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_marginTop="@dimen/size_18"
+       android:layout_marginTop="@dimen/y36"
        android:textColor="@color/black_1e1e1e"
-       android:paddingLeft="@dimen/size_12"
-       android:paddingRight="@dimen/size_12"
-       android:textSize="@dimen/size_12"
+       android:paddingLeft="@dimen/x24"
+       android:paddingRight="@dimen/x24"
+       android:textSize="@dimen/x24"
        android:textStyle="bold"
        android:text="访问动态"/>
 
    <com.moemoe.lalala.view.widget.view.AutoPollRecyclerView
        android:id="@+id/top_list"
        android:layout_width="match_parent"
-       android:layout_height="148dp"
-       android:paddingLeft="@dimen/size_12"
-       android:paddingRight="@dimen/size_12"
-       android:layout_marginTop="@dimen/size_12">
+       android:layout_height="@dimen/y296"
+       android:paddingLeft="@dimen/x24"
+       android:paddingRight="@dimen/x24"
+       android:layout_marginTop="@dimen/y24">
 
    </com.moemoe.lalala.view.widget.view.AutoPollRecyclerView>
 
@@ -30,5 +30,5 @@
        android:layout_width="match_parent"
        android:layout_height="@dimen/size_1_px"
       android:background="@color/gray_e8e8e8"
-      android:layout_marginTop="@dimen/size_15"/>
+      android:layout_marginTop="@dimen/y30"/>
 </LinearLayout>

@@ -2,31 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:layout_marginTop="@dimen/size_10"
+    android:layout_height="@dimen/y160"
+    android:layout_marginTop="@dimen/y20"
     android:background="@drawable/bg_normal_white_btn">
 
     <ImageView
         android:id="@+id/iv_img"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
+        android:layout_width="@dimen/y152"
+        android:layout_height="@dimen/y152"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/size_2"
-        android:layout_marginStart="@dimen/size_2"
+        android:layout_marginStart="@dimen/x4"
         android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="@dimen/x40"
         android:layout_gravity="center_vertical"
         android:textColor="@color/black"
-        android:textSize="@dimen/size_18"
+        android:textSize="@dimen/x36"
         android:textStyle="bold"
         android:maxLines="1"
         android:ellipsize="end"
-        android:text="老司机"/>
+        android:text=""/>
 
 </LinearLayout>

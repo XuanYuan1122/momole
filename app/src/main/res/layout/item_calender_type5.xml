@@ -6,6 +6,7 @@
     android:orientation="horizontal"
     android:layout_height="wrap_content"
     android:clickable="true"
+    android:focusable="true"
     app:sl_shadowRadius="1dp"
     app:sl_dy="1dp"
     app:sl_shadowColor="@color/default_shadow_color">

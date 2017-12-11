@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/iv_bg"
-        android:layout_width="220dp"
-        android:layout_height="220dp"
+        android:layout_width="@dimen/y440"
+        android:layout_height="@dimen/y440"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="@dimen/y280"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_bag_music_mask2"/>
 
@@ -20,7 +20,7 @@
         android:src="@drawable/ic_bag_music_play"
         android:layout_below="@+id/iv_bg"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"/>
+        android:layout_marginTop="@dimen/y88"/>
 
     <TextView
         android:id="@+id/tv_music_time"
@@ -28,8 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/iv_music_control"
-        android:layout_marginTop="@dimen/size_12"
+        android:layout_marginTop="@dimen/x24"
         android:textColor="@color/white"
-        android:textSize="@dimen/size_15"
+        android:textSize="@dimen/x30"
         android:text=""/>
 </RelativeLayout>

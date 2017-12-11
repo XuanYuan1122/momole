@@ -22,32 +22,31 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/ll_doc"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_50"
+                android:layout_height="@dimen/y100"
                 android:orientation="vertical"
                 android:gravity="center"
-                android:background="@color/white"
-                >
+                android:background="@color/white">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/main_cyan"
-                    android:textSize="@dimen/size_15"
+                    android:textSize="@dimen/x30"
                     android:text="查看原帖"/>
 
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_12"
+                    android:textSize="@dimen/x24"
                     android:textColor="@color/gray_929292"
-                    android:layout_marginTop="@dimen/size_2"
+                    android:layout_marginTop="@dimen/y4"
                     android:visibility="gone"/>
             </LinearLayout>
 
@@ -56,17 +55,17 @@
                 layout="@layout/item_post_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_10"/>
+                android:layout_marginTop="@dimen/y20"/>
 
             <TextView
                 android:id="@+id/tv_del_or_report"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/size_50"
-                android:textSize="@dimen/size_15"
+                android:layout_height="@dimen/y100"
+                android:textSize="@dimen/x30"
                 android:textColor="@color/red_ea6142"
                 android:background="@color/white"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/size_10"
+                android:layout_marginTop="@dimen/y20"
                 android:text="删除评论"/>
         </LinearLayout>
     </ScrollView>
@@ -79,16 +78,15 @@
         android:background="@color/bg_f6f6f6"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:paddingBottom="7dp"
-        android:paddingTop="7dp"
+        android:paddingBottom="@dimen/y14"
+        android:paddingTop="@dimen/y14"
         android:visibility="visible" >
 
         <ImageView
             android:id="@+id/iv_add_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="@dimen/x20"
             android:gravity="center_vertical"
             android:src="@drawable/btn_doc_reply_pic"/>
 
@@ -96,46 +94,42 @@
             android:id="@+id/edt_comment_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toRightOf="@+id/iv_add_img"
-            android:layout_toLeftOf="@+id/iv_comment_send"
+            android:layout_marginStart="@dimen/x20"
+            android:layout_marginEnd="@dimen/x20"
+            android:layout_toEndOf="@+id/iv_add_img"
+            android:layout_toStartOf="@+id/iv_comment_send"
             android:layout_weight="1"
             android:background="@drawable/bg_white_border_gray"
             android:gravity="center_vertical"
             android:hint="@string/a_hint_input_comment"
             android:maxLines="4"
-            android:minHeight="36dp"
-            android:paddingBottom="4dp"
-            android:paddingLeft="14dp"
-            android:paddingRight="14dp"
-            android:paddingTop="4dp"
-            android:textSize="@dimen/size_15" />
+            android:minHeight="@dimen/y72"
+            android:paddingBottom="@dimen/y8"
+            android:paddingStart="@dimen/x28"
+            android:paddingEnd="@dimen/x28"
+            android:paddingTop="@dimen/y8"
+            android:textSize="@dimen/x30" />
 
         <TextView
             android:id="@+id/iv_comment_send"
-            android:layout_width="48dp"
-            android:layout_height="36dp"
+            android:layout_width="@dimen/x96"
+            android:layout_height="@dimen/y72"
             android:layout_alignBottom="@+id/edt_comment_input"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/x20"
             android:background="@drawable/bg_rect_white_click_cyan"
             android:gravity="center"
             android:text="@string/label_send"
             android:textColor="@color/txt_white_gray"
-            android:textSize="@dimen/size_15" />
+            android:textSize="@dimen/x30" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_img"
             android:layout_width="match_parent"
-            android:layout_height="115dp"
-            android:layout_marginTop="9dp"
-            android:layout_marginBottom="9dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_height="@dimen/y230"
+            android:layout_marginTop="@dimen/y18"
+            android:layout_marginBottom="@dimen/y18"
+            android:layout_marginStart="@dimen/x20"
             android:layout_below="@+id/edt_comment_input"
             android:visibility="gone">
 

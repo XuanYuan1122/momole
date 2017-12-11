@@ -29,6 +29,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
+ *
  * Created by yi on 2016/11/27.
  */
 @Module
@@ -55,13 +56,12 @@ public class NetModule {
     @Singleton
     public Retrofit provideRetrofit(OkHttpClient okHttpClient){
 
-        Retrofit retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .client(okHttpClient)
                 .baseUrl(BuildConfig.DEBUG ? TextUtils.isEmpty(PreferenceUtils.getIp(mContext))? BuildConfig.BASE_URL : PreferenceUtils.getIp(mContext): BuildConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create()))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-        return retrofit;
     }
 
     @Provides

@@ -16,7 +16,7 @@ import com.moemoe.lalala.model.entity.PersonFollowEntity;
 import com.moemoe.lalala.presenter.PersonaListPresenter;
 import com.moemoe.lalala.presenter.PersonalListContract;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
+import com.moemoe.lalala.view.activity.PersonalV2Activity;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -85,7 +85,7 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
                     PersonFollowEntity entity = (PersonFollowEntity) o;
                     if(!only){
                         if(!entity.getUserId().equals(PreferenceUtils.getUUid())){
-                            Intent i = new Intent(getContext(), NewPersonalActivity.class);
+                            Intent i = new Intent(getContext(), PersonalV2Activity.class);
                             i.putExtra("uuid",entity.getUserId());
                             startActivity(i);
                         }

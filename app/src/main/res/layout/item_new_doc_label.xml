@@ -12,7 +12,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginTop="@dimen/size_28"
+            android:layout_marginTop="@dimen/y56"
             android:background="@color/gray_e8e8e8"/>
 
         <include layout="@layout/item_new_doc_label_root"/>

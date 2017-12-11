@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y120"
+        android:background="@drawable/bg_white_main_clickable">
+
+        <ImageView
+            android:id="@+id/iv_cover"
+            android:layout_width="@dimen/y90"
+            android:layout_height="@dimen/y90"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:layout_marginStart="@dimen/x16"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_929292"
+            android:layout_marginTop="@dimen/y32"
+            android:layout_marginEnd="@dimen/x16"
+            android:layout_alignParentEnd="true"
+            android:textSize="@dimen/x24"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_1e1e1e"
+            android:textSize="@dimen/x30"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/y28"
+            android:layout_toEndOf="@+id/iv_cover"
+            android:layout_marginStart="@dimen/x16"
+            android:layout_toStartOf="@+id/tv_time"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tv_name"
+            android:layout_below="@+id/tv_name"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/gray_929292"
+            android:layout_marginTop="@dimen/y8"
+            android:layout_marginEnd="@dimen/x16"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView
+            android:id="@+id/tv_dot"
+            android:layout_width="@dimen/y36"
+            android:layout_height="@dimen/y36"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x20"
+            android:layout_marginBottom="@dimen/y16"
+            android:layout_marginEnd="@dimen/x16"
+            android:gravity="center"
+            android:background="@drawable/shape_dot_y18"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_extra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/x16"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/gray_929292"/>
+
+        <ImageView
+            android:id="@+id/iv_red_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/iv_right"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_inform_reddot"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/iv_right"
+            android:layout_width="@dimen/y42"
+            android:layout_height="@dimen/y42"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/x16"
+            android:src="@drawable/ic_array_right_gray"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/y148"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_reject"
+            android:layout_width="@dimen/x160"
+            android:layout_height="@dimen/y72"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x30"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginEnd="@dimen/x38"
+            android:background="@drawable/shape_background_red_y8"
+            android:text="拒绝"/>
+
+        <TextView
+            android:id="@+id/tv_accept"
+            android:layout_width="@dimen/x160"
+            android:layout_height="@dimen/y72"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x30"
+            android:layout_marginStart="@dimen/x38"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/shape_background_main_y8"
+            android:text="同意"/>
+    </LinearLayout>
+</LinearLayout>

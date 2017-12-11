@@ -33,8 +33,8 @@ public class RejectListAdapter extends BaseRecyclerViewAdapter<RejectEntity,Reje
     @Override
     protected void convert(RejectViewHolder helper, final RejectEntity item,int position) {
         Glide.with(context)
-                .load(StringUtils.getUrl(context, ApiService.URL_QINIU + item.getHeadPath(), DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50),false,true))
-                .override(DensityUtil.dip2px(context,50),DensityUtil.dip2px(context,50))
+                .load(StringUtils.getUrl(context, ApiService.URL_QINIU + item.getHeadPath(), (int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100),false,true))
+                .override((int)context.getResources().getDimension(R.dimen.y100),(int)context.getResources().getDimension(R.dimen.y100))
                 .bitmapTransform(new CropCircleTransformation(context))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)

@@ -25,12 +25,10 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCommentSecListComponent;
 import com.moemoe.lalala.di.modules.CommentSecListModule;
-import com.moemoe.lalala.di.modules.DynamicModule;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.CommentV2Entity;
 import com.moemoe.lalala.model.entity.CommentV2SecEntity;
 import com.moemoe.lalala.model.entity.Image;
-import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.presenter.CommentSecListContract;
 import com.moemoe.lalala.presenter.CommentSecListPresenter;
 import com.moemoe.lalala.utils.BitmapUtils;
@@ -169,6 +167,9 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
         item = new MenuItem(0,getString(R.string.label_reply));
         items.add(item);
 
+        item = new MenuItem(5,"点赞");
+        items.add(item);
+
         item = new MenuItem(1,getString(R.string.label_copy_dust));
         items.add(item);
 
@@ -211,6 +212,8 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
                     ToastUtils.showShortToast(CommentSecListActivity.this, getString(R.string.label_level_copy_success));
                 }else if(itemId == 4){
                     mPresenter.deleteComment(mComment.getCommentId(),bean.getCommentId(),mParentId,position);
+                }else if(itemId == 5){
+                    mPresenter.favoriteComment(mComment.getCommentId(),bean.getCommentId(),bean.isLike(),position);
                 }
             }
         });
@@ -304,7 +307,7 @@ public class CommentSecListActivity extends BaseAppCompatActivity implements Com
         }else {
             imgRoot.setVisibility(View.GONE);
         }
-        userTime.setText(StringUtils.timeFormate(mComment.getCreateTime()));
+        userTime.setText(StringUtils.timeFormat(mComment.getCreateTime()));
         v.findViewById(R.id.ll_comment_root).setVisibility(View.GONE);
 
         mTvSort = (TextView) v.findViewById(R.id.tv_sort);

@@ -54,7 +54,26 @@ public class UserInfo implements Parcelable{
     private String inviteUserName;
     @SerializedName("vipTime")
     private String vipTime;
+    @SerializedName("level")
+    private int level;
+    @SerializedName("levelColor")
+    private String levelColor;
 
+    public String getLevelColor() {
+        return levelColor;
+    }
+
+    public void setLevelColor(String levelColor) {
+        this.levelColor = levelColor;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
     public String getBackground() {
         return background;

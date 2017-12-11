@@ -27,6 +27,7 @@ public interface DynamicContract {
         void deleteComment(String id,String commentId,int position);
         void favoriteComment(String id,String commentId,boolean isFavorite,int position);
         void getDynamic(String id);
+        void likeDynamic(String id,boolean isLike);
     }
 
     interface View extends BaseView{
@@ -41,5 +42,6 @@ public interface DynamicContract {
         void favoriteCommentSuccess(boolean isFavorite,int position);
         void onPlusTagSuccess(int position,boolean isLike);
         void onLoadDynamicSuccess(NewDynamicEntity entity);
+        void onLikeDynamicSuccess(boolean isLike);
     }
 }

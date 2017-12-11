@@ -9,15 +9,15 @@
     <RelativeLayout
         android:id="@+id/include_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/neta_toolbar"
+        android:layout_height="@dimen/y100"
         android:background="@drawable/bg_shadow_up">
 
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="@dimen/size_18"
-            android:paddingRight="@dimen/size_18"
+            android:paddingLeft="@dimen/x36"
+            android:paddingRight="@dimen/x36"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_phone_back"/>
 
@@ -29,11 +29,11 @@
             android:background="@color/white"
             app:tl_iconVisible="false"
             app:tl_textBold="BOTH"
-            app:tl_tab_width="@dimen/size_50"
-            app:tl_indicator_width="@dimen/size_45"
-            app:tl_indicator_height="@dimen/size_4"
+            app:tl_tab_width="@dimen/x100"
+            app:tl_indicator_width="@dimen/x90"
+            app:tl_indicator_height="@dimen/y8"
             app:tl_indicator_color="@color/main_cyan"
-            app:tl_textsize="@dimen/size_18"
+            app:tl_textsize="@dimen/x36"
             app:tl_textSelectColor="@color/main_cyan"
             app:tl_textUnselectColor="@color/main_cyan_70"/>
 

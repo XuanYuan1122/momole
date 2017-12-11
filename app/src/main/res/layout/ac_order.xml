@@ -18,11 +18,10 @@
     <TextView
         android:id="@+id/tv_order_time"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size_30"
-        android:textSize="@dimen/size_12"
+        android:layout_height="@dimen/y60"
+        android:textSize="@dimen/x24"
         android:textColor="@color/white"
-        android:paddingLeft="@dimen/size_12"
-        android:paddingStart="@dimen/size_12"
+        android:paddingStart="@dimen/x24"
         android:gravity="center_vertical"
         android:background="@color/main_cyan"
         android:visibility="gone"/>
@@ -47,11 +46,11 @@
                 <LinearLayout
                     android:id="@+id/ll_order_state"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_45"
+                    android:layout_height="@dimen/y90"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/size_12"
-                    android:paddingLeft="@dimen/size_18"
-                    android:paddingRight="@dimen/size_18"
+                    android:layout_marginTop="@dimen/y24"
+                    android:paddingLeft="@dimen/x36"
+                    android:paddingRight="@dimen/x36"
                     android:gravity="center_vertical"
                     android:background="@color/white"
                     android:visibility="gone">
@@ -60,16 +59,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black_1e1e1e"
-                        android:textSize="@dimen/size_15"
+                        android:textSize="@dimen/x30"
                         android:text="@string/label_order_state"/>
 
                     <TextView
                         android:id="@+id/tv_order_state"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/size_15"
-                        android:layout_marginLeft="@dimen/size_6"
-                        android:layout_marginStart="@dimen/size_6"
+                        android:textSize="@dimen/x30"
+                        android:layout_marginStart="@dimen/x12"
                         android:textColor="@color/txt_green_red"
                         />
 
@@ -78,11 +76,11 @@
                 <LinearLayout
                     android:id="@+id/ll_order_num"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_45"
+                    android:layout_height="@dimen/y90"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/size_12"
-                    android:paddingLeft="@dimen/size_18"
-                    android:paddingRight="@dimen/size_18"
+                    android:layout_marginTop="@dimen/y24"
+                    android:paddingLeft="@dimen/x36"
+                    android:paddingRight="@dimen/x36"
                     android:gravity="center_vertical"
                     android:background="@color/white">
 
@@ -90,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black_1e1e1e"
-                        android:textSize="@dimen/size_15"
+                        android:textSize="@dimen/x30"
                         android:text="@string/label_order_num"/>
 
                     <TextView
@@ -98,9 +96,8 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/size_15"
-                        android:layout_marginLeft="@dimen/size_6"
-                        android:layout_marginStart="@dimen/size_6"
+                        android:textSize="@dimen/x30"
+                        android:layout_marginStart="@dimen/x12"
                         android:textColor="@color/black_1e1e1e"/>
 
                     <TextView
@@ -108,18 +105,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/main_cyan"
-                        android:textSize="@dimen/size_15"
+                        android:textSize="@dimen/x30"
                         android:text="@string/label_copy_dust"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/ll_order_address"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_45"
+                    android:layout_height="@dimen/y90"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/size_12"
-                    android:paddingLeft="@dimen/size_18"
-                    android:paddingRight="@dimen/size_18"
+                    android:layout_marginTop="@dimen/y24"
+                    android:paddingLeft="@dimen/x36"
+                    android:paddingRight="@dimen/x36"
                     android:gravity="center_vertical"
                     android:background="@color/white"
                     android:visibility="gone">
@@ -129,7 +126,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black_1e1e1e"
-                        android:textSize="@dimen/size_15"
+                        android:textSize="@dimen/x30"
                         android:text="@string/label_order_address"/>
 
                     <TextView
@@ -137,19 +134,19 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/main_cyan"
-                        android:textSize="@dimen/size_15"
+                        android:textSize="@dimen/x30"
                         android:text="@string/label_order_address_goto"/>
                 </LinearLayout>
 
                 <RelativeLayout
                     android:id="@+id/ll_order_address_done"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_75"
+                    android:layout_height="@dimen/y150"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/size_12"
-                    android:paddingLeft="@dimen/size_18"
-                    android:paddingRight="@dimen/size_18"
-                    android:paddingTop="@dimen/size_12"
+                    android:layout_marginTop="@dimen/y24"
+                    android:paddingLeft="@dimen/x36"
+                    android:paddingRight="@dimen/x36"
+                    android:paddingTop="@dimen/y24"
                     android:background="@color/white"
                     android:visibility="gone">
 
@@ -157,26 +154,25 @@
                         android:id="@+id/tv_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/size_12"
+                        android:textSize="@dimen/x24"
                         android:textColor="@color/gray_929292"/>
 
                     <TextView
                         android:id="@+id/tv_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
                         android:textColor="@color/gray_929292"
-                        android:textSize="@dimen/size_12"/>
+                        android:textSize="@dimen/x24"/>
 
                     <TextView
                         android:id="@+id/tv_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/size_12"
+                        android:textSize="@dimen/x24"
                         android:textColor="@color/gray_929292"
                         android:layout_below="@+id/tv_user_name"
-                        android:layout_marginTop="@dimen/size_10"
+                        android:layout_marginTop="@dimen/y20"
                         android:maxLines="2"
                         android:ellipsize="end"/>
                 </RelativeLayout>
@@ -184,11 +180,11 @@
                 <LinearLayout
                     android:id="@+id/ll_order_mark"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_45"
+                    android:layout_height="@dimen/y90"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/size_12"
-                    android:paddingLeft="@dimen/size_18"
-                    android:paddingRight="@dimen/size_18"
+                    android:layout_marginTop="@dimen/y24"
+                    android:paddingLeft="@dimen/x36"
+                    android:paddingRight="@dimen/x36"
                     android:gravity="center_vertical"
                     android:background="@color/white"
                     android:visibility="gone">
@@ -197,7 +193,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black_1e1e1e"
-                        android:textSize="@dimen/size_15"
+                        android:textSize="@dimen/x30"
                         android:text="@string/label_order_mark"/>
 
                     <EditText
@@ -205,9 +201,8 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/size_15"
-                        android:layout_marginLeft="@dimen/size_6"
-                        android:layout_marginStart="@dimen/size_6"
+                        android:textSize="@dimen/x30"
+                        android:layout_marginStart="@dimen/x12"
                         android:hint="@string/a_hint_input_order_mark"
                         android:textColorHint="@color/gray_e8e8e8"
                         android:inputType="phone"
@@ -219,28 +214,28 @@
                     android:id="@+id/tv_order_instruction"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/size_18"
-                    android:paddingRight="@dimen/size_18"
-                    android:paddingTop="@dimen/size_10"
+                    android:paddingLeft="@dimen/x36"
+                    android:paddingRight="@dimen/x36"
+                    android:paddingTop="@dimen/y20"
                     android:textColor="@color/green_6fc93a"
-                    android:textSize="@dimen/size_12"/>
+                    android:textSize="@dimen/x24"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_order_bottom_root"
-                android:layout_width="285dp"
-                android:layout_height="@dimen/size_45"
+                android:layout_width="@dimen/x570"
+                android:layout_height="@dimen/y90"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/size_45"
+                android:layout_marginBottom="@dimen/y90"
                 android:orientation="horizontal"
                 android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tv_cancel_order"
-                    android:layout_width="130dp"
-                    android:layout_height="@dimen/size_45"
-                    android:textSize="@dimen/size_15"
+                    android:layout_width="@dimen/x260"
+                    android:layout_height="@dimen/y90"
+                    android:textSize="@dimen/x30"
                     android:textColor="@color/white"
                     android:gravity="center"
                     android:text="@string/label_order_cancel"
@@ -248,13 +243,12 @@
 
                 <TextView
                     android:id="@+id/tv_done_order"
-                    android:layout_width="130dp"
-                    android:layout_height="@dimen/size_45"
-                    android:textSize="@dimen/size_15"
+                    android:layout_width="@dimen/x260"
+                    android:layout_height="@dimen/y90"
+                    android:textSize="@dimen/x30"
                     android:textColor="@color/white"
                     android:gravity="center"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginStart="25dp"
+                    android:layout_marginStart="@dimen/x50"
                     android:text="@string/label_order_pay"
                     android:background="@drawable/shape_rect_border_main_background_4"/>
             </LinearLayout>

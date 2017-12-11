@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
@@ -43,6 +44,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.ColorFilterTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
@@ -96,6 +98,10 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
     protected void onDestroy() {
         if(mPresenter != null) mPresenter.release();
         if(mAdapter != null) mAdapter.release();
+        mHandler.removeCallbacks(timeRunnabel);
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment("shubao",mStayTime)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
         super.onDestroy();
     }
 
@@ -108,6 +114,9 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(),null);
         mUserId = getIntent().getStringExtra(UUID);
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment("shubao")
+                .subscribeOn(Schedulers.io())
+                .subscribe();
         if(TextUtils.isEmpty(mUserId)){
             finish();
             return;
@@ -214,18 +223,29 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
         });
     }
 
+    private int mStayTime;
+
+    private Handler mHandler = new Handler();
+    private Runnable timeRunnabel = new Runnable() {
+        @Override
+        public void run() {
+            mStayTime++;
+            mHandler.postDelayed(this,1000);
+        }
+    };
+
     @Override
     protected void onResume() {
-        Glide.with(this).resumeRequests();
         super.onResume();
         mAppBarLayout.addOnOffsetChangedListener(this);
+        mHandler.post(timeRunnabel);
     }
 
     @Override
     protected void onPause() {
-        Glide.with(this).pauseRequests();
         super.onPause();
         mAppBarLayout.removeOnOffsetChangedListener(this);
+        mHandler.removeCallbacks(timeRunnabel);
     }
 
     @Override
@@ -268,7 +288,7 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 
-        int temp = (int) (DensityUtil.dip2px(this,146) - getResources().getDimension(R.dimen.status_bar_height));
+        int temp = (int) ((int)getResources().getDimension(R.dimen.y292) - getResources().getDimension(R.dimen.status_bar_height));
         float percent = (float)Math.abs(verticalOffset) / temp;
 
         if(percent > 0.4){
@@ -308,7 +328,7 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
             mTvSpaceNum.setText(entity.getUserName());
             mTvSpaceNum.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
             mTvSpaceNum.setCompoundDrawablesWithIntrinsicBounds (null,null,ContextCompat.getDrawable(this,R.drawable.ic_bag_more),null);
-            mTvSpaceNum.setCompoundDrawablePadding(DensityUtil.dip2px(this,4));
+            mTvSpaceNum.setCompoundDrawablePadding((int)getResources().getDimension(R.dimen.x8));
             mTvSpaceNum.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
@@ -320,17 +340,17 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
         mBg = entity.getBg();
         mBagName = entity.getBagName();
         Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getBg(),DensityUtil.getScreenWidth(this),DensityUtil.dip2px(this,120),false,true))
-                .override(DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,120))
+                .load(StringUtils.getUrl(this,entity.getBg(),DensityUtil.getScreenWidth(this),(int)getResources().getDimension(R.dimen.y240),false,true))
+                .override(DensityUtil.getScreenWidth(this),(int)getResources().getDimension(R.dimen.y240))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
                 .bitmapTransform(new BlurTransformation(this,10,4),new ColorFilterTransformation(this,R.color.alph_20))
                 .into(mIvBg);
         Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getBg(),DensityUtil.dip2px(this,80),DensityUtil.dip2px(this,80),false,true))
+                .load(StringUtils.getUrl(this,entity.getBg(),(int)getResources().getDimension(R.dimen.y160),(int)getResources().getDimension(R.dimen.y160),false,true))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
-                .bitmapTransform(new CropSquareTransformation(this),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,8),0))
+                .bitmapTransform(new CropSquareTransformation(this),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y16),0))
                 .into(mIvBag);
     }
 
@@ -343,7 +363,7 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
                mBg = data.getStringExtra("bg");
                Glide.with(this)
                        .load(mBg)
-                       .override(DensityUtil.getScreenWidth(this), DensityUtil.dip2px(this,120))
+                       .override(DensityUtil.getScreenWidth(this),(int)getResources().getDimension(R.dimen.y240))
                        .error(R.drawable.btn_cardbg_defbg)
                        .placeholder(R.drawable.btn_cardbg_defbg)
                        .into(mIvBg);

@@ -128,8 +128,8 @@ public class PersonalLevelActivity extends BaseAppCompatActivity {
                 mAuthorInfo = PreferenceUtils.getAuthorInfo();
                 if (mAuthorInfo != null) {
                     Glide.with(PersonalLevelActivity.this)
-                            .load(StringUtils.getUrl(PersonalLevelActivity.this,mAuthorInfo.getHeadPath(),DensityUtil.dip2px(PersonalLevelActivity.this,80), DensityUtil.dip2px(PersonalLevelActivity.this,80),false,true))
-                            .override(DensityUtil.dip2px(PersonalLevelActivity.this,80), DensityUtil.dip2px(PersonalLevelActivity.this,80))
+                            .load(StringUtils.getUrl(PersonalLevelActivity.this,mAuthorInfo.getHeadPath(),(int)getResources().getDimension(R.dimen.y160), (int)getResources().getDimension(R.dimen.y160),false,true))
+                            .override((int)getResources().getDimension(R.dimen.y160), (int)getResources().getDimension(R.dimen.y160))
                             .placeholder(R.drawable.bg_default_circle)
                             .error(R.drawable.bg_default_circle)
                             .bitmapTransform(new CropCircleTransformation(PersonalLevelActivity.this))

@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 /**
+ * 应用类缓存全局设置
  * Created by yi on 2016/11/28.
  */
 
@@ -20,6 +21,9 @@ public class AppSetting {
     public static boolean isLoadDone = false;
     public static String sCurChatId = "";
     public static boolean TXBB = false;
+    public static double LAT;
+    public static double LON;
+
 
     public static String CHANNEL;
     public static int VERSION_CODE;

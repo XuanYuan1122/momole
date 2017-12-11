@@ -18,34 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.PhonePlayMusicEvent;
-import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.entity.CommentV2Entity;
-import com.moemoe.lalala.model.entity.CommentV2SecEntity;
-import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.LuYinEntity;
-import com.moemoe.lalala.model.entity.tag.UserUrlSpan;
-import com.moemoe.lalala.netamusic.data.model.Song;
-import com.moemoe.lalala.netamusic.player.Player;
 import com.moemoe.lalala.utils.AudioPlayer;
-import com.moemoe.lalala.utils.BitmapUtils;
-import com.moemoe.lalala.utils.DensityUtil;
-import com.moemoe.lalala.utils.FileUtil;
-import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StorageUtils;
-import com.moemoe.lalala.utils.StringUtils;
-import com.moemoe.lalala.utils.tag.TagControl;
-import com.moemoe.lalala.view.activity.CommentListActivity;
-import com.moemoe.lalala.view.activity.CommentSecListActivity;
-import com.moemoe.lalala.view.activity.DynamicActivity;
-import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
-
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
  *

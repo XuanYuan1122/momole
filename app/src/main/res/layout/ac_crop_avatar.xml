@@ -10,21 +10,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_bottom_bar"
-        android:layout_margin="24dp" />
+        android:layout_marginTop="@dimen/y48"
+        android:layout_marginBottom="@dimen/y48"
+        android:layout_marginStart="@dimen/x48"
+        android:layout_marginEnd="@dimen/x48" />
 
     <LinearLayout
         android:id="@+id/ll_bottom_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size_48"
+        android:layout_height="@dimen/y96"
         android:layout_alignParentBottom="true" 
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x24"
         android:background="@color/main_cyan">
 
         <ImageView
             android:id="@+id/iv_crop_back"
-            android:layout_width="@dimen/size_48"
-            android:layout_height="@dimen/size_48"
+            android:layout_width="@dimen/y96"
+            android:layout_height="@dimen/y96"
             android:background="@drawable/bg_normal_btn"
             android:src="@drawable/ic_crop_back" />
 
@@ -35,8 +38,8 @@
 
         <ImageView
             android:id="@+id/iv_crop_turn_left"
-            android:layout_width="@dimen/size_48"
-            android:layout_height="@dimen/size_48"
+            android:layout_width="@dimen/y96"
+            android:layout_height="@dimen/y96"
             android:background="@drawable/bg_normal_btn"
             android:src="@drawable/ic_crop_turn_left" />
 
@@ -47,8 +50,8 @@
 
         <ImageView
             android:id="@+id/iv_crop_turn_right"
-            android:layout_width="@dimen/size_48"
-            android:layout_height="@dimen/size_48"
+            android:layout_width="@dimen/y96"
+            android:layout_height="@dimen/y96"
             android:background="@drawable/bg_normal_btn"
             android:src="@drawable/ic_crop_turn_right" />
 
@@ -59,8 +62,8 @@
 
         <ImageView
             android:id="@+id/iv_crop_done"
-            android:layout_width="@dimen/size_48"
-            android:layout_height="@dimen/size_48"
+            android:layout_width="@dimen/y96"
+            android:layout_height="@dimen/y96"
             android:background="@drawable/bg_normal_btn"
             android:src="@drawable/ic_crop_done" />
     </LinearLayout>

@@ -75,7 +75,7 @@ public class BadgeActivity extends BaseAppCompatActivity implements BadgeContrac
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         mTvTitle.setText("我的徽章");
         mTvDone.getPaint().setFakeBoldText(true);
-        ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvDone, (int) getResources().getDimension(R.dimen.x36));
         mTvDone.setText("保存");
         mTvDone.setVisibility(View.VISIBLE);
         mTvAll.setVisibility(View.VISIBLE);

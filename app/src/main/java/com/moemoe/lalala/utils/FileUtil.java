@@ -246,6 +246,17 @@ public class FileUtil {
         deleteDirWihtFile(dir);
     }
 
+    public static void deletFileInDir(File dir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDirWihtFile(file); // 递规的方式删除文件夹
+        }
+    }
+
     public static void deleteDirWihtFile(File dir) {
         if (dir == null || !dir.exists() || !dir.isDirectory())
             return;

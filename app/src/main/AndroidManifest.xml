@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
@@ -29,6 +30,10 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <!-- 通过GPS得到精确位置 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 通过网络得到粗略位置 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <permission
         android:name="getui.permission.GetuiService.com.moemoe.lalala"
@@ -42,6 +47,10 @@
         android:supportsRtl="true"
         android:largeHeap="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="TencentMapSDK"
+            android:value="E52BZ-E5QW6-DKBSP-MCQLN-77XGK-C6BHC" />
         <meta-data
             android:name="UMENG_APPKEY"
             android:value="559b89c267e58ee03e0021b7" />
@@ -100,24 +109,39 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
-        <activity android:name=".view.activity.MengXinActivity"
+        <activity android:name=".view.activity.SanGuoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/FullScreen"/>
-        <activity android:name=".view.activity.GuideActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/FullScreen">
+
             <intent-filter>
-                <action android:name="plot_1.0" />
+                <action android:name="game_1.0" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="@string/label_scheme"
-                    android:host="@string/label_host"
-                    android:path="@string/label_plot_path"/>
+                    android:scheme="neta"
+                    android:host="com.moemoe.lalala"
+                    android:path="/game_1.0"/>
             </intent-filter>
         </activity>
+        <!--<activity android:name=".view.activity.MengXinActivity"-->
+            <!--android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/FullScreen"/>-->
+        <!--<activity android:name=".view.activity.GuideActivity"-->
+            <!--android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/AppTheme.NoActionBar">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="plot_1.0" />-->
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+                <!--<data-->
+                    <!--android:scheme="@string/label_scheme"-->
+                    <!--android:host="@string/label_host"-->
+                    <!--android:path="@string/label_plot_path"/>-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
         <activity
             android:name=".view.activity.MapActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -128,6 +152,18 @@
         </activity>
         <activity
             android:name=".view.activity.WallBlockActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.Live2dShopActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.SelectMapImageActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme">
@@ -150,6 +186,15 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme">
+            <intent-filter>
+                <action android:name="common_file_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_common_file_path"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.SubmissionHistoryActivity"
@@ -162,6 +207,15 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme">
+            <intent-filter>
+                <action android:name="manhua_file_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_manhua_file_path"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.NewFileManHua2Activity"
@@ -174,6 +228,15 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme">
+            <intent-filter>
+                <action android:name="xiaoshuo_file_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_xiaoshuo_file_path"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.NewFileXiaoShuo2Activity"
@@ -201,7 +264,7 @@
             android:theme="@style/MainColorTranslucentTheme">
         </activity>
         <activity
-            android:name=".view.activity.DepartmentActivity"
+            android:name=".view.activity.DepartmentV3Activity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme">
@@ -241,51 +304,6 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"/>
-        <!--<activity-->
-            <!--android:name=".view.activity.QiuMingShanActivity"-->
-            <!--android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/ImageTranslucentTheme">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="qiu_1.0" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
-                <!--<data-->
-                    <!--android:scheme="@string/label_scheme"-->
-                    <!--android:host="@string/label_host"-->
-                    <!--android:path="@string/label_qiu_path"/>-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
-        <!--<activity-->
-            <!--android:name=".view.activity.SwimPoolActivity"-->
-            <!--android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/ImageTranslucentTheme">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="swim_1.0" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
-                <!--<data-->
-                    <!--android:scheme="@string/label_scheme"-->
-                    <!--android:host="@string/label_host"-->
-                    <!--android:path="@string/label_swim_path"/>-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
-        <!--<activity-->
-            <!--android:name=".view.activity.ClassActivity"-->
-            <!--android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/ImageTranslucentTheme">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="room_1.0" />-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-                <!--<category android:name="android.intent.category.BROWSABLE" />-->
-                <!--<data-->
-                    <!--android:scheme="@string/label_scheme"-->
-                    <!--android:host="@string/label_host"-->
-                    <!--android:path="@string/label_room_path"/>-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
         <activity
             android:name=".view.activity.WallActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -313,15 +331,38 @@
                     android:path="@string/label_trash_path"/>
             </intent-filter>
         </activity>
+        <!--<activity-->
+            <!--android:name=".view.activity.PhoneMainActivity"-->
+            <!--android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/Activity_Dialog"-->
+            <!--android:windowSoftInputMode="stateHidden|adjustResize" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.VIEW" />-->
+
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+
+                <!--<data-->
+                    <!--android:host="com.moemoe.lalala"-->
+                    <!--android:pathPrefix="/conversationlist"-->
+                    <!--android:scheme="rong" />-->
+                <!--<data-->
+                    <!--android:host="com.moemoe.lalala"-->
+                    <!--android:pathPrefix="/conversation/"-->
+                    <!--android:scheme="rong" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
         <activity
-            android:name=".view.activity.PhoneMainActivity"
+            android:name=".view.activity.PhoneMainV2Activity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Activity_Dialog"
             android:windowSoftInputMode="stateHidden|adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
+                <action android:name="conversationlist" />
+                <action android:name="conversation/group" />
+                <action android:name="conversation/private" />
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
@@ -330,7 +371,7 @@
                     android:scheme="rong" />
                 <data
                     android:host="com.moemoe.lalala"
-                    android:pathPrefix="/conversation/"
+                    android:pathPrefix="/conversation"
                     android:scheme="rong" />
             </intent-filter>
         </activity>
@@ -349,10 +390,6 @@
                     android:path="@string/label_img_trash_path"/>
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.EventActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/Activity_Dialog"/>
         <activity android:name=".view.activity.ChangePasswordActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -368,6 +405,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity android:name=".view.activity.Live2dActivity"
+        android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+        android:screenOrientation="sensorLandscape"
+        android:theme="@style/FullScreen" />
+        <activity android:name=".view.activity.CameraPreview2Activity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreen" />
+        <activity android:name=".view.activity.Live2dNormalActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullScreen" />
         <activity android:name=".view.activity.PhoneRegisterActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -412,7 +461,17 @@
         <activity android:name=".view.activity.DynamicActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/MainColorTranslucentTheme"/>
+            android:theme="@style/MainColorTranslucentTheme">
+            <intent-filter>
+                <action android:name="dynamic_1.0" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/label_scheme"
+                    android:host="@string/label_host"
+                    android:path="@string/label_dynamic_path"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".view.activity.CommentListActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -554,11 +613,15 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"/>
+        <activity android:name=".view.activity.CreateMapImageActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.CropAvatarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
-        <activity android:name=".view.activity.NewPersonalActivity"
+        <activity android:name=".view.activity.PersonalV2Activity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme">
@@ -626,11 +689,11 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/ImageTranslucentTheme"/>
-        <activity android:name=".view.activity.SelectMateActivity"
+        <activity android:name=".view.activity.MultiImageChooseActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/ImageTranslucentTheme"/>
-        <activity android:name=".view.activity.MultiImageChooseActivity"
+            android:theme="@style/MainColorTranslucentTheme"/>
+        <activity android:name=".view.activity.LuntanActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"/>
@@ -798,6 +861,19 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="cn.sharesdk.tencent.qq.ReceiveActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tencent100371282" />
+            </intent-filter>
+        </activity>
+
 
         <receiver android:name=".broadcast.PushReceiver">
             <intent-filter>

@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="@dimen/y56"
         android:scaleType="fitXY"/>
 
     <com.moemoe.lalala.view.widget.longimage.LongImageView
@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="@dimen/y56"
         android:visibility="gone"/>
 
     <ImageView
@@ -24,7 +24,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:padding="@dimen/size_6"
+        android:padding="@dimen/x12"
         android:src="@drawable/btn_doc_pic_cancel"/>
 </RelativeLayout>

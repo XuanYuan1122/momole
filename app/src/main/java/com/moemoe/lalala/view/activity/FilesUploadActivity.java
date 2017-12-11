@@ -55,7 +55,6 @@ import butterknife.BindView;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import retrofit2.http.Body;
 
-import static com.moemoe.lalala.utils.Constant.ICON_NUM_LIMIT;
 import static com.moemoe.lalala.utils.Constant.LIMIT_NICK_NAME;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_FILE_UPLOAD;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_GET_FROM_SELECT_BOOK;
@@ -63,11 +62,13 @@ import static com.moemoe.lalala.utils.StartActivityConstant.REQ_GET_FROM_SELECT_
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_GET_FROM_SELECT_ZIP;
 
 /**
+ *
  * Created by yi on 2017/8/21.
  */
 
 public class FilesUploadActivity extends BaseAppCompatActivity implements FileUploadContract.View{
 
+    private final int ICON_NUM_LIMIT = 50;
     @BindView(R.id.tv_left_menu)
     TextView mTvMenuLeft;
     @BindView(R.id.tv_toolbar_title)
@@ -167,10 +168,10 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                 mBgPath = entity.getCover();
                 mBgTmp = entity.getCover();
                 Glide.with(FilesUploadActivity.this)
-                        .load(StringUtils.getUrl(FilesUploadActivity.this,mBgPath,DensityUtil.dip2px(FilesUploadActivity.this,56),DensityUtil.dip2px(FilesUploadActivity.this,56),false,true))
+                        .load(StringUtils.getUrl(FilesUploadActivity.this,mBgPath,(int)getResources().getDimension(R.dimen.y112),(int)getResources().getDimension(R.dimen.y112),false,true))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(FilesUploadActivity.this,DensityUtil.dip2px(FilesUploadActivity.this,56),DensityUtil.dip2px(FilesUploadActivity.this,56)))
+                        .bitmapTransform(new CropTransformation(FilesUploadActivity.this,(int)getResources().getDimension(R.dimen.y112),(int)getResources().getDimension(R.dimen.y112)))
                         .into(mIvBg);
             }
         }else if(mFolderType.equals(FolderType.XS.toString())){
@@ -465,7 +466,7 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                                 .load(mBgPath)
                                 .placeholder(R.drawable.bg_default_square)
                                 .error(R.drawable.bg_default_square)
-                                .bitmapTransform(new CropTransformation(FilesUploadActivity.this,DensityUtil.dip2px(FilesUploadActivity.this,56),DensityUtil.dip2px(FilesUploadActivity.this,56)))
+                                .bitmapTransform(new CropTransformation(FilesUploadActivity.this,(int)getResources().getDimension(R.dimen.y112),(int)getResources().getDimension(R.dimen.y112)))
                                 .into(mIvBg);
                         mHasModified = true;
                     }else {
@@ -520,7 +521,7 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
         mTvMenuLeft.setVisibility(View.VISIBLE);
-        ViewUtils.setLeftMargins(mTvMenuLeft, DensityUtil.dip2px(this,18));
+        ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
         mTvMenuLeft.setText(getString(R.string.label_give_up));
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvMenuLeft.setOnClickListener(new NoDoubleClickListener() {
@@ -532,7 +533,7 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
         mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setText(getString(R.string.label_add));
         mTvMenuRight.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
         mTvMenuRight.setText(getString(R.string.label_done));
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
     }

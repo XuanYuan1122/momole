@@ -78,8 +78,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 path = ApiService.URL_QINIU + entity.getPath();
             }
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, path, DensityUtil.dip2px(context,40),DensityUtil.dip2px(context,40),false,true))
-                    .override(DensityUtil.dip2px(context,40),DensityUtil.dip2px(context,40))
+                    .load(StringUtils.getUrl(context, path, (int)context.getResources().getDimension(R.dimen.y80),(int)context.getResources().getDimension(R.dimen.y80),false,true))
+                    .override((int)context.getResources().getDimension(R.dimen.y80),(int)context.getResources().getDimension(R.dimen.y80))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .bitmapTransform(new CropCircleTransformation(context))
@@ -87,7 +87,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }else {
             Glide.with(context)
                     .load(entity.getOtherPath())
-                    .override(DensityUtil.dip2px(context,40),DensityUtil.dip2px(context,40))
+                    .override((int)context.getResources().getDimension(R.dimen.y80),(int)context.getResources().getDimension(R.dimen.y80))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .bitmapTransform(new CropCircleTransformation(context))

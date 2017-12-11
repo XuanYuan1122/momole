@@ -4,13 +4,10 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.model.entity.FolderType;
-import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.model.entity.WenZhangFolderEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.IntentUtils;
@@ -54,7 +51,7 @@ public class BagWenZhangHolder extends ClickableViewHolder {
         select.setSelected(entity.isSelect());
         title.setText(entity.getTitle());
         content.setText(entity.getContent());
-        time.setText(StringUtils.timeFormate(entity.getCreateTime()));
+        time.setText(StringUtils.timeFormat(entity.getCreateTime()));
         readNum.setText("阅读 " + entity.getRead());
         commentNum.setText("评论 " + entity.getComments());
         if(!entity.getDocType().equals("书包")){
@@ -76,10 +73,10 @@ public class BagWenZhangHolder extends ClickableViewHolder {
             fromName.setOnClickListener(null);
         }
         Glide.with(itemView.getContext())
-                .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74), false, true))
+                .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),(int)itemView.getContext().getResources().getDimension(R.dimen.x112),(int)itemView.getContext().getResources().getDimension(R.dimen.y148), false, true))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
-                .bitmapTransform(new CropTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),56),DensityUtil.dip2px(itemView.getContext(),74)),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
+                .bitmapTransform(new CropTransformation(itemView.getContext(),(int)itemView.getContext().getResources().getDimension(R.dimen.x112),(int)itemView.getContext().getResources().getDimension(R.dimen.y148)),new RoundedCornersTransformation(itemView.getContext(),(int)itemView.getContext().getResources().getDimension(R.dimen.y8),0))
                 .into(iv);
     }
 }

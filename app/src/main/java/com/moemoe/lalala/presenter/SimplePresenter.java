@@ -1,5 +1,7 @@
 package com.moemoe.lalala.presenter;
 
+import android.text.TextUtils;
+
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.greendao.gen.AuthorInfoDao;
 import com.moemoe.lalala.model.api.ApiService;
@@ -11,10 +13,17 @@ import com.moemoe.lalala.model.entity.CommentDetailEntity;
 import com.moemoe.lalala.model.entity.CommentDetailRqEntity;
 import com.moemoe.lalala.model.entity.LoginEntity;
 import com.moemoe.lalala.model.entity.LoginResultEntity;
+import com.moemoe.lalala.model.entity.SplashEntity;
 import com.moemoe.lalala.model.entity.ThirdLoginEntity;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -97,7 +106,22 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo1.setRcToken(entity.getRcToken());
                                 finalInfo1.setLevel(entity.getLevel());
                                 finalInfo1.setOpenBag(entity.isOpenBag());
-                                finalInfo1.setVipTime(entity.getVipTime());
+                                if(!TextUtils.isEmpty(entity.getVipTime())){
+                                    try {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                        Date date = format.parse(entity.getVipTime());
+                                        Date now = new Date();
+                                        if(date.before(now)){
+                                            finalInfo1.setVipTime("");
+                                        }else {
+                                            finalInfo1.setVipTime(entity.getVipTime());
+                                        }
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }else {
+                                    finalInfo1.setVipTime("");
+                                }
                                 finalInfo1.setInspector(entity.isInspector());
                                 finalInfo1.setInviteNum(entity.getInviteNum());
                                 finalInfo1.setDeskMateEntities(entity.getDeskMateList());
@@ -129,7 +153,22 @@ public class SimplePresenter implements SimpleContract.Presenter {
                                 finalInfo.setRcToken(entity.getRcToken());
                                 finalInfo.setLevel(entity.getLevel());
                                 finalInfo.setOpenBag(entity.isOpenBag());
-                                finalInfo.setVipTime(entity.getVipTime());
+                                if(!TextUtils.isEmpty(entity.getVipTime())){
+                                    try {
+                                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                        Date date = format.parse(entity.getVipTime());
+                                        Date now = new Date();
+                                        if(date.before(now)){
+                                            finalInfo.setVipTime("");
+                                        }else {
+                                            finalInfo.setVipTime(entity.getVipTime());
+                                        }
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                }else {
+                                    finalInfo.setVipTime("");
+                                }
                                 finalInfo.setInspector(entity.isInspector());
                                 finalInfo.setInviteNum(entity.getInviteNum());
                                 finalInfo.setDeskMateEntities(entity.getDeskMateList());

@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.JsonObject;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCoinShopComponent;
@@ -145,6 +146,11 @@ public class ShopDetailActivity extends BaseAppCompatActivity implements CoinSho
         i.putExtra("show_status",false);
         startActivity(i);
         finish();
+    }
+
+    @Override
+    public void onCreateOrderListSuccess(ArrayList<JsonObject> jsonObjects) {
+
     }
 
     @Override

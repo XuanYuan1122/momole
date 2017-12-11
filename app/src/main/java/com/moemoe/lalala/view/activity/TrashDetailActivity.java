@@ -384,7 +384,7 @@ public class TrashDetailActivity extends BaseAppCompatActivity implements TrashC
 
     private void createImage(final Image image){
         if(image.getW() >0 && image.getH() > 0){
-            final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,20));
+            final int[] wh = BitmapUtils.getDocIconSizeFromW(image.getW(), image.getH(), DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x40));
             if(wh[1] > 2048){
                 mIvContent.setVisibility(View.GONE);
                 mLongImage.setVisibility(View.VISIBLE);

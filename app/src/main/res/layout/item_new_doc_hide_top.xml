@@ -9,20 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/size_28"
-        android:layout_marginEnd="@dimen/size_18"
-        android:layout_marginRight="@dimen/size_18"
-        android:layout_marginLeft="@dimen/size_18"
-        android:layout_marginStart="@dimen/size_18"
+        android:layout_marginTop="@dimen/y56"
+        android:layout_marginEnd="@dimen/x36"
+        android:layout_marginStart="@dimen/x36"
         android:gravity="center_horizontal"
         android:visibility="gone"
         android:background="@drawable/shape_dash_top">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/size_12"
-            android:layout_marginTop="@dimen/size_18"
-            android:layout_marginBottom="@dimen/size_8"
+            android:textSize="@dimen/x24"
+            android:layout_marginTop="@dimen/y36"
+            android:layout_marginBottom="@dimen/y16"
             android:textColor="@color/main_cyan"
             android:text="@string/label_doc_hide_content"/>
     </LinearLayout>
@@ -32,12 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/size_28"
-        android:layout_marginLeft="@dimen/size_18"
-        android:layout_marginStart="@dimen/size_18"
-        android:layout_marginEnd="@dimen/size_18"
-        android:layout_marginRight="@dimen/size_18"
-        android:paddingBottom="@dimen/size_10"
+        android:layout_marginTop="@dimen/y56"
+        android:layout_marginStart="@dimen/x36"
+        android:layout_marginEnd="@dimen/x36"
+        android:paddingBottom="@dimen/y20"
         android:gravity="center_horizontal"
         android:visibility="visible"
         android:background="@drawable/shape_dash_mian_blue">
@@ -45,44 +41,60 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textSize="@dimen/size_12"
+            android:layout_marginTop="@dimen/y20"
+            android:textSize="@dimen/x24"
             android:textColor="@color/main_cyan"
             android:text="@string/label_doc_hide_content"/>
-
 
         <TextView
             android:id="@+id/tv_hide_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textSize="@dimen/size_16"
-            android:textColor="@color/main_cyan"
-            android:text="@string/label_pay_show"/>
+            android:textSize="@dimen/x32"
+            android:textColor="@color/main_cyan" />
 
         <LinearLayout
-            android:id="@+id/ll_pay_root"
+            android:id="@+id/ll_share_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="@dimen/y24"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_12"
-                android:textColor="@color/main_cyan"
-                android:text="需要消费"/>
+                android:layout_width="@dimen/x124"
+                android:layout_height="@dimen/y90"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x24"
+                android:text="支付"
+                android:background="@drawable/shape_rect_border_pink_background_y8"/>
 
-            <TextView
-                android:id="@+id/tv_give_coin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginStart="3dp"
-                android:textSize="@dimen/size_12"
-                android:textColor="@color/pink_fb7ba2"
-                android:text="1枚节操"/>
+            <LinearLayout
+                android:id="@+id/ll_share_root_2"
+                android:layout_width="@dimen/x332"
+                android:layout_height="@dimen/y90"
+                android:orientation="vertical"
+                android:layout_marginStart="@dimen/x24"
+                android:background="@drawable/shape_rect_border_green_6fc93a_y8"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/x30"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="@dimen/y10"
+                    android:text="免费-分享解锁"/>
+
+                <TextView
+                    android:id="@+id/tv_unlock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/x20" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

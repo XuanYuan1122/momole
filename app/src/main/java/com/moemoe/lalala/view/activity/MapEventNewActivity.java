@@ -24,12 +24,14 @@ import com.moemoe.lalala.di.components.DaggerJuQIngChatComponent;
 import com.moemoe.lalala.di.modules.JuQingChatModule;
 import com.moemoe.lalala.event.EventDoneEvent;
 import com.moemoe.lalala.model.entity.JuQingMapShowEntity;
+import com.moemoe.lalala.model.entity.JuQingNormalEvent;
 import com.moemoe.lalala.presenter.JuQIngChatContract;
 import com.moemoe.lalala.presenter.JuQingChatPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DownLoadUtils;
 import com.moemoe.lalala.utils.FileUtil;
+import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.JuQingUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
@@ -819,7 +821,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
     private void imgOut(){
         mIsOut = true;
         if(mPoseOut){
-            ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mTvName,"translationY",0,mTvName.getHeight() + mTvText.getHeight() + getResources().getDimension(R.dimen.y52) - DensityUtil.dip2px(this,25)).setDuration(500);
+            ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mTvName,"translationY",0,mTvName.getHeight() + mTvText.getHeight() + getResources().getDimension(R.dimen.y52) - (int)getResources().getDimension(R.dimen.y50)).setDuration(500);
             phoneAnimator.setInterpolator(new LinearInterpolator());
             ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mTvText,"translationY",0,mTvText.getHeight() + getResources().getDimension(R.dimen.y52)).setDuration(500);
             signAnimator.setInterpolator(new LinearInterpolator());
@@ -856,7 +858,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
             bagAnimator.setInterpolator(new LinearInterpolator());
             ObjectAnimator squareAnimator = ObjectAnimator.ofFloat(mIvExtra,"translationX",mIvExtra.getWidth(),0).setDuration(500);
             squareAnimator.setInterpolator(new LinearInterpolator());
-            ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mTvName,"translationY",mTvName.getHeight() + mTvText.getHeight() + getResources().getDimension(R.dimen.y52) - DensityUtil.dip2px(this,25),0).setDuration(500);
+            ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mTvName,"translationY",mTvName.getHeight() + mTvText.getHeight() + getResources().getDimension(R.dimen.y52) - (int)getResources().getDimension(R.dimen.y50),0).setDuration(500);
             phoneAnimator.setInterpolator(new LinearInterpolator());
             ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mTvText,"translationY",mTvText.getHeight() + getResources().getDimension(R.dimen.y52),0).setDuration(500);
             signAnimator.setInterpolator(new LinearInterpolator());
@@ -868,7 +870,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
             set.start();
             mPoseOut = false;
         }else {
-            ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mTvName,"translationY",mTvName.getHeight() + mTvText.getHeight() + getResources().getDimension(R.dimen.y52)  - DensityUtil.dip2px(this,25),0).setDuration(500);
+            ObjectAnimator phoneAnimator = ObjectAnimator.ofFloat(mTvName,"translationY",mTvName.getHeight() + mTvText.getHeight() + getResources().getDimension(R.dimen.y52)  - (int)getResources().getDimension(R.dimen.y50),0).setDuration(500);
             phoneAnimator.setInterpolator(new LinearInterpolator());
             ObjectAnimator signAnimator = ObjectAnimator.ofFloat(mTvText,"translationY",mTvText.getHeight() + getResources().getDimension(R.dimen.y52),0).setDuration(500);
             signAnimator.setInterpolator(new LinearInterpolator());
@@ -1023,6 +1025,8 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
     public void onDoneSuccess(long time) {
         if(3 != JuQingUtil.getLevel(mId)){
             JuQingUtil.saveJuQingDone(mId,time);
+        }else {
+            JuQingUtil.saveJuQingNormal(new JuQingNormalEvent(mId));
         }
         RxBus.getInstance().post(new EventDoneEvent("map",""));
         finish();

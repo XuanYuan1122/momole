@@ -5,11 +5,12 @@
     android:paddingTop="@dimen/status_bar_height"
     android:background="@color/gray_4b5052"
     android:clickable="true"
+    android:focusable="true"
     android:visibility="gone">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/neta_toolbar"
+        android:layout_height="@dimen/y100"
         android:orientation="horizontal">
 
         <ImageView
@@ -25,25 +26,23 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_15"
+            android:textSize="@dimen/x30"
             android:textStyle="bold"
             android:layout_gravity="center_vertical"
             android:gravity="center_horizontal"
             android:maxLines="1"
             android:ellipsize="end"
-            android:layout_marginEnd="@dimen/size_10"
-            android:layout_marginRight="@dimen/size_10"/>
+            android:layout_marginEnd="@dimen/x20"/>
 
         <TextView
             android:id="@+id/tv_all"
-            android:layout_width="58dp"
-            android:layout_height="22dp"
+            android:layout_width="@dimen/x116"
+            android:layout_height="@dimen/y44"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:layout_gravity="center_vertical"
             android:gravity="center"
-            android:layout_marginEnd="@dimen/size_10"
-            android:layout_marginRight="@dimen/size_10"
+            android:layout_marginEnd="@dimen/x20"
             android:background="@drawable/shape_rect_border_white_no_background_4"
             android:text="查看全部"/>
 

@@ -55,6 +55,15 @@
             android:layout_marginStart="@dimen/x18"/>
 
         <TextView
+            android:id="@+id/tv_read_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x20"
+            android:textColor="@color/gray_929292"
+            android:layout_marginEnd="@dimen/x16"
+            android:visibility="gone"/>
+
+        <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

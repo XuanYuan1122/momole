@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
+ *
  * Created by yi on 2016/12/29.
  */
 

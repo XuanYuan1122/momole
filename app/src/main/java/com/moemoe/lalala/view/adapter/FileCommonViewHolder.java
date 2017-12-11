@@ -61,7 +61,7 @@ public class FileCommonViewHolder extends ClickableViewHolder {
     public void createItem(CommonFileEntity entity,boolean isSelect,boolean isBuy){
         select.setVisibility(isSelect?View.VISIBLE:View.GONE);
         select.setSelected(entity.isSelect());
-        int size = (DensityUtil.getScreenWidth(itemView.getContext()) - DensityUtil.dip2px(itemView.getContext(),6)) /3;
+        int size = (DensityUtil.getScreenWidth(itemView.getContext()) - (int)context.getResources().getDimension(R.dimen.x12)) /3;
         root.setLayoutParams(new RecyclerView.LayoutParams(size,size));
         cover.setLayoutParams(new RelativeLayout.LayoutParams(size,size));
         if(entity.getType().equals("image")){

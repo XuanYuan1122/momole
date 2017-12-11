@@ -32,6 +32,56 @@ public class PersonalMainEntity {
     private ArrayList<BadgeEntity> badgeList;
     @SerializedName("folderList")
     private ArrayList<ShowFolderEntity> folderList;
+    @SerializedName("like")
+    private boolean like;
+    @SerializedName("picLikes")
+    private int picLikes;
+    @SerializedName("picPath")
+    private String picPath;
+    @SerializedName("picAllLikes")
+    private int picAllLikes;
+    @SerializedName("useArtworkId")
+    private String useArtworkId;
+
+    public int getPicAllLikes() {
+        return picAllLikes;
+    }
+
+    public void setPicAllLikes(int picAllLikes) {
+        this.picAllLikes = picAllLikes;
+    }
+
+    public String getUseArtworkId() {
+        return useArtworkId;
+    }
+
+    public void setUseArtworkId(String useArtworkId) {
+        this.useArtworkId = useArtworkId;
+    }
+
+    public boolean isLike() {
+        return like;
+    }
+
+    public void setLike(boolean like) {
+        this.like = like;
+    }
+
+    public int getPicLikes() {
+        return picLikes;
+    }
+
+    public void setPicLikes(int picLikes) {
+        this.picLikes = picLikes;
+    }
+
+    public String getPicPath() {
+        return picPath;
+    }
+
+    public void setPicPath(String picPath) {
+        this.picPath = picPath;
+    }
 
     public int getLevel() {
         return level;

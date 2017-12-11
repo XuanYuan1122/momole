@@ -51,8 +51,8 @@ public class ClassRecyclerViewAdapter extends RecyclerView.Adapter<ClassRecycler
         FeaturedEntity doc = getItem(i);
         myViewHolder.mTvTitle.setText(doc.getName());
         Glide.with(mContext)
-                .load(StringUtils.getUrl(mContext, ApiService.URL_QINIU + doc.getBg().getPath(), DensityUtil.dip2px(mContext,100), DensityUtil.dip2px(mContext,100), false, true))
-                .override(DensityUtil.dip2px(mContext,100), DensityUtil.dip2px(mContext,100))
+                .load(StringUtils.getUrl(mContext,doc.getBg().getPath(), (int)mContext.getResources().getDimension(R.dimen.y200), (int)mContext.getResources().getDimension(R.dimen.y200), false, true))
+                .override((int)mContext.getResources().getDimension(R.dimen.y200), (int)mContext.getResources().getDimension(R.dimen.y200))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
                 .transform(new GlideRoundTransform(mContext,5))

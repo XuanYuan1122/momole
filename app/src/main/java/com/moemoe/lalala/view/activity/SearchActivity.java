@@ -30,6 +30,7 @@ import com.moemoe.lalala.view.adapter.TabFragmentPagerAdapter;
 import com.moemoe.lalala.view.fragment.BaseFragment;
 import com.moemoe.lalala.view.fragment.SearchBagFragment;
 import com.moemoe.lalala.view.fragment.SearchDocFragment;
+import com.moemoe.lalala.view.fragment.SearchUserByKiraFragment;
 import com.moemoe.lalala.view.fragment.SearchUserFragment;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class SearchActivity extends BaseAppCompatActivity {
     public static final int SHOW_DOC = 1;
     public static final int SHOW_BAG = 2;
     public static final int SHOW_USER = 3;
+    public static final int SHOW_KIRA = 4;
 
     @BindView(R.id.rl_search_root)
     View mSearchRoot;
@@ -70,6 +72,8 @@ public class SearchActivity extends BaseAppCompatActivity {
     TabLayout mTab;
     @BindView(R.id.pager_search_data)
     ViewPager mVpSearch;
+    @BindView(R.id.tv_hint)
+    TextView mTvHint;
 
     private boolean isOpen;
     private String mKeyWord;
@@ -118,6 +122,13 @@ public class SearchActivity extends BaseAppCompatActivity {
             fragmentList.add(docFragment2);
             titles.add(getString(R.string.label_user));
         }
+        if(showType == SHOW_KIRA){
+            SearchUserByKiraFragment docFragment2 = SearchUserByKiraFragment.newInstance();
+            fragmentList.add(docFragment2);
+            titles.add(getString(R.string.label_user));
+            mTvHint.setText("搜索kira号");
+            mEtSearch.setHint("搜索kira号");
+        }
         mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
         mVpSearch.setAdapter(mAdapter);
         mTab.setupWithViewPager(mVpSearch);
@@ -163,7 +174,7 @@ public class SearchActivity extends BaseAppCompatActivity {
                     isOpen = true;
                     int[] location = new int[2];
                     mLlSearchRoot.getLocationOnScreen(location);
-                    ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mLlSearchRoot,"translationX",mLlSearchRoot.getTranslationX(),-(location[0]- DensityUtil.dip2px(SearchActivity.this,22))).setDuration(300);
+                    ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mLlSearchRoot,"translationX",mLlSearchRoot.getTranslationX(),-(location[0]- (int)getResources().getDimension(R.dimen.x44))).setDuration(300);
                     ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"alpha",0.5f,1.0f).setDuration(300);
                     AnimatorSet set = new AnimatorSet();
                     set.play(cardAnimator).with(searchAnimator);
@@ -220,7 +231,7 @@ public class SearchActivity extends BaseAppCompatActivity {
             imm.hideSoftInputFromWindow(mEtSearch.getWindowToken(),0);
             int[] location = new int[2];
             mLlSearchRoot.getLocationOnScreen(location);
-            ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mLlSearchRoot,"translationX",mLlSearchRoot.getTranslationX(),location[0]- DensityUtil.dip2px(SearchActivity.this,22)).setDuration(300);
+            ObjectAnimator cardAnimator = ObjectAnimator.ofFloat(mLlSearchRoot,"translationX",mLlSearchRoot.getTranslationX(),location[0]- (int)getResources().getDimension(R.dimen.x44)).setDuration(300);
             ObjectAnimator searchAnimator = ObjectAnimator.ofFloat(mIvSearch,"alpha",1.0f,0.5f).setDuration(300);
             AnimatorSet set = new AnimatorSet();
             set.play(cardAnimator).with(searchAnimator);

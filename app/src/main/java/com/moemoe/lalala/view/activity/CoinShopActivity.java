@@ -1,26 +1,36 @@
 package com.moemoe.lalala.view.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCoinShopComponent;
 import com.moemoe.lalala.di.modules.CoinShopModule;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.CoinShopEntity;
 import com.moemoe.lalala.model.entity.OrderEntity;
+import com.moemoe.lalala.model.entity.OrderTmp;
 import com.moemoe.lalala.presenter.CoinShopContract;
 import com.moemoe.lalala.presenter.CoinShopPresenter;
+import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
+import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.CoinShopAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
@@ -28,12 +38,23 @@ import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
+import com.pingplusplus.android.Pingpp;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
+
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_GET_FROM_SELECT_BOOK;
 
 /**
  * Created by yi on 2017/6/26.
@@ -57,6 +78,8 @@ public class CoinShopActivity extends BaseAppCompatActivity implements CoinShopC
 
     private CoinShopAdapter mAdapter;
     private boolean isLoading = false;
+    private String productId = "";
+    private boolean isPaying = false;
 
     @Override
     protected int getLayoutId() {
@@ -199,8 +222,84 @@ public class CoinShopActivity extends BaseAppCompatActivity implements CoinShopC
         }
     }
 
-    public void createOrder(CoinShopEntity entity){
+   // @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if(requestCode == REQ_GET_FROM_SELECT_BOOK && resultCode == RESULT_OK){
+//            if(data != null){
+//                BookInfo entity = data.getParcelableExtra(SelectBookActivity.EXTRA_SELECT_BOOK);
+//                BufferedReader reader = null;
+//                try {
+//                    reader = new BufferedReader(new FileReader(new File(entity.getPath())));
+//                    ArrayList<String> list = new ArrayList<>();
+//                    String tmp = "";
+//                    while ((tmp = reader.readLine()) != null){
+//                        list.add(tmp);
+//                    }
+//                    OrderTmp orderTmp = new OrderTmp(productId,list);
+//                    mPresenter.createOrderList(orderTmp);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }finally {
+//                    if(reader != null){
+//                        try {
+//                            reader.close();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }
+//        }else if (requestCode == Pingpp.REQUEST_CODE_PAYMENT) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                String result = data.getExtras().getString("pay_result");
+//                /* 处理返回值
+//                 * "success" - payment succeed
+//                 * "fail"    - payment failed
+//                 * "cancel"  - user canceld
+//                 * "invalid" - payment plugin not installed
+//                 */
+//                String errorMsg = data.getExtras().getString("error_msg"); // 错误信息
+//                String extraMsg = data.getExtras().getString("extra_msg"); // 错误信息
+//                finalizeDialog();
+//                if("success".equals(result)){
+//                    showToast("支付成功");
+//                }else {
+//                    showToast(errorMsg);
+//                }
+//                curOrder++;
+//                mHander.post(mProgressCallback);
+//            }
+//        }
+//    }
+
+    public void createOrder(final CoinShopEntity entity){
         mPresenter.createOrder(entity);
+
+//        productId = entity.getId();
+//        Intent i = new Intent(this,SelectBookActivity.class);
+//        startActivityForResult(i,REQ_GET_FROM_SELECT_BOOK);
+
+
+//        final AlertDialogUtil dialogUtil = AlertDialogUtil.getInstance();
+//        dialogUtil.createEditDialog(this, 0,0);
+//        dialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+//            @Override
+//            public void CancelOnClick() {
+//                dialogUtil.dismissDialog();
+//            }
+//
+//            @Override
+//            public void ConfirmOnClick() {
+//                String content = dialogUtil.getEditTextContent();
+//                if(!TextUtils.isEmpty(content) && Integer.valueOf(content) > 0){
+//                    mPresenter.createOrder(entity,Integer.valueOf(content));
+//                    dialogUtil.dismissDialog();
+//                }else {
+//                    ToastUtils.showShortToast(CoinShopActivity.this,R.string.msg_input_err_coin);
+//                }
+//            }
+//        });
+//        dialogUtil.showDialog();
     }
 
     @Override
@@ -210,6 +309,24 @@ public class CoinShopActivity extends BaseAppCompatActivity implements CoinShopC
         i.putExtra("show_top",true);
         i.putExtra("show_status",false);
         startActivity(i);
+    }
+
+    private ArrayList<JsonObject> jsonObjects = new ArrayList<>();
+    private int curOrder = 0;
+
+    private Handler mHander = new Handler();
+    private Runnable mProgressCallback = new Runnable(){
+
+        @Override
+        public void run() {
+            if(curOrder < jsonObjects.size()) Pingpp.createPayment(CoinShopActivity.this, jsonObjects.get(curOrder).toString());
+        }
+    };
+
+    @Override
+    public void onCreateOrderListSuccess(ArrayList<JsonObject> jsonObjects) {
+        this.jsonObjects = jsonObjects;
+        mHander.post(mProgressCallback);
     }
 
 }

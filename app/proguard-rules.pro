@@ -78,6 +78,12 @@
 -keep class com.umeng.analytics.**{ *; }
 -keep class bitter.jnibridge.**{ *; }
 -keep class com.unity3d.player.**{ *; }
+-keep class org.fmod.**{ *; }
+-keep class com.anysdk.**{ *; }
+-keep class com.cocos.play.**{ *; }
+-keep class com.sanguo.systemUtils.**{ *; }
+-keep class u.aly.**{ *; }
+
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
@@ -238,6 +244,7 @@ public static java.lang.String TABLENAME;
 
 # Application classes that will be serialized/deserialized over Gson
 -keep class com.moemoe.lalala.model.entity.** { *; }
+-keep class com.moemoe.lalala.galgame.** { *; }
 -keep class com.moemoe.lalala.greendao.gen.**{ *; }
 -keep class com.moemoe.lalala.utils.MigrationHelper{ *; }
 
@@ -327,3 +334,15 @@ public void EventInit();
 public void showLog(java.lang.String);
 public void EventError();
 }
+
+# 腾讯定位
+-keepclassmembers class ** {
+    public void on*Event(...);
+}
+-keep class c.t.**{*;}
+-keep class com.tencent.map.geolocation.**{*;}
+-keep class com.tencent.tencentmap.lbssdk.service.**{*;}
+
+
+-dontwarn  org.eclipse.jdt.annotation.**
+-dontwarn  c.t.**

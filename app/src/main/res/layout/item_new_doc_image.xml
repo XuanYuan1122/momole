@@ -9,12 +9,10 @@
             android:id="@+id/iv_doc_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/size_18"
-            android:layout_marginStart="@dimen/size_18"
+            android:layout_marginStart="@dimen/x36"
             android:layout_centerHorizontal="true"
-            android:layout_marginRight="@dimen/size_18"
-            android:layout_marginEnd="@dimen/size_18"
-            android:layout_marginTop="@dimen/size_28"
+            android:layout_marginEnd="@dimen/x36"
+            android:layout_marginTop="@dimen/y56"
             android:scaleType="fitXY">
     </ImageView>
 
@@ -22,11 +20,9 @@
         android:id="@+id/iv_doc_long_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/size_18"
-        android:layout_marginStart="@dimen/size_18"
+        android:layout_marginStart="@dimen/x36"
         android:layout_centerHorizontal="true"
-        android:layout_marginRight="@dimen/size_18"
-        android:layout_marginEnd="@dimen/size_18"
-        android:layout_marginTop="@dimen/size_28"
+        android:layout_marginEnd="@dimen/x36"
+        android:layout_marginTop="@dimen/y56"
         android:visibility="gone"/>
 </RelativeLayout>

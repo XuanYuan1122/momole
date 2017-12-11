@@ -7,9 +7,7 @@ import android.view.View;
 
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.utils.BaseUrlSpan;
-import com.moemoe.lalala.view.activity.DownLoadListActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

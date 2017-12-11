@@ -41,6 +41,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -112,21 +113,38 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
     }
 
     @Override
-    public void requestTopComment(String id) {
-        apiService.loadTopComment(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new NetResultSubscriber<ArrayList<CommentV2Entity>>() {
-                    @Override
-                    public void onSuccess(ArrayList<CommentV2Entity> commentV2Entities) {
-                        if(view != null) view.onLoadTopCommentSuccess(commentV2Entities);
-                    }
+    public void requestTopComment(String id,int type, boolean sortTime, final int index) {
+        if(type == 0) {//0 转发 1 评论
+            apiService.loadRtComment(id,ApiService.LENGHT,index)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetResultSubscriber<ArrayList<CommentV2Entity>>() {
+                        @Override
+                        public void onSuccess(ArrayList<CommentV2Entity> commentV2Entities) {
+                            if(view != null) view.onLoadTopCommentSuccess(commentV2Entities,index == 0);
+                        }
 
-                    @Override
-                    public void onFail(int code, String msg) {
-                        if(view != null) view.onFailure(code,msg);
-                    }
-                });
+                        @Override
+                        public void onFail(int code, String msg) {
+                            if(view != null) view.onFailure(code,msg);
+                        }
+                    });
+        }else {
+            apiService.loadComment(id,sortTime?"time":"like",ApiService.LENGHT,index)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetResultSubscriber<ArrayList<CommentV2Entity>>() {
+                        @Override
+                        public void onSuccess(ArrayList<CommentV2Entity> commentV2Entities) {
+                            if(view != null) view.onLoadTopCommentSuccess(commentV2Entities,index == 0);
+                        }
+
+                        @Override
+                        public void onFail(int code, String msg) {
+                            if(view != null) view.onFailure(code,msg);
+                        }
+                    });
+        }
     }
 
     @Override
@@ -338,38 +356,53 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
     }
 
     @Override
-    public void likeTag(boolean isLike, final int position, TagLikeEntity entity) {
-        if(isLike){
-            apiService.dislikeNewTag(entity)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetSimpleResultSubscriber() {
-                        @Override
-                        public void onSuccess() {
-                            if(view != null) view.onPlusLabel(position,false);
-                        }
+    public void likeTag(final boolean isLike, final int position, TagLikeEntity entity) {
+        apiService.plusTag(!isLike,entity.getDocId(),entity.getTagId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view != null) view.onPlusLabel(position, !isLike);
+                    }
 
-                        @Override
-                        public void onFail(int code,String msg) {
-                            if(view != null) view.onFailure(code,msg);
-                        }
-                    });
-        }else {
-            apiService.likeNewTag(entity)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new NetSimpleResultSubscriber() {
-                        @Override
-                        public void onSuccess() {
-                            if(view != null) view.onPlusLabel(position,true);
-                        }
-
-                        @Override
-                        public void onFail(int code,String msg) {
-                            if(view != null) view.onFailure(code,msg);
-                        }
-                    });
-        }
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code,msg);
+                    }
+                });
+//
+//        if(isLike){
+//            apiService.dislikeNewTag(entity)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new NetSimpleResultSubscriber() {
+//                        @Override
+//                        public void onSuccess() {
+//                            if(view != null) view.onPlusLabel(position,false);
+//                        }
+//
+//                        @Override
+//                        public void onFail(int code,String msg) {
+//                            if(view != null) view.onFailure(code,msg);
+//                        }
+//                    });
+//        }else {
+//            apiService.likeNewTag(entity)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new NetSimpleResultSubscriber() {
+//                        @Override
+//                        public void onSuccess() {
+//                            if(view != null) view.onPlusLabel(position,true);
+//                        }
+//
+//                        @Override
+//                        public void onFail(int code,String msg) {
+//                            if(view != null) view.onFailure(code,msg);
+//                        }
+//                    });
+//        }
     }
 
     @Override
@@ -392,7 +425,7 @@ public class DocDetailPresenter implements DocDetailContract.Presenter {
 
     @Override
     public void createLabel(final TagSendEntity entity) {
-        apiService.createNewTag(entity)
+        apiService.sendTag(entity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetResultSubscriber<String>() {

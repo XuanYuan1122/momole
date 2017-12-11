@@ -50,8 +50,8 @@ public class FileManHua2ViewHolder extends ClickableViewHolder {
         select.setSelected(entity.isSelect());
         title.setText(entity.getFolderName());
         mark.setText(entity.getItems() + " P");
-        int width = (DensityUtil.getScreenWidth(itemView.getContext()) - DensityUtil.dip2px(itemView.getContext(),42)) / 3;
-        int height = DensityUtil.dip2px(itemView.getContext(),140);
+        int width = (DensityUtil.getScreenWidth(itemView.getContext()) - (int)context.getResources().getDimension(R.dimen.x84)) / 3;
+        int height = (int)context.getResources().getDimension(R.dimen.y280);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
         cover.setLayoutParams(lp);
@@ -60,14 +60,14 @@ public class FileManHua2ViewHolder extends ClickableViewHolder {
                     .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),width,height, false, true))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
-                    .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
+                    .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),(int)context.getResources().getDimension(R.dimen.y8),0))
                     .into(cover);
         }else {
             Glide.with(itemView.getContext())
                     .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),width,height, false, true))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
-                    .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0),new BlurTransformation(context,10,4))
+                    .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),(int)context.getResources().getDimension(R.dimen.y8),0),new BlurTransformation(context,10,4))
                     .into(cover);
         }
 

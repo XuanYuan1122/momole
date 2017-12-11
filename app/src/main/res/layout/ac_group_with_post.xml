@@ -14,12 +14,12 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="@dimen/y380"
             android:background="@color/white"
             app:contentScrim="@color/white"
             app:title=""
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="@dimen/x128"
+            app:expandedTitleMarginStart="@dimen/x96"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <RelativeLayout
@@ -31,26 +31,24 @@
                 <ImageView
                     android:id="@+id/iv_club_background"
                     android:layout_width="match_parent"
-                    android:layout_height="190dp"
+                    android:layout_height="@dimen/y380"
                     android:src="@drawable/bg_netaschool"
                     android:scaleType="fitXY"
                     android:visibility="visible" />
-
 
                     <RelativeLayout
                         android:id="@+id/rl_group_head"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:paddingTop="@dimen/status_bar_height"
-                        android:layout_marginTop="@dimen/neta_toolbar">
+                        android:layout_marginTop="@dimen/y100">
 
                         <ImageView
                             android:id="@+id/iv_group_image"
-                            android:layout_width="80dp"
-                            android:layout_height="80dp"
-                            android:layout_marginLeft="@dimen/size_15"
-                            android:layout_marginStart="@dimen/size_15"
-                            android:layout_marginTop="8dp"
+                            android:layout_width="@dimen/y160"
+                            android:layout_height="@dimen/y160"
+                            android:layout_marginStart="@dimen/x30"
+                            android:layout_marginTop="@dimen/y16"
                             android:src="@drawable/bg_default_square" />
 
                         <LinearLayout
@@ -58,12 +56,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignTop="@+id/iv_group_image"
-                            android:layout_marginTop="@dimen/size_2"
-                            android:layout_marginLeft="@dimen/size_12"
-                            android:layout_marginStart="@dimen/size_12"
-                            android:layout_marginRight="@dimen/size_15"
-                            android:layout_marginEnd="@dimen/size_15"
-                            android:layout_toRightOf="@+id/iv_group_image"
+                            android:layout_marginTop="@dimen/y4"
+                            android:layout_marginStart="@dimen/x24"
+                            android:layout_marginEnd="@dimen/x30"
+                            android:layout_toEndOf="@+id/iv_group_image"
                             android:orientation="horizontal" >
 
                             <TextView
@@ -75,91 +71,54 @@
                                 android:shadowDx="1"
                                 android:shadowDy="1"
                                 android:shadowRadius="1"
-                                android:text="23333333"
+                                android:text=""
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/size_24"
+                                android:textSize="@dimen/x48"
                                 android:textStyle="bold" />
 
                             <FrameLayout
                                 android:id="@+id/rl_follow_root"
-                                android:layout_width="@dimen/size_60"
-                                android:layout_height="@dimen/size_26"
+                                android:layout_width="@dimen/x120"
+                                android:layout_height="@dimen/y52"
                                 android:background="@drawable/shape_rect_border_white_no_background_3">
 
                                 <TextView
                                     android:id="@+id/tv_follow"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="@dimen/size_15"
+                                    android:textSize="@dimen/x30"
                                     android:textColor="@color/white"
                                     android:layout_gravity="center"
-                                    android:drawableRight="@drawable/ic_club_follow"
                                     android:drawableEnd="@drawable/ic_club_follow"
-                                    android:drawablePadding="@dimen/size_3"
-                                    android:text="关注"
-                                    />
+                                    android:drawablePadding="@dimen/x6"
+                                    android:text="关注" />
                             </FrameLayout>
                         </LinearLayout>
 
                         <com.moemoe.lalala.view.widget.view.DocLabelView
                             android:id="@+id/dv_label_root"
                             android:layout_width="match_parent"
-                            android:layout_height="20dp"
+                            android:layout_height="@dimen/y40"
                             android:visibility="visible"
-                            android:layout_marginLeft="@dimen/size_12"
-                            android:layout_marginStart="@dimen/size_12"
-                            android:layout_marginRight="@dimen/size_15"
-                            android:layout_marginEnd="@dimen/size_15"
+                            android:layout_marginStart="@dimen/x24"
+                            android:layout_marginEnd="@dimen/x30"
                             android:layout_alignBottom="@+id/iv_group_image"
-                            android:layout_marginBottom="@dimen/size_2"
-                            android:layout_toRightOf="@+id/iv_group_image"
+                            android:layout_marginBottom="@dimen/y4"
                             android:layout_toEndOf="@+id/iv_group_image"
-                            app:child_view_height="18dp"
+                            app:child_view_height="@dimen/y36"
                             app:child_view_width="wrap_content"
-                            app:line_spacing="6dp"
-                            app:label_spacing="7dp">
+                            app:line_spacing="@dimen/y12"
+                            app:label_spacing="@dimen/x14">
                         </com.moemoe.lalala.view.widget.view.DocLabelView>
-
-                        <!--<LinearLayout-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_below="@+id/dv_label_root"-->
-                            <!--android:layout_toRightOf="@+id/iv_group_image"-->
-                            <!--android:layout_marginTop="7dp"-->
-                            <!--android:layout_marginLeft="13dp"-->
-                            <!--android:orientation="horizontal">-->
-
-                            <!--<TextView-->
-                                <!--android:id="@+id/tv_like_num"-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:textColor="@color/white"-->
-                                <!--android:textSize="12dp"-->
-                                <!--android:text="@string/label_like_num"-->
-                                <!--/>-->
-
-                            <!--<TextView-->
-                                <!--android:id="@+id/tv_doc_num"-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:textColor="@color/white"-->
-                                <!--android:layout_marginLeft="8dp"-->
-                                <!--android:layout_marginStart="8dp"-->
-                                <!--android:textSize="12dp"-->
-                                <!--android:text="@string/label_doc_num"-->
-                                <!--/>-->
-                        <!--</LinearLayout>-->
 
                         <TextView
                             android:id="@+id/tv_group_brief"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignLeft="@+id/ll_container_name_follow"
                             android:layout_alignStart="@+id/ll_container_name_follow"
                             android:layout_below="@+id/ll_container_name_follow"
-                            android:layout_marginRight="@dimen/size_15"
-                            android:layout_marginEnd="@dimen/size_15"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="@dimen/x30"
+                            android:layout_marginTop="@dimen/y4"
                             android:ellipsize="end"
                             android:maxLines="1"
                             android:shadowColor="@color/dark_gray"
@@ -167,7 +126,7 @@
                             android:shadowDx="1"
                             android:shadowDy="1"
                             android:textColor="@color/white"
-                            android:textSize="12dp" />
+                            android:textSize="@dimen/x24" />
 
                     </RelativeLayout>
             </RelativeLayout>
@@ -175,7 +134,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/neta_toolbar"
+                android:layout_height="@dimen/y100"
                 app:navigationIcon="@drawable/btn_back_white_normal"
                 app:layout_collapseMode="pin"
                 android:layout_marginTop="@dimen/status_bar_height"
@@ -186,11 +145,11 @@
             <TextView
                 android:id="@+id/tv_toolbar_title"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/neta_toolbar"
+                android:layout_height="@dimen/y100"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:maxLength="16"
-                android:textSize="18dp"
+                android:textSize="@dimen/x36"
                 android:textStyle="bold"
                 android:text=""
                 android:layout_gravity="center_horizontal|bottom"
@@ -218,9 +177,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="@dimen/y20"
+            android:layout_marginEnd="@dimen/x20"
             android:src="@drawable/bg_send_post_btn" />
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

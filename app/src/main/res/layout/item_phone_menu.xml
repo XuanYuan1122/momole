@@ -5,26 +5,25 @@
     android:layout_height="@dimen/y100"
     android:background="@drawable/btn_white_border_selector">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="@dimen/x64"
             android:layout_height="@dimen/y64"
-            android:layout_marginLeft="@dimen/x24"
+            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/x24"/>
 
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/iv_avatar"
             android:textColor="@color/black_1e1e1e"
-            android:textSize="@dimen/size_15"
-            android:layout_marginLeft="@dimen/x24"
+            android:textSize="@dimen/x30"
+            android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/x24"
             android:maxLines="1"
             android:ellipsize="end"/>
@@ -33,9 +32,32 @@
             android:id="@+id/iv_sex"
             android:layout_width="@dimen/x30"
             android:layout_height="@dimen/y30"
-            android:layout_marginStart="@dimen/x20"
-            android:layout_marginLeft="@dimen/x20"/>
-    </LinearLayout>
+            android:layout_toEndOf="@+id/tv_name"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/x20" />
+
+        <TextView
+            android:id="@+id/tv_extra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x30"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/yellow_f2cc2c"
+            android:layout_marginEnd="@dimen/x24"
+            android:visibility="gone"/>
+
+        <CheckBox
+            android:id="@+id/cb_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_image_checkbox"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/x24"
+            android:button="@null"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"

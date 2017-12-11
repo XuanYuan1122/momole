@@ -149,7 +149,6 @@ public class TrashActivity extends BaseAppCompatActivity implements TrashContrac
                 if(entities != null && entities.size() > 0 && index < entities.size()){
                     Intent i = new Intent(TrashActivity.this,TrashDetailActivity.class);
                     i.putExtra("type","text");
-                    //i.putExtra("id",entities.get(index).getDustbinId());
                     i.putExtra("item",entities.get(index));
                     startActivity(i);
                 }
@@ -214,7 +213,6 @@ public class TrashActivity extends BaseAppCompatActivity implements TrashContrac
                     Intent i = new Intent(TrashActivity.this, TrashDetailActivity.class);
                     i.putExtra("type", "text");
                     i.putExtra("item",topEntities.get(index));
-                  //  i.putExtra("id", topEntities.get(index).getDustbinId());
                     startActivity(i);
                 }
             }
@@ -298,7 +296,9 @@ public class TrashActivity extends BaseAppCompatActivity implements TrashContrac
 
     @Override
     public void onLoadListSuccess(ArrayList<TrashEntity> entities) {
-        mCurLastTime = entities.get(entities.size() - 1).getTimestamp();
+        if(entities.size() > 0){
+            mCurLastTime = entities.get(entities.size() - 1).getTimestamp();
+        }
         this.entities.addAll(entities);
         if (mIsFirst){
             if(this.entities.size() != 0) {

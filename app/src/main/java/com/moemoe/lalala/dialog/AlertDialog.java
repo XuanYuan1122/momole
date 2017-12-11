@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.moemoe.lalala.R;
 
 /**
+ * 基本对话框
  * Created by yi on 2016/11/28.
  */
 
@@ -56,13 +57,13 @@ public class AlertDialog extends Dialog {
         init(view);
     }
     public void init(View view){
-        mIconView = (ImageView)view.findViewById(R.id.icon_view);
-        mTitleView = (TextView)view.findViewById(R.id.label_title);
-        mMessageView= (TextView)view.findViewById(R.id.message_panel);
-        mCustomView = (FrameLayout)view.findViewById(R.id.custom_panel);
-        button_negative = (Button)view.findViewById(android.R.id.button1);
-        button_neutral = (Button)view.findViewById(android.R.id.button2);
-        button_positive = (Button)view.findViewById(android.R.id.button3);
+        mIconView =view.findViewById(R.id.icon_view);
+        mTitleView = view.findViewById(R.id.label_title);
+        mMessageView= view.findViewById(R.id.message_panel);
+        mCustomView = view.findViewById(R.id.custom_panel);
+        button_negative = view.findViewById(android.R.id.button1);
+        button_neutral = view.findViewById(android.R.id.button2);
+        button_positive = view.findViewById(android.R.id.button3);
         mBtnDivider1 = view.findViewById(R.id.divider_1);
         mBtnDivider2 = view.findViewById(R.id.divider_2);
         mBottomPanel = view.findViewById(R.id.bottom_panel);

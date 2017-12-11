@@ -145,8 +145,8 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
             NewFolderEntity entity = getIntent().getParcelableExtra("folder");
             mTvName.setText(entity.getFolderName());
             Glide.with(NewFolderEditActivity.this)
-                    .load(StringUtils.getUrl(this,entity.getCover(),DensityUtil.dip2px(NewFolderEditActivity.this,56), DensityUtil.dip2px(NewFolderEditActivity.this,56),false,true))
-                    .override(DensityUtil.dip2px(NewFolderEditActivity.this,56), DensityUtil.dip2px(NewFolderEditActivity.this,56))
+                    .load(StringUtils.getUrl(this,entity.getCover(),(int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112),false,true))
+                    .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .bitmapTransform(new CropSquareTransformation(NewFolderEditActivity.this))
@@ -173,7 +173,7 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
         mTvSave.setVisibility(View.VISIBLE);
         mTvSave.getPaint().setFakeBoldText(true);
         mTvSave.setEnabled(true);
-        ViewUtils.setRightMargins(mTvSave, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvSave, (int)getResources().getDimension(R.dimen.x36));
         mTvSave.setText(getString(R.string.label_done));
         initPopupMenus();
     }
@@ -431,7 +431,7 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
             public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
                 Glide.with(NewFolderEditActivity.this)
                         .load(photoPaths.get(0))
-                        .override(DensityUtil.dip2px(NewFolderEditActivity.this,56), DensityUtil.dip2px(NewFolderEditActivity.this,56))
+                        .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
                         .bitmapTransform(new CropSquareTransformation(NewFolderEditActivity.this))

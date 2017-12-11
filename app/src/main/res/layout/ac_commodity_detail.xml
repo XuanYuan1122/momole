@@ -29,9 +29,9 @@
             <com.youth.banner.Banner
                 android:id="@+id/banner_top"
                 android:layout_width="match_parent"
-                android:layout_height="375dp"
+                android:layout_height="@dimen/y750"
                 app:is_auto_play="false"
-                app:title_textsize="@dimen/size_12"
+                app:title_textsize="@dimen/x24"
                 app:title_textcolor="@color/white"
                 app:title_background="@color/alph_80"
                 app:image_scale_type="fit_xy">
@@ -42,28 +42,28 @@
                 android:id="@+id/tv_commodity_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="44dp"
+                android:layout_marginTop="@dimen/y88"
                 android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/tv_refresh_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_12"
+                android:textSize="@dimen/x24"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/size_6"
+                android:layout_marginTop="@dimen/y12"
                 android:textColor="@color/gray_929292"/>
 
             <TextView
                 android:id="@+id/tv_done"
-                android:layout_width="130dp"
-                android:layout_height="@dimen/size_45"
+                android:layout_width="@dimen/x260"
+                android:layout_height="@dimen/y90"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15"
+                android:textSize="@dimen/x30"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/size_20"
+                android:layout_marginTop="@dimen/y40"
                 android:background="@drawable/btn_coin_shop_buy"
                 android:layout_gravity="center_horizontal" />
         </LinearLayout>

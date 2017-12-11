@@ -11,26 +11,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black_1e1e1e"
-        android:textSize="@dimen/size_12"
+        android:textSize="@dimen/x24"
         android:textStyle="bold"
-        android:paddingTop="@dimen/size_18"
-        android:layout_marginLeft="@dimen/size_12"
-        android:layout_marginStart="@dimen/size_12"
-        android:text="最近收藏"/>
+        android:paddingTop="@dimen/y36"
+        android:layout_marginStart="@dimen/x24"
+        android:text=""/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:layout_marginLeft="@dimen/size_12"
-        android:layout_marginRight="@dimen/size_12"
-        android:layout_marginTop="@dimen/size_18">
+        android:layout_height="@dimen/y280"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginTop="@dimen/y36">
 
     </android.support.v7.widget.RecyclerView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_1_px"
-        android:layout_marginTop="@dimen/size_18"
+        android:layout_marginTop="@dimen/y36"
         android:background="@color/gray_e8e8e8"/>
 </LinearLayout>

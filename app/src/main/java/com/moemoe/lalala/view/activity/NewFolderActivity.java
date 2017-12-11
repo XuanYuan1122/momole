@@ -240,11 +240,11 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
                     mIvBack.setVisibility(View.GONE);
                     mIvMenu.setVisibility(View.GONE);
                     mTvMenuLeft.setVisibility(View.VISIBLE);
-                    ViewUtils.setLeftMargins(mTvMenuLeft, DensityUtil.dip2px(NewFolderActivity.this,18));
+                    ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
                     mTvMenuLeft.setText(getString(R.string.label_give_up));
                     mTvMenuLeft.setTextColor(ContextCompat.getColor(NewFolderActivity.this,R.color.black_1e1e1e));
                     mTvMenuRight.setVisibility(View.VISIBLE);
-                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFolderActivity.this,18));
+                    ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
                     mTvMenuRight.setText(getString(R.string.label_delete));
                     mTvMenuRight.setTextColor(ContextCompat.getColor(NewFolderActivity.this,R.color.main_cyan));
                     mTvTop.setVisibility(View.VISIBLE);

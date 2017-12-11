@@ -19,19 +19,19 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/y64"
         android:layout_gravity="center_horizontal">
 
         <RelativeLayout
             android:id="@+id/ll_select_music"
-            android:layout_width="115dp"
+            android:layout_width="@dimen/x230"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/iv_select_music"
-                android:layout_width="115dp"
-                android:layout_height="115dp"
+                android:layout_width="@dimen/x230"
+                android:layout_height="@dimen/x230"
                 android:background="@drawable/btn_select_music" />
 
             <ImageView
@@ -39,7 +39,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:src="@drawable/btn_doc_pic_cancel"
                 android:visibility="gone"/>
 
@@ -50,11 +49,11 @@
                 android:textColor="#93D856"
                 android:layout_below="@+id/iv_select_music"
                 android:layout_centerHorizontal="true"
-                android:textSize="14dp"
-                android:maxWidth="115dp"
+                android:textSize="@dimen/x28"
+                android:maxWidth="@dimen/x230"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/y8"
                 android:layout_gravity="center"
                 android:text="@string/label_select_music"/>
 
@@ -62,16 +61,15 @@
 
         <RelativeLayout
             android:id="@+id/ll_select_img"
-            android:layout_width="115dp"
+            android:layout_width="@dimen/x230"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="@dimen/x40"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/iv_select_img"
-                android:layout_width="115dp"
-                android:layout_height="115dp"
+                android:layout_width="@dimen/x230"
+                android:layout_height="@dimen/x230"
                 android:background="@drawable/btn_select_img" />
 
             <ImageView
@@ -79,7 +77,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:src="@drawable/btn_doc_pic_cancel"
                 android:visibility="gone"/>
 
@@ -92,9 +89,9 @@
                 android:layout_centerHorizontal="true"
                 android:ellipsize="end"
                 android:layout_below="@+id/iv_select_img"
-                android:textSize="14dp"
-                android:maxWidth="115dp"
-                android:layout_marginTop="4dp"
+                android:textSize="@dimen/x28"
+                android:maxWidth="@dimen/x230"
+                android:layout_marginTop="@dimen/y8"
                 android:layout_gravity="center"
                 android:text="@string/label_select_img"/>
 

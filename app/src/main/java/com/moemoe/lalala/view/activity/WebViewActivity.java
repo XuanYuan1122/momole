@@ -148,7 +148,6 @@ public class WebViewActivity extends BaseAppCompatActivity implements SimpleCont
     }
 
     public void showShare(final int type) {//0 抽奖 1魔塔
-        ShareSDK.initSDK(this);
         final OnekeyShare oks = new OnekeyShare();
         //关闭sso授权
         oks.disableSSOWhenAuthorize();

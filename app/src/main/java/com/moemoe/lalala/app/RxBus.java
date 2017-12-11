@@ -12,6 +12,7 @@ import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
 /**
+ * RxBus
  * Created by yi on 2017/3/2.
  */
 

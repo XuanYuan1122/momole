@@ -9,7 +9,6 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,10 +17,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.entity.CommentV2Entity;
 import com.moemoe.lalala.model.entity.CommentV2SecEntity;
 import com.moemoe.lalala.model.entity.Image;
-import com.moemoe.lalala.model.entity.tag.UserUrlSpan;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.FileUtil;
@@ -30,7 +27,6 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.CommentSecListActivity;
-import com.moemoe.lalala.view.activity.DynamicActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
 
@@ -127,7 +123,7 @@ public class CommentSecListHolder extends ClickableViewHolder {
         }else {
             setVisible(R.id.ll_comment_img,false);
         }
-        setText(R.id.tv_comment_time,StringUtils.timeFormate(entity.getCreateTime()));
+        setText(R.id.tv_comment_time,StringUtils.timeFormat(entity.getCreateTime()));
         //sec comment
         setVisible(R.id.ll_comment_root,false);
     }

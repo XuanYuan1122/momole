@@ -327,6 +327,21 @@ public class CreateRichDocPresenter implements CreateRichDocContract.Presenter {
                                                 if(view != null) view.onFailure(code,msg);
                                             }
                                         });
+                            }else if(docType == 4){
+                                apiService.createDocV3(doc)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new NetSimpleResultSubscriber() {
+                                            @Override
+                                            public void onSuccess() {
+                                                if(view != null) view.onSendSuccess("","");
+                                            }
+
+                                            @Override
+                                            public void onFail(int code,String msg ){
+                                                if(view != null) view.onFailure(code,msg);
+                                            }
+                                        });
                             }
                         }else {
                             apiService.updateDoc(doc,docId)

@@ -15,34 +15,33 @@
     </TimePicker>
 
     <LinearLayout
-        android:layout_width="210dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/x420"
+        android:layout_height="@dimen/y80"
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal">
 
-        <Button
+        <TextView
             android:id="@+id/cancel"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_gravity="center"
             android:textColor="@color/main_cyan"
-            android:background="@android:color/transparent"
             android:text="@string/label_cancel"/>
 
         <View
             android:layout_width="1dp"
             android:layout_weight="0"
             android:layout_height="match_parent"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginTop="@dimen/y6"
+            android:layout_marginBottom="@dimen/y6"
             android:background="@color/gray_d7d7d7"/>
 
-        <Button
+        <TextView
             android:id="@+id/confirm"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_gravity="center"
             android:gravity="center"

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.moemoe.lalala.R;
 import com.moemoe.lalala.view.widget.tooltip.Tooltip;
 import com.moemoe.lalala.view.widget.tooltip.TooltipAnimation;
 
@@ -60,7 +61,7 @@ public class ToolTipUtils {
                 .autoAdjust(autoAdjust)
                 .autoCancel(3000)
                 .content(content)
-                .withTip(new Tooltip.Tip(DensityUtil.dip2px(context,16), DensityUtil.dip2px(context,16), tipColor))
+                .withTip(new Tooltip.Tip((int)context.getResources().getDimension(R.dimen.x36), (int)context.getResources().getDimension(R.dimen.y36), tipColor))
                 .into(viewGroup)
                 .debug(false)
                 .show();

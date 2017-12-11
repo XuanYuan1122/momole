@@ -19,7 +19,7 @@
         android:id="@+id/pgbar_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size_3"
+        android:layout_height="@dimen/y6"
         android:progressDrawable="@drawable/web_progress_horizonntal"
         android:visibility="gone" />
 

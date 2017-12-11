@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.wonderkiln.camerakit.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:ckCropOutput="false"
+        app:ckFacing="back"
+        app:ckFlash="off"
+        app:ckFocus="tapWithMarker"
+        app:ckJpegQuality="100"
+        app:ckMethod="standard"
+        app:ckVideoQuality="highest"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_show"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.moemoe.lalala.view.widget.camera.StickerView
+            android:id="@+id/sticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y36"
+        android:layout_marginStart="@dimen/x24"
+        android:src="@drawable/btn_back_cover_normal"/>
+
+    <TextView
+        android:id="@+id/tv_switch_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/btn_camera_flip"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x24"
+        android:gravity="center_horizontal"
+        android:layout_toEndOf="@+id/iv_take_picture"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/y92"
+        android:layout_marginStart="@dimen/x94"
+        android:text="翻转"/>
+
+    <ImageView
+        android:id="@+id/iv_take_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/y88"
+        android:src="@drawable/btn_take_photo"/>
+
+    <TextView
+        android:id="@+id/tv_switch_face"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@drawable/btn_camera_sticker"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x24"
+        android:gravity="center_horizontal"
+        android:layout_toStartOf="@+id/iv_take_picture"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/y92"
+        android:layout_marginEnd="@dimen/x94"
+        android:text="贴纸"/>
+
+
+    <LinearLayout
+        android:id="@+id/ll_face_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <ImageView
+            android:id="@+id/iv_close_stick"
+            android:layout_width="@dimen/x149"
+            android:layout_height="@dimen/y56"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/x32"
+            android:layout_marginBottom="@dimen/y14"
+            android:src="@drawable/btn_camera_sticker_fold"/>
+
+        <com.flyco.tablayout.CommonTabLayout
+            android:id="@+id/indicator_person_data"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y80"
+            android:layout_marginStart="@dimen/x10"
+            android:background="@color/alph_40"
+            app:tl_iconVisible="false"
+            app:tl_tab_padding="@dimen/x15"
+            app:tl_indicator_height="@dimen/y8"
+            app:tl_indicator_width="@dimen/x100"
+            app:tl_tab_space_equal="false"
+            app:tl_indicator_color="@color/main_cyan"
+            app:tl_textsize="@dimen/x30"
+            app:tl_textBold="BOTH"
+            app:tl_textSelectColor="@color/main_cyan"
+            app:tl_textUnselectColor="@color/white"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y350"
+            android:background="@color/alph_60"
+            android:paddingTop="@dimen/y12"
+            android:paddingStart="@dimen/x36"
+            android:paddingEnd="@dimen/x36"/>
+    </LinearLayout>
+
+</RelativeLayout>

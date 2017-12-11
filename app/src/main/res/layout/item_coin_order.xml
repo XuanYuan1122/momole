@@ -2,41 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_110"
+    android:layout_height="@dimen/y220"
     android:background="@color/white">
 
     <ImageView
         android:id="@+id/iv_commodity"
-        android:layout_width="@dimen/size_110"
-        android:layout_height="@dimen/size_110"/>
+        android:layout_width="@dimen/y220"
+        android:layout_height="@dimen/y220"/>
 
     <TextView
         android:id="@+id/tv_commodity_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/iv_commodity"
         android:layout_toEndOf="@+id/iv_commodity"
         android:textStyle="bold"
         android:textColor="@color/black_1e1e1e"
-        android:textSize="@dimen/size_18"
-        android:layout_marginLeft="@dimen/size_15"
-        android:layout_marginStart="@dimen/size_15"
-        android:layout_marginRight="@dimen/size_12"
-        android:layout_marginEnd="@dimen/size_12"
-        android:layout_marginTop="@dimen/size_16"
+        android:textSize="@dimen/x36"
+        android:layout_marginStart="@dimen/x30"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginTop="@dimen/y32"
         android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_commodity_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_commodity_title"
         android:layout_alignStart="@+id/tv_commodity_title"
         android:layout_below="@+id/tv_commodity_title"
-        android:layout_marginTop="@dimen/size_5"
-        android:layout_marginRight="@dimen/size_12"
-        android:layout_marginEnd="@dimen/size_12"
-        android:textSize="@dimen/size_10"
+        android:layout_marginTop="@dimen/y10"
+        android:layout_marginEnd="@dimen/x24"
+        android:textSize="@dimen/x20"
         android:textColor="@color/gray_929292"
         android:maxLines="3" />
 
@@ -44,13 +39,12 @@
         android:id="@+id/tv_commodity_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_commodity_title"
         android:layout_alignStart="@+id/tv_commodity_title"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/size_12"
+        android:layout_marginBottom="@dimen/y24"
         android:textColor="@color/main_red"
         android:textStyle="bold"
-        android:textSize="@dimen/size_15"/>
+        android:textSize="@dimen/x30"/>
 
 
 </RelativeLayout>

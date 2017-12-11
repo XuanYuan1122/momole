@@ -18,6 +18,7 @@ public class DocPut {
     public boolean coinComment;
     public Set<String> userIds;
     public String cover;
+    public String departmentId;
 
     public DocPut(){
         tags = new ArrayList<>();

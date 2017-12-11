@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.WallBlock;
 import com.moemoe.lalala.utils.CommonUtils;
 import com.moemoe.lalala.utils.DensityUtil;
@@ -89,7 +90,7 @@ public class DraggableLayout extends ViewGroup {
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mStatusHeight = CommonUtils.getStatusHeight(getContext());
         listViews = new ArrayList<>();
-        mViewPadding = DensityUtil.dip2px(getContext(),3);
+        mViewPadding = (int)context.getResources().getDimension(R.dimen.x6);
     }
 
     public interface DragItemClickListener {

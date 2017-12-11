@@ -5,45 +5,74 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by Haru on 2016/8/11 0011.
  */
 public class DepartmentEntity {
 
-    @SerializedName("before")
     private String before;
-    @SerializedName("list")
     private ArrayList<DepartmentDoc> list;
 
     public class DepartmentDoc{
-        @SerializedName("comments")
         private int comments;
-        @SerializedName("content")
         private String content;
-        @SerializedName("icon")
         private Image icon;
-        @SerializedName("images")
         private ArrayList<Image> images;
-        @SerializedName("likes")
         private int likes;
-        @SerializedName("musicUrl")
         private String musicUrl;
-        @SerializedName("musicName")
         private String musicName;
-        @SerializedName("mark")
         private String mark;
-        @SerializedName("schema")
         private String schema;
-        @SerializedName("title")
         private String title;
-        @SerializedName("ui")
         private String ui;
-        @SerializedName("uiTitle")
         private String uiTitle;
-        @SerializedName("username")
         private String username;
-        @SerializedName("updateTime")
         private String updateTime;
+        private String userId;
+        private int readNum;
+        private String headIcon;
+        private int coin;
+        private int score;
 
+        public int getCoin() {
+            return coin;
+        }
+
+        public void setCoin(int coin) {
+            this.coin = coin;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public int getReadNum() {
+            return readNum;
+        }
+
+        public void setReadNum(int readNum) {
+            this.readNum = readNum;
+        }
+
+        public String getHeadIcon() {
+            return headIcon;
+        }
+
+        public void setHeadIcon(String headIcon) {
+            this.headIcon = headIcon;
+        }
 
         public int getComments() {
             return comments;

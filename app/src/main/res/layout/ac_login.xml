@@ -6,13 +6,13 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="46dp"
+            android:layout_marginTop="@dimen/y92"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/ic_lp_logo"/>
 
@@ -20,7 +20,7 @@
             android:id="@+id/iv_pwd_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="21dp"
+            android:layout_marginTop="@dimen/y42"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/bg_pwd_img" />
 
@@ -31,7 +31,7 @@
 
             <LinearLayout
                 android:id="@+id/ll_account_pack"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/x600"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/bg_rect_corner_login"
@@ -44,35 +44,35 @@
 
                     <TextView
                         android:id="@+id/tv_country_code"
-                        android:layout_width="44dp"
+                        android:layout_width="@dimen/x88"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="24dp"
+                        android:layout_marginStart="@dimen/x48"
                         android:gravity="center_vertical"
-                        android:padding="6dp"
+                        android:padding="@dimen/y12"
                         android:text="@string/label_country_china"
                         android:textColor="@color/white"
-                        android:textSize="14dp"
+                        android:textSize="@dimen/x28"
                         android:visibility="visible" />
 
                     <View
                         style="@style/VerticalSep"
-                        android:layout_marginBottom="6dp"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="@dimen/y12"
+                        android:layout_marginTop="@dimen/y12"
                         android:visibility="visible" />
 
                     <AutoCompleteTextView
                         android:id="@+id/edt_account_name"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="@dimen/y100"
                         android:background="@null"
                         android:hint="@string/label_hint_login_account_name"
                         android:imeOptions="actionNext"
                         android:inputType="phone"
-                        android:paddingLeft="24dp"
-                        android:paddingRight="24dp"
+                        android:paddingLeft="@dimen/x48"
+                        android:paddingRight="@dimen/x48"
                         android:textColor="@color/white"
                         android:textColorHint="@color/gray_c1c1c1"
-                        android:textSize="@dimen/size_15" >
+                        android:textSize="@dimen/x30" >
                     </AutoCompleteTextView>
                 </LinearLayout>
 
@@ -83,15 +83,15 @@
                 <EditText
                     android:id="@+id/edt_password"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="@dimen/y100"
                     android:background="@null"
                     android:hint="@string/label_hint_input_password"
                     android:inputType="textPassword"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="24dp"
+                    android:paddingLeft="@dimen/x48"
+                    android:paddingRight="@dimen/x48"
                     android:textColor="@color/white"
                     android:textColorHint="@color/gray_c1c1c1"
-                    android:textSize="@dimen/size_15" />
+                    android:textSize="@dimen/x30" />
             </LinearLayout>
 
             <TextView
@@ -99,30 +99,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll_account_pack"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginStart="@dimen/x40"
+                android:layout_marginTop="@dimen/y4"
                 android:text="@string/label_password_format"
                 android:textColor="@color/white"
-                android:textSize="10dp"
+                android:textSize="@dimen/x20"
                 android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_login"
-                android:layout_width="220dp"
-                android:layout_height="57dp"
+                android:layout_width="@dimen/x440"
+                android:layout_height="@dimen/y114"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/ll_account_pack"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="@dimen/y28"
                 android:background="@drawable/btn_login"
                 android:text="" />
 
             <TextView
                 android:id="@+id/tv_register"
-                android:layout_width="220dp"
-                android:layout_height="57dp"
+                android:layout_width="@dimen/x440"
+                android:layout_height="@dimen/y114"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/tv_login"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="@dimen/y4"
                 android:background="@drawable/btn_register"
                 android:text="" />
 
@@ -130,39 +130,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_register"
-                android:layout_marginTop="17dp"
-                android:layout_marginRight="38dp"
-                android:layout_marginEnd="38dp"
-                android:layout_marginStart="38dp"
-                android:layout_marginLeft="38dp">
+                android:layout_marginTop="@dimen/y34"
+                android:layout_marginEnd="@dimen/x76"
+                android:layout_marginStart="@dimen/x76">
 
                 <View
                     android:layout_width = "match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="@dimen/size_1_px"
                     android:background="@color/white"
                     android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/tv_time_table"/>
+                    android:layout_toStartOf="@+id/tv_time_table"/>
 
                 <TextView
                     android:id="@+id/tv_time_table"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginEnd="@dimen/x40"
+                    android:layout_marginStart="@dimen/x40"
                     android:gravity="center"
                     android:text="@string/label_login_third"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/size_14" />
+                    android:textSize="@dimen/x28" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1px"
                     android:background="@color/white"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_time_table" />
+                    android:layout_toEndOf="@+id/tv_time_table" />
             </RelativeLayout>
         </com.moemoe.lalala.view.widget.view.KeyboardListenerLayout>
 
@@ -178,7 +174,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="13dp">
+                android:layout_marginTop="@dimen/y26">
                 
                 <ImageView 
                     android:id="@+id/iv_login_weibo"
@@ -192,14 +188,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_login_wechat"
-                    android:layout_marginLeft="30dp"/>
+                    android:layout_marginStart="@dimen/x60"/>
                        
                 <ImageView 
                     android:id="@+id/iv_login_qq"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/btn_login_qq"
-                    android:layout_marginLeft="30dp"/>
+                    android:layout_marginStart="@dimen/x60"/>
                 
             </LinearLayout>
             
@@ -208,29 +204,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll_sns_login_pack"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="14dp"
-                android:layout_marginStart="14dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/y20"
+                android:layout_marginStart="@dimen/x28"
+                android:layout_marginBottom="@dimen/y32"
                 android:gravity="center_vertical"
                 android:text="@string/label_forger_password"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15" />
+                android:textSize="@dimen/x30" />
 
             <TextView
                 android:id="@+id/tv_go_to_main"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ll_sns_login_pack"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="14dp"
-                android:layout_marginEnd="14dp"
-                android:layout_marginBottom="16dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/y20"
+                android:layout_marginEnd="@dimen/x28"
+                android:layout_marginBottom="@dimen/y32"
                 android:gravity="center_vertical"
                 android:text="@string/label_go_go"
                 android:textColor="@color/white"
-                android:textSize="@dimen/size_15" />
+                android:textSize="@dimen/x30" />
         </com.moemoe.lalala.view.widget.view.KeyboardListenerLayout>
     </LinearLayout>
 

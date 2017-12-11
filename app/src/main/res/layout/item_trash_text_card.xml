@@ -4,10 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="15dp"
-    android:paddingStart="15dp"
-    android:paddingRight="@dimen/size_15"
-    android:paddingEnd="@dimen/size_15">
+    android:paddingStart="@dimen/x30"
+    android:paddingEnd="@dimen/x30">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -17,19 +15,19 @@
         <RelativeLayout
             android:id="@+id/rl_layout"
             android:layout_width="match_parent"
-            android:layout_height="370dp">
+            android:layout_height="@dimen/y740">
 
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="34dp"
+                android:layout_marginTop="@dimen/y68"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="@dimen/size_18"
+                android:textSize="@dimen/x36"
                 android:text=""/>
 
             <TextView
@@ -37,13 +35,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_title"
-                android:layout_marginTop="28dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginTop="@dimen/y56"
                 android:layout_centerHorizontal="true"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginRight="10dp"
-                android:textSize="@dimen/size_15"
+                android:layout_marginEnd="@dimen/x20"
+                android:layout_marginStart="@dimen/x20"
+                android:textSize="@dimen/x30"
                 android:maxLines="7"
                 android:ellipsize="end"
                 android:textColor="@color/gray_929292"
@@ -51,49 +47,45 @@
 
             <TextView
                 android:id="@+id/tv_favorite"
-                android:layout_width="50dp"
-                android:layout_height="22dp"
+                android:layout_width="@dimen/x100"
+                android:layout_height="@dimen/y44"
                 android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:textColor="@color/txt_white_red"
                 android:gravity="center"
                 android:text="收藏"
                 android:textStyle="bold"
-                android:textSize="@dimen/size_10"
-                android:layout_marginBottom="7dp"
+                android:textSize="@dimen/x20"
+                android:layout_marginBottom="@dimen/y14"
                 android:background="@drawable/btn_trash_favorite"
-                android:layout_marginRight="15dp"
-                android:layout_marginEnd="15dp"/>
+                android:layout_marginEnd="@dimen/x30"/>
 
             <TextView
                 android:id="@+id/tv_add_label"
-                android:layout_width="50dp"
-                android:layout_height="22dp"
-                android:layout_toLeftOf="@+id/tv_favorite"
+                android:layout_width="@dimen/x100"
+                android:layout_height="@dimen/y44"
                 android:layout_toStartOf="@+id/tv_favorite"
                 android:layout_alignBottom="@+id/tv_favorite"
                 android:textColor="@color/txt_white_main"
                 android:gravity="center"
                 android:text="添加标签"
                 android:textStyle="bold"
-                android:textSize="@dimen/size_10"
+                android:textSize="@dimen/x20"
                 android:background="@drawable/btn_trash_add_label"
-                android:layout_marginRight="15dp"
-                android:layout_marginEnd="15dp"/>
+                android:layout_marginEnd="@dimen/x30"/>
 
             <com.moemoe.lalala.view.widget.view.DocLabelView
                 android:id="@+id/dv_doc_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
+                android:layout_marginStart="@dimen/x24"
+                android:layout_marginEnd="@dimen/x24"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="50dp"
-                app:child_view_height="22dp"
+                android:layout_marginBottom="@dimen/y100"
+                app:child_view_height="@dimen/y44"
                 app:child_view_width="wrap_content"
-                app:line_spacing="7dp"
-                app:label_spacing="7dp"
+                app:line_spacing="@dimen/y14"
+                app:label_spacing="@dimen/x14"
                 app:line_limit="3">
 
             </com.moemoe.lalala.view.widget.view.DocLabelView>

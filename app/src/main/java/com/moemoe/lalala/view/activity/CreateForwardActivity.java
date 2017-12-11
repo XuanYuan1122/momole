@@ -265,15 +265,14 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
 
     private void createArticle(final ShareArticleEntity entity){
         View article = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
-        TextView title = (TextView) article.findViewById(R.id.tv_title);
-        TextView articleContent = (TextView) article.findViewById(R.id.tv_content);
-        ImageView cover = (ImageView) article.findViewById(R.id.iv_cover);
-        TextView mark = (TextView) article.findViewById(R.id.tv_mark);
+        TextView title = article.findViewById(R.id.tv_title);
+        TextView articleContent = article.findViewById(R.id.tv_content);
+        ImageView cover = article.findViewById(R.id.iv_cover);
+        TextView mark = article.findViewById(R.id.tv_mark);
         article.findViewById(R.id.tv_folder_name).setVisibility(View.GONE);
         article.findViewById(R.id.tv_tag).setVisibility(View.GONE);
-        article.findViewById(R.id.iv_mask).setVisibility(View.GONE);
         int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
-        int h = (int) getResources().getDimension(R.dimen.y320);
+        int h = (int) getResources().getDimension(R.dimen.y400);
         Glide.with(this)
                 .load(StringUtils.getUrl(this,entity.getCover(),w,h,false,true))
                 .error(R.drawable.bg_default_square)
@@ -283,9 +282,9 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
         mark.setText("文章");
         title.setText(entity.getTitle());
         articleContent.setText(TagControl.getInstance().paresToSpann(this,entity.getContent()));
-        ImageView avatar = (ImageView) article.findViewById(R.id.iv_avatar);
-        TextView userName = (TextView) article.findViewById(R.id.tv_user_name);
-        TextView time = (TextView) article.findViewById(R.id.tv_time);
+        ImageView avatar = article.findViewById(R.id.iv_avatar);
+        TextView userName = article.findViewById(R.id.tv_user_name);
+        TextView time = article.findViewById(R.id.tv_time);
         int size = (int) this.getResources().getDimension(R.dimen.x44);
         Glide.with(this)
                 .load(StringUtils.getUrl(this,entity.getDocCreateUser().getHeadPath(),size,size,false,true))
@@ -294,7 +293,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
                 .bitmapTransform(new CropCircleTransformation(this))
                 .into(avatar);
         userName.setText(entity.getDocCreateUser().getUserName());
-        time.setText(StringUtils.timeFormate(entity.getCreateTime()));
+        time.setText(StringUtils.timeFormat(entity.getCreateTime()));
         mExtraRoot.addView(article);
     }
     
@@ -302,12 +301,12 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
         View folder = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
         folder.findViewById(R.id.tv_title).setVisibility(View.GONE);
         folder.findViewById(R.id.tv_content).setVisibility(View.GONE);
-        ImageView cover = (ImageView) folder.findViewById(R.id.iv_cover);
-        TextView mark = (TextView) folder.findViewById(R.id.tv_mark);
-        TextView name = (TextView) folder.findViewById(R.id.tv_folder_name);
-        TextView tag = (TextView) folder.findViewById(R.id.tv_tag);
+        ImageView cover = folder.findViewById(R.id.iv_cover);
+        TextView mark = folder.findViewById(R.id.tv_mark);
+        TextView name = folder.findViewById(R.id.tv_folder_name);
+        TextView tag = folder.findViewById(R.id.tv_tag);
         int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
-        int h = (int) getResources().getDimension(R.dimen.y320);
+        int h = (int) getResources().getDimension(R.dimen.y400);
         Glide.with(this)
                 .load(StringUtils.getUrl(this,entity.getFolderCover(),w,h,false,true))
                 .error(R.drawable.bg_default_square)
@@ -339,9 +338,9 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
         }
         tag.setText(tagStr);
 
-        ImageView avatar = (ImageView) folder.findViewById(R.id.iv_avatar);
-        TextView userName = (TextView) folder.findViewById(R.id.tv_user_name);
-        TextView time = (TextView) folder.findViewById(R.id.tv_time);
+        ImageView avatar = folder.findViewById(R.id.iv_avatar);
+        TextView userName = folder.findViewById(R.id.tv_user_name);
+        TextView time = folder.findViewById(R.id.tv_time);
         int size = (int) this.getResources().getDimension(R.dimen.x44);
         Glide.with(this)
                 .load(StringUtils.getUrl(this,entity.getCreateUser().getHeadPath(),size,size,false,true))
@@ -350,7 +349,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
                 .bitmapTransform(new CropCircleTransformation(this))
                 .into(avatar);
         userName.setText(entity.getCreateUser().getUserName());
-        time.setText("上一次更新:" + StringUtils.timeFormate(entity.getUpdateTime()));
+        time.setText("上一次更新:" + StringUtils.timeFormat(entity.getUpdateTime()));
         mExtraRoot.addView(folder);
     }
     
@@ -369,8 +368,8 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
 
     private void createDynamic(String path,CharSequence content){
         View folder = LayoutInflater.from(this).inflate(R.layout.item_forward_dynamic,null);
-        ImageView iv = (ImageView) folder.findViewById(R.id.iv_cover);
-        TextView tv = (TextView) folder.findViewById(R.id.tv_content);
+        ImageView iv = folder.findViewById(R.id.iv_cover);
+        TextView tv = folder.findViewById(R.id.tv_content);
         if(TextUtils.isEmpty(path)){
             iv.setVisibility(View.GONE);
         }else {
@@ -470,6 +469,10 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
         }
         if(TextUtils.isEmpty(mEtContent.getText())){
             showToast(R.string.msg_doc_content_cannot_null);
+            return;
+        }
+        if(TextUtils.isEmpty(mEtContent.getText().toString().replace(" ",""))){
+            showToast("转发内容不能全为空格");
             return;
         }
        // String text = TagControl.getInstance().paresToString(mEtContent.getText());

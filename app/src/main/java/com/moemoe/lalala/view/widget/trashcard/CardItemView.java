@@ -141,8 +141,8 @@ public class CardItemView extends FrameLayout {
     public void fillData(final TrashEntity itemData) {
         if(type == 0){
             Glide.with(getContext())
-                    .load(StringUtils.getUrl(getContext(), ApiService.URL_QINIU +  itemData.getImage().getPath(), DensityUtil.dip2px(getContext(),310), DensityUtil.dip2px(getContext(),210), false, true))
-                    .override(DensityUtil.dip2px(getContext(),310), DensityUtil.dip2px(getContext(),210))
+                    .load(StringUtils.getUrl(getContext(), ApiService.URL_QINIU +  itemData.getImage().getPath(), (int)getResources().getDimension(R.dimen.x620),(int)getResources().getDimension(R.dimen.y420), false, true))
+                    .override((int)getResources().getDimension(R.dimen.x620), (int)getResources().getDimension(R.dimen.y420))
                     .error(R.drawable.bg_default_square)
                     .placeholder(R.drawable.bg_default_square)
                     .centerCrop()

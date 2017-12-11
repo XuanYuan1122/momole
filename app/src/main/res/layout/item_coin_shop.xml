@@ -2,40 +2,36 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_124"
+    android:layout_height="@dimen/y248"
     android:background="@color/white">
 
     <ImageView
         android:id="@+id/iv_commodity"
-        android:layout_width="@dimen/size_75"
-        android:layout_height="@dimen/size_75"
-        android:layout_marginTop="@dimen/size_12"
-        android:layout_marginLeft="@dimen/size_12"
-        android:layout_marginStart="@dimen/size_12"/>
+        android:layout_width="@dimen/y150"
+        android:layout_height="@dimen/y150"
+        android:layout_marginTop="@dimen/y24"
+        android:layout_marginStart="@dimen/x24"/>
 
     <TextView
         android:id="@+id/tv_commodity_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/iv_commodity"
         android:layout_toEndOf="@+id/iv_commodity"
         android:textStyle="bold"
         android:textColor="@color/black_1e1e1e"
-        android:textSize="@dimen/size_18"
-        android:layout_marginLeft="@dimen/size_12"
-        android:layout_marginStart="@dimen/size_12"
-        android:layout_marginTop="@dimen/size_16"
+        android:textSize="@dimen/x36"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginTop="@dimen/y32"
         android:maxLines="1"/>
 
     <TextView
         android:id="@+id/tv_commodity_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_commodity_title"
         android:layout_alignStart="@+id/tv_commodity_title"
         android:layout_below="@+id/tv_commodity_title"
-        android:layout_marginTop="@dimen/size_8"
-        android:textSize="@dimen/size_10"
+        android:layout_marginTop="@dimen/y16"
+        android:textSize="@dimen/x20"
         android:textColor="@color/gray_929292"
         android:maxLines="2" />
 
@@ -43,24 +39,22 @@
         android:id="@+id/tv_commodity_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_commodity_title"
         android:layout_alignStart="@+id/tv_commodity_title"
         android:layout_above="@+id/tv_commodity_num_desc"
-        android:layout_marginBottom="@dimen/size_4"
+        android:layout_marginBottom="@dimen/y8"
         android:textColor="@color/gray_929292"
-        android:textSize="@dimen/size_10"/>
+        android:textSize="@dimen/x20"/>
 
     <TextView
         android:id="@+id/tv_commodity_num_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tv_commodity_title"
         android:layout_alignStart="@+id/tv_commodity_title"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/size_20"
+        android:layout_marginBottom="@dimen/y40"
         android:maxLines="1"
         android:textColor="@color/main_cyan"
-        android:textSize="@dimen/size_10" />
+        android:textSize="@dimen/x20" />
 
     <View
         android:layout_width="match_parent"
@@ -70,16 +64,14 @@
     
     <TextView
         android:id="@+id/tv_commodity_buy"
-        android:layout_width="@dimen/size_115"
-        android:layout_height="@dimen/size_35"
+        android:layout_width="@dimen/x230"
+        android:layout_height="@dimen/y70"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/size_12"
-        android:layout_marginRight="@dimen/size_12"
-        android:layout_marginEnd="@dimen/size_12"
+        android:layout_marginBottom="@dimen/y24"
+        android:layout_marginEnd="@dimen/x24"
         android:textColor="@color/txt_white_gray"
-        android:textSize="@dimen/size_12"
+        android:textSize="@dimen/x24"
         android:textStyle="bold"
         android:gravity="center"
         android:background="@drawable/btn_coin_shop_buy"/>

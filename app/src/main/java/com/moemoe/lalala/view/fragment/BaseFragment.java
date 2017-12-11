@@ -1,6 +1,7 @@
 package com.moemoe.lalala.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -70,6 +71,31 @@ public abstract class BaseFragment extends Fragment {
         super.onPause();
     }
 
-    public void onBackPressed(){
-    }
+//    public boolean onBackPressed(){
+//        return true;
+//    }
+//
+//    public void setTitle(String title){
+//
+//    }
+//
+//    public String getTitle(){
+//        return "";
+//    }
+//
+//    public void setMenu(@DrawableRes int res){
+//
+//    }
+//
+//    public void toFragment(Fragment fragment){
+//
+//    }
+//
+//    public int getMenu(){
+//        return 0;
+//    }
+//
+//    public void onMenuClick(){
+//
+//    }
 }

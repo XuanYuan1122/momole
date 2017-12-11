@@ -66,8 +66,8 @@ public class BagCollectionTopHolder extends ClickableViewHolder {
             $(R.id.tv_mark).setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
         }
 
-        int width = (DensityUtil.getScreenWidth(itemView.getContext()) - DensityUtil.dip2px(itemView.getContext(),42)) / 3;
-        int height = DensityUtil.dip2px(itemView.getContext(),140);
+        int width = (DensityUtil.getScreenWidth(itemView.getContext()) - (int)context.getResources().getDimension(R.dimen.x84)) / 3;
+        int height = (int) context.getResources().getDimension(R.dimen.y280);
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
         iv.setLayoutParams(lp);
@@ -78,7 +78,7 @@ public class BagCollectionTopHolder extends ClickableViewHolder {
                 .load(StringUtils.getUrl(itemView.getContext(),entity.getCover(),width,height, false, true))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
-                .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),DensityUtil.dip2px(itemView.getContext(),4),0))
+                .bitmapTransform(new CropTransformation(itemView.getContext(),width,height),new RoundedCornersTransformation(itemView.getContext(),(int)itemView.getContext().getResources().getDimension(R.dimen.y8),0))
                 .into(iv);
     }
 }

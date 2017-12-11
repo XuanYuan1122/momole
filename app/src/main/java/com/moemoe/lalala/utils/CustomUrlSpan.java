@@ -8,7 +8,7 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
+import com.moemoe.lalala.view.activity.PersonalV2Activity;
 import com.moemoe.lalala.view.activity.WebViewActivity;
 
 /**
@@ -40,7 +40,7 @@ public class CustomUrlSpan extends ClickableSpan {
         if(mUrl.startsWith("http")){
             WebViewActivity.startActivity(mContext, mUrl, mTitle, false, true);
         }else {
-            Intent i = new Intent(mContext, NewPersonalActivity.class);
+            Intent i = new Intent(mContext, PersonalV2Activity.class);
             i.putExtra("uuid",mUrl);
             mContext.startActivity(i);
         }

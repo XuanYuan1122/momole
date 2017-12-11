@@ -40,9 +40,9 @@ public class PullAndLoadView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mInflater.inflate(R.layout.loadview,this,true);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mProgressBar = findViewById(R.id.progressBar);
         init();
     }
 
@@ -108,12 +108,20 @@ public class PullAndLoadView extends FrameLayout {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+//                    if(getContext() instanceof BaseAppCompatActivity){
+//                        if(!((BaseAppCompatActivity) getContext()).isFinishing()) Glide.with(getContext()).resumeRequests();
+//                    }
+//                } else {
+//                    if(getContext() instanceof BaseAppCompatActivity){
+//                        if(!((BaseAppCompatActivity) getContext()).isFinishing()) Glide.with(getContext()).pauseRequests();
+//                    }
+//                }
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
             }
         });
     }

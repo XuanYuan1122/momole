@@ -20,7 +20,7 @@ public class FeedAdapter extends BaseRecyclerViewAdapter<NewDynamicEntity,FeedHo
 
     @Override
     protected void convert(FeedHolder helper, final NewDynamicEntity item, int position) {
-        helper.createItem(item);
+        helper.createItem(item,position);
     }
 
     @Override

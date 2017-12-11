@@ -169,7 +169,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
         mTvSave.setVisibility(View.VISIBLE);
         mTvSave.getPaint().setFakeBoldText(true);
         mTvSave.setEnabled(true);
-        ViewUtils.setRightMargins(mTvSave,DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvSave,(int)getResources().getDimension(R.dimen.x36));
         mTvSave.setText(getString(R.string.label_done));
         if(mType != TYPE_DIR_ITEM_ADD){
             initNameRoot();
@@ -187,14 +187,14 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                 if(mBgPath.startsWith("/")){
                     Glide.with(this)
                             .load(mBgPath)
-                            .override(DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56))
+                            .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
                             .placeholder(R.drawable.bg_default_square)
                             .error(R.drawable.bg_default_square)
                             .into(mIvBg);
                 }else {
                     Glide.with(this)
-                            .load(StringUtils.getUrl(this, ApiService.URL_QINIU + mBgPath, DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56),false,true))
-                            .override(DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56))
+                            .load(StringUtils.getUrl(this, ApiService.URL_QINIU + mBgPath, (int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112),false,true))
+                            .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
                             .placeholder(R.drawable.bg_default_square)
                             .error(R.drawable.bg_default_square)
                             .into(mIvBg);
@@ -223,8 +223,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             mTvFolderName.setText(mName);
             mTvHaveCoin.setVisibility(isBuy ? View.VISIBLE : View.INVISIBLE);
             Glide.with(this)
-                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + mBgPath, DensityUtil.dip2px(this,40), DensityUtil.dip2px(this,40),false,true))
-                    .override(DensityUtil.dip2px(this,40), DensityUtil.dip2px(this,40))
+                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + mBgPath, (int)getResources().getDimension(R.dimen.y80), (int)getResources().getDimension(R.dimen.y80),false,true))
+                    .override((int)getResources().getDimension(R.dimen.y80), (int)getResources().getDimension(R.dimen.y80))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .into(mIvAddCover);
@@ -235,8 +235,8 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
             mTvName.setText(mName);
             mTvCoin.setText(mCoin + "节操");
             Glide.with(this)
-                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + mBgPath, DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56),false,true))
-                    .override(DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56))
+                    .load(StringUtils.getUrl(this,ApiService.URL_QINIU + mBgPath, (int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112),false,true))
+                    .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .into(mIvBg);
@@ -627,7 +627,7 @@ public class BagEditActivity extends BaseAppCompatActivity implements BagContrac
                 mBgPath = data.getStringExtra("path");
                 Glide.with(this)
                         .load(mBgPath)
-                        .override(DensityUtil.dip2px(this,56), DensityUtil.dip2px(this,56))
+                        .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
                         .into(mIvBg);

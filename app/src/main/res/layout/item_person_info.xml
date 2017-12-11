@@ -4,14 +4,13 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:background="@drawable/bg_normal_white_btn"
-    android:layout_height="50dp">
+    android:layout_height="@dimen/y100">
 
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
+        android:layout_height="@dimen/y100"
+        android:layout_marginStart="@dimen/x30"
         android:layout_gravity="center_vertical"
         android:src="@drawable/icon_person_mydoc"/>
 
@@ -21,10 +20,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="13dp"
-        android:layout_marginStart="13dp"
+        android:layout_marginStart="@dimen/x26"
         android:textColor="@color/black"
-        android:textSize="15dp"
+        android:textSize="@dimen/x30"
         android:text="我的帖子"/>
 
     <ImageView
@@ -32,6 +30,5 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_array_right_gray"
         android:layout_gravity="center_vertical"
-        android:layout_marginRight="15dp"
-        android:layout_marginEnd="15dp"/>
+        android:layout_marginEnd="@dimen/x30"/>
 </LinearLayout>

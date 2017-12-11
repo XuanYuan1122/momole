@@ -210,14 +210,14 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
                     mIvBack.setVisibility(View.GONE);
                     mIvMenu.setVisibility(View.GONE);
                     mTvMenuLeft.setText(getString(R.string.label_give_up));
-                    ViewUtils.setLeftMargins(mTvMenuLeft, DensityUtil.dip2px(NewFileManHua2Activity.this,18));
-                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFileManHua2Activity.this,18));
+                    ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
+                    ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
                     mTvMenuRight.setVisibility(View.VISIBLE);
                     mTvMenuRight.setText(getString(R.string.label_delete));
                     mTvMenuRight.setTextColor(ContextCompat.getColor(NewFileManHua2Activity.this,R.color.main_cyan));
                     mIsSelect = !mIsSelect;
                     mAdapter.setSelect(mIsSelect);
-                    mListDocs.setPadding(0,DensityUtil.dip2px(NewFileManHua2Activity.this,15),0,0);
+                    mListDocs.setPadding(0,(int)getResources().getDimension(R.dimen.y30),0,0);
                     mListDocs.setLayoutManager(new GridLayoutManager(NewFileManHua2Activity.this,3));
                     mListDocs.getRecyclerView().addItemDecoration(mItemDecoration);
                     mAdapter.setGrid(true);
@@ -233,7 +233,7 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-        mIvBack.setPadding(DensityUtil.dip2px(this,18),0,DensityUtil.dip2px(this,18),0);
+        mIvBack.setPadding((int)getResources().getDimension(R.dimen.x36),0,(int)getResources().getDimension(R.dimen.x36),0);
         mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setImageResource(R.drawable.btn_back_black_normal);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
@@ -339,8 +339,8 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
             nextRoot.setVisibility(View.VISIBLE);
             preRoot.setVisibility(View.VISIBLE);
         }
-        int width = (DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,42)) / 3;
-        int height = DensityUtil.dip2px(this,140);
+        int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
+        int height = (int)getResources().getDimension(R.dimen.y280);
 
         preRl.setLayoutParams(new LinearLayout.LayoutParams(width,height));
         nextRl.setLayoutParams(new LinearLayout.LayoutParams(width,height));
@@ -349,7 +349,7 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
                     .load(StringUtils.getUrl(this,mManHualist.get(mPosition - 1).getCover(),width,height, false, true))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
-                    .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,4),0))
+                    .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
                     .into(ivPre);
             markPre.setText(mManHualist.get(mPosition - 1).getItems() + " P");
             titlePre.setText(mManHualist.get(mPosition - 1).getFolderName());
@@ -367,7 +367,7 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
                     .load(StringUtils.getUrl(this,mManHualist.get(mPosition + 1).getCover(),width,height, false, true))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
-                    .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,4),0))
+                    .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
                     .into(ivNext);
             markNext.setText(mManHualist.get(mPosition + 1).getItems() + " P");
             titleNext.setText(mManHualist.get(mPosition + 1).getFolderName());

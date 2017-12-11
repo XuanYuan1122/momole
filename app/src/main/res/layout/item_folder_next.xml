@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="266dp"
+    android:layout_height="@dimen/y532"
     android:background="@color/white">
 
     <LinearLayout
@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray_929292"
-                android:textSize="@dimen/size_12"
+                android:textSize="@dimen/x24"
                 android:layout_gravity="center_horizontal"
                 android:text="上一话"/>
 
@@ -28,7 +28,7 @@
                 android:id="@+id/rl_pre_root"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_10">
+                android:layout_marginTop="@dimen/y20">
 
                 <ImageView
                     android:id="@+id/iv_cover"
@@ -38,10 +38,9 @@
 
                 <TextView
                     android:id="@+id/tv_mark"
-                    android:layout_width="@dimen/size_40"
-                    android:layout_height="@dimen/size_24"
+                    android:layout_width="@dimen/x80"
+                    android:layout_height="@dimen/y48"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:background="@drawable/shape_rect_manhua_2"
                     android:gravity="center"
                     android:textColor="@color/white" />
@@ -52,9 +51,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray_929292"
-                android:layout_marginTop="@dimen/size_8"
+                android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
-                android:textSize="@dimen/size_10"
+                android:textSize="@dimen/x20"
                 android:maxLines="1"
                 android:ellipsize="end"/>
         </LinearLayout>
@@ -63,15 +62,14 @@
             android:id="@+id/ll_next_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/size_45"
-            android:layout_marginStart="@dimen/size_45"
+            android:layout_marginStart="@dimen/x90"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray_929292"
-                android:textSize="@dimen/size_12"
+                android:textSize="@dimen/x24"
                 android:layout_gravity="center_horizontal"
                 android:text="下一话"/>
 
@@ -79,7 +77,7 @@
                 android:id="@+id/rl_next_root"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_10">
+                android:layout_marginTop="@dimen/y20">
 
                 <ImageView
                     android:id="@+id/iv_cover_next"
@@ -89,10 +87,9 @@
 
                 <TextView
                     android:id="@+id/tv_mark_next"
-                    android:layout_width="@dimen/size_40"
-                    android:layout_height="@dimen/size_24"
+                    android:layout_width="@dimen/x80"
+                    android:layout_height="@dimen/y48"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:background="@drawable/shape_rect_manhua_2"
                     android:gravity="center"
                     android:textColor="@color/white" />
@@ -103,9 +100,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/gray_929292"
-                android:layout_marginTop="@dimen/size_8"
+                android:layout_marginTop="@dimen/y16"
                 android:layout_gravity="center_horizontal"
-                android:textSize="@dimen/size_10"
+                android:textSize="@dimen/x20"
                 android:maxLines="1"
                 android:ellipsize="end"/>
         </LinearLayout>

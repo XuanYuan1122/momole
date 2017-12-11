@@ -1,0 +1,86 @@
+﻿{
+  "version": "Sample 1.0.0",
+  "model": "沙丽尔_睡.moc",
+  "textures": [
+    "沙丽尔_睡.2048/texture_00.png"
+  ],
+  "motions": {
+    "idle": [
+      {
+        "file": "motions/idle.mtn",
+        "sound": "sound/idle.mp3",
+        "fade_in": 0,
+        "fade_out": 0
+      }
+    ],
+    "tap_head": [
+      {
+        "file": "motions/tap_m_head.mtn",
+        "sound": "sound/tap_m_head.mp3",
+        "fade_in": 0,
+        "fade_out": 0
+      },
+      {
+        "file": "motions/tap_HEAD.mtn",
+        "sound": "sound/tap_HEAD.mp3",
+        "fade_in": 0,
+        "fade_out": 0
+      }
+    ],
+    "tap_op": [
+      {
+        "file": "motions/tap_m_op.mtn",
+        "sound": "sound/tap_m_op.mp3",
+        "fade_in": 0,
+        "fade_out": 0
+      },
+      {
+        "file": "motions/tap_OP.mtn",
+        "sound": "sound/tap_OP.mp3",
+        "fade_in": 0,
+        "fade_out": 0
+      }
+    ],
+    "tap_face": [
+      {
+        "file": "motions/tap_FACE.mtn",
+        "sound": "sound/tap_FACE.mp3",
+        "fade_in": 0,
+        "fade_out": 0
+      },
+      {
+        "file": "motions/tap_m_face.mtn",
+        "sound": "sound/tap_m_face.mp3",
+        "fade_in": 0,
+        "fade_out": 0
+      }
+    ],
+    "tap_hand": [
+      {
+        "file": "motions/tap_hand.mtn",
+        "sound": "sound/tap_hand.mp3",
+        "fade_in": 0,
+        "fade_out": 0
+      }
+    ]
+  },
+  "hit_areas": [
+    {
+      "name": "head",
+      "id": "D_REF.HEAD"
+    },
+    {
+      "name": "op",
+      "id": "D_REF.OP"
+    },
+    {
+      "name": "face",
+      "id": "D_REF.FACE"
+    },
+    {
+      "name": "hand",
+      "id": "D_REF.HAND"
+    }
+  ],
+  "physics": "physics.json"
+}

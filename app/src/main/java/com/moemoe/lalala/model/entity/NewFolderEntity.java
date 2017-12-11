@@ -29,6 +29,8 @@ public class NewFolderEntity implements Parcelable {
     private ArrayList<ShowFolderEntity> recommendList;
     private String type;
     private Image userIcon;
+    private int maxNum;
+    private int nowNum;
 
     public NewFolderEntity(){
         texts = new ArrayList<>();
@@ -59,6 +61,8 @@ public class NewFolderEntity implements Parcelable {
             info.follow = bundle.getBoolean("follow");
             info.buyNum = bundle.getInt("buyNum");
             info.coin = bundle.getInt("coin");
+            info.maxNum = bundle.getInt("maxNum");
+            info.nowNum = bundle.getInt("nowNum");
             info.texts = bundle.getStringArrayList("texts");
             info.topList = bundle.getParcelableArrayList("topList");
             info.recommendList = bundle.getParcelableArrayList("recommendList");
@@ -88,11 +92,29 @@ public class NewFolderEntity implements Parcelable {
         bundle.putBoolean("follow",follow);
         bundle.putInt("buyNum",buyNum);
         bundle.putInt("coin",coin);
+        bundle.putInt("nowNum",nowNum);
+        bundle.putInt("maxNum",maxNum);
         bundle.putStringArrayList("texts",texts);
         bundle.putParcelableArrayList("topList",topList);
         bundle.putParcelableArrayList("recommendList",recommendList);
         bundle.putParcelable("userIcon",userIcon);
         parcel.writeBundle(bundle);
+    }
+
+    public Integer getMaxNum() {
+        return maxNum;
+    }
+
+    public void setMaxNum(Integer maxNum) {
+        this.maxNum = maxNum;
+    }
+
+    public Integer getNowNum() {
+        return nowNum;
+    }
+
+    public void setNowNum(Integer nowNum) {
+        this.nowNum = nowNum;
     }
 
     public boolean isBuy() {

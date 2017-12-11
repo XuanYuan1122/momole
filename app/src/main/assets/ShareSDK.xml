@@ -52,8 +52,8 @@
 			Pocket         http://getpocket.com/developer/apps/new
     -->
 
-    <ShareSDK
-        AppKey = "10dc41b1eb3b4"/> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
+    <!--<ShareSDK-->
+        <!--AppKey = "10dc41b1eb3b4"/> &lt;!&ndash; 修改成你在sharesdk后台注册的应用的appkey"&ndash;&gt;-->
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <SinaWeibo
@@ -103,4 +103,11 @@
         ShareByAppClient="true"
         Enable="true" />
 
+    <QZone
+        Id="5"
+        SortId="5"
+        AppId="1104765197"
+        AppKey="B1TjJkiLYt892ACi"
+        BypassApproval="true"
+        Enable="true" />
 </DevInfor>

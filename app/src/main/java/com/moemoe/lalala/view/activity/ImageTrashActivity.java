@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
@@ -107,6 +109,10 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
         mIsFirst = true;
         mHistory.setVisibility(View.GONE);
         mHistory2.setVisibility(View.GONE);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = (int) - getResources().getDimension(R.dimen.y490);
+        mHistory2.setLayoutParams(lp);
+        mHistory.setLayoutParams(lp);
         mCurHistory = -1;
         mCurTime = PreferenceUtils.getLastTrashTime(this,"image");
         loadData(mCurTime);
@@ -161,7 +167,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                     mHistory.bringToFront();
                     mHistory.setVisibility(View.VISIBLE);
                     mHistory.fillData(entities.get(index));
-                    new AnimationUtil().tanslateAnimation(0,0,DensityUtil.dip2px(ImageTrashActivity.this,-85),0)
+                    new AnimationUtil().tanslateAnimation(0,0,-(int)getResources().getDimension(R.dimen.y170),0)
                             .setDuration(500)
                             .setFillAfter(false)
                             .startAnimation(mHistory);
@@ -170,7 +176,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                     mHistory2.bringToFront();
                     mHistory2.setVisibility(View.VISIBLE);
                     mHistory2.fillData(entities.get(index));
-                    new AnimationUtil().tanslateAnimation(0,0,DensityUtil.dip2px(ImageTrashActivity.this,-85),0)
+                    new AnimationUtil().tanslateAnimation(0,0,-(int)getResources().getDimension(R.dimen.y170),0)
                             .setDuration(500)
                             .setFillAfter(false)
                             .startAnimation(mHistory2);
@@ -184,7 +190,6 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                     Intent i = new Intent(ImageTrashActivity.this,TrashDetailActivity.class);
                     i.putExtra("type","image");
                     i.putExtra("item",entities.get(index));
-                   // i.putExtra("id",entities.get(index).getDustbinId());
                     startActivity(i);
                 }
             }
@@ -248,7 +253,6 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                     Intent i = new Intent(ImageTrashActivity.this, TrashDetailActivity.class);
                     i.putExtra("type", "image");
                     i.putExtra("item",topEntities.get(index));
-                  //  i.putExtra("id", topEntities.get(index).getDustbinId());
                     startActivity(i);
                 }
             }
@@ -286,7 +290,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                 }else {
                     mHistory2.setVisibility(View.GONE);
                 }
-                new AnimationUtil().tanslateAnimation(0,0,0,DensityUtil.dip2px(ImageTrashActivity.this,365))
+                new AnimationUtil().tanslateAnimation(0,0,0,(int)getResources().getDimension(R.dimen.y730))
                         .setDuration(500)
                         .setFillAfter(false)
                         .setOnAnimationEndLinstener(new AnimationUtil.OnAnimationEndListener() {
@@ -315,7 +319,7 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
                 }else {
                     mHistory.setVisibility(View.GONE);
                 }
-                new AnimationUtil().tanslateAnimation(0,0,0,DensityUtil.dip2px(ImageTrashActivity.this,365))
+                new AnimationUtil().tanslateAnimation(0,0,0,(int)getResources().getDimension(R.dimen.y730))
                         .setDuration(500)
                         .setFillAfter(false)
                         .setOnAnimationEndLinstener(new AnimationUtil.OnAnimationEndListener() {
@@ -396,7 +400,9 @@ public class ImageTrashActivity extends BaseAppCompatActivity implements TrashCo
 
     @Override
     public void onLoadListSuccess(ArrayList<TrashEntity> entities) {
-        mCurLastTime = entities.get(entities.size() - 1).getTimestamp();
+        if(entities.size() > 0){
+            mCurLastTime = entities.get(entities.size() - 1).getTimestamp();
+        }
         this.entities.addAll(entities);
         if (mIsFirst){
             if(this.entities.size() != 0) {

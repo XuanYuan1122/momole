@@ -1,6 +1,7 @@
 package com.moemoe.lalala.presenter;
 
 import com.moemoe.lalala.model.entity.AddressEntity;
+import com.moemoe.lalala.model.entity.GroupEditEntity;
 
 import java.util.Date;
 
@@ -11,12 +12,10 @@ import java.util.Date;
 public interface PhoneMsgContract {
     interface Presenter extends BasePresenter{
         void getServerTime(String role);
-        void loadRcToken();
+
     }
 
     interface View extends BaseView{
         void onGetTimeSuccess(Date time,String role);
-        void onLoadRcTokenSuccess(String token);
-        void onLoadRcTokenFail(int code,String msg);
     }
 }

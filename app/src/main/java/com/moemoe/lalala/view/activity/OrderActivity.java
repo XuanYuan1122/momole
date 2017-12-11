@@ -107,8 +107,8 @@ public class OrderActivity extends BaseAppCompatActivity implements OrderContrac
             }
         }
         Glide.with(this)
-                .load(StringUtils.getUrl(this, order.getIcon(), DensityUtil.dip2px(this,110),DensityUtil.dip2px(this,110),false,true))
-                .override(DensityUtil.dip2px(this,110),DensityUtil.dip2px(this,110))
+                .load(StringUtils.getUrl(this, order.getIcon(), (int)getResources().getDimension(R.dimen.y220),(int)getResources().getDimension(R.dimen.y220),false,true))
+                .override((int)getResources().getDimension(R.dimen.y220),(int)getResources().getDimension(R.dimen.y220))
                 .error(R.drawable.bg_default_square)
                 .placeholder(R.drawable.bg_default_square)
                 .into((ImageView) $(R.id.iv_commodity));

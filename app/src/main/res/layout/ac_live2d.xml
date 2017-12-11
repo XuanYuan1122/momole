@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_root_1"
+        android:layout_width="@dimen/x200"
+        android:layout_height="@dimen/y100"
+        android:layout_marginTop="@dimen/y32"
+        android:layout_marginStart="@dimen/x48"
+        android:background="@drawable/btn_live2d_action">
+
+
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x36"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/x52"
+            android:gravity="center"
+            android:text="陪睡" />
+
+        <ImageView
+            android:layout_width="@dimen/x22"
+            android:layout_height="@dimen/y19"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/tv_text"
+            android:layout_marginStart="@dimen/x16"
+            android:src="@drawable/btn_companion_option_expand"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_text_1"
+        android:layout_width="@dimen/x200"
+        android:layout_height="@dimen/y100"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x36"
+        android:layout_marginStart="@dimen/x48"
+        android:layout_below="@+id/rl_root_1"
+        android:layout_marginTop="@dimen/y16"
+        android:gravity="center"
+        android:background="@drawable/btn_live2d_action"
+        android:alpha="0.6"
+        android:text="安慰"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_text_2"
+        android:layout_width="@dimen/x200"
+        android:layout_height="@dimen/y100"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x36"
+        android:layout_marginStart="@dimen/x48"
+        android:layout_below="@+id/tv_text_1"
+        android:layout_marginTop="@dimen/y16"
+        android:gravity="center"
+        android:background="@drawable/btn_live2d_action"
+        android:alpha="0.6"
+        android:text="锻炼"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_text_3"
+        android:layout_width="@dimen/x200"
+        android:layout_height="@dimen/y100"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x36"
+        android:layout_marginStart="@dimen/x48"
+        android:layout_below="@+id/tv_text_2"
+        android:layout_marginTop="@dimen/y16"
+        android:gravity="center"
+        android:background="@drawable/btn_live2d_action"
+        android:alpha="0.6"
+        android:text="吃饭"
+        android:visibility="gone"/>
+    
+    <RelativeLayout
+        android:id="@+id/rl_alarm_root"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/y100"
+        android:background="@drawable/btn_live2d_alarm"
+        android:layout_alignTop="@+id/rl_root_1"
+        android:layout_toEndOf="@+id/rl_root_1"
+        android:layout_marginStart="@dimen/x24">
+
+        <ImageView
+            android:id="@+id/iv_tmp"
+            android:layout_width="@dimen/x36"
+            android:layout_height="@dimen/y36"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/x28"
+            android:src="@drawable/btn_companion_option_alarm"/>
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x30"
+            android:layout_toEndOf="@+id/iv_tmp"
+            android:layout_marginStart="@dimen/x16"
+            android:textColor="@color/white"
+            android:layout_centerVertical="true"
+            android:text="设置闹铃"
+            android:layout_marginEnd="@dimen/x28"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_live_mei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/y8"
+        android:layout_marginEnd="@dimen/x16"
+        android:src="@drawable/btn_companion_select_mei"/>
+
+    <ImageView
+        android:id="@+id/iv_live_sari"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/iv_live_mei"
+        android:layout_marginTop="@dimen/y8"
+        android:layout_marginEnd="@dimen/x16"
+        android:src="@drawable/btn_companion_select_sari"/>
+
+    <ImageView
+        android:id="@+id/iv_live_len"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/iv_live_sari"
+        android:layout_marginTop="@dimen/y8"
+        android:layout_marginEnd="@dimen/x16"
+        android:src="@drawable/btn_companion_select_len"/>
+
+    <RelativeLayout
+        android:layout_width="@dimen/x548"
+        android:layout_height="@dimen/y120"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginBottom="@dimen/y16"
+        android:background="@drawable/shape_rect_border_white_background_y12">
+
+        <TextView
+            android:id="@+id/tv_music_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tv_tmp"
+            android:layout_marginTop="@dimen/y24"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:singleLine="true"
+            android:layout_toStartOf="@+id/iv_play"
+            android:textColor="@color/pink_fb7ba2"
+            android:textSize="@dimen/x30"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_tmp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/gray_d7d7d7"
+            android:layout_below="@+id/tv_music_name"
+            android:text="来自"
+            android:layout_marginStart="@dimen/x32"/>
+
+        <TextView
+            android:id="@+id/tv_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/main_cyan"
+            android:layout_below="@+id/tv_music_name"
+            android:layout_toEndOf="@+id/tv_tmp"
+            android:text="Kira广播电台"
+            android:layout_marginStart="@dimen/x12"/>
+
+        <ImageView
+            android:id="@+id/iv_next"
+            android:layout_width="@dimen/x80"
+            android:layout_height="@dimen/y80"
+            android:src="@drawable/btn_live_music_next"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/x24"/>
+
+        <ImageView
+            android:id="@+id/iv_play"
+            android:layout_width="@dimen/x80"
+            android:layout_height="@dimen/y80"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/iv_next"
+            android:layout_marginEnd="@dimen/x20"
+            android:src="@drawable/btn_phone_music_play"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_sound_load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y80"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_alignParentEnd="true"
+        android:visibility="gone"
+        android:src="@drawable/ic_gal_voiceloading"/>
+</RelativeLayout>

@@ -9,7 +9,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_class_featured"
         android:layout_width="match_parent"
-        android:layout_height="110dp">
+        android:layout_height="@dimen/y220">
 
     </android.support.v7.widget.RecyclerView>
 

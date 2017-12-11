@@ -74,7 +74,7 @@ public class TagControlActivity extends BaseAppCompatActivity implements TagCont
         }
         mTvDone.setVisibility(View.VISIBLE);
         mTvDone.getPaint().setFakeBoldText(true);
-        ViewUtils.setRightMargins(mTvDone, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mTvDone, (int)getResources().getDimension(R.dimen.x36));
         mTvDone.setText(getString(R.string.label_done));
         mDelId = new ArrayList<>();
         mTvTitle.setText("管理标签");

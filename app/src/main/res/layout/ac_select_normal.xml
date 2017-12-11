@@ -18,10 +18,10 @@
     <TextView
         android:id="@+id/tv_all_badge"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="@dimen/y88"
         android:background="@color/white"
         android:textColor="@color/main_cyan"
-        android:textSize="@dimen/size_15"
+        android:textSize="@dimen/x30"
         android:textStyle="bold"
         android:gravity="center"
         android:visibility="gone"

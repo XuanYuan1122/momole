@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moemoe.lalala.model.entity.*;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -398,6 +400,8 @@ public interface ApiService {
     @POST("api/search/searchUser")
     Observable<ApiResult<ArrayList<PersonFollowEntity>>> getSearchUser(@Body SearchEntity entity);
 
+    @POST("api/search/searchKira")
+    Observable<ApiResult<ArrayList<PersonFollowEntity>>> getSearchKira(@Body SearchEntity entity);
 
     @GET("api/talk/{open}/ignore/{talkId}")
     Observable<ApiResult> ignoreUser(@Path("talkId")String talkId,@Path("open")boolean open);
@@ -441,6 +445,9 @@ public interface ApiService {
     @POST("api/shop/order/{id}")
     Observable<ApiResult<CreateOrderEntity>> createOrder(@Path("id")String id);
 
+    @POST("api/shop/order/{num}/{id}")
+    Observable<ApiResult<CreateOrderEntity>> createOrderNum(@Path("num")int num,@Path("id")String id);
+
     @POST("api/user/save/address")
     Observable<ApiResult> saveUserAddress(@Body AddressEntity entity);
 
@@ -455,6 +462,9 @@ public interface ApiService {
 
     @POST("api/shop/pay")
     Observable<ApiResult<PayResEntity>> payOrder(@Body PayReqEntity entity);
+
+    @POST("api/shop/batch/order")
+    Observable<ApiResult<ArrayList<JsonObject>>> createPayList(@Body OrderTmp orderTmp);
 
     @GET("api/app/check/txbb")
     Observable<ApiResult<Boolean>> checkTxbb();
@@ -734,4 +744,148 @@ public interface ApiService {
 
     @GET("v2/kira/doc/get/doc/{departmentType}/list")
     Observable<ApiResult<ArrayList<DocResponse>>> loadOldDocList(@Path("departmentType")String type,@Query("timestamp")long timestamp);
+
+    @GET("v2/kira/group/notify/list")
+    Observable<ApiResult<ArrayList<GroupNoticeEntity>>> loadMsgList(@Query("index")int index,@Query("size")int size);
+
+    @POST("v2/kira/group/push/{result}/for/{notifyId}")
+    Observable<ApiResult> responseNotice(@Path("result")boolean result,@Path("notifyId")String id);
+
+    @GET("v2/kira/group/list")
+    Observable<ApiResult<ArrayList<GroupEntity>>> loadGroupList(@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/group/my/list")
+    Observable<ApiResult<ArrayList<GroupEntity>>> loadMyGroupList(@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/group/{groupId}/info")
+    Observable<ApiResult<GroupEntity>> loadGroup(@Path("groupId")String groupId);
+
+    @POST("v2/kira/group/apply/join/{groupId}")
+    Observable<ApiResult> applyJoinGroup(@Path("groupId")String groupId);
+
+    @POST("v2/kira/group/quit/{groupId}")
+    Observable<ApiResult> quitGroup(@Path("groupId")String groupId);
+
+    @POST("v2/kira/group/dismiss/{groupId}")
+    Observable<ApiResult> dismissGroup(@Path("groupId")String groupId);
+
+    @POST("v2/kira/group/join/{groupId}")
+    Observable<ApiResult> JoinAuthorGroup(@Path("groupId")String groupId);
+
+    @POST("v2/kira/group/apply")
+    Observable<ApiResult> createGroup(@Body GroupEditEntity editEntity);
+
+    @POST("v2/kira/group/update/{groupId}/info")
+    Observable<ApiResult> updateGroup(@Path("groupId")String groupId,@Body GroupEditEntity editEntity);
+
+    @POST("v2/kira/group/invite/{userId}/join/{groupId}")
+    Observable<ApiResult> inviteUserJoinGroup(@Path("userId")String userId,@Path("groupId")String groupId);
+
+    @GET("v2/kira/group/{groupId}/user/list")
+    Observable<ApiResult<ArrayList<UserTopEntity>>> loadGroupMemberList(@Path("groupId")String groupId,@Query("index")int index,@Query("size")int size);
+
+    @POST("v2/kira/group/remove/member")
+    Observable<ApiResult> delGroupMember(@Body GroupMemberDelEntity entity);
+
+    @GET("v2/kira/map/list/place")
+    Observable<ApiResult<ArrayList<MapAddressEntity>>> loadMapAddressList();
+
+    @POST("v2/kira/user/saveUserGps")
+    Observable<ApiResult> saveUserLocation(@Body UserLocationEntity entity);
+
+    @POST("v2/kira/user/saveUserPic")
+    Observable<ApiResult> saveUserMapImage(@Body UserMapSendEntity entity);
+
+    @POST("v2/kira/user/saveUserPicCheck")
+    Observable<ApiResult> checkUserMapImage(@Body UserMapSendEntity entity);
+
+    @GET("v2/kira/map/list/all/user")
+    Observable<ApiResult<ArrayList<MapEntity>>> loadMapAllUser();
+
+    @GET("v2/kira/map/list/birthday/user")
+    Observable<ApiResult<ArrayList<MapEntity>>> loadMapBirthdayUser();
+
+    @GET("v2/kira/map/list/eachFollow/user")
+    Observable<ApiResult<ArrayList<MapEntity>>> loadMapEachFollowUser();
+
+    @GET("v2/kira/map/list/top/user")
+    Observable<ApiResult<NearUserEntity>> loadMapTopUser();
+
+    @GET("v2/kira/map/list/near/userV2")
+    Observable<ApiResult<NearUserEntity>> loadMapNearUser(@Query("lat") double lat,@Query("lon")double lon);
+
+    @GET("v2/kira/mobile/get/audio")
+    Observable<ApiResult<ArrayList<Live2dMusicEntity>>> loadLive2dMusicList();
+
+    @GET("v2/kira/map/list/all/sysUserPic")
+    Observable<ApiResult<ArrayList<MapUserImageEntity>>> loadMapSelectList();
+
+    @GET("v2/kira/user/list/{userId}/artwork")
+    Observable<ApiResult<ArrayList<MapHistoryEntity>>> loadMapHistoryList(@Path("userId")String userId,@Query("index")int index,@Query("size")int size);
+
+    @POST("v2/kira/dynamic/{flag}/{dynamicId}/like")
+    Observable<ApiResult> likeDynamic(@Path("dynamicId")String dynamicId,@Path("flag")boolean flag);
+
+    @POST("v2/kira/live2d/buy/{id}")
+    Observable<ApiResult> buyLive2d(@Path("id")String id);
+
+    @GET("v2/kira/live2d/list")
+    Observable<ApiResult<ArrayList<Live2dShopEntity>>> loadLive2dList(@Query("index")int index,@Query("size")int size);
+
+    @POST("v2/kira/live2d/score/{num}/for/{id}")
+    Observable<ApiResult> pingfenLive2d(@Path("num")int num,@Path("id")String id);
+
+    @GET("v2/kira/dynamic/getDynamicList/randomV2")
+    Observable<ApiResult<ArrayList<DiscoverEntity>>> loadDiscoverList(@Query("minIdx")long minIdx,@Query("maxIdx")long maxIdx);
+
+    @GET("v2/kira/dynamic/getDynamicList/followV2")
+    Observable<ApiResult<ArrayList<DiscoverEntity>>> loadFollowList(@Query("time")long time);
+
+    @POST("v2/kira/user/pic/{flag}/likeV2/for/{artworkId}")
+    Observable<ApiResult> likeUserMapRole(@Path("flag")boolean flag,@Path("artworkId")String artworkId);
+
+    @POST("v2/kira/user/remove/artwork")
+    Observable<ApiResult> deleteHistoryMapRole(@Body DeleteRoleSend object);
+
+    @GET("v2/kira/app/get/all")
+    Observable<ApiResult<ArrayList<SplashEntity>>> loadSplashList();
+
+    @GET("v2/kira/fx/roles")
+    Observable<ApiResult<ArrayList<ShareLive2dEntity>>> loadShareLive2dList();
+
+    @POST("v2/kira/kpi/department/{id}/click")
+    Observable<ApiResult> clickDepartment(@Path("id")String id);
+
+    @POST("v2/kira/kpi/department/{id}/{time}/stay")
+    Observable<ApiResult> stayDepartment(@Path("id")String id,@Path("time")int time);
+
+    @POST("v2/kira/kpi/fx/{type}")
+    Observable<ApiResult> shareKpi(@Path("type")String type);
+
+    @GET("v2/kira/dynamic/notify/list/{timestamp}")
+    Observable<ApiResult<ArrayList<FeedNoticeEntity>>> loadFeedNoticeList(@Path("timestamp")long timestamp);
+
+    @GET("v2/kira/doc/get/department/part")
+    Observable<ApiResult<ArrayList<LuntanTabEntity>>> loadLuntanTabList();
+
+    @POST("api/doc/addV3")
+    Observable<ApiResult> createDocV3(@Body DocPut doc);
+
+    @GET("v2/kira/doc/get/department/{departmentId}/list")
+    Observable<ApiResult<ArrayList<DocResponse>>> loadDepartmentDocList(@Path("departmentId")String departmentId,@Query("timestamp")long timestamp);
+
+    @GET("v2/kira/group/department/{departmentId}")
+    Observable<ApiResult<ArrayList<DepartmentGroupEntity>>> loadDepartmentGroup(@Path("departmentId")String departmentId);
+
+    @GET("v2/kira/mobile/get/ar/stick")
+    Observable<ApiResult<ArrayList<StickEntity>>> loadStickList();
+
+    @POST("v2/kira/mobile/buy/ar/stick")
+    Observable<ApiResult> buyStick(@Body StickSend object);
+
+    @GET("v2/kira/game/{userId}/resurgence/num")
+    Observable<ApiResult<Integer>> getFuHuoNum(@Path("userId")String id);
+
+    @POST("v2/kira/game/{userId}/exchange/{num}")
+    Observable<ApiResult> useCiYuanBiGetFuHuo(@Path("userId")String id,@Path("num")int num);
 }

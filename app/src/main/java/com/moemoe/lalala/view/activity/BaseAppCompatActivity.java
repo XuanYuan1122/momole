@@ -157,6 +157,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Glide.with(this).resumeRequests();
         if(AppSetting.OpenUmeng){
             MobclickAgent.onResume(this);
         }
@@ -165,6 +166,7 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Glide.with(this).pauseRequests();
         if(AppSetting.OpenUmeng){
             MobclickAgent.onPause(this);
         }

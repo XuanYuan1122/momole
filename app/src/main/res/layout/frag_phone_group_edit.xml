@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:divider="@drawable/line"
+    app:showDividers="middle"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/ll_name_root"
+        android:layout_height="@dimen/y140"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_normal_white_btn"
+        android:layout_marginTop="@dimen/size_10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x30"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/x30"
+            android:text="名称" />
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/x30"
+            android:layout_marginStart="@dimen/x30"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:background="@null"
+            android:textColor="@color/black_1e1e1e"
+            android:textColorHint="@color/gray_d7d7d7"
+            android:textSize="@dimen/x30"
+            android:hint="名称长度10字内"
+            android:gravity="center_vertical|end" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_cover_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y140"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_normal_white_btn">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x30"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/x30"
+            android:text="头像"/>
+
+        <ImageView
+            android:id="@+id/iv_cover"
+            android:layout_width="@dimen/y112"
+            android:layout_height="@dimen/y112"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="@dimen/x30"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_desc_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y140"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_normal_white_btn">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/x30"
+            android:textColor="@color/black"
+            android:layout_marginTop="@dimen/y30"
+            android:layout_marginStart="@dimen/x30"
+            android:text="简介" />
+
+        <EditText
+            android:id="@+id/tv_desc"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/y30"
+            android:layout_marginEnd="@dimen/x30"
+            android:textColor="@color/black_1e1e1e"
+            android:maxLines="2"
+            android:textColorHint="@color/gray_d7d7d7"
+            android:hint="群介绍内容20字内"
+            android:layout_marginStart="@dimen/x30"
+            android:ellipsize="end"
+            android:background="@null"
+            android:textSize="@dimen/x30"
+            android:gravity="end" />
+    </LinearLayout>
+</android.support.v7.widget.LinearLayoutCompat>

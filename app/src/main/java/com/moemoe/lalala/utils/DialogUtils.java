@@ -6,12 +6,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.dialog.AlertDialog;
+import com.moemoe.lalala.view.activity.DownLoadListActivity;
 import com.moemoe.lalala.view.activity.LoginActivity;
 import com.moemoe.lalala.view.activity.MultiImageChooseActivity;
 import com.moemoe.lalala.view.fragment.BaseFragment;
@@ -76,7 +79,11 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int which) {
                 Uri mTmpAvatar = null;
                 try {
-                    mTmpAvatar = Uri.fromFile(createImageFile());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {// "com.moemoe.lalala.FileProvider"即是在清单文件中配置的authorities
+                        mTmpAvatar = FileProvider.getUriForFile(context, "com.moemoe.lalala.FileProvider", createImageFile());// 给目标应用一个临时授权
+                    } else {
+                        mTmpAvatar = Uri.fromFile(createImageFile());
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -84,6 +91,10 @@ public class DialogUtils {
                     // 拍照
                     try {
                         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE, null);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        }
                         i.putExtra(MediaStore.EXTRA_OUTPUT, mTmpAvatar);
                         if (fragment != null) {
                             fragment.startActivityForResult(i, REQ_TAKE_PHOTO);// CAMERA_WITH_DATA
@@ -100,7 +111,12 @@ public class DialogUtils {
                     Intent intent = new Intent(activity, MultiImageChooseActivity.class);
                     intent.putExtra(MultiImageChooseActivity.EXTRA_KEY_MAX_PHOTO, maxPhotos);
                     intent.putExtra(MultiImageChooseActivity.EXTRA_KEY_SELETED_PHOTOS, selected);
-                    activity.startActivityForResult(intent, REQ_GET_FROM_GALLERY);
+                    if (fragment != null) {
+                        fragment.startActivityForResult(intent, REQ_GET_FROM_GALLERY);
+                    }else {
+                        activity.startActivityForResult(intent, REQ_GET_FROM_GALLERY);
+                    }
+
                 }
             }
         });
@@ -120,7 +136,11 @@ public class DialogUtils {
             public void onClick(DialogInterface dialog, int which) {
                 Uri mTmpAvatar = null;
                 try {
-                    mTmpAvatar = Uri.fromFile(createImageFile());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {// "com.moemoe.lalala.FileProvider"即是在清单文件中配置的authorities
+                        mTmpAvatar = FileProvider.getUriForFile(fragment.getContext(), "com.moemoe.lalala.FileProvider", createImageFile());// 给目标应用一个临时授权
+                    } else {
+                        mTmpAvatar = Uri.fromFile(createImageFile());
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -128,8 +148,12 @@ public class DialogUtils {
                     // 拍照
                     try {
                         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE, null);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        }
                         i.putExtra(MediaStore.EXTRA_OUTPUT, mTmpAvatar);
-                        rongExtension.startActivityForPluginResult(i, 23, pluginModule);
+                        rongExtension.startActivityForPluginResult(i, 22, pluginModule);
                     } catch (Exception e) {
                         Toast.makeText(fragment.getContext(), fragment.getContext().getString(R.string.msg_no_system_camera), Toast.LENGTH_SHORT)
                                 .show();
@@ -183,7 +207,7 @@ public class DialogUtils {
                 listener.onPhotoGet(paths, true);
             }
 
-        } else if (requestCode == REQ_TAKE_PHOTO) {
+        } else if (requestCode == REQ_TAKE_PHOTO || requestCode == 22) {
             if (resultCode == Activity.RESULT_OK) {
                 ArrayList<String> paths = new ArrayList<String>();
                 paths.add(sPathCamera);

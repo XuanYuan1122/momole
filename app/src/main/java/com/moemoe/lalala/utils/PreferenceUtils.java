@@ -131,6 +131,62 @@ public class PreferenceUtils {
         return sp.getBoolean(type,false);
     }
 
+    public static void setNetaMsgDotNum(Context context, int num){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        if(num < 0) num = 0;
+        ed.putInt("neta_msg_num", num);
+        ed.commit();
+    }
+
+    public static int getNetaMsgDotNum(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getInt("neta_msg_num",0);
+    }
+
+    public static void setSysMsgDotNum(Context context, int num){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        if(num < 0) num = 0;
+        ed.putInt("system_msg_num", num);
+        ed.commit();
+    }
+
+    public static int getSysMsgDotNum(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getInt("system_msg_num",0);
+    }
+
+    public static void setAtUserMsgDotNum(Context context, int num){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        if(num < 0) num = 0;
+        ed.putInt("at_user_msg_num", num);
+        ed.commit();
+    }
+
+    public static int getAtUserMsgDotNum(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getInt("at_user_msg_num",0);
+    }
+
+    public static void setNormalMsgDotNum(Context context, int num){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        if(num < 0) num = 0;
+        ed.putInt("normal_msg_num", num);
+        ed.commit();
+    }
+
+    public static int getNormalMsgDotNum(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getInt("normal_msg_num",0);
+    }
+
     public static void setDeskMate(Context context,String role){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
@@ -144,17 +200,70 @@ public class PreferenceUtils {
         return sp.getString("neta_role","");
     }
 
-    public static void setDot(Context context,boolean dot){
+    public static void setGroupDotNum(Context context, int num){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
-        ed.putBoolean("phone_msg_dot", dot);
+        if(num < 0) num = 0;
+        ed.putInt("phone_group_msg_dot_num", num);
         ed.commit();
     }
 
-    public static boolean getDot(Context context){
+    public static int getGroupDotNum(Context context){
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME,Activity.MODE_PRIVATE);
-        return sp.getBoolean("phone_msg_dot",false);
+        return sp.getInt("phone_group_msg_dot_num",0);
+    }
+
+    public static void setRCDotNum(Context context,int num){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putInt("phone_rc_msg_dot_num", num);
+        ed.commit();
+    }
+
+    public static int getRCDotNum(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getInt("phone_rc_msg_dot_num",0);
+    }
+
+    public static void setJuQingDotNum(Context context,int num){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putInt("phone_ju_qing_msg_dot_num", num);
+        ed.commit();
+    }
+
+    public static int getJuQIngDotNum(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getInt("phone_ju_qing_msg_dot_num",0);
+    }
+
+    public static void setDiscoverMinIdx(Context context,String type,long num){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putLong("discover_min_idx_" + type, num);
+        ed.commit();
+    }
+
+    public static long getDiscoverMinIdx(Context context,String type){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getLong("discover_min_idx_" + type,0);
+    }
+
+    public static void setDiscoverMaxIdx(Context context,String type,long num){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putLong("discover_max_idx_" + type, num);
+        ed.commit();
+    }
+
+    public static long getDiscoverMaxIdx(Context context,String type){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getLong("discover_max_idx_" + type,0);
     }
 
     public static void setIp(Context context,String ip){
@@ -271,6 +380,21 @@ public class PreferenceUtils {
         return bFirstLaunch && !versionCode.equals(context.getString(R.string.app_version_code));
     }
 
+    public static boolean isSetAlarm(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getBoolean(
+                "boolean_set_alarm", false);
+    }
+
+    public static void setAlarm(Context context,boolean is){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putBoolean("boolean_set_alarm", is);
+        ed.commit();
+    }
+
     public static void setAppFirstLaunch(Context context,boolean is){
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME, Activity.MODE_PRIVATE);
@@ -360,7 +484,7 @@ public class PreferenceUtils {
     public static int getReadFontSize(Context context,String bookId){
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME, Activity.MODE_PRIVATE);
-        return sp.getInt("bookId", DensityUtil.dip2px(context,15));
+        return sp.getInt("bookId", (int)context.getResources().getDimension(R.dimen.x30));
     }
 
     public static void saveFontSize(Context context,String bookId,int fontSizePx){
@@ -405,6 +529,34 @@ public class PreferenceUtils {
                 FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean("is_night",isNight);
+        editor.commit();
+    }
+
+    public static String getNearPosition(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("near_position", "");
+    }
+
+    public static void setNearPosition(Context context,String str) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("near_position",str);
+        editor.commit();
+    }
+
+    public static String getTopUserPosition(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        return sp.getString("top_position", "");
+    }
+
+    public static void setTopUserPosition(Context context,String str) {
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("top_position",str);
         editor.commit();
     }
 
@@ -475,6 +627,25 @@ public class PreferenceUtils {
                 FILE_NAME, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("sari_last_content",content);
+        editor.commit();
+    }
+
+    public static String[] getLastGroupContentAndTime(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+
+        return new String[]{
+                sp.getString("group_last_content", ""),
+                sp.getString("group_last_time", "")
+        };
+    }
+
+    public static void setLastGroupContentAndTime(Context context,String content,String time){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("group_last_content",content);
+        editor.putString("group_last_time",time);
         editor.commit();
     }
 }

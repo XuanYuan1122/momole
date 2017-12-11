@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="50dp">
+    android:layout_height="@dimen/y100">
 
     <ImageView
         android:id="@+id/iv_select_music"
@@ -14,10 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="3dp"
-        android:layout_marginStart="3dp"
-        android:textSize="15dp"
+        android:layout_marginStart="@dimen/x6"
+        android:textSize="@dimen/x30"
         android:textColor="#929292"
-        android:text="老鼠爱大米.mp3"
-        />
+        android:text="" />
 </LinearLayout>

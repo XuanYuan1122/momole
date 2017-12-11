@@ -2,33 +2,30 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="35dp"
+    android:layout_height="@dimen/y70"
     android:orientation="horizontal"
     android:background="@drawable/btn_normal_white">
 
         <TextView
             android:id="@+id/tv_chapter"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
+            android:layout_height="@dimen/y70"
             android:text="置顶"
             android:textColor="#E9573F"
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
-            android:textSize="15dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"/>
+            android:textSize="@dimen/x30"
+            android:layout_marginStart="@dimen/x20"/>
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
+            android:layout_height="@dimen/y70"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:textSize="15dp"
+            android:layout_marginStart="@dimen/x24"
+            android:layout_marginEnd="@dimen/x20"
+            android:textSize="@dimen/x30"
             android:singleLine="true"
             android:ellipsize="end"
             android:textColor="@color/black"

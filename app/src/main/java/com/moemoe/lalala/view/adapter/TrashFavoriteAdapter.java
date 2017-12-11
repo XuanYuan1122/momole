@@ -80,8 +80,8 @@ public class TrashFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.View
         if("image".equals(type)){
             ImgViewHolder imgViewHolder = (ImgViewHolder) holder;
             Glide.with(context)
-                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getImage().getPath(), DensityUtil.dip2px(context,76),DensityUtil.dip2px(context,76),false,true))
-                    .override(DensityUtil.dip2px(context,76),DensityUtil.dip2px(context,76))
+                    .load(StringUtils.getUrl(context, ApiService.URL_QINIU + entity.getImage().getPath(), (int)context.getResources().getDimension(R.dimen.y152),(int)context.getResources().getDimension(R.dimen.y152),false,true))
+                    .override((int)context.getResources().getDimension(R.dimen.y152),(int)context.getResources().getDimension(R.dimen.y152))
                     .centerCrop()
                     .error(R.drawable.bg_default_square)
                     .placeholder(R.drawable.bg_default_square)

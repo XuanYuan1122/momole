@@ -16,23 +16,23 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp">
+        android:paddingLeft="@dimen/x24"
+        android:paddingRight="@dimen/x24">
 
         <TextView
             android:id="@+id/tv_send_phone_code"
             style="@style/VgOneLine"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/y64"
             android:text="@string/msg_register_send_phone_code_to"
             android:textColor="@color/gray_929292"
             android:textColorLink="@color/main_cyan"
-            android:textSize="14dp" />
+            android:textSize="@dimen/x28" />
 
         <LinearLayout
             android:id="@+id/linearLayout1"
             style="@style/VgOneLine.White"
             android:layout_below="@+id/tv_send_phone_code"
-            android:layout_marginTop="24dp" >
+            android:layout_marginTop="@dimen/y28" >
 
             <EditText
                 android:id="@+id/edt_phone_code"
@@ -51,34 +51,34 @@
 
             <View
                 style="@style/VerticalSep"
-                android:layout_marginBottom="6dp"
-                android:layout_marginLeft="6dp"
-                android:layout_marginTop="6dp" />
+                android:layout_marginBottom="@dimen/y12"
+                android:layout_marginStart="@dimen/x12"
+                android:layout_marginTop="@dimen/y12" />
 
             <TextView
                 android:id="@+id/tv_resend_phone_code"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/x200"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:padding="6dp"
+                android:padding="@dimen/x12"
                 android:text="@string/label_resend"
                 android:textColor="@color/txt_cyan_normal"
-                android:textSize="14dp"
+                android:textSize="@dimen/x28"
                 android:background="@drawable/bg_normal_btn" />
         </LinearLayout>
 
         <View
             style="@style/HorizontalSep"
             android:layout_below="@+id/linearLayout1"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp" />
+            android:layout_marginStart="@dimen/x24"
+            android:layout_marginEnd="@dimen/x24" />
 
         <TextView
             android:id="@+id/tv_go_next"
             style="@style/BtnCyanOneLine"
             android:layout_height="wrap_content"
             android:layout_below="@+id/linearLayout1"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/y48"
             android:text="@string/label_done" />
 
     </RelativeLayout>

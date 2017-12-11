@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="67dp"
+    android:layout_height="@dimen/y134"
     android:background="@drawable/bg_normal_white_btn"
-    android:paddingStart="@dimen/size_15"
-    android:paddingLeft="@dimen/size_15"
-    android:paddingRight="@dimen/size_10"
-    android:paddingEnd="@dimen/size_10">
+    android:paddingStart="@dimen/x30"
+    android:paddingEnd="@dimen/x20">
 
     <TextView
         android:id="@+id/tv_coin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/size_40"
+        android:textSize="@dimen/x80"
         android:textStyle="bold"
         android:gravity="center_horizontal"
         android:layout_centerVertical="true" />
@@ -22,30 +20,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/tv_coin"
-        android:layout_toRightOf="@+id/tv_coin"
         android:layout_toEndOf="@+id/tv_coin"
         android:textStyle="bold"
-        android:layout_marginLeft="@dimen/size_5"
-        android:layout_marginStart="@dimen/size_5"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/x10"
+        android:layout_marginBottom="@dimen/y16"
         android:text="@string/label_my_coin"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:orientation="vertical"
-        android:gravity="right"
-        android:layout_marginRight="@dimen/size_10"
-        android:layout_marginEnd="@dimen/size_10">
+        android:gravity="end"
+        android:layout_marginEnd="@dimen/x20">
 
         <TextView
             android:id="@+id/tv_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/size_18"
+            android:textSize="@dimen/x36"
             android:textColor="@color/gray_d7d7d7"
             android:textStyle="bold"/>
 
@@ -54,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray_d7d7d7"
-            android:textSize="@dimen/size_10"/>
+            android:textSize="@dimen/x20"/>
 
     </LinearLayout>
 

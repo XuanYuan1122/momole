@@ -82,7 +82,7 @@ public class AddAddressActivity extends BaseAppCompatActivity implements Address
         });
         mTitle.setText(getString(R.string.label_order_address));
         mMenu.setVisibility(View.VISIBLE);
-        ViewUtils.setRightMargins(mMenu, DensityUtil.dip2px(this,18));
+        ViewUtils.setRightMargins(mMenu, (int)getResources().getDimension(R.dimen.x36));
         mMenu.setText(getString(R.string.label_save));
         mMenu.setOnClickListener(new NoDoubleClickListener() {
             @Override

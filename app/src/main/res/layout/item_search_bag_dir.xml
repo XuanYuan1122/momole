@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="165dp"
+    android:layout_width="@dimen/y330"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/size_10">
 
     <RelativeLayout
         android:id="@+id/rl_root"
-        android:layout_width="165dp"
+        android:layout_width="@dimen/y330"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_white_border_gray">
 
         <ImageView
             android:id="@+id/iv_bg"
-            android:layout_width="165dp"
-            android:layout_height="165dp"
+            android:layout_width="@dimen/y330"
+            android:layout_height="@dimen/y330"
             android:scaleType="centerCrop" />
 
         <View
-            android:layout_width="165dp"
-            android:layout_height="165dp"
+            android:layout_width="@dimen/y330"
+            android:layout_height="@dimen/y330"
             android:background="@drawable/shape_bg_30_5"/>
 
         <TextView
@@ -27,11 +27,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:layout_above="@+id/tv_time"
-            android:paddingStart="@dimen/size_6"
-            android:paddingLeft="@dimen/size_6"
-            android:paddingBottom="@dimen/size_3"
+            android:paddingStart="@dimen/x12"
+            android:paddingBottom="@dimen/y6"
             />
 
         <TextView
@@ -39,26 +38,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_10"
+            android:textSize="@dimen/x20"
             android:layout_alignBottom="@+id/iv_bg"
-            android:paddingStart="@dimen/size_6"
-            android:paddingLeft="@dimen/size_6"
-            android:paddingBottom="@dimen/size_7"/>
+            android:paddingStart="@dimen/x12"
+            android:paddingBottom="@dimen/y14"/>
 
         <TextView
             android:id="@+id/tv_mark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:textStyle="bold"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/size_8"
-            android:paddingStart="@dimen/size_8"
+            android:paddingStart="@dimen/x16"
             android:text=""
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentEnd="true"/>
 
         <ImageView
             android:id="@+id/iv_selected"
@@ -72,25 +68,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/size_6"
-        android:paddingBottom="@dimen/size_6">
+        android:paddingTop="@dimen/y12"
+        android:paddingBottom="@dimen/y12">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray_d7d7d7"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:text="来自"/>
 
         <TextView
             android:id="@+id/tv_create_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/main_cyan"
-            android:textSize="@dimen/size_12"
-            android:layout_marginLeft="@dimen/size_4"
-            android:layout_marginStart="@dimen/size_4"
+            android:textSize="@dimen/x24"
+            android:layout_marginStart="@dimen/x8"
             android:maxLines="1"
             android:ellipsize="end"
             android:text=""/>
@@ -99,9 +94,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray_d7d7d7"
-            android:textSize="@dimen/size_12"
-            android:layout_marginLeft="@dimen/size_4"
-            android:layout_marginStart="@dimen/size_4"
+            android:textSize="@dimen/x24"
+            android:layout_marginStart="@dimen/x8"
             android:text="的"/>
 
         <TextView
@@ -109,10 +103,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/main_cyan"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:maxLines="1"
-            android:layout_marginLeft="@dimen/size_4"
-            android:layout_marginStart="@dimen/size_4"
+            android:layout_marginStart="@dimen/x8"
             android:text="书包"/>
 
     </LinearLayout>

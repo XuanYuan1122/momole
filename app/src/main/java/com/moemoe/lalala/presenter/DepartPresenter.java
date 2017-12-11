@@ -1,13 +1,14 @@
 package com.moemoe.lalala.presenter;
 
-import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.DepartmentEntity;
+import com.moemoe.lalala.model.entity.DepartmentGroupEntity;
 import com.moemoe.lalala.model.entity.DocListEntity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
+import com.moemoe.lalala.model.entity.SendSubmissionEntity;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -30,6 +32,43 @@ public class DepartPresenter implements DepartContract.Presenter {
     public DepartPresenter(DepartContract.View view, ApiService apiService) {
         this.view = view;
         this.apiService = apiService;
+    }
+
+    @Override
+    public void joinAuthor(final String id, final String name) {
+        apiService.JoinAuthorGroup(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view != null) view.onJoinSuccess(id,name);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
+    }
+
+
+    @Override
+    public void loadDepartmentGroup(String id) {
+        apiService.loadDepartmentGroup(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<ArrayList<DepartmentGroupEntity>>() {
+                    @Override
+                    public void onSuccess(ArrayList<DepartmentGroupEntity> entity) {
+                        if(view != null) view.onLoadGroupSuccess(entity);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
+                    }
+                });
     }
 
     @Override
@@ -180,6 +219,24 @@ public class DepartPresenter implements DepartContract.Presenter {
                     @Override
                     public void onFail(int code, String msg) {
                         if(view!=null)view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void submission(SendSubmissionEntity entity) {
+        apiService.submission(entity)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+                        if(view != null) view.onSubmissionSuccess();
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view != null) view.onFailure(code, msg);
                     }
                 });
     }

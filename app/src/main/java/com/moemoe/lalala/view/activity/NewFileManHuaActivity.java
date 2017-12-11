@@ -4,7 +4,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,9 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerNewFileComponent;
@@ -39,7 +35,6 @@ import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.NewFolderItemContract;
 import com.moemoe.lalala.presenter.NewFolderItemPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
-import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FolderDecoration;
@@ -54,14 +49,12 @@ import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -101,6 +94,14 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
     TextView mTvTag1;
     @BindView(R.id.tv_left_tag_2)
     TextView mTvTag2;
+    @BindView(R.id.ll_top_root)
+    View mLlTopRoot;
+    @BindView(R.id.iv_avatar)
+    ImageView mIvAvatar;
+    @BindView(R.id.tv_user_name)
+    TextView mTvUserName;
+    @BindView(R.id.tv_to_bag)
+    TextView mTvToBag;
 
     @Inject
     NewFolderItemPresenter mPresenter;
@@ -245,7 +246,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
     }
 
     private void sendBtnIn(){
-        ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvAdd,"translationY",mIvAdd.getHeight()+ DensityUtil.dip2px(NewFileManHuaActivity.this,16),0).setDuration(300);
+        ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvAdd,"translationY",mIvAdd.getHeight()+ (int)getResources().getDimension(R.dimen.y32),0).setDuration(300);
         sendPostIn.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(sendPostIn);
@@ -253,7 +254,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
     }
 
     private void sendBtnOut(){
-        ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvAdd,"translationY",0,mIvAdd.getHeight()+DensityUtil.dip2px(NewFileManHuaActivity.this,16)).setDuration(300);
+        ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvAdd,"translationY",0,mIvAdd.getHeight() + (int)getResources().getDimension(R.dimen.y32)).setDuration(300);
         sendPostOut.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(sendPostOut);
@@ -284,8 +285,8 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                     mIvBack.setVisibility(View.GONE);
                     mIvMenu.setVisibility(View.GONE);
                     mTvMenuLeft.setText(getString(R.string.label_give_up));
-                    ViewUtils.setLeftMargins(mTvMenuLeft, DensityUtil.dip2px(NewFileManHuaActivity.this,18));
-                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFileManHuaActivity.this,18));
+                    ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
+                    ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
                     mTvMenuRight.setVisibility(View.VISIBLE);
                     mTvMenuRight.setText(getString(R.string.label_delete));
                     mTvMenuRight.setTextColor(ContextCompat.getColor(NewFileManHuaActivity.this,R.color.main_cyan));
@@ -331,7 +332,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-        mIvBack.setPadding(DensityUtil.dip2px(this,18),0,DensityUtil.dip2px(this,18),0);
+        mIvBack.setPadding((int)getResources().getDimension(R.dimen.x36),0,(int)getResources().getDimension(R.dimen.x36),0);
         mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setImageResource(R.drawable.btn_back_black_normal);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
@@ -429,7 +430,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
         mTvMenuLeft.setText(mFolderName);
         mTvBuyNum.setText(entity.getBuyNum() + "");
         mTvFollowNum.setText(entity.getFavoriteNum() + "");
-        mTvTime.setText(StringUtils.timeFormate(entity.getCreateTime()));
+        mTvTime.setText(StringUtils.timeFormat(entity.getCreateTime()));
         String tagStr = "";
         for(int i = 0;i < entity.getTexts().size();i++){
             String tagTmp = entity.getTexts().get(i);
@@ -473,6 +474,30 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                 }
             });
         }
+        if(!mUserId.equals(PreferenceUtils.getUUid())){
+            mLlTopRoot.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),(int)getResources().getDimension(R.dimen.y80),(int)getResources().getDimension(R.dimen.y80),false,true))
+                    .error(R.drawable.bg_default_circle)
+                    .placeholder(R.drawable.bg_default_circle)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(mIvAvatar);
+            mIvAvatar.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ViewUtils.toPersonal(NewFileManHuaActivity.this,entity.getCreateUserId());
+                }
+            });
+            mTvUserName.setText(entity.getCreateUserName());
+            mTvToBag.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i2 = new Intent(NewFileManHuaActivity.this,NewBagActivity.class);
+                    i2.putExtra("uuid",mUserId);
+                    startActivity(i2);
+                }
+            });
+        }
         if(!mUserId.equals(PreferenceUtils.getUUid()) && (entity.getTopList().size() > 0 || entity.getRecommendList().size() > 0)){
             createBottomView(entity);
         }
@@ -480,7 +505,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
         mAdapter.setBuy(!entity.isBuy() && entity.getCoin() > 0 && !mUserId.equals(PreferenceUtils.getUUid()));
         if(!entity.isBuy() && entity.getCoin() > 0 && !mUserId.equals(PreferenceUtils.getUUid())){
             alertDialogUtil = AlertDialogUtil.getInstance();
-            alertDialogUtil.createBuyFolderDialog(NewFileManHuaActivity.this, entity.getCoin());
+            alertDialogUtil.createBuyFolderDialog(NewFileManHuaActivity.this, entity.getCoin(),entity.getNowNum(),entity.getMaxNum(),entity.getFolderId(),entity.getType(),entity.getCover(),entity.getCreateUserId());
             alertDialogUtil.setButtonText("确定购买", "返回",0);
             alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
                 @Override
@@ -501,16 +526,16 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
 
     private void createBottomView(final NewFolderEntity entity){
         mBottomView = LayoutInflater.from(this).inflate(R.layout.item_folder_recommend, null);
-        ImageView ivUser = (ImageView) mBottomView.findViewById(R.id.iv_avatar);
-        TextView tvUser = (TextView) mBottomView.findViewById(R.id.tv_user_name);
-        final TextView tvFollow = (TextView) mBottomView.findViewById(R.id.tv_follow);
-        LinearLayout folderRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_folder_root);
-        LinearLayout recommendTopRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_recommend_top_root);
-        LinearLayout recommendRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_recommend_root);
-        TextView tvRefresh = (TextView) mBottomView.findViewById(R.id.tv_refresh);
-
+        ImageView ivUser = mBottomView.findViewById(R.id.iv_avatar);
+        TextView tvUser = mBottomView.findViewById(R.id.tv_user_name);
+        final TextView tvFollow = mBottomView.findViewById(R.id.tv_follow);
+        LinearLayout folderRoot = mBottomView.findViewById(R.id.ll_folder_root);
+        LinearLayout recommendTopRoot = mBottomView.findViewById(R.id.ll_recommend_top_root);
+        LinearLayout recommendRoot = mBottomView.findViewById(R.id.ll_recommend_root);
+        TextView tvRefresh = mBottomView.findViewById(R.id.tv_refresh);
+        mBottomView.findViewById(R.id.ll_user_root).setVisibility(View.GONE);
         Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),DensityUtil.dip2px(this,40),DensityUtil.dip2px(this,40),false,true))
+                .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),(int)getResources().getDimension(R.dimen.y80),(int)getResources().getDimension(R.dimen.y80),false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(this))
@@ -569,14 +594,14 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                     mark.setText("小说");
                     mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
                 }
-                int width = (DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,42)) / 3;
-                int height = DensityUtil.dip2px(this,140);
+                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
+                int height = (int)getResources().getDimension(R.dimen.y280);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                 RecyclerView.LayoutParams lp2;
                 if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + DensityUtil.dip2px(this,9),height);
-                    v.setPadding(DensityUtil.dip2px(this,9),0,0,0);
+                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
+                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
                 }else {
                     lp2 = new RecyclerView.LayoutParams(width,height);
                     v.setPadding(0,0,0,0);
@@ -587,7 +612,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                         .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,4),0))
+                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
                         .into(iv);
                 iv.setOnClickListener(new NoDoubleClickListener() {
                     @Override
@@ -643,14 +668,14 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                     mark.setText("小说");
                     mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
                 }
-                int width = (DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,42)) / 3;
-                int height = DensityUtil.dip2px(this,140);
+                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
+                int height = (int)getResources().getDimension(R.dimen.y280);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                 RecyclerView.LayoutParams lp2;
                 if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + DensityUtil.dip2px(this,9),height);
-                    v.setPadding(DensityUtil.dip2px(this,9),0,0,0);
+                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
+                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
                 }else {
                     lp2 = new RecyclerView.LayoutParams(width,height);
                     v.setPadding(0,0,0,0);
@@ -661,7 +686,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                         .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,4),0))
+                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
                         .into(iv);
                 iv.setOnClickListener(new NoDoubleClickListener() {
                     @Override
@@ -822,14 +847,14 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                     mark.setText("小说");
                     mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
                 }
-                int width = (DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,42)) / 3;
-                int height = DensityUtil.dip2px(this,140);
+                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
+                int height = (int)getResources().getDimension(R.dimen.y280);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                 RecyclerView.LayoutParams lp2;
                 if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + DensityUtil.dip2px(this,9),height);
-                    v.setPadding(DensityUtil.dip2px(this,9),0,0,0);
+                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
+                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
                 }else {
                     lp2 = new RecyclerView.LayoutParams(width,height);
                     v.setPadding(0,0,0,0);
@@ -840,7 +865,7 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                         .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,4),0))
+                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
                         .into(iv);
                 iv.setOnClickListener(new NoDoubleClickListener() {
                     @Override

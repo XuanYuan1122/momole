@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/size_18">
+    android:layout_marginTop="@dimen/y36">
 
     <RelativeLayout
         android:id="@+id/rl_root"
@@ -20,18 +20,17 @@
         <ImageView
             android:id="@+id/tv_cover"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_65"
+            android:layout_height="@dimen/y130"
             android:layout_alignParentBottom="true"
             android:scaleType="fitXY"
             android:src="@drawable/bg_bag_cover" />
 
         <TextView
             android:id="@+id/tv_mark"
-            android:layout_width="@dimen/size_40"
-            android:layout_height="@dimen/size_24"
+            android:layout_width="@dimen/x80"
+            android:layout_height="@dimen/y48"
             android:background="@drawable/shape_rect_zonghe"
             android:gravity="center"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:textColor="@color/white"/>
 
@@ -40,26 +39,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="@dimen/size_16"
+            android:textSize="@dimen/x32"
             android:layout_above="@+id/tv_extra"
-            android:paddingLeft="@dimen/size_6"
-            android:paddingRight="@dimen/size_6"
+            android:paddingLeft="@dimen/x12"
+            android:paddingRight="@dimen/x12"
             android:maxLines="1"
             android:ellipsize="end"
-            android:paddingBottom="@dimen/size_4" />
+            android:paddingBottom="@dimen/y8" />
 
         <TextView
             android:id="@+id/tv_extra"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/main_cyan"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:layout_alignParentBottom="true"
-            android:paddingLeft="@dimen/size_6"
-            android:paddingRight="@dimen/size_6"
+            android:paddingLeft="@dimen/x12"
+            android:paddingRight="@dimen/x12"
             android:maxLines="1"
             android:ellipsize="end"
-            android:paddingBottom="@dimen/size_7"/>
+            android:paddingBottom="@dimen/y14"/>
 
     </RelativeLayout>
 
@@ -67,13 +66,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/size_6">
+        android:paddingTop="@dimen/y12">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray_d7d7d7"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:text="by"/>
 
         <TextView
@@ -82,9 +81,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/main_cyan"
-            android:textSize="@dimen/size_12"
-            android:layout_marginLeft="@dimen/size_4"
-            android:layout_marginStart="@dimen/size_4"
+            android:textSize="@dimen/x24"
+            android:layout_marginStart="@dimen/x8"
             android:maxLines="1"
             android:ellipsize="end"
             android:text=""/>
@@ -93,7 +91,7 @@
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/size_12"
+            android:textSize="@dimen/x24"
             android:textColor="@color/gray_d7d7d7"/>
     </LinearLayout>
 </LinearLayout>

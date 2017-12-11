@@ -8,4 +8,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"/>
+
+    <TextView
+        android:id="@+id/tv_skip"
+        android:layout_width="@dimen/x208"
+        android:layout_height="@dimen/y78"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x30"
+        android:gravity="center"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="@dimen/y30"
+        android:layout_marginEnd="@dimen/x24"
+        android:background="@drawable/btn_skip"
+        android:visibility="gone"/>
 </FrameLayout>

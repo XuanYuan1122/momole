@@ -13,8 +13,9 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.PhoneMenuEntity;
 import com.moemoe.lalala.presenter.PhoneMenuListContract;
 import com.moemoe.lalala.presenter.PhoneMenuListPresenter;
+import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
+import com.moemoe.lalala.view.activity.PersonalV2Activity;
 import com.moemoe.lalala.view.adapter.PhoneMenuListAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
+ *
  * Created by yi on 2017/9/4.
  */
 
@@ -70,7 +72,7 @@ public class PhoneMenuListFragment extends BaseFragment implements PhoneMenuList
             public void onItemClick(View view, int position) {
                 PhoneMenuEntity entity = mAdapter.getItem(position);
                 if(!entity.getUserId().equals(PreferenceUtils.getUUid())){
-                    Intent i = new Intent(getContext(), NewPersonalActivity.class);
+                    Intent i = new Intent(getContext(), PersonalV2Activity.class);
                     i.putExtra("uuid",entity.getUserId());
                     startActivity(i);
                 }
@@ -110,6 +112,7 @@ public class PhoneMenuListFragment extends BaseFragment implements PhoneMenuList
     public void onFailure(int code, String msg) {
         isLoading = false;
         mListDocs.setComplete();
+        ErrorCodeUtils.showErrorMsgByCode(getContext(),code,msg);
     }
 
     @Override

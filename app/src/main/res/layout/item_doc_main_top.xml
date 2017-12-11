@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_from_top"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_32">
+    android:layout_height="@dimen/y64">
 
     <View
         android:layout_width="match_parent"
@@ -16,19 +16,18 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:textColor="@color/gray_929292"
-        android:layout_marginStart="@dimen/size_12"
-        android:textSize="@dimen/size_10"
+        android:layout_marginStart="@dimen/x24"
+        android:textSize="@dimen/x20"
         android:text="@string/label_from"/>
 
     <TextView
         android:id="@+id/tv_from_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/tv_from"
         android:layout_toEndOf="@+id/tv_from"
         android:layout_centerVertical="true"
-        android:textSize="@dimen/size_10"
+        android:textSize="@dimen/x20"
         android:textColor="@color/main_cyan"
-        android:layout_marginLeft="@dimen/size_4"
+        android:layout_marginStart="@dimen/x8"
         android:text=""/>
 </RelativeLayout>

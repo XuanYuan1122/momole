@@ -8,26 +8,14 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.di.components.DaggerFeedComponent;
 import com.moemoe.lalala.di.components.DaggerOldDocComponent;
-import com.moemoe.lalala.di.modules.FeedModule;
 import com.moemoe.lalala.di.modules.OldDocModule;
-import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BannerEntity;
-import com.moemoe.lalala.model.entity.Comment24Entity;
 import com.moemoe.lalala.model.entity.DocResponse;
-import com.moemoe.lalala.model.entity.NewDynamicEntity;
-import com.moemoe.lalala.model.entity.ShowFolderEntity;
-import com.moemoe.lalala.model.entity.XianChongEntity;
-import com.moemoe.lalala.presenter.FeedContract;
-import com.moemoe.lalala.presenter.FeedPresenter;
 import com.moemoe.lalala.presenter.OldDocContract;
 import com.moemoe.lalala.presenter.OldDocPresenter;
 import com.moemoe.lalala.utils.MenuVItemDecoration;
-import com.moemoe.lalala.view.activity.DynamicActivity;
 import com.moemoe.lalala.view.activity.NewDocDetailActivity;
-import com.moemoe.lalala.view.activity.OldDocActivity;
-import com.moemoe.lalala.view.adapter.FeedAdapter;
 import com.moemoe.lalala.view.adapter.OldDocAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -40,6 +28,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
+ *
  * Created by yi on 2017/9/4.
  */
 

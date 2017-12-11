@@ -120,7 +120,7 @@ public class NetaRichEditor extends ScrollView {
         root.setBackgroundColor(Color.WHITE);
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
-        root.setPadding(DensityUtil.dip2px(context,18), DensityUtil.dip2px(context,18), DensityUtil.dip2px(context,18), 0);//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
+        root.setPadding((int)getResources().getDimension(R.dimen.x36), (int)getResources().getDimension(R.dimen.y36), (int)getResources().getDimension(R.dimen.x36), 0);//设置间距，防止生成图片时文字太靠边，不能用margin，否则有黑边
         addView(root, layoutParams);
 
         allLayout = new LinearLayout(context);
@@ -697,7 +697,7 @@ public class NetaRichEditor extends ScrollView {
             width = w;
             height = h;
         }
-        final int[] wh = BitmapUtils.getDocIconSizeFromW(width * 2, height * 2, DensityUtil.getScreenWidth(getContext()) - DensityUtil.dip2px(getContext(),36));
+        final int[] wh = BitmapUtils.getDocIconSizeFromW(width * 2, height * 2, DensityUtil.getScreenWidth(getContext()) - (int)getResources().getDimension(R.dimen.x72));
         if(wh[1] > 2048){
             imageView.setVisibility(GONE);
             longImageView.setVisibility(VISIBLE);

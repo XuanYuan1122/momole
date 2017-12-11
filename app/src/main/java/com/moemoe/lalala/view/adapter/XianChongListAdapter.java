@@ -27,8 +27,8 @@ public class XianChongListAdapter extends BaseRecyclerViewAdapter<XianChongEntit
     protected void convert(ClickableViewHolder helper, XianChongEntity item, int position) {
         helper.setText(R.id.tv_name, item.getNickName());
         Glide.with(context)
-                .load(StringUtils.getUrl(context, item.getHeadPath(), DensityUtil.dip2px(context,50), DensityUtil.dip2px(context,50),false,false))
-                .override(DensityUtil.dip2px(context,44), DensityUtil.dip2px(context,50))
+                .load(StringUtils.getUrl(context, item.getHeadPath(),(int)context.getResources().getDimension(R.dimen.y100), (int)context.getResources().getDimension(R.dimen.y100),false,false))
+                .override((int)context.getResources().getDimension(R.dimen.y100), (int)context.getResources().getDimension(R.dimen.y100))
                 .placeholder(R.drawable.bg_default_circle)
                 .error(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(context))

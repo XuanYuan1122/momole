@@ -70,7 +70,7 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
             Glide.with(mContext)
                     .load(R.drawable.ic_add_photo)
                     .asBitmap()
-                    .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
+                    .override((int)mContext.getResources().getDimension(R.dimen.y230),(int)mContext.getResources().getDimension(R.dimen.y230))
                     .into(holder.mIvImg);
             holder.mIvDel.setVisibility(View.GONE);
         }else {
@@ -80,21 +80,21 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
                 Glide.with(mContext)
                         .load(R.drawable.ic_music_choice)
                         .centerCrop()
-                        .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
+                        .override((int)mContext.getResources().getDimension(R.dimen.y230),(int)mContext.getResources().getDimension(R.dimen.y230))
                         .into(holder.mIvImg);
                 holder.mTvTitle.setText(((MusicLoader.MusicInfo) path).getTitle());
             }else if(path instanceof BookInfo){
                 Glide.with(mContext)
                         .load(R.drawable.ic_word_choice)
                         .centerCrop()
-                        .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
+                        .override((int)mContext.getResources().getDimension(R.dimen.y230),(int)mContext.getResources().getDimension(R.dimen.y230))
                         .into(holder.mIvImg);
                 holder.mTvTitle.setText(((BookInfo) path).getTitle());
             }else {
                 Glide.with(mContext)
                         .load(path)
                         .centerCrop()
-                        .override(DensityUtil.dip2px(mContext,115), DensityUtil.dip2px(mContext,115))
+                        .override((int)mContext.getResources().getDimension(R.dimen.y230),(int)mContext.getResources().getDimension(R.dimen.y230))
                         .into(holder.mIvImg);
                 holder.mTvTitle.setText("");
             }

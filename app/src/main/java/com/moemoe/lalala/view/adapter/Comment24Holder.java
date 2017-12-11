@@ -36,11 +36,11 @@ public class Comment24Holder extends ClickableViewHolder {
 
     public Comment24Holder(View itemView) {
         super(itemView);
-        userName = (TextView) itemView.findViewById(R.id.tv_user_name);
-        userContent = (TextView) itemView.findViewById(R.id.tv_user_content);
-        userFavorite = (TextView) itemView.findViewById(R.id.tv_favorite);
-        cover = (ImageView) itemView.findViewById(R.id.iv_cover);
-        dynamicContent = (TextView) itemView.findViewById(R.id.tv_dynamic_content);
+        userName = itemView.findViewById(R.id.tv_user_name);
+        userContent = itemView.findViewById(R.id.tv_user_content);
+        userFavorite = itemView.findViewById(R.id.tv_favorite);
+        cover = itemView.findViewById(R.id.iv_cover);
+        dynamicContent = itemView.findViewById(R.id.tv_dynamic_content);
     }
 
     public void createItem(final Comment24Entity entity, final int position){

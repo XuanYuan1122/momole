@@ -5,7 +5,6 @@ import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,9 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
@@ -33,7 +29,6 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerNewFileComponent;
 import com.moemoe.lalala.di.modules.NewFileModule;
 import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.FileXiaoShuoEntity;
 import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ManHua2Entity;
@@ -45,7 +40,6 @@ import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.NewFolderItemContract;
 import com.moemoe.lalala.presenter.NewFolderItemPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
-import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
@@ -61,7 +55,6 @@ import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,15 +62,9 @@ import java.util.HashMap;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 //import zlc.season.rxdownload2.RxDownload;
 //import zlc.season.rxdownload2.entity.DownloadStatus;
 
@@ -116,6 +103,14 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
     TextView mTvTag1;
     @BindView(R.id.tv_left_tag_2)
     TextView mTvTag2;
+    @BindView(R.id.ll_top_root)
+    View mLlTopRoot;
+    @BindView(R.id.iv_avatar)
+    ImageView mIvAvatar;
+    @BindView(R.id.tv_user_name)
+    TextView mTvUserName;
+    @BindView(R.id.tv_to_bag)
+    TextView mTvToBag;
 
     @Inject
     NewFolderItemPresenter mPresenter;
@@ -176,11 +171,6 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
         }else {
             mIvAdd.setImageResource(R.drawable.btn_follow_folder_item);
         }
-//        downloadSub = RxDownload.getInstance(this)
-//                .maxThread(1)
-//                .maxRetryCount(3)
-//                .defaultSavePath(StorageUtils.getNovRootPath())
-//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
         mTvTop.setText("置顶");
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new FileXiaoShuoAdapter();
@@ -240,31 +230,6 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
 
                                         }
                                     }).start();
-//                            downloadSub.download(ApiService.URL_QINIU + entity.getPath(), entity.getFileName(), StorageUtils.getNovRootPath() + entity.getFileId())
-//                                    .subscribeOn(Schedulers.io())
-//                                    .observeOn(AndroidSchedulers.mainThread())
-//                                    .subscribe(new NetTResultSubscriber<DownloadStatus>() {
-//                                        @Override
-//                                        public void onSuccess() {
-//                                            dialog.dismiss();
-//                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoshuoActivity.this, mAdapter.getList(), mUserId, position);
-//                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  entity.getPath(),false).subscribe();
-//                                        }
-//
-//                                        @Override
-//                                        public void onLoading(DownloadStatus res) {
-//                                            dialog.setMax((int) res.getTotalSize());
-//                                            dialog.setProgress((int) res.getDownloadSize());
-//                                        }
-//
-//                                        @Override
-//                                        public void onFail(Throwable e) {
-//                                            dialog.dismiss();
-//                                            FileUtil.deleteDir(StorageUtils.getNovRootPath() + entity.getFileId());
-//                                            showToast("下载失败");
-//                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  entity.getPath(),true).subscribe();
-//                                        }
-//                                    });
                             dialog.show();
                         }
                     }
@@ -341,7 +306,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
     }
 
     private void sendBtnIn(){
-        ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvAdd,"translationY",mIvAdd.getHeight()+ DensityUtil.dip2px(NewFileXiaoshuoActivity.this,16),0).setDuration(300);
+        ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvAdd,"translationY",mIvAdd.getHeight()+ (int)getResources().getDimension(R.dimen.y32),0).setDuration(300);
         sendPostIn.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(sendPostIn);
@@ -349,7 +314,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
     }
 
     private void sendBtnOut(){
-        ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvAdd,"translationY",0,mIvAdd.getHeight()+DensityUtil.dip2px(NewFileXiaoshuoActivity.this,16)).setDuration(300);
+        ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvAdd,"translationY",0,mIvAdd.getHeight()+(int)getResources().getDimension(R.dimen.y32)).setDuration(300);
         sendPostOut.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(sendPostOut);
@@ -380,8 +345,8 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     mIvBack.setVisibility(View.GONE);
                     mIvMenu.setVisibility(View.GONE);
                     mTvMenuLeft.setText(getString(R.string.label_give_up));
-                    ViewUtils.setLeftMargins(mTvMenuLeft, DensityUtil.dip2px(NewFileXiaoshuoActivity.this,18));
-                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFileXiaoshuoActivity.this,18));
+                    ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
+                    ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
                     mTvMenuRight.setVisibility(View.VISIBLE);
                     mTvMenuRight.setText(getString(R.string.label_delete));
                     mTvMenuRight.setTextColor(ContextCompat.getColor(NewFileXiaoshuoActivity.this,R.color.main_cyan));
@@ -427,7 +392,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
 
     @Override
     protected void initToolbar(Bundle savedInstanceState) {
-        mIvBack.setPadding(DensityUtil.dip2px(this,18),0,DensityUtil.dip2px(this,18),0);
+        mIvBack.setPadding((int)getResources().getDimension(R.dimen.x36),0,(int)getResources().getDimension(R.dimen.x36),0);
         mIvBack.setVisibility(View.VISIBLE);
         mIvBack.setImageResource(R.drawable.btn_back_black_normal);
         mIvBack.setOnClickListener(new NoDoubleClickListener() {
@@ -531,7 +496,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
         mTvMenuLeft.setText(mFolderName);
         mTvBuyNum.setText(entity.getBuyNum() + "");
         mTvFollowNum.setText(entity.getFavoriteNum() + "");
-        mTvTime.setText(StringUtils.timeFormate(entity.getCreateTime()));
+        mTvTime.setText(StringUtils.timeFormat(entity.getCreateTime()));
         String tagStr = "";
         for(int i = 0;i < entity.getTexts().size();i++){
             String tagTmp = entity.getTexts().get(i);
@@ -575,6 +540,30 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                 }
             });
         }
+        if(!mUserId.equals(PreferenceUtils.getUUid())){
+            mLlTopRoot.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),(int)getResources().getDimension(R.dimen.y80),(int)getResources().getDimension(R.dimen.y80),false,true))
+                    .error(R.drawable.bg_default_circle)
+                    .placeholder(R.drawable.bg_default_circle)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(mIvAvatar);
+            mIvAvatar.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ViewUtils.toPersonal(NewFileXiaoshuoActivity.this,entity.getCreateUserId());
+                }
+            });
+            mTvUserName.setText(entity.getCreateUserName());
+            mTvToBag.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i2 = new Intent(NewFileXiaoshuoActivity.this,NewBagActivity.class);
+                    i2.putExtra("uuid",mUserId);
+                    startActivity(i2);
+                }
+            });
+        }
         if(!mUserId.equals(PreferenceUtils.getUUid()) && (entity.getTopList().size() > 0 || entity.getRecommendList().size() > 0)){
             createBottomView(entity);
         }
@@ -582,7 +571,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
         mAdapter.setBuy(!entity.isBuy() && entity.getCoin() > 0 && !mUserId.equals(PreferenceUtils.getUUid()));
         if(!entity.isBuy() && entity.getCoin() > 0 && !mUserId.equals(PreferenceUtils.getUUid())){
             alertDialogUtil = AlertDialogUtil.getInstance();
-            alertDialogUtil.createBuyFolderDialog(NewFileXiaoshuoActivity.this, entity.getCoin());
+            alertDialogUtil.createBuyFolderDialog(NewFileXiaoshuoActivity.this, entity.getCoin(),entity.getNowNum(),entity.getMaxNum(),entity.getFolderId(),entity.getType(),entity.getCover(),entity.getCreateUserId());
             alertDialogUtil.setButtonText("确定购买", "返回",0);
             alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
                 @Override
@@ -610,9 +599,10 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
         LinearLayout recommendTopRoot = mBottomView.findViewById(R.id.ll_recommend_top_root);
         LinearLayout recommendRoot = mBottomView.findViewById(R.id.ll_recommend_root);
         TextView tvRefresh = mBottomView.findViewById(R.id.tv_refresh);
+        mBottomView.findViewById(R.id.ll_user_root).setVisibility(View.GONE);
 
         Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),DensityUtil.dip2px(this,40),DensityUtil.dip2px(this,40),false,true))
+                .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),(int)getResources().getDimension(R.dimen.y80),(int)getResources().getDimension(R.dimen.y80),false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(this))
@@ -643,10 +633,10 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
             for (int n = 0;n < entity.getTopList().size();n++){
                 final ShowFolderEntity item = entity.getTopList().get(n);
                 View v = LayoutInflater.from(this).inflate(R.layout.item_bag_cover, null);
-                ImageView iv = (ImageView) v.findViewById(R.id.iv_cover);
-                TextView mark = (TextView) v.findViewById(R.id.tv_mark);
-                TextView title = (TextView) v.findViewById(R.id.tv_title);
-                TextView tag = (TextView) v.findViewById(R.id.tv_tag);
+                ImageView iv = v.findViewById(R.id.iv_cover);
+                TextView mark = v.findViewById(R.id.tv_mark);
+                TextView title = v.findViewById(R.id.tv_title);
+                TextView tag = v.findViewById(R.id.tv_tag);
                 title.setText(item.getFolderName());
                 String tagStr1 = "";
                 for(int i = 0;i < item.getTexts().size();i++){
@@ -671,14 +661,14 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     mark.setText("小说");
                     mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
                 }
-                int width = (DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,42)) / 3;
-                int height = DensityUtil.dip2px(this,140);
+                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
+                int height = (int)getResources().getDimension(R.dimen.y280);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                 RecyclerView.LayoutParams lp2;
                 if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + DensityUtil.dip2px(this,9),height);
-                    v.setPadding(DensityUtil.dip2px(this,9),0,0,0);
+                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
+                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
                 }else {
                     lp2 = new RecyclerView.LayoutParams(width,height);
                     v.setPadding(0,0,0,0);
@@ -689,7 +679,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                         .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,4),0))
+                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
                         .into(iv);
                 iv.setOnClickListener(new NoDoubleClickListener() {
                     @Override
@@ -745,14 +735,14 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     mark.setText("小说");
                     mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
                 }
-                int width = (DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,42)) / 3;
-                int height = DensityUtil.dip2px(this,140);
+                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
+                int height = (int)getResources().getDimension(R.dimen.y280);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                 RecyclerView.LayoutParams lp2;
                 if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + DensityUtil.dip2px(this,9),height);
-                    v.setPadding(DensityUtil.dip2px(this,9),0,0,0);
+                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
+                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
                 }else {
                     lp2 = new RecyclerView.LayoutParams(width,height);
                     v.setPadding(0,0,0,0);
@@ -763,7 +753,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                         .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,4),0))
+                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
                         .into(iv);
                 iv.setOnClickListener(new NoDoubleClickListener() {
                     @Override
@@ -925,14 +915,14 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     mark.setText("小说");
                     mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
                 }
-                int width = (DensityUtil.getScreenWidth(this) - DensityUtil.dip2px(this,42)) / 3;
-                int height = DensityUtil.dip2px(this,140);
+                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
+                int height = (int)getResources().getDimension(R.dimen.y280);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                 RecyclerView.LayoutParams lp2;
                 if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + DensityUtil.dip2px(this,9),height);
-                    v.setPadding(DensityUtil.dip2px(this,9),0,0,0);
+                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
+                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
                 }else {
                     lp2 = new RecyclerView.LayoutParams(width,height);
                     v.setPadding(0,0,0,0);
@@ -943,7 +933,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                         .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,DensityUtil.dip2px(this,4),0))
+                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
                         .into(iv);
                 iv.setOnClickListener(new NoDoubleClickListener() {
                     @Override

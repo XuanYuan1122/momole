@@ -37,6 +37,7 @@ public class MapDbEntityDao extends AbstractDao<MapDbEntity, String> {
         public final static Property FileName = new Property(10, String.class, "fileName", false, "FILE_NAME");
         public final static Property DownloadState = new Property(11, int.class, "downloadState", false, "DOWNLOAD_STATE");
         public final static Property Md5 = new Property(12, String.class, "md5", false, "MD5");
+        public final static Property Type = new Property(13, String.class, "type", false, "TYPE");
     }
 
 
@@ -64,7 +65,8 @@ public class MapDbEntityDao extends AbstractDao<MapDbEntity, String> {
                 "\"SHOWS\" TEXT," + // 9: shows
                 "\"FILE_NAME\" TEXT," + // 10: fileName
                 "\"DOWNLOAD_STATE\" INTEGER NOT NULL ," + // 11: downloadState
-                "\"MD5\" TEXT);"); // 12: md5
+                "\"MD5\" TEXT," + // 12: md5
+                "\"TYPE\" TEXT);"); // 13: type
     }
 
     /** Drops the underlying database table. */
@@ -121,6 +123,11 @@ public class MapDbEntityDao extends AbstractDao<MapDbEntity, String> {
         if (md5 != null) {
             stmt.bindString(13, md5);
         }
+ 
+        String type = entity.getType();
+        if (type != null) {
+            stmt.bindString(14, type);
+        }
     }
 
     @Override
@@ -171,6 +178,11 @@ public class MapDbEntityDao extends AbstractDao<MapDbEntity, String> {
         if (md5 != null) {
             stmt.bindString(13, md5);
         }
+ 
+        String type = entity.getType();
+        if (type != null) {
+            stmt.bindString(14, type);
+        }
     }
 
     @Override
@@ -193,7 +205,8 @@ public class MapDbEntityDao extends AbstractDao<MapDbEntity, String> {
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // shows
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // fileName
             cursor.getInt(offset + 11), // downloadState
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // md5
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // md5
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13) // type
         );
         return entity;
     }
@@ -213,6 +226,7 @@ public class MapDbEntityDao extends AbstractDao<MapDbEntity, String> {
         entity.setFileName(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setDownloadState(cursor.getInt(offset + 11));
         entity.setMd5(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setType(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
      }
     
     @Override

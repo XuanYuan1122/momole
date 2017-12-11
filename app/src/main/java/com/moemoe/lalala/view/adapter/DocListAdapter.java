@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.BadgeEntity;
 import com.moemoe.lalala.model.entity.DocListEntity;
@@ -34,7 +33,7 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
-import com.moemoe.lalala.view.activity.NewPersonalActivity;
+import com.moemoe.lalala.view.activity.PersonalV2Activity;
 import com.moemoe.lalala.view.widget.view.NewDocLabelAdapter;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 
@@ -185,7 +184,7 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     holder.vDocSep.setVisibility(View.GONE);
                 }
             }
-            int radius1 = DensityUtil.dip2px(mContext,5);
+            int radius1 = (int)mContext.getResources().getDimension(R.dimen.y10);
             float[] outerR1 = new float[] { radius1, radius1, radius1, radius1, radius1, radius1, radius1, radius1};
             RoundRectShape roundRectShape1 = new RoundRectShape(outerR1, null, null);
             ShapeDrawable shapeDrawable1 = new ShapeDrawable();
@@ -208,9 +207,9 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     tv.setText(badgeEntity.getTitle());
                     tv.setText(badgeEntity.getTitle());
                     tv.setBackgroundResource(R.drawable.bg_badge_cover);
-                    int px = DensityUtil.dip2px(mContext,4);
+                    int px = (int)mContext.getResources().getDimension(R.dimen.x8);
                     tv.setPadding(px,0,px,0);
-                    int radius2 = DensityUtil.dip2px(mContext,2);
+                    int radius2 = (int)mContext.getResources().getDimension(R.dimen.y4);
                     float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
                     RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
                     ShapeDrawable shapeDrawable2 = new ShapeDrawable();
@@ -227,8 +226,8 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
             if(holder.ivCreatorAvatar != null){
                 Glide.with(mContext)
-                        .load( StringUtils.getUrl(mContext, ApiService.URL_QINIU +  post.getUserIcon().getPath(), DensityUtil.dip2px(mContext,44), DensityUtil.dip2px(mContext,44), false, false))
-                        .override(DensityUtil.dip2px(mContext,44), DensityUtil.dip2px(mContext,44))
+                        .load( StringUtils.getUrl(mContext, ApiService.URL_QINIU +  post.getUserIcon().getPath(), (int)mContext.getResources().getDimension(R.dimen.y88),(int)mContext.getResources().getDimension(R.dimen.y88), false, false))
+                        .override((int)mContext.getResources().getDimension(R.dimen.y88), (int)mContext.getResources().getDimension(R.dimen.y88))
                         .placeholder(R.drawable.bg_default_circle)
                         .error(R.drawable.bg_default_circle)
                         .bitmapTransform(new CropCircleTransformation(mContext))
@@ -249,7 +248,7 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.tvCommentNum.setText(StringUtils.getNumberInLengthLimit(post.getDesc().getComments(), 3));
             holder.tvPantsNum.setText(StringUtils.getNumberInLengthLimit(post.getDesc().getLikes(), 3));
             // 时间,内容
-            holder.tvPostDate.setText(StringUtils.timeFormate(post.getUpdateTime()));
+            holder.tvPostDate.setText(StringUtils.timeFormat(post.getUpdateTime()));
             holder.tvPostBrief.setText(post.getDesc().getContent());
             // 加载特殊帖子样式：投票，视频
             holder.rlSpecialTypePack.setVisibility(View.GONE);
@@ -272,8 +271,8 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 holder.llImagePack.setVisibility(View.VISIBLE);
                 holder.rlMusicRoot.setVisibility(View.VISIBLE);
                 Glide.with(mContext)
-                        .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + post.getDesc().getMusic().getCover().getPath(), DensityUtil.dip2px(mContext,90), DensityUtil.dip2px(mContext,90), false, true))
-                        .override(DensityUtil.dip2px(mContext,90), DensityUtil.dip2px(mContext,90))
+                        .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + post.getDesc().getMusic().getCover().getPath(), (int)mContext.getResources().getDimension(R.dimen.y180), (int)mContext.getResources().getDimension(R.dimen.y180), false, true))
+                        .override((int)mContext.getResources().getDimension(R.dimen.y180),(int)mContext.getResources().getDimension(R.dimen.y180))
                         .placeholder(R.drawable.bg_default_square)
                         .error(R.drawable.bg_default_square)
                         .centerCrop()
@@ -292,8 +291,8 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         holder.ivGifIcon1.setVisibility(View.GONE);
                     }
                     Glide.with(mContext)
-                            .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + post.getDesc().getImages().get(0).getPath(), (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, false, true))
-                            .override((DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3)
+                            .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + post.getDesc().getImages().get(0).getPath(), (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, false, true))
+                            .override((DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3)
                             .placeholder(R.drawable.bg_default_square)
                             .error(R.drawable.bg_default_square)
                             .centerCrop()
@@ -306,8 +305,8 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             holder.ivGifIcon2.setVisibility(View.GONE);
                         }
                         Glide.with(mContext)
-                                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + post.getDesc().getImages().get(1).getPath(), (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, false, true))
-                                .override((DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3)
+                                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + post.getDesc().getImages().get(1).getPath(), (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, false, true))
+                                .override((DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3)
                                 .placeholder(R.drawable.bg_default_square)
                                 .error(R.drawable.bg_default_square)
                                 .centerCrop()
@@ -322,8 +321,8 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             holder.ivGifIcon3.setVisibility(View.GONE);
                         }
                         Glide.with(mContext)
-                                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + post.getDesc().getImages().get(2).getPath(), (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, false, true))
-                                .override((DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3, (DensityUtil.getScreenWidth(mContext) - DensityUtil.dip2px(mContext,56)) / 3)
+                                .load(StringUtils.getUrl(mContext,ApiService.URL_QINIU + post.getDesc().getImages().get(2).getPath(), (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, false, true))
+                                .override((DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3, (DensityUtil.getScreenWidth(mContext) - (int)mContext.getResources().getDimension(R.dimen.x112)) / 3)
                                 .placeholder(R.drawable.bg_default_square)
                                 .error(R.drawable.bg_default_square)
                                 .into(holder.ivIcon3);
@@ -415,7 +414,7 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public void onClick(View v) {
             String uuid = (String) v.getTag(R.id.id_creator_uuid);
             if (!TextUtils.isEmpty(uuid) && !uuid.equals(PreferenceUtils.getUUid())) {
-                Intent intent = new Intent(mContext, NewPersonalActivity.class);
+                Intent intent = new Intent(mContext, PersonalV2Activity.class);
                 intent.putExtra(BaseAppCompatActivity.UUID, uuid);
                 mContext.startActivity(intent);
             }
@@ -475,8 +474,8 @@ public class DocListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 convertView = LayoutInflater.from(context).inflate(R.layout.item_tag_doc_list_top_hot,
                         parent,false);
                 holder = new NormalHolder();
-                holder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
-                holder.tvChapter = (TextView) convertView.findViewById(R.id.tv_chapter);
+                holder.tvTitle = convertView.findViewById(R.id.tv_title);
+                holder.tvChapter = convertView.findViewById(R.id.tv_chapter);
                 convertView.setTag(holder);
             }else {
                 holder = (NormalHolder) convertView.getTag();

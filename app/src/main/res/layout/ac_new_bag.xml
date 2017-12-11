@@ -13,12 +13,12 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="173dp"
+            android:layout_height="@dimen/y346"
             android:background="@color/white"
             app:contentScrim="@color/white"
             app:title=""
-            app:expandedTitleMarginStart="@dimen/size_110"
-            app:expandedTitleMarginTop="103dp"
+            app:expandedTitleMarginStart="@dimen/x220"
+            app:expandedTitleMarginTop="@dimen/y206"
             app:expandedTitleTextAppearance="@style/BagTitle"
             app:expandedTitleGravity="left|start|top"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -32,22 +32,21 @@
                 <ImageView
                     android:id="@+id/iv_bg"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/size_120"
+                    android:layout_height="@dimen/y240"
                     android:scaleType="centerCrop"/>
 
                 <RelativeLayout
                     android:id="@+id/rl_iv_bag_root"
-                    android:layout_width="@dimen/size_86"
-                    android:layout_height="@dimen/size_86"
-                    android:layout_marginLeft="@dimen/size_12"
-                    android:layout_marginStart="@dimen/size_12"
-                    android:layout_marginTop="@dimen/size_87"
+                    android:layout_width="@dimen/y172"
+                    android:layout_height="@dimen/y172"
+                    android:layout_marginStart="@dimen/x24"
+                    android:layout_marginTop="@dimen/y174"
                     android:background="@drawable/shape_rect_border_white_background_10">
 
                     <ImageView
                         android:id="@+id/iv_bag"
-                        android:layout_width="@dimen/size_80"
-                        android:layout_height="@dimen/size_80"
+                        android:layout_width="@dimen/y160"
+                        android:layout_height="@dimen/y160"
                         android:layout_centerInParent="true"
                         android:scaleType="centerCrop"/>
 
@@ -57,23 +56,19 @@
                     android:id="@+id/tv_use_space"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/rl_iv_bag_root"
                     android:layout_toEndOf="@+id/rl_iv_bag_root"
-                    android:layout_marginLeft="@dimen/size_12"
-                    android:layout_marginStart="@dimen/size_12"
+                    android:layout_marginStart="@dimen/x24"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginEnd="@dimen/size_18"
-                    android:layout_marginRight="@dimen/size_18"
+                    android:layout_marginEnd="@dimen/x36"
                     android:text="@string/label_bag_space"
                     android:textColor="@color/gray_929292"
-                    android:textSize="@dimen/size_12" />
-
+                    android:textSize="@dimen/x24" />
             </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/neta_toolbar"
+                android:layout_height="@dimen/y100"
                 app:navigationIcon="@drawable/btn_back_white_normal"
                 app:layout_collapseMode="pin"
                 android:layout_marginTop="@dimen/status_bar_height"
@@ -87,11 +82,9 @@
                     android:layout_gravity="end"
                     android:textColor="@color/white"
                     android:gravity="center"
-                    android:textSize="@dimen/size_16"
-                    android:paddingRight="@dimen/size_18"
-                    android:paddingEnd="@dimen/size_18"
-                    android:paddingLeft="@dimen/size_18"
-                    android:paddingStart="@dimen/size_18"
+                    android:textSize="@dimen/x32"
+                    android:paddingEnd="@dimen/x36"
+                    android:paddingStart="@dimen/x36"
                     android:visibility="gone"/>
 
                 <ImageView
@@ -99,10 +92,8 @@
                     android:layout_height="match_parent"
                     android:layout_width="wrap_content"
                     android:layout_gravity="end"
-                    android:paddingRight="@dimen/size_18"
-                    android:paddingStart="@dimen/size_18"
-                    android:paddingLeft="@dimen/size_18"
-                    android:paddingEnd="@dimen/size_18"
+                    android:paddingStart="@dimen/x36"
+                    android:paddingEnd="@dimen/x36"
                     android:src="@drawable/btn_menu_white_normal" />
 
             </android.support.v7.widget.Toolbar>
@@ -121,18 +112,18 @@
         <com.flyco.tablayout.SegmentTabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="@dimen/y64"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/size_25"
-            android:paddingLeft="@dimen/size_12"
-            android:paddingRight="@dimen/size_12"
+            android:layout_marginTop="@dimen/y50"
+            android:paddingLeft="@dimen/x24"
+            android:paddingRight="@dimen/x24"
             app:tl_bar_color="#ffffff"
             app:tl_indicator_color="@color/gray_e8e8e8"
-            app:tl_indicator_corner_radius="@dimen/size_4"
+            app:tl_indicator_corner_radius="@dimen/y8"
             app:tl_textBold="SELECT"
             app:tl_textSelectColor="@color/main_cyan"
             app:tl_textUnselectColor="@color/gray_e8e8e8"
-            app:tl_textsize="@dimen/size_12" />
+            app:tl_textsize="@dimen/x24" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"

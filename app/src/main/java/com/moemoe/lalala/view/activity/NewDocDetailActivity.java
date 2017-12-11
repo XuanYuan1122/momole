@@ -87,6 +87,7 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 文章
@@ -146,6 +147,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     private int mCommentNum;
     private boolean isLoading;
     private KeyboardListenerLayout mKlCommentBoard;
+    private int mPrePosition;
 
     @Override
     protected int getLayoutId() {
@@ -171,7 +173,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mShareTitle = "";
         mShareIcon = "";
         mIvMenu.setVisibility(View.VISIBLE);
-        mList.setLoadMoreEnabled(false);
+        mList.setLoadMoreEnabled(true);
+        isLoading = true;
         mList.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new DocRecyclerViewAdapter(this);
         mList.getRecyclerView().setAdapter(mAdapter);
@@ -262,7 +265,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                 }
             }
         });
-        mKlCommentBoard = (KeyboardListenerLayout) findViewById(R.id.ll_comment_pannel);
+        mKlCommentBoard = findViewById(R.id.ll_comment_pannel);
         mKlCommentBoard.setOnkbdStateListener(new KeyboardListenerLayout.onKeyboardChangeListener() {
 
             @Override
@@ -316,7 +319,8 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mList.setPullCallback(new PullCallback() {
             @Override
             public void onLoadMore() {
-
+                isLoading = true;
+                mPresenter.requestTopComment(mDocId,mAdapter.getCommentType(),mAdapter.isSortTime(),mAdapter.getmComments().size());
             }
 
             @Override
@@ -341,6 +345,14 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     @Override
     protected void initData() {
 
+    }
+
+    public void scrollToPosition(int position){
+        mList.getRecyclerView().scrollToPosition(position);
+    }
+
+    public int getPosition(){
+        return ((LinearLayoutManager)mList.getRecyclerView().getLayoutManager()).findFirstVisibleItemPosition();
     }
 
     private void deleteDoc(){
@@ -380,8 +392,40 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         startActivity(intent);
     }
 
+    public void showShareToBuy() {
+        final OnekeyShare oks = new OnekeyShare();
+        //关闭sso授权
+        oks.disableSSOWhenAuthorize();
+        oks.setTitle(mShareTitle);
+        String url = "http://2333.moemoe.la/share/newDoc/" + mDocId;
+        oks.setTitleUrl(url);
+        oks.setText(mShareDesc + " " + url);
+        oks.setImageUrl(ApiService.URL_QINIU + mShareIcon);
+        oks.setUrl(url);
+        oks.setSite(getString(R.string.app_name));
+        oks.setSiteUrl(url);
+        oks.setCallback(new PlatformActionListener() {
+            @Override
+            public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+            }
+
+            @Override
+            public void onError(Platform platform, int i, Throwable throwable) {
+
+            }
+
+            @Override
+            public void onCancel(Platform platform, int i) {
+
+            }
+        });
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().shareKpi("doc")
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+        oks.show(this);
+    }
+
     private void showShare() {
-        ShareSDK.initSDK(this);
         final OnekeyShare oks = new OnekeyShare();
         //关闭sso授权
         oks.disableSSOWhenAuthorize();
@@ -437,13 +481,11 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 
     @Override
     protected void onPause() {
-        Glide.with(this).pauseRequests();
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        Glide.with(this).resumeRequests();
         super.onResume();
     }
 
@@ -587,9 +629,10 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     }
 
     public void replyNormal(){
-        mEdtCommentInput.setText("");
-        mEdtCommentInput.requestFocus();
-        SoftKeyboardUtils.showSoftKeyboard(this, mEdtCommentInput);
+//        mEdtCommentInput.setText("");
+//        mEdtCommentInput.requestFocus();
+//        SoftKeyboardUtils.showSoftKeyboard(this, mEdtCommentInput);
+        CreateCommentActivity.startActivity(NewDocDetailActivity.this,mDocId,false,"",true);
     }
 
     public void addDocLabelView(){
@@ -608,6 +651,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     @Override
     public void onFailure(int code,String msg) {
         finalizeDialog();
+        isLoading = false;
         mList.setComplete();
         ErrorCodeUtils.showErrorMsgByCode(NewDocDetailActivity.this,code,msg);
     }
@@ -836,7 +880,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     @Override
     public void onDocLoaded(DocDetailEntity entity) {
         mDoc = entity;
-        isLoading = false;
         mList.setComplete();
         isReplyShow = entity.isCoinComment() && (entity.getCoinDetails() == null || (entity.getCoinDetails() != null && entity.getCoinDetails().size() <= 0));
 //        mList.setLoadMoreEnabled(true);
@@ -885,7 +928,13 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             }
         }
         mAdapter.setData(entity);
-        mPresenter.requestTopComment(mDoc.getId());
+        isLoading = true;
+        mPresenter.requestTopComment(mDocId,mAdapter.getCommentType(),mAdapter.isSortTime(),0);
+       // mPresenter.requestTopComment(mDoc.getId());
+    }
+
+    public void requestComment(){
+        mPresenter.requestTopComment(mDocId,mAdapter.getCommentType(),mAdapter.isSortTime(),0);
     }
 
     public void favoriteComment(String id,boolean isFavorite,int position){
@@ -893,22 +942,29 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
     }
 
     @Override
-    public void onLoadTopCommentSuccess(ArrayList<CommentV2Entity> commentV2Entities) {
+    public void onLoadTopCommentSuccess(ArrayList<CommentV2Entity> commentV2Entities,boolean isPull) {
         finalizeDialog();
+        isLoading = false;
         mList.setComplete();
-        mAdapter.setComment(commentV2Entities);
-        if(commentV2Entities.size() > 1){
-            mTvComment.setGravity(Gravity.CENTER);
-            mTvComment.setPadding(0,0,0,0);
-            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-            mTvComment.setText("显示全部"+StringUtils.getNumberInLengthLimit(mDoc.getComments(),3)+"条评论");
-            mTvComment.setOnClickListener(new NoDoubleClickListener() {
-                @Override
-                public void onNoDoubleClick(View v) {
-                    CommentListActivity.startActivity(NewDocDetailActivity.this,mDocId,mDoc.getUserId());
-                }
-            });
+        if(isPull){
+            mAdapter.setComment(commentV2Entities);
         }else {
+            mAdapter.addComment(commentV2Entities);
+        }
+
+
+//        if(commentV2Entities.size() > 1){
+//            mTvComment.setGravity(Gravity.CENTER);
+//            mTvComment.setPadding(0,0,0,0);
+//            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
+//            mTvComment.setText("显示全部"+StringUtils.getNumberInLengthLimit(mDoc.getComments(),3)+"条评论");
+//            mTvComment.setOnClickListener(new NoDoubleClickListener() {
+//                @Override
+//                public void onNoDoubleClick(View v) {
+//                    CommentListActivity.startActivity(NewDocDetailActivity.this,mDocId,mDoc.getUserId());
+//                }
+//            });
+//        }else {
             mTvComment.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
             mTvComment.setPadding((int) getResources().getDimension(R.dimen.x24),0,0,0);
             mTvComment.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
@@ -919,7 +975,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
                     CreateCommentActivity.startActivity(NewDocDetailActivity.this,mDocId,false,"",true);
                 }
             });
-        }
+//        }
     }
 
     @Override

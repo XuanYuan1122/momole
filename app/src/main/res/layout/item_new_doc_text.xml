@@ -8,11 +8,11 @@
         android:id="@+id/tv_doc_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/size_18"
-        android:layout_marginRight="@dimen/size_18"
-        android:layout_marginTop="@dimen/size_28"
-        android:lineSpacingExtra="9dp"
+        android:layout_marginStart="@dimen/x36"
+        android:layout_marginEnd="@dimen/x36"
+        android:layout_marginTop="@dimen/y56"
+        android:lineSpacingExtra="@dimen/y18"
         android:textColor="@color/gray_444444"
-        android:textSize="@dimen/size_15"
+        android:textSize="@dimen/x30"
         android:text=""/>
 </FrameLayout>

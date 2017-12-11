@@ -228,6 +228,10 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
             showToast(R.string.msg_doc_content_cannot_null);
             return;
         }
+        if(TextUtils.isEmpty(mEtContent.getText().toString().replace(" ",""))){
+            showToast("评论不能全为空格");
+            return;
+        }
         if(mEtContent.getText().length() > LIMIT_CONTENT){
             showToast("超过字数限制");
             return;
@@ -240,9 +244,7 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
         Set<HashMap<String,String>> attr = TagControl.getInstance().getAttr("at_user",mEtContent.getText());
         ArrayList<String> atUser = new ArrayList<>();
         for(HashMap<String,String> map : attr){
-            for (String value : map.values()){
-                atUser.add(value);
-            }
+            atUser.addAll(map.values());
         }
         entity.atUsers = atUser;
         mPresenter.createComment(isSec,mId,entity,mPaths,isDoc);

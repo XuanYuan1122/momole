@@ -18,7 +18,7 @@ public interface DocDetailContract {
     interface Presenter extends BasePresenter{
         void requestDoc(String id);
         void deleteDoc(String docId);
-        void requestTopComment(String id);
+        void requestTopComment(String id,int type,boolean sortTime,int index);
         void favoriteDoc(String id);
         void sendComment(ArrayList<String> paths,CommentSendEntity entity);
         void likeTag(boolean isLike,int position, TagLikeEntity entity);
@@ -33,7 +33,7 @@ public interface DocDetailContract {
 
     interface View extends BaseView{
         void onDocLoaded(DocDetailEntity entity);
-        void onLoadTopCommentSuccess(ArrayList<CommentV2Entity> commentV2Entities);
+        void onLoadTopCommentSuccess(ArrayList<CommentV2Entity> commentV2Entities,boolean isPull);
         void onDeleteDoc();
         void onFavoriteDoc(boolean favorite);
         void onSendComment();

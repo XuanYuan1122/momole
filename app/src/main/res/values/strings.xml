@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">kira</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">5.0.3_20171024</string>
-    <string name="app_version_code">5000</string>
+    <string name="app_version">5.3.0_20171204</string>
+    <string name="app_version_code">5230</string>
 
     <string name="label_scheme">neta</string>
     <string name="label_host">com.moemoe.lalala</string>
@@ -60,6 +60,14 @@
     <string name="label_game_action">game_1.0</string>
     <string name="label_luntan_path">/luntan_1.0</string>
     <string name="label_luntan_action">luntan_1.0</string>
+    <string name="label_dynamic_path">/dynamic_1.0</string>
+    <string name="label_dynamic_action">dynamic_1.0</string>
+    <string name="label_common_file_path">/common_file_1.0</string>
+    <string name="label_common_file_action">common_file_1.0</string>
+    <string name="label_manhua_file_path">/manhua_file_1.0</string>
+    <string name="label_manhua_file_action">manhua_file_1.0</string>
+    <string name="label_xiaoshuo_file_path">/xiaoshuo_file_1.0</string>
+    <string name="label_xiaoshuo_file_action">xiaoshuo_file_1.0</string>
 
     <string name="label_can_not_use">施工中,敬请期待......</string>
     <string name="label_signed">今天已经签过啦</string>
@@ -275,7 +283,7 @@
     <string name="label_give_up">放弃</string>
     <string name="label_coin_watch">节操可见</string>
     <string name="label_report_watch">回复可见</string>
-    <string name="label_report_watch_info">别人可通过回复来查看隐藏区</string>
+    <string name="label_report_watch_info">别人通过回复来解锁隐藏区，第一次回复不顶帖</string>
     <string name="label_coin_watch_info">别人可通过消费1节操来查看隐藏区</string>
     <string name="label_change_type">切换</string>
     <string name="label_comment_num" formatted="false">%d条评论</string>
@@ -300,6 +308,7 @@
     <string name="label_user_reject">拉黑</string>
     <string name="label_user_cancel_reject">取消拉黑</string>
     <string name="label_user_reject_list">拉黑列表</string>
+    <string name="label_user_map">我的地图形象</string>
     <string name="label_remove">移除</string>
     <string name="label_bad_egg">臭鸡蛋</string>
     <string name="label_remove_bad_egg">取消臭鸡蛋</string>
@@ -309,6 +318,7 @@
     <string name="label_wx">微信</string>
     <string name="label_qpay">QQ钱包</string>
     <string name="label_from">来自</string>
+    <string name="label_create_map_notice">注意：建议尺寸为180*220像素，透明背景的全身形象，由于顶部系统会自动添加文字及底色圆角矩形，所以形象略微放置于下方。另外建议人物形象下方有投影。提交后，官方工作人员将会进行审核，通过后将会生效。</string>
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>
