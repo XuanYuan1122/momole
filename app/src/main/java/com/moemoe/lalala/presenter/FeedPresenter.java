@@ -253,7 +253,21 @@ public class FeedPresenter implements FeedContract.Presenter {
                             if(view!=null)view.onFailure(code, msg);
                         }
                     });
-        }
+        }else if("ground".equals(type)){
+            apiService.loadHotDynamicList(minIdx, maxIdx)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new NetResultSubscriber<ArrayList<DiscoverEntity>>() {
+                        @Override
+                        public void onSuccess(ArrayList<DiscoverEntity> entities) {
+                            if(view!=null)view.onLoadDiscoverListSuccess(entities,isPull);
+                        }
 
+                        @Override
+                        public void onFail(int code, String msg) {
+                            if(view!=null)view.onFailure(code, msg);
+                        }
+                    });
+        }
     }
 }

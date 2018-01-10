@@ -104,7 +104,7 @@
                 android:id="@+id/progress"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:progressDrawable="@drawable/download_progress"
-                android:background="@drawable/shape_white_bg_y18"
+                android:background="@drawable/shape_white_background_y18"
                 android:progress="100"
                 android:layout_width="@dimen/x562"
                 android:layout_height="@dimen/y36"

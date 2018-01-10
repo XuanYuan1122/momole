@@ -335,6 +335,23 @@ public class StringUtils {
         return res;
     }
 
+    public static boolean matchDate(Calendar time,String start,String end){
+        boolean res = false;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date parseStart = null;
+        try {
+            parseStart = sdf.parse(start);
+            Date parseEnd = sdf.parse(start);
+            Date serviceTime = sdf.parse(sdf.format(time.getTime()));
+            if(serviceTime.getTime() >= parseStart.getTime() && serviceTime.getTime() <= parseEnd.getTime()){
+                res = true;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
     public static boolean matchYear(Calendar time,int start,int end){
         boolean res = false;
         int year = time.get(Calendar.YEAR);

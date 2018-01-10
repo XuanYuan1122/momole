@@ -181,7 +181,7 @@ public class CreateCommentActivity extends BaseAppCompatActivity implements Crea
         mTvMenuRight.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int) getResources().getDimension(R.dimen.x30));
         mTvMenuRight.setWidth((int) getResources().getDimension(R.dimen.x88));
         mTvMenuRight.setHeight((int) getResources().getDimension(R.dimen.y48));
-        mTvMenuRight.setBackgroundResource(R.drawable.shape_rect_border_main_background_2);
+        mTvMenuRight.setBackgroundResource(R.drawable.shape_main_background_2);
     }
 
     @Override

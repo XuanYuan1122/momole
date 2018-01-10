@@ -9,6 +9,7 @@ import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.retrofit.RetrofitUrlManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,6 +92,6 @@ public class NetModule {
             Cache responseCache = new Cache(cache,1024 * 1024 * 10);
             builder.cache(responseCache);
         }
-        return builder.build();
+        return RetrofitUrlManager.getInstance().with(builder).build();
     }
 }

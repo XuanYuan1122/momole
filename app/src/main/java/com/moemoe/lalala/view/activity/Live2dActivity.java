@@ -59,7 +59,7 @@ import cn.sharesdk.onekeyshare.OnekeyShare;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- *
+ * 官方陪睡Live2d
  * Created by yi on 2017/11/2.
  */
 

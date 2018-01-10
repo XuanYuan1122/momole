@@ -44,6 +44,7 @@ import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.CreateForwardActivity;
 import com.moemoe.lalala.view.activity.DynamicActivity;
+import com.moemoe.lalala.view.activity.HongBaoListActivity;
 import com.moemoe.lalala.view.activity.ImageBigSelectActivity;
 import com.moemoe.lalala.view.activity.JuBaoActivity;
 import com.moemoe.lalala.view.activity.NewDocDetailActivity;
@@ -56,8 +57,6 @@ import com.moemoe.lalala.view.activity.WallBlockActivity;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
-import com.moemoe.lalala.view.widget.view.DocLabelView;
-import com.moemoe.lalala.view.widget.view.NewDocLabelAdapter;
 
 import java.util.ArrayList;
 
@@ -72,13 +71,9 @@ import jp.wasabeef.glide.transformations.CropTransformation;
 @SuppressWarnings("deprecation")
 public class FeedHolder extends ClickableViewHolder {
 
-    public DocLabelView docLabel;
-    public NewDocLabelAdapter docLabelAdapter;
 
     public FeedHolder(View itemView) {
         super(itemView);
-        docLabel = $(R.id.dv_doc_label_root);
-        docLabelAdapter = new NewDocLabelAdapter(itemView.getContext(),true);
     }
 
     public void createItem(final NewDynamicEntity entity,final int position){
@@ -172,6 +167,7 @@ public class FeedHolder extends ClickableViewHolder {
         $(R.id.ll_img_root).setOnClickListener(null);
         ((LinearLayout)$(R.id.ll_card_root)).removeAllViews();
         $(R.id.rl_card_root).setOnClickListener(null);
+        boolean showHongbao = false;
         if("DELETE".equals(entity.getType())){//已被删除
             setVisible(R.id.ll_img_root,true);
             $(R.id.ll_img_root).setBackgroundColor(Color.WHITE);
@@ -373,56 +369,56 @@ public class FeedHolder extends ClickableViewHolder {
             }
             setText(R.id.tv_retweet_time,StringUtils.timeFormat(retweetEntity.getCreateTime()));
             setVisible(R.id.ll_retweet_bottom_root,true);
+            $(R.id.ll_retweet_bottom_root).setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    if(!TextUtils.isEmpty(retweetEntity.getOldDynamicId())){
+                        DynamicActivity.startActivity(context,retweetEntity.getOldDynamicId());
+                    }
+                }
+            });
             if(retweetEntity.getRtNum() == 0){
                 setText(R.id.tv_retweet_forward_num, "转发");
             }else {
-                setText(R.id.tv_retweet_forward_num, StringUtils.getNumberInLengthLimit(entity.getRetweets(), 3));
+                setText(R.id.tv_retweet_forward_num, StringUtils.getNumberInLengthLimit(retweetEntity.getRtNum(), 3));
             }
             if(retweetEntity.getComments() == 0){
                 setText(R.id.tv_retweet_comment_num, "评论");
             }else {
-                setText(R.id.tv_retweet_comment_num, StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
+                setText(R.id.tv_retweet_comment_num, StringUtils.getNumberInLengthLimit(retweetEntity.getComments(), 3));
             }
             if(retweetEntity.getLikes() == 0){
                 setText(R.id.tv_retweet_tag_num, "点赞");
             }else {
-                setText(R.id.tv_retweet_tag_num, StringUtils.getNumberInLengthLimit(entity.getComments(), 3));
+                setText(R.id.tv_retweet_tag_num, StringUtils.getNumberInLengthLimit(retweetEntity.getLikes(), 3));
+            }
+            if(retweetEntity.getCoins() > 0){
+                showHongbao = true;
+            }
+            showHongBao(true,retweetEntity.getCoins(),retweetEntity.getSurplus(),retweetEntity.getOldDynamicId(),retweetEntity.getCreateUserHead(),retweetEntity.getUsers());
+        }
+        //coins
+        if(!showHongbao) {
+            showHongBao(false, entity.getCoins(), entity.getSurplus(), entity.getId(), entity.getCreateUser().getHeadPath(), entity.getUsers());
+        }
+        //label
+        if(entity.isTag()){
+            $(R.id.ll_img_root).setBackgroundColor(Color.TRANSPARENT);
+            $(R.id.rl_card_root).setBackgroundColor(Color.TRANSPARENT);
+            if("ARTICLE".equals(entity.getType()) || "FOLDER".equals(entity.getType())){
+                int py = (int) context.getResources().getDimension(R.dimen.y24);
+                $(R.id.rl_card_root).setPadding(0,0,0,py);
+            }
+        }else {
+            $(R.id.ll_img_root).setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_eefdff));
+            $(R.id.rl_card_root).setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_eefdff));
+            if("ARTICLE".equals(entity.getType()) || "FOLDER".equals(entity.getType())){
+                int py = (int) context.getResources().getDimension(R.dimen.y24);
+                $(R.id.rl_card_root).setPadding(0,py,0,py);
             }
         }
-
-        //label
-        if("RETWEET".equals(entity.getType())){
-            docLabel.setVisibility(View.GONE);
-        }else {
+        if(!"RETWEET".equals(entity.getType())){
             setVisible(R.id.ll_retweet_bottom_root,false);
-            if(docLabel != null && entity.getTags() != null){
-                docLabel.setDocLabelAdapter(docLabelAdapter);
-                docLabelAdapter.setData(entity.getTags(),false);
-                if(entity.getTags().size()>0) {
-                    docLabel.setVisibility(View.VISIBLE);
-                }else{
-                    docLabel.setVisibility(View.GONE);
-                }
-            }else {
-                if(docLabel != null) docLabel.setVisibility(View.GONE);
-            }
-            if(entity.isTag()){
-                $(R.id.ll_img_root).setBackgroundColor(Color.TRANSPARENT);
-                $(R.id.rl_card_root).setBackgroundColor(Color.TRANSPARENT);
-                docLabel.setBackgroundColor(Color.TRANSPARENT);
-                if("ARTICLE".equals(entity.getType()) || "FOLDER".equals(entity.getType())){
-                    int py = (int) context.getResources().getDimension(R.dimen.y24);
-                    $(R.id.rl_card_root).setPadding(0,0,0,py);
-                }
-            }else {
-                $(R.id.ll_img_root).setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_eefdff));
-                $(R.id.rl_card_root).setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_eefdff));
-                docLabel.setBackgroundColor(ContextCompat.getColor(itemView.getContext(),R.color.cyan_eefdff));
-                if("ARTICLE".equals(entity.getType()) || "FOLDER".equals(entity.getType())){
-                    int py = (int) context.getResources().getDimension(R.dimen.y24);
-                    $(R.id.rl_card_root).setPadding(0,py,0,py);
-                }
-            }
         }
 
         //bottom
@@ -492,7 +488,7 @@ public class FeedHolder extends ClickableViewHolder {
         $(R.id.fl_forward_root_2).setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                CreateForwardActivity.startActivity(context,entity);
+                CreateForwardActivity.startActivityForResult(context,entity);
             }
         });
         $(R.id.fl_comment_root_2).setOnClickListener(new NoDoubleClickListener() {
@@ -525,6 +521,38 @@ public class FeedHolder extends ClickableViewHolder {
                 }
             }
         });
+    }
+
+    private void showHongBao(boolean rt,final int coins, int surplus, final String id, final String icon, final int users){
+        if(coins > 0){
+            if(rt){
+                $(R.id.fl_hongbao_root).setBackgroundColor(ContextCompat.getColor(context,R.color.cyan_eefdff));
+            }else {
+                $(R.id.fl_hongbao_root).setBackgroundColor(ContextCompat.getColor(context,R.color.white));
+            }
+            setVisible(R.id.fl_hongbao_root,true);
+            setText(R.id.tv_hongbao_coin,String.format(context.getString(R.string.label_hongbao_total_coin),coins));
+            if(surplus > 0){
+                $(R.id.rl_hongbao_root).setBackgroundColor(ContextCompat.getColor(context,R.color.orange_f2cc2c));
+                ((TextView)$(R.id.tv_hongbao_coin)).setTextColor(ContextCompat.getColor(context,R.color.orange_f2cc2c));
+                setText(R.id.tv_left_num,"剩余：" + surplus);
+                setText(R.id.tv_desc,"转发即可领取红包");
+            }else {
+                $(R.id.rl_hongbao_root).setBackgroundColor(ContextCompat.getColor(context,R.color.gray_d7d7d7));
+                ((TextView)$(R.id.tv_hongbao_coin)).setTextColor(ContextCompat.getColor(context,R.color.gray_d7d7d7));
+                setText(R.id.tv_left_num,"已被抢完");
+                setText(R.id.tv_desc,users + "领取了红包");
+            }
+            $(R.id.fl_hongbao_root).setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    HongBaoListActivity.startActivity(context,id,icon,coins,users);
+                }
+            });
+        }else {
+            $(R.id.fl_hongbao_root).setOnClickListener(null);
+            setVisible(R.id.fl_hongbao_root,false);
+        }
     }
 
     private void setImg(ArrayList<Image> images){

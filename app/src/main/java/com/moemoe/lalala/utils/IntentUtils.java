@@ -223,14 +223,14 @@ public class IntentUtils {//TODO 待优化代码结构与跳转方式 by yi
 //                    public void ConfirmOnClick() {
 //                        alertDialogUtil.dismissDialog();
 //                        Intent i = new Intent(context,EventActivity.class);
-//                        context.startActivity(i);
+//                        context.startActivityForResult(i);
 //                    }
 //                });
 //                alertDialogUtil.showDialog();
 //            }
 //        }else if((StringUtils.isKillEvent() && pass == 3) || pass > 3){
 //            AppSetting.isEnterEventToday = true;
-//            WebViewActivity.startActivity(context,false,"http://prize.moemoe.la:8000/netaopera/chap4/?pass=" + pass  + "&user_id=" + PreferenceUtils.getUUid());
+//            WebViewActivity.startActivityForResult(context,false,"http://prize.moemoe.la:8000/netaopera/chap4/?pass=" + pass  + "&user_id=" + PreferenceUtils.getUUid());
 //        }
 //    }
 }

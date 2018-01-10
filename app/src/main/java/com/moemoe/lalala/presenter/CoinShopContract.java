@@ -9,6 +9,7 @@ import com.moemoe.lalala.model.entity.OrderTmp;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -18,11 +19,13 @@ public interface CoinShopContract {
         void createOrder(CoinShopEntity id);
         void createOrder(CoinShopEntity id,int num);
         void createOrderList(OrderTmp orderTmp);
+        void loadShopDetail(String id);
     }
 
     interface View extends BaseView{
         void onLoadShopListSuccess(ArrayList<CoinShopEntity> list, boolean isPull);
         void onCreateOrderSuccess(OrderEntity entity);
         void onCreateOrderListSuccess(ArrayList<JsonObject> jsonObjects);
+        void onLoadShopDetailSuccess(CoinShopEntity entity);
     }
 }

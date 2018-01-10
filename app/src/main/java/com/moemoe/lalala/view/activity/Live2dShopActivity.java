@@ -15,14 +15,9 @@ import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerLive2dShopComponent;
-import com.moemoe.lalala.di.modules.CoinShopModule;
 import com.moemoe.lalala.di.modules.Live2dShopModule;
 import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.entity.CoinShopEntity;
 import com.moemoe.lalala.model.entity.Live2dShopEntity;
-import com.moemoe.lalala.model.entity.OrderEntity;
-import com.moemoe.lalala.presenter.CoinShopContract;
-import com.moemoe.lalala.presenter.CoinShopPresenter;
 import com.moemoe.lalala.presenter.Live2dShopContract;
 import com.moemoe.lalala.presenter.Live2dShopPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -33,11 +28,8 @@ import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
-import com.moemoe.lalala.view.adapter.CoinShopAdapter;
 import com.moemoe.lalala.view.adapter.Live2dShopAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
-import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
-import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
@@ -49,6 +41,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
+ *
  * Created by yi on 2017/6/26.
  */
 
@@ -192,7 +185,7 @@ public class Live2dShopActivity extends BaseAppCompatActivity implements Live2dS
 //                        Intent i = new Intent(Live2dShopActivity.this,Live2dNormalActivity.class);
 //                        i.putExtra(UUID,item.getId());
 //                        i.putExtra("show_ping_fen",item.getMyScore() < 0);
-//                        startActivity(i);
+//                        startActivityForResult(i);
 //                    }else {
 //                        //不存在 下载成功后跳转
 //                        downloadLive2d(item);
@@ -206,7 +199,7 @@ public class Live2dShopActivity extends BaseAppCompatActivity implements Live2dS
 //                            Intent i = new Intent(Live2dShopActivity.this,Live2dNormalActivity.class);
 //                            i.putExtra(UUID,item.getId());
 //                            i.putExtra("show_ping_fen",item.getMyScore() < 0);
-//                            startActivity(i);
+//                            startActivityForResult(i);
 //                        }else {
 //                            //不存在 下载成功后跳转
 //                            downloadLive2d(item);

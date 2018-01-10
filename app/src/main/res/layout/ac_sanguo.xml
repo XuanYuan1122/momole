@@ -7,11 +7,12 @@
 
     <ImageView
         android:id="@+id/iv_title"
-        android:layout_width="@dimen/x504"
+        android:layout_width="@dimen/x630"
         android:layout_height="@dimen/y432"
         android:src="@drawable/ic_sanguo_title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/y250" />
+        android:layout_marginTop="@dimen/y250"
+        android:visibility="visible"/>
 
     <ImageView
         android:id="@+id/iv_continue"
@@ -20,7 +21,17 @@
         android:src="@drawable/ic_sanguo_next"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/y52" />
+        android:layout_marginBottom="@dimen/y52"
+        android:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/iv_select_title"
+        android:layout_width="@dimen/x392"
+        android:layout_height="@dimen/y150"
+        android:layout_marginTop="@dimen/y100"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/bg_sanguo_choice"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/ll_role_root"
@@ -28,176 +39,251 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/y448"
+        android:layout_below="@+id/iv_select_title"
+        android:layout_marginTop="@dimen/y58"
         android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="@dimen/y142"
             android:layout_height="wrap_content">
 
-            <RelativeLayout
+            <FrameLayout
+                android:id="@+id/rl_len_root"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <FrameLayout
-                    android:id="@+id/rl_len_root"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y16"
-                    android:background="@drawable/shape_rect_border_main_background_white_y8">
-
-                    <ImageView
-                        android:layout_width="@dimen/y124"
-                        android:layout_height="@dimen/y124"
-                        android:src="@drawable/ic_sanguo_role_len"/>
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/rl_len_root"
-                    android:layout_marginTop="@dimen/y16"
-                    android:textSize="@dimen/x24"
-                    android:textStyle="bold"
-                    android:text="小莲"/>
-            </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/iv_len_close"
-                android:layout_width="@dimen/y36"
-                android:layout_height="@dimen/y36"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/btn_sanguo_cancel"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="@dimen/y142"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <FrameLayout
-                    android:id="@+id/rl_sari_root"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y16"
-                    android:background="@drawable/shape_rect_border_main_background_white_y8">
-
-                    <ImageView
-                        android:layout_width="@dimen/y124"
-                        android:layout_height="@dimen/y124"
-                        android:src="@drawable/ic_sanguo_role_sari"/>
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/rl_sari_root"
-                    android:layout_marginTop="@dimen/y16"
-                    android:textSize="@dimen/x24"
-                    android:textStyle="bold"
-                    android:text="沙利尔"/>
-            </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/iv_sari_close"
-                android:layout_width="@dimen/y36"
-                android:layout_height="@dimen/y36"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/btn_sanguo_cancel"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="@dimen/y142"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <FrameLayout
-                    android:id="@+id/rl_mei_root"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y16"
-                    android:background="@drawable/shape_rect_border_main_background_white_y8">
-
-                    <ImageView
-                        android:layout_width="@dimen/y124"
-                        android:layout_height="@dimen/y124"
-                        android:src="@drawable/ic_sanguo_role_mei"/>
-                </FrameLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/rl_mei_root"
-                    android:layout_marginTop="@dimen/y16"
-                    android:textSize="@dimen/x24"
-                    android:textStyle="bold"
-                    android:text="双树"/>
-            </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/iv_mei_close"
-                android:layout_width="@dimen/y36"
-                android:layout_height="@dimen/y36"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/btn_sanguo_cancel"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="@dimen/y142"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <FrameLayout
-                    android:id="@+id/rl_xiaozhang_root"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y16">
-
-                    <ImageView
-                        android:layout_width="@dimen/y124"
-                        android:layout_height="@dimen/y124"
-                        android:src="@drawable/ic_sanguo_role_xz"/>
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/tv_xiaozhang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/rl_xiaozhang_root"
-                    android:layout_marginTop="@dimen/y16"
-                    android:textSize="@dimen/x24"
-                    android:textStyle="bold"
-                    android:text="校长"/>
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x4"
+                android:background="@drawable/shape_main_background_white_y8">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/btn_sanguo_vip"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/tv_xiaozhang"
-                    android:layout_marginTop="@dimen/y4"/>
+                    android:layout_width="@dimen/y124"
+                    android:layout_height="@dimen/y124"
+                    android:src="@drawable/ic_sanguo_role_len" />
 
-            </RelativeLayout>
+                <ImageView
+                    android:layout_width="@dimen/x60"
+                    android:layout_height="@dimen/y26"
+                    android:layout_gravity="end|bottom"
+                    android:src="@drawable/ic_sanguo_choice_get"/>
+            </FrameLayout>
 
-            <ImageView
-                android:id="@+id/iv_xiaozhang_close"
-                android:layout_width="@dimen/y36"
-                android:layout_height="@dimen/y36"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/btn_sanguo_cancel"/>
+            <TextView
+                android:id="@+id/tv_len"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/rl_len_root"
+                android:layout_marginTop="@dimen/y16"
+                android:textSize="@dimen/x24"
+                android:textStyle="bold"
+                android:text="小莲"/>
+
+            <TextView
+                android:id="@+id/tv_len_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_len"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x18"
+                android:layout_centerHorizontal="true"
+                android:text="(默认拥有)"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/y142"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/rl_sari_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x4"
+                android:background="@drawable/shape_main_background_white_y8">
+
+                <ImageView
+                    android:layout_width="@dimen/y124"
+                    android:layout_height="@dimen/y124"
+                    android:src="@drawable/ic_sanguo_role_sari"/>
+
+                <ImageView
+                    android:layout_width="@dimen/x60"
+                    android:layout_height="@dimen/y26"
+                    android:layout_gravity="end|bottom"
+                    android:src="@drawable/ic_sanguo_choice_get"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_sari"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/rl_sari_root"
+                android:layout_marginTop="@dimen/y16"
+                android:textSize="@dimen/x24"
+                android:textStyle="bold"
+                android:text="沙利尔"/>
+
+            <TextView
+                android:id="@+id/tv_sari_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_sari"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x18"
+                android:layout_centerHorizontal="true"
+                android:text="(默认拥有)"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/y142"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/rl_mei_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x4"
+                android:background="@drawable/shape_main_background_white_y8">
+
+                <ImageView
+                    android:layout_width="@dimen/y124"
+                    android:layout_height="@dimen/y124"
+                    android:src="@drawable/ic_sanguo_role_mei"/>
+
+                <ImageView
+                    android:layout_width="@dimen/x60"
+                    android:layout_height="@dimen/y26"
+                    android:layout_gravity="end|bottom"
+                    android:src="@drawable/ic_sanguo_choice_get"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_mei"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/rl_mei_root"
+                android:layout_marginTop="@dimen/y16"
+                android:textSize="@dimen/x24"
+                android:textStyle="bold"
+                android:text="双树"/>
+
+            <TextView
+                android:id="@+id/tv_mei_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_mei"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x18"
+                android:layout_centerHorizontal="true"
+                android:text="(默认拥有)"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/y142"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/rl_xiaozhang_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x4">
+
+                <ImageView
+                    android:layout_width="@dimen/y124"
+                    android:layout_height="@dimen/y124"
+                    android:src="@drawable/ic_sanguo_role_xz"/>
+
+                <ImageView
+                    android:id="@+id/iv_xiaozhang_has"
+                    android:layout_width="@dimen/x60"
+                    android:layout_height="@dimen/y26"
+                    android:layout_gravity="end|bottom"
+                    android:src="@drawable/ic_sanguo_choice_get"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_xiaozhang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/rl_xiaozhang_root"
+                android:layout_marginTop="@dimen/y16"
+                android:textSize="@dimen/x24"
+                android:textStyle="bold"
+                android:text="校长"/>
+
+            <TextView
+                android:id="@+id/tv_xiaozhang_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_xiaozhang"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x18"
+                android:layout_centerHorizontal="true"
+                android:text="(VIP限定)"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_role_root_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignStart="@+id/ll_role_root"
+        android:layout_marginTop="@dimen/y2"
+        android:layout_below="@+id/ll_role_root"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="@dimen/y142"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/rl_fuzi_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x4">
+
+                <ImageView
+                    android:layout_width="@dimen/y124"
+                    android:layout_height="@dimen/y124"
+                    android:src="@drawable/ic_sanguo_role_fuzi"/>
+
+                <ImageView
+                    android:id="@+id/iv_fuzi_has"
+                    android:layout_width="@dimen/x60"
+                    android:layout_height="@dimen/y26"
+                    android:layout_gravity="end|bottom"
+                    android:src="@drawable/ic_sanguo_choice_get"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_fuzi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/rl_fuzi_root"
+                android:layout_marginTop="@dimen/y16"
+                android:textSize="@dimen/x24"
+                android:textStyle="bold"
+                android:text="斧子"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_fuzi"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x18"
+                android:layout_centerHorizontal="true"
+                android:text="(5元购买)"/>
         </RelativeLayout>
     </LinearLayout>
 
@@ -206,8 +292,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/ll_role_root"
-        android:layout_marginTop="@dimen/y100"
+        android:layout_below="@+id/ll_role_root_2"
+        android:layout_marginTop="@dimen/y150"
         android:textStyle="bold"
         android:textSize="@dimen/x44"
         android:textColor="@color/white"

@@ -24,6 +24,7 @@ import com.moemoe.lalala.utils.StringUtils;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by Haru on 2015/12/24 0024.
  */
 public class NewDocLabelAdapter extends BaseAdapter {
@@ -34,7 +35,7 @@ public class NewDocLabelAdapter extends BaseAdapter {
     private boolean mIsNeedAdd;
     private boolean mNeedShow;
 
-    private int[] mBackGround = { R.drawable.shape_rect_label_cyan, R.drawable.shape_rect_label_yellow, R.drawable.shape_rect_label_orange, R.drawable.shape_rect_label_pink, R.drawable.shape_rect_border_green_y10, R.drawable.shape_rect_label_purple, R.drawable.shape_rect_label_tab_blue};
+    private int[] mBackGround = { R.drawable.shape_rect_label_cyan, R.drawable.shape_rect_label_yellow, R.drawable.shape_rect_label_orange, R.drawable.shape_rect_label_pink, R.drawable.shape_rect_border_green_y8, R.drawable.shape_rect_label_purple, R.drawable.shape_rect_label_tab_blue};
 
     public NewDocLabelAdapter(Context context, boolean needShow){
         mContext = context;

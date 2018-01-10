@@ -2,16 +2,11 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.Editable;
-import android.text.Selection;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +20,6 @@ import com.moemoe.lalala.model.entity.DocPut;
 import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.NewDocType;
-import com.moemoe.lalala.model.entity.REPORT;
 import com.moemoe.lalala.model.entity.RichDocListEntity;
 import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.model.entity.ShareArticleEntity;
@@ -37,7 +31,6 @@ import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
-import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.MusicLoader;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -54,7 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -72,7 +64,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- *
+ * 富文本帖子创建
  * Created by yi on 2017/5/15.
  */
 
@@ -98,6 +90,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     TextView mTvTitle;
     @BindView(R.id.tv_menu)
     TextView mTvMenuRight;
+    @BindView(R.id.tv_right_menu)
+    TextView mTvSave;
     @BindView(R.id.rich_et)
     NetaRichEditor mRichEt;
     @BindView(R.id.rl_ope_root)
@@ -116,10 +110,9 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
 
     private String mFromSchema;
     private String mFromName;
-    private HashMap<String,String> mPathMap;
     private int mImageSize;
     private ArrayList<RichEntity> mHideList;
-    private String mFolderId;
+    private String mFolderId = "";
     private boolean mHideType;
     private MusicLoader.MusicInfo mMusicInfo;
     private Image mMusicCover;
@@ -132,6 +125,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
     private int coverSize = -1;
     private boolean mIsCover = true;
     private String mDepartmentId;
+    private boolean mIsUpdateDoc;
 
     @Override
     protected int getLayoutId() {
@@ -169,14 +163,24 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mTvMenuLeft.setTextColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvMenuLeft.setText(getString(R.string.label_give_up));
         mTvTitle.setVisibility(View.VISIBLE);
-        mPathMap = new HashMap<>();
         mImageSize = 0;
         if(mDoc != null){
             mTvTitle.setText(getString(R.string.label_update_post));
+            mIsUpdateDoc = true;
         }else {
             mTvTitle.setText(getString(R.string.label_create_post));
             mRichEt.setLabelAble();
-            mRichEt.setmTagNameDef(mTagNameDef);
+            String res = PreferenceUtils.getDoc(this);
+            if(!TextUtils.isEmpty(res)){
+                mDoc = getLocal();
+                if(mDoc != null){
+                    mRichEt.setTags(mDoc.getTags());
+                }else {
+                    mRichEt.setmTagNameDef(mTagNameDef);
+                }
+            }else {
+                mRichEt.setmTagNameDef(mTagNameDef);
+            }
             mRichEt.setmKlCommentBoard(mKlCommentBoard);
         }
         mRichEt.setTop();
@@ -187,9 +191,26 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         mTvMenuRight.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
         mTvMenuRight.setWidth((int)getResources().getDimension(R.dimen.x88));
         mTvMenuRight.setHeight((int)getResources().getDimension(R.dimen.y48));
-        mTvMenuRight.setBackgroundResource(R.drawable.shape_rect_border_main_background_2);
+        mTvMenuRight.setBackgroundResource(R.drawable.shape_main_background_2);
+        if(!mIsUpdateDoc){
+            mTvSave.setVisibility(View.VISIBLE);
+            mTvSave.setText("存档");
+            mTvSave.setTextColor(Color.WHITE);
+            mTvSave.setTextSize(TypedValue.COMPLEX_UNIT_DIP,15);
+            mTvSave.setWidth((int)getResources().getDimension(R.dimen.x88));
+            mTvSave.setHeight((int)getResources().getDimension(R.dimen.y48));
+            mTvSave.setBackgroundResource(R.drawable.shape_rect_border_green_background_y4);
+            mTvSave.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    saveToLocal();
+                }
+            });
+        }
         initPopupMenus();
     }
+
+
 
     @Override
     protected void onPause() {
@@ -222,7 +243,68 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 onBackPressed();
             }
         });
+    }
 
+    private RichDocListEntity getLocal(){
+        return RichDocListEntity.toEntity(PreferenceUtils.getDoc(this));
+    }
+
+    private void saveToLocal(){
+        RichDocListEntity doc = new RichDocListEntity();
+
+        doc.setBgCover(mBgCover);
+        doc.setHidType(mHideType);
+        doc.setTitle(mRichEt.getTitle());
+
+        ArrayList<RichEntity> list = new ArrayList<>();
+        for (RichEntity entity : mRichEt.buildEditData() ){
+            RichEntity entity1 = new RichEntity();
+            if(!TextUtils.isEmpty(entity.getInputStr())){
+                entity1.setInputStr(StringUtils.buildDataAtUser(entity.getInputStr()));
+            }else if(entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
+                Image image = new Image();
+                image.setPath(entity.getImage().getPath());
+                image.setH(entity.getImage().getH());
+                image.setW(entity.getImage().getW());
+                image.setSize(entity.getImage().getSize());
+                entity1.setImage(image);
+            }
+            list.add(entity1);
+        }
+        doc.setList(list);
+        ArrayList<RichEntity> hideList = new ArrayList<>();
+        for (RichEntity entity : mHideList){
+            RichEntity entity1 = new RichEntity();
+            if(!TextUtils.isEmpty(entity.getInputStr())){
+                entity1.setInputStr(StringUtils.buildDataAtUser(entity.getInputStr()));
+            }else if(entity.getImage() != null && !TextUtils.isEmpty(entity.getImage().getPath())){
+                Image image = new Image();
+                image.setPath(entity.getImage().getPath());
+                image.setH(entity.getImage().getH());
+                image.setW(entity.getImage().getW());
+                image.setSize(entity.getImage().getSize());
+                entity1.setImage(image);
+            }
+            hideList.add(entity1);
+        }
+        doc.setHideList(hideList);
+        if(mMusicInfo != null){
+            doc.setMusicPath(mMusicInfo.getUrl());
+            doc.setMusicTitle(mMusicInfo.getTitle());
+            doc.setTime(mMusicInfo.getDuration());
+            doc.setCover(mMusicCover);
+        }else {
+            doc.setMusicPath("");
+            doc.setMusicTitle("");
+        }
+        doc.setFolderId(mFolderId);
+        doc.setTags(mRichEt.getmTags());
+
+        String res = RichDocListEntity.toJsonString(doc);
+        if(res != null){
+            PreferenceUtils.saveDoc(this,res);
+            showToast("保存草稿成功");
+        }
     }
 
     @Override
@@ -232,7 +314,11 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x36) * 2);
                 int h = (int) getResources().getDimension(R.dimen.y200);
                 mBgCover = mDoc.getBgCover();
-                mRichEt.setCover(StringUtils.getUrl(this,mBgCover,w,h,false,true));
+                String path = mBgCover;
+                if(mBgCover.startsWith("image")){
+                    path = StringUtils.getUrl(this,mBgCover,w,h,false,true);
+                }
+                mRichEt.setCover(path);
                 coverSize = -1;
             }
             mHideType = mDoc.isHidType();
@@ -273,11 +359,12 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                                         mRichEt.addEditTextAtIndex(mRichEt.getLastIndex(),StringUtils.buildAtUserToEdit(CreateRichDocActivity.this,richEntity.getInputStr().toString()));
                                     }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
                                         mRichEt.addImageViewAtIndex(mRichEt.getLastIndex(),richEntity.getImage().getPath(),richEntity.getImage().getW(),richEntity.getImage().getH(),richEntity.getImage().getSize());
-                                        mPathMap.put(richEntity.getImage().getPath(),richEntity.getImage().getPath());
                                         mImageSize++;
                                     }
                             }
                         });
+            }else {
+                mRichEt.createFirstEdit();
             }
             if(mDoc.getHideList().size() > 0){
                 mHideList = mDoc.getHideList();
@@ -309,7 +396,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 .subscribe(new Consumer<RichImgRemoveEvent>() {
                     @Override
                     public void accept(RichImgRemoveEvent richImgRemoveEvent) throws Exception {
-                        mPathMap.remove(richImgRemoveEvent.getPath());
                         mImageSize--;
                     }
                 }, new Consumer<Throwable>() {
@@ -615,8 +701,26 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
 
     @Override
     public void onBackPressed() {
-        if (mRichEt.hasContent()) {
-            DialogUtils.showAbandonModifyDlg(this);
+        if (mRichEt.hasContent() && !mIsUpdateDoc) {
+            //DialogUtils.showAbandonModifyDlg(this);
+            final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+            alertDialogUtil.createNormalDialog(this,"是否保存草稿");
+            alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                @Override
+                public void CancelOnClick() {
+                    alertDialogUtil.dismissDialog();
+                    PreferenceUtils.saveDoc(CreateRichDocActivity.this,"");
+                    finish();
+                }
+
+                @Override
+                public void ConfirmOnClick() {
+                    alertDialogUtil.dismissDialog();
+                    saveToLocal();
+                    finish();
+                }
+            });
+            alertDialogUtil.showDialog();
         } else {
             super.onBackPressed();
         }

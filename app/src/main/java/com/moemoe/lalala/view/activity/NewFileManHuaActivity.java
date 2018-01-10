@@ -122,6 +122,13 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
     private AlertDialogUtil alertDialogUtil;
     private NewFolderEntity mFolderInfo;
     private int mCurPage = 1;
+    private int[] mBackGround = { R.drawable.shape_rect_label_cyan,
+            R.drawable.shape_rect_label_yellow,
+            R.drawable.shape_rect_label_orange,
+            R.drawable.shape_rect_label_pink,
+            R.drawable.shape_rect_border_green_y8,
+            R.drawable.shape_rect_label_purple,
+            R.drawable.shape_rect_label_tab_blue};
 
     @Override
     protected int getLayoutId() {
@@ -566,10 +573,10 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
             for (int n = 0;n < entity.getTopList().size();n++){
                 final ShowFolderEntity item = entity.getTopList().get(n);
                 View v = LayoutInflater.from(this).inflate(R.layout.item_bag_cover, null);
-                ImageView iv = (ImageView) v.findViewById(R.id.iv_cover);
-                TextView mark = (TextView) v.findViewById(R.id.tv_mark);
-                TextView title = (TextView) v.findViewById(R.id.tv_title);
-                TextView tag = (TextView) v.findViewById(R.id.tv_tag);
+                ImageView iv = v.findViewById(R.id.iv_cover);
+                TextView mark = v.findViewById(R.id.tv_mark);
+                TextView title = v.findViewById(R.id.tv_title);
+                TextView tag =  v.findViewById(R.id.tv_tag);
                 title.setText(item.getFolderName());
                 String tagStr1 = "";
                 for(int i = 0;i < item.getTexts().size();i++){
@@ -639,22 +646,45 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
             recommendRoot.setVisibility(View.VISIBLE);
             for (int n = 0;n < entity.getRecommendList().size();n++){
                 final ShowFolderEntity item = entity.getRecommendList().get(n);
-                View v = LayoutInflater.from(this).inflate(R.layout.item_bag_cover, null);
-                ImageView iv = (ImageView) v.findViewById(R.id.iv_cover);
-                TextView mark = (TextView) v.findViewById(R.id.tv_mark);
-                TextView title = (TextView) v.findViewById(R.id.tv_title);
-                TextView tag = (TextView) v.findViewById(R.id.tv_tag);
+                View v = LayoutInflater.from(this).inflate(R.layout.item_hot_bag_new, null);
+
+                ImageView iv = v.findViewById(R.id.iv_cover);
+                TextView mark = v.findViewById(R.id.tv_mark);
+                TextView bagCoin = v.findViewById(R.id.tv_bag_coin);
+                TextView bagNum = v.findViewById(R.id.tv_bag_num);
+                TextView title = v.findViewById(R.id.tv_bag_title);
+                TextView tag1 = v.findViewById(R.id.tv_tag_1);
+                TextView tag2 = v.findViewById(R.id.tv_tag_2);
                 title.setText(item.getFolderName());
-                String tagStr1 = "";
-                for(int i = 0;i < item.getTexts().size();i++){
-                    String tagTmp = item.getTexts().get(i);
-                    if(i == 0){
-                        tagStr1 = tagTmp;
-                    }else {
-                        tagStr1 += " · " + tagTmp;
-                    }
+                if(item.getCoin() == 0){
+                    bagCoin.setText("免费");
+                }else {
+                    bagCoin.setText(item.getCoin() + "节操");
                 }
-                tag.setText(tagStr1);
+                if(item.getItems() > 0){
+                    bagNum.setText(item.getItems() + "项");
+                }else {
+                    bagNum.setText("");
+                }
+                if(item.getTexts().size() == 2){
+                    tag1.setVisibility(View.VISIBLE);
+                    tag2.setVisibility(View.VISIBLE);
+                    int index = StringUtils.getHashOfString(item.getTexts().get(0), mBackGround.length);
+                    tag1.setBackgroundResource(mBackGround[index]);
+                    tag1.setText(item.getTexts().get(0));
+                    int index2 = StringUtils.getHashOfString(item.getTexts().get(1), mBackGround.length);
+                    tag2.setBackgroundResource(mBackGround[index2]);
+                    tag2.setText(item.getTexts().get(1));
+                }else if(item.getTexts().size() == 1){
+                    tag1.setVisibility(View.VISIBLE);
+                    tag2.setVisibility(View.GONE);
+                    int index = StringUtils.getHashOfString(item.getTexts().get(0), mBackGround.length);
+                    tag1.setBackgroundResource(mBackGround[index]);
+                    tag1.setText(item.getTexts().get(0));
+                }else {
+                    tag1.setVisibility(View.GONE);
+                    tag2.setVisibility(View.GONE);
+                }
                 if(item.getType().equals(FolderType.ZH.toString())){
                     mark.setText("综合");
                     mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
@@ -669,15 +699,15 @@ public class NewFileManHuaActivity extends BaseAppCompatActivity implements NewF
                     mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
                 }
                 int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
-                int height = (int)getResources().getDimension(R.dimen.y280);
+                int height = (int)getResources().getDimension(R.dimen.y290);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                 RecyclerView.LayoutParams lp2;
                 if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
+                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),ViewGroup.LayoutParams.WRAP_CONTENT);
                     v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
                 }else {
-                    lp2 = new RecyclerView.LayoutParams(width,height);
+                    lp2 = new RecyclerView.LayoutParams(width,ViewGroup.LayoutParams.WRAP_CONTENT);
                     v.setPadding(0,0,0,0);
                 }
                 v.setLayoutParams(lp2);

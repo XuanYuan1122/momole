@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_e8e8e8">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/transparent"/>
+
+    <include
+        android:id="@+id/include_toolbar"
+        layout="@layout/neta_bar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y100"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginTop="@dimen/y95"
+        android:background="@drawable/shape_white_background_y8"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black_1e1e1e"
+            android:textSize="@dimen/x36"
+            android:layout_marginStart="@dimen/x24"
+            android:text="@string/label_my_coin"/>
+
+        <EditText
+            android:id="@+id/et_coin_num"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/x36"
+            android:textColor="@color/black_1e1e1e"
+            android:gravity="end|center_vertical"
+            android:inputType="number"
+            android:maxEms="4"
+            android:layout_marginEnd="@dimen/x24"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y100"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginTop="@dimen/y36"
+        android:background="@drawable/shape_white_background_y8"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black_1e1e1e"
+            android:textSize="@dimen/x36"
+            android:layout_marginStart="@dimen/x24"
+            android:text="@string/label_hongbao"/>
+
+        <EditText
+            android:id="@+id/et_hongbao_num"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/x36"
+            android:textColor="@color/black_1e1e1e"
+            android:gravity="end|center_vertical"
+            android:inputType="number"
+            android:maxEms="6"
+            android:layout_marginEnd="@dimen/x24"
+            android:background="@null"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y30"
+        android:layout_marginStart="@dimen/x24"
+        android:textColor="@color/gray_929292"
+        android:textSize="@dimen/x30"
+        android:text="@string/label_hongbao_introduce"/>
+
+    <TextView
+        android:id="@+id/tv_save_hongbao"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y100"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x36"
+        android:textStyle="bold"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginTop="@dimen/y200"
+        android:background="@drawable/shape_red_background_y8"
+        android:text="@string/labgel_save_hongbao"/>
+</LinearLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
+    <include
+        android:id="@+id/include_toolbar"
+        layout="@layout/neta_bar"/>
+
+    <EditText
+        android:id="@+id/et_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y180"
+        android:layout_marginTop="@dimen/y24"
+        android:paddingTop="@dimen/y20"
+        android:paddingStart="@dimen/x36"
+        android:paddingEnd="@dimen/x36"
+        android:hint="台词不超过30字"
+        android:textColorHint="@color/gray_d7d7d7"
+        android:textColor="@color/black_1e1e1e"
+        android:textSize="@dimen/x30"
+        android:gravity="top"
+        android:background="@color/white"/>
+</LinearLayout>

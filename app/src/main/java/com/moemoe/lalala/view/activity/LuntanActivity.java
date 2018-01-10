@@ -108,6 +108,7 @@ public class LuntanActivity extends BaseAppCompatActivity implements LuntanContr
     @Override
     protected void onDestroy() {
         if(mPresenter != null)mPresenter.release();
+        if(mAdapter != null) mAdapter.release();
         mHandler.removeCallbacks(timeRunnabel);
         MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment("luntan",mStayTime)
                 .subscribeOn(Schedulers.io())

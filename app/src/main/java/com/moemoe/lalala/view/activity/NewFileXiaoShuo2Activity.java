@@ -399,7 +399,7 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
 //                                        @Override
 //                                        public void onSuccess() {
 //                                            dialog.dismiss();
-//                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
+//                                            NewFileXiaoShuo2Activity.startActivityForResult(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
 //                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
 //                                        }
 //
@@ -492,7 +492,7 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
 //                                        @Override
 //                                        public void onSuccess() {
 //                                            dialog.dismiss();
-//                                            NewFileXiaoShuo2Activity.startActivity(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
+//                                            NewFileXiaoShuo2Activity.startActivityForResult(NewFileXiaoShuo2Activity.this,mManHualist,mUserId,mPosition);
 //                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  mManHualist.get(mPosition).getPath(),false).subscribe();
 //                                        }
 //

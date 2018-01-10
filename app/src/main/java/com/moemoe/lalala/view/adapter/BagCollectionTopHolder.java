@@ -19,6 +19,7 @@ import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
+ *
  * Created by yi on 2017/7/21.
  */
 

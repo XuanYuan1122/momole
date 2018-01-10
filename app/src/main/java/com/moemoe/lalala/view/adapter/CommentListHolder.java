@@ -174,7 +174,7 @@ public class CommentListHolder extends ClickableViewHolder {
 //                tv.setOnClickListener(new NoDoubleClickListener() {
 //                    @Override
 //                    public void onNoDoubleClick(View v) {
-//                        CreateCommentActivity.startActivity(context,entity.getCommentId(),true,secEntity.getCreateUser().getUserId(),false);
+//                        CreateCommentActivity.startActivityForResult(context,entity.getCommentId(),true,secEntity.getCreateUser().getUserId(),false);
 //                    }
 //                });
                 ((LinearLayout)$(R.id.ll_comment_root)).addView(tv);
@@ -190,7 +190,7 @@ public class CommentListHolder extends ClickableViewHolder {
 //                tv.setOnClickListener(new NoDoubleClickListener() {
 //                    @Override
 //                    public void onNoDoubleClick(View v) {
-//                        CommentSecListActivity.startActivity(context,entity,parentId);
+//                        CommentSecListActivity.startActivityForResult(context,entity,parentId);
 //                    }
 //                });
                 ((LinearLayout)$(R.id.ll_comment_root)).addView(tv);

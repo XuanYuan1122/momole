@@ -5,43 +5,37 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2016/12/15.
  */
 
 public class PersonalMainEntity {
 
-    @SerializedName("level")
     private int level;
-    @SerializedName("levelColor")
     private String levelColor;
-    @SerializedName("levelName")
     private String levelName;
-    @SerializedName("levelScoreEnd")
     private int levelScoreEnd;
-    @SerializedName("levelScoreStart")
     private int levelScoreStart;
-    @SerializedName("score")
     private int score;
-    @SerializedName("signature")
     private String signature;
-    @SerializedName("commentCount")
     private int commentCount;
-    @SerializedName("commentList")
     private ArrayList<NewCommentEntity> commentList;
-    @SerializedName("badgeList")
     private ArrayList<BadgeEntity> badgeList;
-    @SerializedName("folderList")
     private ArrayList<ShowFolderEntity> folderList;
-    @SerializedName("like")
     private boolean like;
-    @SerializedName("picLikes")
     private int picLikes;
-    @SerializedName("picPath")
     private String picPath;
-    @SerializedName("picAllLikes")
     private int picAllLikes;
-    @SerializedName("useArtworkId")
     private String useArtworkId;
+    private String text;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
     public int getPicAllLikes() {
         return picAllLikes;

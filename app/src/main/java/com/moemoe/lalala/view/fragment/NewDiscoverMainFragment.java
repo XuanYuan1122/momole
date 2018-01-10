@@ -338,8 +338,6 @@ public class NewDiscoverMainFragment extends BaseFragment implements FeedContrac
         }else {
             mAdapter.notifyItemChanged(position);
         }
-
-
     }
 
     @Override

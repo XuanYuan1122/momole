@@ -3,6 +3,7 @@ package com.moemoe.lalala.model.entity;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2016/12/6.
  */
 
@@ -40,4 +41,8 @@ public class MapMarkContainer {
     }
 
     public int size(){return container.size();}
+
+    public ArrayList<MapMarkEntity> getContainer(){
+        return container;
+    }
 }

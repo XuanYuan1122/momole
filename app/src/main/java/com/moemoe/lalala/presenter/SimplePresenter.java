@@ -18,6 +18,7 @@ import com.moemoe.lalala.model.entity.ThirdLoginEntity;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.retrofit.RetrofitUrlManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,6 +30,7 @@ import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.HttpUrl;
 
 /**
  * Created by yi on 2016/11/29.
@@ -221,6 +223,14 @@ public class SimplePresenter implements SimpleContract.Presenter {
                         @Override
                         public void onSuccess(Boolean aBoolean) {
                             AppSetting.TXBB = aBoolean;
+                            if(!aBoolean){
+                                RetrofitUrlManager.getInstance().setGlobalDomain("http://pgbb.moemoe.la/");
+                            }else {
+                                HttpUrl httpUrl = RetrofitUrlManager.getInstance().getGlobalDomain();
+                                if(httpUrl != null){
+                                    RetrofitUrlManager.getInstance().removeGlobalDomain();
+                                }
+                            }
                         }
 
                         @Override

@@ -58,6 +58,8 @@ import butterknife.OnClick;
 import io.rong.imkit.RongIM;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_MOTIFY_TAICI;
+
 /**
  *
  * Created by yi on 2016/12/15.
@@ -305,7 +307,7 @@ public class PersonalV2Activity extends BaseAppCompatActivity implements Persona
         }else if (requestCode == NewEditAccountActivity.REQ_EDIT && resultCode == RESULT_OK){
             mInfo = data.getParcelableExtra("info");
             updateView(mInfo);
-        }else if(requestCode == PersonalMainFragment.REQ_BADGE){
+        }else if(requestCode == PersonalMainFragment.REQ_BADGE || requestCode == REQ_MOTIFY_TAICI){
             mAdapter.getItem(0).onActivityResult(requestCode,resultCode,data);
         }
 
@@ -352,7 +354,7 @@ public class PersonalV2Activity extends BaseAppCompatActivity implements Persona
                 break;
 //            case R.id.iv_msg:
 //                if(DialogUtils.checkLoginAndShowDlg(this)){
-//                    PersonalMsgActivity.startActivity(this,mUserId);
+//                    PersonalMsgActivity.startActivityForResult(this,mUserId);
 //                }
 //                break;
         }

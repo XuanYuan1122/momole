@@ -64,7 +64,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="@dimen/y30"
             android:layout_marginEnd="@dimen/x40"
-            android:background="@drawable/shape_rect_border_white_bg_green_3"
+            android:background="@drawable/shape_white_background_green_3"
             android:gravity="center"
             android:text="收进书包"
             android:maxLines="1"

@@ -1,11 +1,12 @@
 package com.moemoe.lalala.utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,23 +20,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.bumptech.glide.Glide;
-import com.moemoe.lalala.BuildConfig;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.entity.ShareLive2dEntity;
+import com.moemoe.lalala.view.activity.ShopDetailActivity;
 import com.moemoe.lalala.view.widget.view.KiraRatingBar;
 
 import java.util.HashMap;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
-import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/28.
  */
 
@@ -45,6 +45,7 @@ public class AlertDialogUtil {
     private View view;
     private OnClickListener onClickListener;
     private OnItemClickListener onItemClickListener;
+    private OnDismiss onDismiss;
     private TextView confirm, cancel;
     private Button item1,item2,item3,item4;
     private EditText editText;
@@ -196,6 +197,37 @@ public class AlertDialogUtil {
             ((TextView) contentView.findViewById(R.id.tv_content)).setText(content);
         else
             ((TextView) contentView.findViewById(R.id.tv_content)).setText("");
+    }
+
+    public void createHongbaoDialog(Context context,float coin) {
+        this.context = context;
+        if (this.dialog != null && this.dialog.isShowing()) {
+            this.dialog.dismiss();
+            this.dialog = null;
+        }
+        View contentView = View.inflate(context,R.layout.dialog_hongbao,null);
+        this.dialog = new Dialog(context,R.style.NetaDialog);
+        this.dialog.setContentView(contentView);
+        Window window = dialog.getWindow();
+        window.setWindowAnimations(R.style.dialogWindowAnim);
+        TextView title = contentView.findViewById(R.id.tv_title);
+        TextView content = contentView.findViewById(R.id.tv_content);
+        dialog.setCancelable(true);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                onDismiss.onDismiss();
+            }
+        });
+        if (coin == 0){
+            title.setText("很遗憾~");
+            content.setText("红包已经被抢完");
+            content.setTextColor(Color.WHITE);
+        }else {
+            title.setText("转发成功");
+            content.setText("获得" + String.format(context.getString(R.string.label_get_coin),coin));
+            content.setTextColor(ContextCompat.getColor(context,R.color.orange_f2cc2c));
+        }
     }
 
     public void createKiraNoticeDialog(Context context, String content,String btn) {
@@ -377,10 +409,18 @@ public class AlertDialogUtil {
             tv.setText(context.getString(R.string.label_total_floor,total));
             tv1.setText("跳转到");
             tv2.setText("楼");
-        }else {
+        }else if(type == 0){
             tv.setText(context.getString(R.string.label_total_coin,total));
             tv1.setText("献上");
             tv2.setText("枚节操");
+        }else if(type == 2){
+            if(total == 0){
+                tv.setVisibility(View.INVISIBLE);
+            }else {
+                tv.setText(context.getString(R.string.label_total_count,total));
+            }
+            tv1.setText("购买");
+            tv2.setText("个");
         }
         editText = contentView.findViewById(R.id.et_floor);
         dialog.setCancelable(false);
@@ -405,7 +445,7 @@ public class AlertDialogUtil {
         confirm = contentView.findViewById(R.id.confirm);
     }
 
-    public void createShareLive2dDialog(Context context, ShareLive2dEntity entity){
+    public void createShareLive2dDialog(final Context context, ShareLive2dEntity entity){
         this.context = context;
         if (this.dialog != null && this.dialog.isShowing()) {
             this.dialog.dismiss();
@@ -417,6 +457,16 @@ public class AlertDialogUtil {
         Window window = dialog.getWindow();
         window.setWindowAnimations(R.style.dialogWindowAnim);
         editText = contentView.findViewById(R.id.et_content);
+
+        TextView toVip = contentView.findViewById(R.id.tv_to_vip);
+        toVip.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                Intent i = new Intent(context, ShopDetailActivity.class);
+                i.putExtra("uuid", "b3b952d1-7f31-4014-8048-2e207bcfe53c");
+                context.startActivity(i);
+            }
+        });
 
         int w = (int) context.getResources().getDimension(R.dimen.x31);
         int marginStart = (int) context.getResources().getDimension(R.dimen.x12);
@@ -533,6 +583,10 @@ public class AlertDialogUtil {
         }
     }
 
+    public void setDismissListener(OnDismiss onDismiss){
+        this.onDismiss = onDismiss;
+    }
+
     public void dismissDialog() {
         if (this.dialog != null && this.dialog.isShowing()) {
             this.dialog.dismiss();
@@ -556,6 +610,10 @@ public class AlertDialogUtil {
     public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener){
         if(dialog!= null)
             dialog.setOnDismissListener(onDismissListener);
+    }
+
+    public interface OnDismiss{
+        void onDismiss();
     }
 
     public interface OnItemClickListener{

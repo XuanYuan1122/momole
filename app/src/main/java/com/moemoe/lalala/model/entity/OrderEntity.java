@@ -7,41 +7,38 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ *
  * Created by yi on 2017/7/14.
  */
 
 public class OrderEntity implements Parcelable{
-    @SerializedName("endTime")
     private String endTime;
-    @SerializedName("orderNo")
     private String orderNo;
-    @SerializedName("address")
     private AddressEntity address;
-    @SerializedName("icon")
     private String icon;
-    @SerializedName("desc")
     private String desc;
-    @SerializedName("orderType")
     private String orderType;
-    @SerializedName("coin")
     private int coin;
-    @SerializedName("orderId")
     private String orderId;
-    @SerializedName("productId")
     private String productId;
-    @SerializedName("productName")
     private String productName;
-    @SerializedName("remark")
     private String remark;
-    @SerializedName("rmb")
     private int rmb;
-    @SerializedName("status")
     private int status;
+    private int buyNum;
 
     private String lastRemark;
 
     public OrderEntity(){
         address = new AddressEntity();
+    }
+
+    public int getBuyNum() {
+        return buyNum;
+    }
+
+    public void setBuyNum(int buyNum) {
+        this.buyNum = buyNum;
     }
 
     public String getEndTime() {
@@ -180,6 +177,7 @@ public class OrderEntity implements Parcelable{
             info.coin = bundle.getInt("coin");
             info.status = bundle.getInt("status");
             info.lastRemark = bundle.getString("lastRemark");
+            info.buyNum = bundle.getInt("buyNum");
             return info;
         }
 
@@ -206,6 +204,7 @@ public class OrderEntity implements Parcelable{
         bundle.putParcelable("address",address);
         bundle.putInt("coin",coin);
         bundle.putInt("status",status);
+        bundle.putInt("buyNum",buyNum);
         parcel.writeBundle(bundle);
     }
 }

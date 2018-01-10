@@ -3,6 +3,7 @@ package com.moemoe.lalala.model.entity;
 import com.google.gson.JsonObject;
 
 /**
+ *
  * Created by yi on 2017/11/30.
  */
 
@@ -10,9 +11,18 @@ public class FeedNoticeEntity {
 
     private String createTime;
     private String id;
-    private String notifyType;//BAG ARTICLE DYNAMIC SYSTEM STORY
+    private String notifyType;//BAG ARTICLE DYNAMIC SYSTEM STORY  doc:帖子 dynamic:动态) ,
     private JsonObject targetObj;
     private long timestamp;
+    private String from;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 
     public String getCreateTime() {
         return createTime;

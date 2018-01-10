@@ -49,6 +49,7 @@ import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import static com.moemoe.lalala.utils.Constant.LIMIT_NICK_NAME;
 import static com.moemoe.lalala.utils.Constant.LIMIT_TAG;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_CREATE_FOLDER;
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_RECOMMEND_TAG;
 
 /**
  * 文件夹操作界面
@@ -94,6 +95,14 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
     private String mFolderType;
     private String mFolderId;
     private int mCoin;
+    private ArrayList<String> mTags;
+    private int[] mBackGround = { R.drawable.shape_rect_label_cyan,
+            R.drawable.shape_rect_label_yellow,
+            R.drawable.shape_rect_label_orange,
+            R.drawable.shape_rect_label_pink,
+            R.drawable.shape_rect_border_green_y8,
+            R.drawable.shape_rect_label_purple,
+            R.drawable.shape_rect_label_tab_blue};
 
     @Override
     protected int getLayoutId() {
@@ -137,6 +146,7 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
         mBgTemp = "";
         mSort = "NAME";
         mCoin = 0;
+        mTags = new ArrayList<>();
         if("create".equals(type)){
             mTvTitle.setText("新建");
             mTvCoin.setText("0节操");
@@ -161,12 +171,14 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
                 String tag = entity.getTexts().get(i);
                 if(i == 0){
                     mTvTag1.setText(tag);
-                    mTvTag1.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_12);
+                    int index = StringUtils.getHashOfString(tag, mBackGround.length);
+                    mTvTag1.setBackgroundResource(mBackGround[index]);
                     mTvTag2.setVisibility(View.VISIBLE);
                 }
                 if(i == 1){
                     mTvTag2.setText(tag);
-                    mTvTag2.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_12);
+                    int index = StringUtils.getHashOfString(tag, mBackGround.length);
+                    mTvTag2.setBackgroundResource(mBackGround[index]);
                 }
             }
         }
@@ -260,50 +272,6 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
                             mTvName.setSelected(false);
                         }
                         mTvName.setText(content);
-                    }else if(mInputType == 2){
-                        if(!TextUtils.isEmpty(content)){
-                            if(content.length() > LIMIT_TAG){
-                                showToast("标签字数不能超过5个");
-                                return;
-                            }
-                            mTvTag1.setText(content);
-                            mTvTag1.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_12);
-                            if(mTvTag2.getVisibility() == View.GONE){
-                                mTvTag2.setText("");
-                                mTvTag2.setVisibility(View.VISIBLE);
-                                mTvTag2.setBackgroundResource(R.drawable.ic_tag_add);
-                            }
-                        }else {
-                            if(mTvTag2.getVisibility() == View.GONE){
-                                mTvTag1.setText("");
-                                mTvTag1.setBackgroundResource(R.drawable.ic_tag_add);
-                            }else {
-                                if(TextUtils.isEmpty(mTvTag2.getText())){
-                                    mTvTag1.setText("");
-                                    mTvTag1.setBackgroundResource(R.drawable.ic_tag_add);
-                                    mTvTag2.setVisibility(View.GONE);
-                                    mTvTag2.setText("");
-                                    mTvTag2.setBackgroundResource(R.drawable.ic_tag_add);
-                                }else {
-                                    mTvTag1.setText(mTvTag2.getText());
-                                    mTvTag1.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_12);
-                                    mTvTag2.setText("");
-                                    mTvTag2.setBackgroundResource(R.drawable.ic_tag_add);
-                                }
-                            }
-                        }
-                    }else if(mInputType == 3){
-                        if(!TextUtils.isEmpty(content)){
-                            if(content.length() > LIMIT_TAG){
-                                showToast("标签字数不能超过5个");
-                                return;
-                            }
-                            mTvTag2.setText(content);
-                            mTvTag2.setBackgroundResource(R.drawable.shape_rect_border_main_no_background_12);
-                        }else {
-                            mTvTag2.setText("");
-                            mTvTag2.setBackgroundResource(R.drawable.ic_bag_add);
-                        }
                     }
                     mHasModified = true;
                 }else {
@@ -375,20 +343,16 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
                         .show();
                 break;
             case R.id.tv_label_add_1:
-                mKlCommentBoard.setVisibility(View.VISIBLE);
-                mEdtCommentInput.setText("");
-                mEdtCommentInput.setHint("标签");
-                mEdtCommentInput.requestFocus();
-                mInputType = 2;
-                SoftKeyboardUtils.showSoftKeyboard(NewFolderEditActivity.this, mEdtCommentInput);
+                Intent i = new Intent(NewFolderEditActivity.this,RecommendTagActivity.class);
+                i.putStringArrayListExtra("tags",mTags);
+                i.putExtra("folderType",mFolderType);
+                startActivityForResult(i,REQ_RECOMMEND_TAG);
                 break;
             case R.id.tv_label_add_2:
-                mKlCommentBoard.setVisibility(View.VISIBLE);
-                mEdtCommentInput.setText("");
-                mEdtCommentInput.setHint("标签");
-                mEdtCommentInput.requestFocus();
-                mInputType = 3;
-                SoftKeyboardUtils.showSoftKeyboard(NewFolderEditActivity.this, mEdtCommentInput);
+                Intent i2 = new Intent(NewFolderEditActivity.this,RecommendTagActivity.class);
+                i2.putStringArrayListExtra("tags",mTags);
+                i2.putExtra("folderType",mFolderType);
+                startActivityForResult(i2,REQ_RECOMMEND_TAG);
                 break;
             case R.id.ll_sort_root:
                 if(bottomMenuFragment != null)bottomMenuFragment.show(getSupportFragmentManager(),"FolderEdit");
@@ -423,23 +387,54 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
         }
     }
 
+    private void showTags(){
+        if(mTags.size() == 2){
+            mTvTag1.setVisibility(View.VISIBLE);
+            mTvTag1.setText(mTags.get(0));
+            int index = StringUtils.getHashOfString(mTags.get(0), mBackGround.length);
+            mTvTag1.setBackgroundResource(mBackGround[index]);
+
+            mTvTag2.setVisibility(View.VISIBLE);
+            mTvTag2.setText(mTags.get(1));
+            int index2 = StringUtils.getHashOfString(mTags.get(1), mBackGround.length);
+            mTvTag2.setBackgroundResource(mBackGround[index2]);
+        }else if(mTags.size() == 1){
+            mTvTag1.setVisibility(View.VISIBLE);
+            mTvTag1.setText(mTags.get(0));
+            int index = StringUtils.getHashOfString(mTags.get(0), mBackGround.length);
+            mTvTag1.setBackgroundResource(mBackGround[index]);
+            mTvTag2.setVisibility(View.GONE);
+        }else {
+            mTvTag1.setVisibility(View.VISIBLE);
+            mTvTag1.setText("");
+            mTvTag1.setBackgroundResource(R.drawable.ic_bag_tag_add);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
-
-            @Override
-            public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
-                Glide.with(NewFolderEditActivity.this)
-                        .load(photoPaths.get(0))
-                        .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
-                        .placeholder(R.drawable.bg_default_square)
-                        .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropSquareTransformation(NewFolderEditActivity.this))
-                        .into(mIvBg);
-                mBgPath = photoPaths.get(0);
-                mHasModified = true;
+        if(requestCode == REQ_RECOMMEND_TAG && resultCode == RESULT_OK){
+            if(data != null){
+                mTags = data.getStringArrayListExtra("tags");
+                showTags();
             }
-        });
+        }else {
+            DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
+
+                @Override
+                public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
+                    Glide.with(NewFolderEditActivity.this)
+                            .load(photoPaths.get(0))
+                            .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
+                            .placeholder(R.drawable.bg_default_square)
+                            .error(R.drawable.bg_default_square)
+                            .bitmapTransform(new CropSquareTransformation(NewFolderEditActivity.this))
+                            .into(mIvBg);
+                    mBgPath = photoPaths.get(0);
+                    mHasModified = true;
+                }
+            });
+        }
     }
 
     @Override
@@ -475,14 +470,7 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
             entity.folderName = mTvName.getText().toString();
             entity.folderType = mFolderType;
             entity.orderbyType = mSort;
-            ArrayList<String> tags = new ArrayList<>();
-            if(!TextUtils.isEmpty(mTvTag1.getText())){
-                tags.add(mTvTag1.getText().toString());
-            }
-            if(!TextUtils.isEmpty(mTvTag2.getText())){
-                tags.add(mTvTag2.getText().toString());
-            }
-            entity.texts = tags;
+            entity.texts = mTags;
             if("create".equals(type)){
                 mPresenter.addFolder(entity);
             }else if("modify".equals(type)){

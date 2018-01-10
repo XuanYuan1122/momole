@@ -1560,7 +1560,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         if(TextUtils.equals(PreferenceUtils.getUUid(), bean.getCreateUser().getUserId()) ){
             item = new MenuItem(3,mContext.getString(R.string.label_delete));
             items.add(item);
-        }else if( TextUtils.equals(PreferenceUtils.getUUid(), mDocBean.getUserId())){
+        }else if(TextUtils.equals(PreferenceUtils.getUUid(), mDocBean.getUserId())){
             item = new MenuItem(4,mContext.getString(R.string.label_delete));
             items.add(item);
         }

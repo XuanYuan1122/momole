@@ -3,6 +3,7 @@ package com.moemoe.lalala.model.entity;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2016/12/6.
  */
 
@@ -44,7 +45,7 @@ public class MapMarkEntity {
         this.bg = bg;
     }
 
-    public MapMarkEntity(String id, int x, int y, String schema, String path,int w,int h) {
+    public MapMarkEntity(String id, int x, int y, String schema, String path,int w,int h,String content) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -52,6 +53,7 @@ public class MapMarkEntity {
         this.path = path;
         this.w = w;
         this.h = h;
+        this.content = content;
     }
 
     public MapMarkEntity(String id, int x, int y, String schema, int bg,int w,int h) {

@@ -4,8 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.moemoe.lalala.model.entity.*;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -448,6 +446,9 @@ public interface ApiService {
     @POST("api/shop/order/{num}/{id}")
     Observable<ApiResult<CreateOrderEntity>> createOrderNum(@Path("num")int num,@Path("id")String id);
 
+    @POST("api/shop/orderV2/{num}/{id}")
+    Observable<ApiResult<CreateOrderEntity>> createOrderNum(@Path("num")int num,@Path("id")String id,@Query("from")String from);
+
     @POST("api/user/save/address")
     Observable<ApiResult> saveUserAddress(@Body AddressEntity entity);
 
@@ -644,7 +645,7 @@ public interface ApiService {
     Observable<ApiResult> shareFolder(@Body ShareFolderSendEntity entity);
 
     @POST("v2/kira/dynamic/retweet")
-    Observable<ApiResult> rtDynamic(@Body ForwardSendEntity entity);
+    Observable<ApiResult<Float>> rtDynamic(@Body ForwardSendEntity entity);
 
     @POST("v2/kira/dynamic/send")
     Observable<ApiResult> createDynamic(@Body DynamicSendEntity entity);
@@ -738,6 +739,9 @@ public interface ApiService {
 
     @GET("v2/kira/bag/hot/folder")
     Observable<ApiResult<ArrayList<ShowFolderEntity>>> load24Folder();
+
+    @GET("v2/kira/bag/hot/folderV2/{idx}")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadHotFolderV2(@Path("idx")int index);
 
     @GET("v2/kira/dynamic/get/{dynamicId}/dynamic")
     Observable<ApiResult<NewDynamicEntity>> getDynamic(@Path("dynamicId")String id);
@@ -865,6 +869,9 @@ public interface ApiService {
     @GET("v2/kira/dynamic/notify/list/{timestamp}")
     Observable<ApiResult<ArrayList<FeedNoticeEntity>>> loadFeedNoticeList(@Path("timestamp")long timestamp);
 
+    @GET("v2/kira/dynamic/getDynamicList/{type}/followV3")
+    Observable<ApiResult<ArrayList<FeedNoticeEntity>>> loadFeedNoticeListV3(@Path("type")String type,@Query("followTime") long followTime,@Query("notifyTime")long notifyTime);
+
     @GET("v2/kira/doc/get/department/part")
     Observable<ApiResult<ArrayList<LuntanTabEntity>>> loadLuntanTabList();
 
@@ -888,4 +895,34 @@ public interface ApiService {
 
     @POST("v2/kira/game/{userId}/exchange/{num}")
     Observable<ApiResult> useCiYuanBiGetFuHuo(@Path("userId")String id,@Path("num")int num);
+
+    @GET("v2/kira/bag/newest/folder")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadNewFolder(@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/dynamic/getDynamicList/randomV3")
+    Observable<ApiResult<ArrayList<DiscoverEntity>>> loadHotDynamicList(@Query("minIdx")long minIdx,@Query("maxIdx")long maxIdx);
+
+    @GET("v2/kira/user/list/recommend")
+    Observable<ApiResult<ArrayList<FeedRecommendUserEntity>>> loadFeedRecommentUserList();
+
+    @GET("v2/kira/tag/match/all/type/{type}")
+    Observable<ApiResult<ArrayList<RecommendTagEntity>>> loadRecommendTag(@Path("type")String type);
+
+    @GET("v2/kira/tag/match/all/{word}")
+    Observable<ApiResult<ArrayList<RecommendTagEntity>>> loadKeywordTag(@Path("word")String word);
+
+    @GET("api/shop/product/{id}")
+    Observable<ApiResult<CoinShopEntity>> loadShopDetail(@Path("id")String id);
+
+    @GET("v2/kira/game/{userId}/has/{gameId}/{roleId}/status")
+    Observable<ApiResult<Boolean>> hasRole(@Path("userId")String userId,@Path("gameId")String gameId,@Path("roleId")String roleId);
+
+    @POST("v2/kira/user/saveUserText")
+    Observable<ApiResult> saveUserText(@Body SimpleRequestEntity entity);
+
+    @GET("v2/kira/game/price/info")
+    Observable<ApiResult<GamePriceInfoEntity>> getGamePriceInfo();
+
+    @GET("v2/kira/dynamic/red/{dynamicId}")
+    Observable<ApiResult<ArrayList<HongBaoEntity>>> loadHongBaoList(@Path("dynamicId")String id);
 }

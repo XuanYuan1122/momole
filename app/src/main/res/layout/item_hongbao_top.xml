@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/main_red">
+
+    <FrameLayout
+        android:layout_width="@dimen/y100"
+        android:layout_height="@dimen/y100"
+        android:background="@drawable/shape_rect_border_white_no_background_y50"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/y100">
+
+        <ImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="@dimen/y92"
+            android:layout_height="@dimen/y92"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_total_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y16"
+        android:layout_gravity="center_horizontal"
+        android:textSize="@dimen/x48"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:text="@string/label_hongbao_total_coin"/>
+
+    <TextView
+        android:id="@+id/tv_total_hongbao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x30"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/y10"
+        android:layout_marginBottom="@dimen/y40"
+        android:text="@string/label_hongbao_total"/>
+</LinearLayout>

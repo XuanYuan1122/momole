@@ -1,6 +1,7 @@
 package com.moemoe.lalala.utils;
 
 /**
+ *
  * Created by yi on 2017/7/19.
  */
 
@@ -23,4 +24,8 @@ public interface StartActivityConstant {
     int REQ_GROUP_DETAIL = 10015;//查看群详情
     int REQ_WEN_ZHANG = 10016;//选择文章
     int REQ_SELECT_MAP_IMAGE = 10017;//选择地图形象
+    int REQ_RECOMMEND_TAG = 10018;//选择地图形象
+    int REQ_MOTIFY_TAICI = 10019;//修改台词
+    int REQ_CREATE_HONGBAO = 10020;//添加红包
+    int REQ_FORWARD_DYNAMIC = 10021;//添加红包
 }

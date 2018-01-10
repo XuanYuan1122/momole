@@ -363,6 +363,8 @@ public class ViewUtils {
                                 ivRole.setImageResource(R.drawable.btn_len_kimono);
                             }else if(mate.getClothesId().equals("b940dcb6-e52c-4093-8075-09da6a29794e")){
                                 ivRole.setImageResource(R.drawable.btn_len_halloween);
+                            }else if(mate.getClothesId().equals("4dba517c-26b1-4622-90f8-51ab8bc64c0e")){
+                                ivRole.setImageResource(R.drawable.btn_len_xmas_2017);
                             }else {
                                 ivRole.setImageResource(R.drawable.btn_len_normal);
                             }
@@ -377,7 +379,9 @@ public class ViewUtils {
                                 ivRole.setImageResource(R.drawable.btn_mei_halloween);
                             }else if(mate.getClothesId().equals("0e8993f7-dcfd-4568-867e-bd8f64e38dd8")){
                                 ivRole.setImageResource(R.drawable.btn_mei_swim);
-                            }else {
+                            }else if(mate.getClothesId().equals("3b504d2d-06f3-4888-97bf-76257894e7d9")){
+                                ivRole.setImageResource(R.drawable.btn_mei_xmas_2017);
+                            }else{
                                 ivRole.setImageResource(R.drawable.btn_mei_normal);
                             }
                         }
@@ -391,7 +395,9 @@ public class ViewUtils {
                                 ivRole.setImageResource(R.drawable.btn_sari_halloween);
                             }else if(mate.getClothesId().equals("1e7245fc-a05d-498f-aa75-af2533aa35df")){
                                 ivRole.setImageResource(R.drawable.btn_sari_swim);
-                            }else {
+                            }else if(mate.getClothesId().equals("c747fda7-050b-4c04-9a2e-39366fc4b2df")){
+                                ivRole.setImageResource(R.drawable.btn_sari_xmas_2017);
+                            }else{
                                 ivRole.setImageResource(R.drawable.btn_sari_normal);
                             }
                         }

@@ -218,7 +218,7 @@
 //    private void goToMain(){
 //        saveLaunch();
 //        Intent i = new Intent(this,MapActivity.class);
-//        startActivity(i);
+//        startActivityForResult(i);
 //        finish();
 //    }
 //
@@ -235,7 +235,7 @@
 //        Intent i = new Intent(this,LoginActivity.class);
 //        i.putExtra(LoginActivity.EXTRA_KEY_SETTING, true);
 //        i.putExtras(bundle);
-//        startActivity(i);
+//        startActivityForResult(i);
 //        finish();
 //        overridePendingTransition(0, 0);
 //    }

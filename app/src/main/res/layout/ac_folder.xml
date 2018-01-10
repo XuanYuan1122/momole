@@ -49,10 +49,10 @@
 
                 <TextView
                     android:id="@+id/tv_to_bag"
-                    android:layout_width="@dimen/x140"
+                    android:layout_width="@dimen/x150"
                     android:layout_height="@dimen/y60"
                     android:background="@drawable/btn_rect_corner_cyan_3"
-                    android:text="进入书包"
+                    android:text="进入TA书包"
                     android:textColor="@color/txt_white_cyan"
                     android:textSize="@dimen/x24"
                     android:gravity="center" />

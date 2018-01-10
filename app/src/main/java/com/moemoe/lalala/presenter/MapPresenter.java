@@ -16,6 +16,7 @@ import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.BuildEntity;
 import com.moemoe.lalala.model.entity.JuQIngStoryEntity;
+import com.moemoe.lalala.model.entity.JuQingDoneEntity;
 import com.moemoe.lalala.model.entity.JuQingTriggerEntity;
 import com.moemoe.lalala.model.entity.MapDbEntity;
 import com.moemoe.lalala.model.entity.MapEntity;
@@ -27,7 +28,7 @@ import com.moemoe.lalala.model.entity.SplashEntity;
 import com.moemoe.lalala.model.entity.UserLocationEntity;
 import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.GreenDaoManager;
-import com.moemoe.lalala.model.entity.JuQingDoneEntity;
+import com.moemoe.lalala.utils.MapToolTipUtils;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
@@ -38,7 +39,6 @@ import com.moemoe.lalala.view.widget.map.model.MapObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -46,6 +46,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ * 地图网络
  * Created by yi on 2016/11/27.
  */
 
@@ -374,8 +375,8 @@ public class MapPresenter implements MapContract.Presenter {
             x = 873;
             y = 1147;
         }else if("playground".equals(id)){
-            x = 865;
-            y = 272;
+            x = 1166;
+            y = 188;
         }else if("warehouse".equals(id)){
             x = 2321;
             y = 342;
@@ -399,6 +400,7 @@ public class MapPresenter implements MapContract.Presenter {
             addMarkToMap(context,entity1,layer);
            // view.onMapEventLoaded(container);
         }
+       // MapToolTipUtils.getInstance().updateList(container.getContainer());
     }
 
     @Override
@@ -496,12 +498,13 @@ public class MapPresenter implements MapContract.Presenter {
                 if(entity.getShows().contains(time)){
                     if(entity.getDownloadState() == 2){
                         if(FileUtil.isExists(StorageUtils.getMapRootPath() + entity.getFileName())){
-                            MapMarkEntity entity1 = new MapMarkEntity(entity.getName(),entity.getPointX(),entity.getPointY(),entity.getSchema(),entity.getFileName(),entity.getImage_w(),entity.getImage_h());
+                            MapMarkEntity entity1 = new MapMarkEntity(entity.getName(),entity.getPointX(),entity.getPointY(),entity.getSchema(),entity.getFileName(),entity.getImage_w(),entity.getImage_h(),entity.getText());
                             container.addMark(entity1);
                             addMarkToMap(context,entity1,layer);
                         }
                     }
                 }
+               // MapToolTipUtils.getInstance().updateList(container.getContainer());
             }
         }
     }

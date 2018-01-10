@@ -1,6 +1,7 @@
 package com.moemoe.lalala.view.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import com.moemoe.lalala.model.entity.tag.BaseTag;
 import com.moemoe.lalala.model.entity.tag.UserUrlSpan;
 import com.moemoe.lalala.presenter.CreateForwardContract;
 import com.moemoe.lalala.presenter.CreateForwardPresenter;
+import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
@@ -70,6 +72,7 @@ import jp.wasabeef.glide.transformations.CropSquareTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_ALT_USER;
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_FORWARD_DYNAMIC;
 
 /**
  * 转发
@@ -116,11 +119,11 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
         return R.layout.ac_create_zhuan_or_comment;
     }
 
-    public static void startActivity(Context context,NewDynamicEntity entity){
+    public static void startActivityForResult(Context context, NewDynamicEntity entity){
         Intent i = new Intent(context,CreateForwardActivity.class);
         i.putExtra("type",TYPE_DYNAMIC);
         i.putExtra("dynamic",entity);
-        context.startActivity(i);
+        ((BaseAppCompatActivity)context).startActivityForResult(i,REQ_FORWARD_DYNAMIC);
     }
 
     public static void startActivity(Context context,ShareArticleEntity entity){
@@ -250,7 +253,7 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
         mTvMenuRight.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int) getResources().getDimension(R.dimen.x30));
         mTvMenuRight.setWidth((int) getResources().getDimension(R.dimen.x88));
         mTvMenuRight.setHeight((int) getResources().getDimension(R.dimen.y48));
-        mTvMenuRight.setBackgroundResource(R.drawable.shape_rect_border_main_background_2);
+        mTvMenuRight.setBackgroundResource(R.drawable.shape_main_background_2);
     }
 
     @Override
@@ -553,6 +556,28 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
     public void onFailure(int code, String msg) {
         finalizeDialog();
         ErrorCodeUtils.showErrorMsgByCode(this,code,msg);
+    }
+
+    @Override
+    public void onCreateForwardSuccess(float i) {
+        finalizeDialog();
+        if(i == -1){
+            showToast("转发成功");
+            finish();
+        }else {
+//            Intent intent = new Intent();
+//            intent.putExtra("coin",i);
+//            setResult(RESULT_OK,intent);
+            AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+            alertDialogUtil.createHongbaoDialog(this,i);
+            alertDialogUtil.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    finish();
+                }
+            });
+            alertDialogUtil.showDialog();
+        }
     }
 
     @Override

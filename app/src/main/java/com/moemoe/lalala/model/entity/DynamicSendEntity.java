@@ -11,4 +11,6 @@ public class DynamicSendEntity {
     public ArrayList<Image> images;
     public ArrayList<String> tags;
     public ArrayList<String> atUsers;
+    public int coins;
+    public int users;
 }

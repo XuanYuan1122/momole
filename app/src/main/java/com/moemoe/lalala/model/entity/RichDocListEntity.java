@@ -3,10 +3,18 @@ package com.moemoe.lalala.model.entity;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
+
+import com.moemoe.lalala.utils.StringUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2017/6/7.
  */
 
@@ -78,6 +86,143 @@ public class RichDocListEntity implements Parcelable{
         bundle.putParcelable("cover",cover);
         bundle.putBoolean("hidType",hidType);
         dest.writeBundle(bundle);
+    }
+
+    public static RichDocListEntity toEntity(String str){
+        try {
+            RichDocListEntity entity = new RichDocListEntity();
+            JSONObject o = new JSONObject(str);
+            entity.setBgCover(o.getString("bgCover"));
+            entity.setHidType(o.getBoolean("hideType"));
+            entity.setTitle(o.getString("title"));
+            JSONArray listArry = o.getJSONArray("list");
+            for(int i = 0;i < listArry.length();i++){
+                Object res = listArry.get(i);
+                RichEntity entity1 = new RichEntity();
+                if(res instanceof String){
+                    entity1.setInputStr((CharSequence) res);
+                }else {
+                    JSONObject imgO = (JSONObject) res;
+                    Image image = new Image();
+                    image.setPath(imgO.getString("path"));
+                    image.setW(imgO.getInt("w"));
+                    image.setH(imgO.getInt("h"));
+                    image.setSize(imgO.getLong("size"));
+                    entity1.setImage(image);
+                }
+                entity.getList().add(entity1);
+            }
+
+            JSONArray hideListArry = o.getJSONArray("hideList");
+            for(int i = 0;i < hideListArry.length();i++){
+                Object res = hideListArry.get(i);
+                RichEntity entity1 = new RichEntity();
+                if(res instanceof String){
+                    entity1.setInputStr((CharSequence) res);
+                }else {
+                    JSONObject imgO = (JSONObject) res;
+                    Image image = new Image();
+                    image.setPath(imgO.getString("path"));
+                    image.setW(imgO.getInt("w"));
+                    image.setH(imgO.getInt("h"));
+                    image.setSize(imgO.getLong("size"));
+                    entity1.setImage(image);
+                }
+                entity.getHideList().add(entity1);
+            }
+            entity.setMusicPath(o.getString("musicPath"));
+            entity.setMusicTitle(o.getString("musicTitle"));
+            entity.setTime(o.getInt("time"));
+
+            if(o.has("cover")){
+                JSONObject cover = o.getJSONObject("cover");
+                Image c = new Image();
+                c.setPath(cover.getString("path"));
+                c.setH(cover.getInt("h"));
+                c.setW(cover.getInt("w"));
+                entity.setCover(c);
+            }
+            entity.setFolderId(o.getString("folderId"));
+
+            JSONArray tagArry = o.getJSONArray("tags");
+            for(int i = 0;i < tagArry.length();i++){
+                JSONObject tagO = tagArry.getJSONObject(i);
+                DocTagEntity tagEntity = new DocTagEntity();
+                tagEntity.setLikes(tagO.getLong("likes"));
+                tagEntity.setName(tagO.getString("name"));
+                entity.getTags().add(tagEntity);
+            }
+            return entity;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String toJsonString(RichDocListEntity entity){
+        try {
+            JSONObject o = new JSONObject();
+            o.put("bgCover",entity.getBgCover());
+            o.put("hideType",entity.isHidType());
+            o.put("title",entity.getTitle());
+            JSONArray listArry = new JSONArray();
+            for(RichEntity richEntity : entity.getList()){
+                if(!TextUtils.isEmpty(richEntity.getInputStr())){
+                    listArry.put(richEntity.getInputStr().toString());
+                }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
+                    JSONObject image = new JSONObject();
+                    image.put("path",richEntity.getImage().getPath());
+                    image.put("h",richEntity.getImage().getH());
+                    image.put("w",richEntity.getImage().getW());
+                    image.put("size",richEntity.getImage().getSize());
+                    listArry.put(image);
+                }
+            }
+            o.put("list",listArry);
+
+            JSONArray hideListArry = new JSONArray();
+            for(RichEntity richEntity : entity.getHideList()){
+                if(!TextUtils.isEmpty(richEntity.getInputStr())){
+                    hideListArry.put(richEntity.getInputStr().toString());
+                }else if(richEntity.getImage() != null && !TextUtils.isEmpty(richEntity.getImage().getPath())){
+                    JSONObject image = new JSONObject();
+                    image.put("path",richEntity.getImage().getPath());
+                    image.put("h",richEntity.getImage().getH());
+                    image.put("w",richEntity.getImage().getW());
+                    image.put("size",richEntity.getImage().getSize());
+                    hideListArry.put(image);
+                }
+            }
+            o.put("hideList",hideListArry);
+
+            o.put("musicPath",entity.getMusicPath());
+            o.put("musicTitle",entity.getMusicTitle());
+            o.put("time",entity.getTime());
+
+            if(entity.getCover() != null){
+                JSONObject cover = new JSONObject();
+                cover.put("path",entity.getCover().getPath());
+                cover.put("w",entity.getCover().getW());
+                cover.put("h",entity.getCover().getH());
+                o.put("cover",cover);
+            }
+
+            o.put("folderId",entity.getFolderId());
+
+            JSONArray tagArry = new JSONArray();
+            for(DocTagEntity tag : entity.getTags()){
+                JSONObject tagO = new JSONObject();
+                tagO.put("id",tag.getId());
+                tagO.put("likes",tag.getLikes());
+                tagO.put("name",tag.getName());
+                tagArry.put(tagO);
+            }
+            o.put("tags",tagArry);
+            return o.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public ArrayList<RichEntity> getList() {

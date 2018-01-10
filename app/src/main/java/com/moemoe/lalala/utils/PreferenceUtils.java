@@ -279,6 +279,19 @@ public class PreferenceUtils {
         return sp.getString("neta_ip","");
     }
 
+    public static void saveDoc(Context context,String doc){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putString("rich_doc", doc);
+        ed.commit();
+    }
+
+    public static String getDoc(Context context){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getString("rich_doc","");
+    }
+
     public static void setLastSnowTime(Context context,long time){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME,Activity.MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
@@ -377,7 +390,7 @@ public class PreferenceUtils {
         boolean bFirstLaunch = sp.getBoolean(
                 "boolean_first_launch_version2", true);
         String versionCode = sp.getString("version_code","");
-        return bFirstLaunch && !versionCode.equals(context.getString(R.string.app_version_code));
+        return bFirstLaunch || !versionCode.equals(context.getString(R.string.app_version_code));
     }
 
     public static boolean isSetAlarm(Context context) {

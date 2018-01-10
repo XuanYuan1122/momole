@@ -190,6 +190,19 @@
         </android.support.v7.widget.CardView>
     </RelativeLayout>
 
+    <FrameLayout
+        android:id="@+id/fl_hongbao_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x24"
+        android:paddingBottom="@dimen/y24"
+        android:visibility="gone">
+
+        <include layout="@layout/item_hongbao_list"/>
+    </FrameLayout>
+
+
     <LinearLayout
         android:id="@+id/ll_retweet_bottom_root"
         android:layout_width="match_parent"
@@ -198,7 +211,7 @@
         android:background="@color/cyan_eefdff"
         android:paddingStart="@dimen/x24"
         android:paddingEnd="@dimen/x24"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_retweet_time"
@@ -221,6 +234,18 @@
             android:textSize="@dimen/x20" />
 
         <TextView
+            android:id="@+id/tv_retweet_forward_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableStart="@drawable/btn_feed_repeat"
+            android:drawablePadding="@dimen/x8"
+            android:layout_marginStart="@dimen/x32"
+            android:gravity="center_vertical"
+            android:textColor="@color/main_cyan"
+            android:textSize="@dimen/x20" />
+
+        <TextView
             android:id="@+id/tv_retweet_comment_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -232,17 +257,6 @@
             android:textColor="@color/green_93d856"
             android:textSize="@dimen/x20" />
 
-        <TextView
-            android:id="@+id/tv_retweet_forward_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:drawableStart="@drawable/btn_feed_repeat"
-            android:drawablePadding="@dimen/x8"
-            android:layout_marginStart="@dimen/x32"
-            android:gravity="center_vertical"
-            android:textColor="@color/main_cyan"
-            android:textSize="@dimen/x20" />
     </LinearLayout>
 
     <com.moemoe.lalala.view.widget.view.DocLabelView

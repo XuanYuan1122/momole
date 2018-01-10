@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_below="@+id/top_view"
         android:layout_height="@dimen/y100"
-        android:background="@drawable/bg_shadow_up">
+        android:background="@color/white">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -59,6 +59,12 @@
             android:background="@drawable/btn_only_host_new"
             android:visibility="gone" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_1_px"
+            android:background="@color/gray_e8e8e8"
+            android:layout_alignParentBottom="true"/>
+
         <ImageView
             android:id="@+id/iv_menu_list"
             android:layout_width="wrap_content"
@@ -67,6 +73,8 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/x36"
             android:visibility="gone"/>
+
+
     </RelativeLayout>
 
     <RelativeLayout

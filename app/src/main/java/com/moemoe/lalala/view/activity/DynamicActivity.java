@@ -47,7 +47,6 @@ import com.moemoe.lalala.model.entity.ShareArticleEntity;
 import com.moemoe.lalala.model.entity.ShareFolderEntity;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
-import com.moemoe.lalala.model.entity.TagSendEntity;
 import com.moemoe.lalala.presenter.DynamicContract;
 import com.moemoe.lalala.presenter.DynamicPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
@@ -60,7 +59,6 @@ import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
@@ -71,9 +69,7 @@ import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
-import com.moemoe.lalala.view.widget.view.DocLabelView;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
-import com.moemoe.lalala.view.widget.view.NewDocLabelAdapter;
 
 import java.util.ArrayList;
 
@@ -84,6 +80,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_DELETE_TAG;
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_FORWARD_DYNAMIC;
 
 /**
  * 动态详情
@@ -110,8 +107,8 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
     DynamicPresenter mPresenter;
 
     private TextView mTvSort;
-    private DocLabelView docLabel;
-    private NewDocLabelAdapter docLabelAdapter;
+//    private DocLabelView docLabel;
+//    private NewDocLabelAdapter docLabelAdapter;
     private TextView mCoin;
 
     private CommentListAdapter mAdapter;
@@ -222,25 +219,25 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 if (state == KeyboardListenerLayout.KEYBOARD_STATE_HIDE) {
                     if(tagFlag){
                         tagFlag = false;
-                        if(mTags.size() > 0){
-                            DocTagEntity entity = mTags.get(mTags.size() - 1);
-                            if(!TextUtils.isEmpty(entity.getName())){
-                                if(checkLabel(entity.getName())){
-                                    mTags.get(mTags.size() - 1).setEdit(false);
-                                    if (DialogUtils.checkLoginAndShowDlg(DynamicActivity.this)) {
-                                        createDialog();
-                                        TagSendEntity bean = new TagSendEntity(mDynamic.getId(),entity.getName());
-                                        mPresenter.sendTag(bean);
-                                    }
-                                }else {
-                                    entity.setName("");
-                                    ToastUtils.showShortToast(DynamicActivity.this,R.string.msg_tag_already_exit);
-                                }
-                            }else {
-                                mTags.remove(entity);
-                            }
-                            if(docLabel != null)docLabel.notifyAdapter();
-                        }
+//                        if(mTags.size() > 0){
+//                            DocTagEntity entity = mTags.get(mTags.size() - 1);
+//                            if(!TextUtils.isEmpty(entity.getName())){
+//                                if(checkLabel(entity.getName())){
+//                                    mTags.get(mTags.size() - 1).setEdit(false);
+//                                    if (DialogUtils.checkLoginAndShowDlg(DynamicActivity.this)) {
+//                                        createDialog();
+//                                        TagSendEntity bean = new TagSendEntity(mDynamic.getId(),entity.getName());
+//                                        mPresenter.sendTag(bean);
+//                                    }
+//                                }else {
+//                                    entity.setName("");
+//                                    ToastUtils.showShortToast(DynamicActivity.this,R.string.msg_tag_already_exit);
+//                                }
+//                            }else {
+//                                mTags.remove(entity);
+//                            }
+//                            if(docLabel != null)docLabel.notifyAdapter();
+//                        }
                     }
                 }
             }
@@ -351,6 +348,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         RelativeLayout root1 = v.findViewById(R.id.rl_card_root);
         LinearLayout cardRoot = v.findViewById(R.id.ll_card_root);
 
+
         //user top
         if(mDynamic.getCreateUser().isVip()){
             ivVip.setVisibility(View.VISIBLE);
@@ -409,6 +407,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         root1.setVisibility(View.GONE);
         cardRoot.removeAllViews();
         root1.setOnClickListener(null);
+        boolean showHongbao = false;
         if("DELETE".equals(mDynamic.getType())){//已被删除
             root.setVisibility(View.VISIBLE);
             root.setBackgroundColor(Color.WHITE);
@@ -596,36 +595,15 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                     root.setVisibility(View.GONE);
                 }
             }
-        }
-
-        //label
-        docLabel =v.findViewById(R.id.dv_doc_label_root);
-        docLabel.setVisibility(View.VISIBLE);
-        docLabelAdapter = new NewDocLabelAdapter(this,false);
-        docLabel.setDocLabelAdapter(docLabelAdapter);
-        docLabel.setItemClickListener(new DocLabelView.LabelItemClickListener() {
-            @Override
-            public void itemClick(int position) {
-                if(!tagFlag){
-                    if (position < mTags.size()) {
-                        plusLabel(position);
-                    } else {
-                        SoftKeyboardUtils.dismissSoftKeyboard(DynamicActivity.this);
-                        if (!NetworkUtils.checkNetworkAndShowError(DynamicActivity.this)) {
-                            return;
-                        }
-                        DocTagEntity docTag = new DocTagEntity();
-                        docTag.setLikes(1);
-                        docTag.setName("");
-                        docTag.setLiked(true);
-                        docTag.setEdit(true);
-                        mTags.add(docTag);
-                        docLabel.notifyAdapter();
-                        tagFlag = true;
-                    }
-                }
+            if(retweetEntity.getCoins() > 0){
+                showHongbao = true;
             }
-        });
+            showHongBao(v,true,retweetEntity.getCoins(),retweetEntity.getSurplus(),retweetEntity.getOldDynamicId(),retweetEntity.getCreateUserHead(),retweetEntity.getUsers());
+        }
+        //coins
+        if(!showHongbao){
+            showHongBao(v,false,mDynamic.getCoins(),mDynamic.getSurplus(),mDynamic.getId(),mDynamic.getCreateUser().getHeadPath(),mDynamic.getUsers());
+        }
 
         //bottom
         TextView tvForward = v.findViewById(R.id.tv_forward_num);
@@ -642,7 +620,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             tRoot.setVisibility(View.VISIBLE);
             root.setBackgroundColor(Color.TRANSPARENT);
             root1.setBackgroundColor(Color.TRANSPARENT);
-            docLabel.setBackgroundColor(Color.TRANSPARENT);
+          //  docLabel.setBackgroundColor(Color.TRANSPARENT);
             if("ARTICLE".equals(mDynamic.getType()) || "FOLDER".equals(mDynamic.getType())){
                 int py = (int) getResources().getDimension(R.dimen.y24);
                 root1.setPadding(0,0,0,py);
@@ -651,7 +629,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             tRoot.setVisibility(View.INVISIBLE);
             root.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
             root1.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
-            docLabel.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
+           // docLabel.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
             if("ARTICLE".equals(mDynamic.getType()) || "FOLDER".equals(mDynamic.getType())){
                 int py = (int) getResources().getDimension(R.dimen.y24);
                 root1.setPadding(0,py,0,py);
@@ -660,7 +638,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         fRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                CreateForwardActivity.startActivity(DynamicActivity.this,mDynamic);
+                CreateForwardActivity.startActivityForResult(DynamicActivity.this,mDynamic);
             }
         });
         cRoot.setOnClickListener(new NoDoubleClickListener() {
@@ -767,6 +745,44 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             }
         });
         mAdapter.addHeaderView(coinV);
+    }
+
+    private void showHongBao(View v,boolean rt,final int coins, int surplus, final String id, final String icon, final int users){
+        //coins
+        View flHongbao = v.findViewById(R.id.fl_hongbao_root);
+        TextView hongbaoCoin = v.findViewById(R.id.tv_hongbao_coin);
+        TextView hongbaoLeftNum = v.findViewById(R.id.tv_left_num);
+        TextView hongbaoDesc = v.findViewById(R.id.tv_desc);
+        View rlHongbao = v.findViewById(R.id.rl_hongbao_root);
+        if(coins > 0){
+            if(rt){
+                flHongbao.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
+            }else {
+                flHongbao.setBackgroundColor(ContextCompat.getColor(this,R.color.white));
+            }
+            flHongbao.setVisibility(View.VISIBLE);
+            hongbaoCoin.setText(String.format(this.getString(R.string.label_hongbao_total_coin),coins));
+            if(surplus > 0){
+                rlHongbao.setBackgroundColor(ContextCompat.getColor(this,R.color.orange_f2cc2c));
+                hongbaoCoin.setTextColor(ContextCompat.getColor(this,R.color.orange_f2cc2c));
+                hongbaoLeftNum.setText("剩余：" + surplus);
+                hongbaoDesc.setText("转发即可领取红包");
+            }else {
+                rlHongbao.setBackgroundColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
+                hongbaoCoin.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
+                hongbaoLeftNum.setText("已被抢完");
+                hongbaoDesc.setText(users + "领取了红包");
+            }
+            flHongbao.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    HongBaoListActivity.startActivity(DynamicActivity.this,id,icon,coins,users);
+                }
+            });
+        }else {
+            flHongbao.setOnClickListener(null);
+            flHongbao.setVisibility(View.GONE);
+        }
     }
 
     private void plusLabel(int position){
@@ -951,7 +967,6 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             ArrayList<DocTagEntity> entities = data.getParcelableArrayListExtra("tags");
             if(entities != null){
                 mTags = entities;
-                if(docLabelAdapter != null) docLabelAdapter.setData(mTags,true);
             }
         }
     }
@@ -1025,7 +1040,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
     @Override
     public void onLoadTagsSuccess(ArrayList<DocTagEntity> tagEntities) {
         mTags = tagEntities;
-        if(docLabelAdapter != null) docLabelAdapter.setData(mTags,true);
+       // if(docLabelAdapter != null) docLabelAdapter.setData(mTags,true);
     }
 
     @Override
@@ -1116,7 +1131,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 mTags.add(position, tagBean);
             }
         }
-        docLabel.notifyAdapter();
+       // docLabel.notifyAdapter();
     }
 
     @Override

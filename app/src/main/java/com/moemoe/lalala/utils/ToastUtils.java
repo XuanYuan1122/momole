@@ -59,7 +59,7 @@ public class ToastUtils {
         tv.setText(msg);
         tv.setPadding((int)context.getResources().getDimension(R.dimen.x32),0,(int)context.getResources().getDimension(R.dimen.x32),0);
         tv.setGravity(Gravity.CENTER);
-        tv.setBackgroundResource(R.drawable.shape_rect_border_yellow_background_y30);
+        tv.setBackgroundResource(R.drawable.shape_yellow_background_y30);
         toast.setView(tv);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);

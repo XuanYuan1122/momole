@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2017/8/18.
  */
 
@@ -23,9 +24,49 @@ public class ShowFolderEntity implements Parcelable {
 
     private ArrayList<String> texts;// 标签
 
+    private String userIcon;
+
     private String type;
 
+    private int coin;
+
+    private int items;
+
+    private String time;
+
     private boolean select;
+
+    public String getUserIcon() {
+        return userIcon;
+    }
+
+    public void setUserIcon(String userIcon) {
+        this.userIcon = userIcon;
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
+
+    public int getItems() {
+        return items;
+    }
+
+    public void setItems(int items) {
+        this.items = items;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getFolderId() {
         return folderId;
@@ -109,6 +150,10 @@ public class ShowFolderEntity implements Parcelable {
             info.type = bundle.getString("type");
             info.texts = bundle.getStringArrayList("texts");
             info.select = bundle.getBoolean("select");
+            info.coin = bundle.getInt("coin");
+            info.items = bundle.getInt("items");
+            info.time = bundle.getString("time");
+            info.userIcon = bundle.getString("userIcon");
             return info;
         }
 
@@ -129,6 +174,10 @@ public class ShowFolderEntity implements Parcelable {
         bundle.putString("type",type);
         bundle.putStringArrayList("texts",texts);
         bundle.putBoolean("select",select);
+        bundle.putInt("coin",coin);
+        bundle.putInt("items",items);
+        bundle.putString("time",time);
+        bundle.putString("userIcon",userIcon);
         parcel.writeBundle(bundle);
     }
 }

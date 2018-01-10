@@ -228,6 +228,14 @@ public class JuQingChatV2Fragment extends BaseFragment implements IPhoneFragment
 
     @Override
     public void onDoneSuccess(long time) {
+        JuQingShowEntity entity = mList.get(mList.size() - 1);
+        if("len".equals(role)){
+            PreferenceUtils.setLenLastContent(getContext(),entity.getText());
+        }else if("mei".equals(role)){
+            PreferenceUtils.setMeiLastContent(getContext(),entity.getText());
+        }else if("sari".equals(role)){
+            PreferenceUtils.setSariLastContent(getContext(),entity.getText());
+        }
         if(3 != JuQingUtil.getLevel(id)){
             JuQingUtil.saveJuQingDone(id,time);
         }

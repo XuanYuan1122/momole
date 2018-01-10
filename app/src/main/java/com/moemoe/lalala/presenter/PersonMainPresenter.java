@@ -4,6 +4,7 @@ import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.PersonalMainEntity;
+import com.moemoe.lalala.model.entity.SimpleRequestEntity;
 
 import javax.inject.Inject;
 
@@ -11,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -64,5 +66,15 @@ public class PersonMainPresenter implements PersonMainContract.Presenter {
                         if(view != null) view.onFailure(code,msg);
                     }
                 });
+    }
+
+    @Override
+    public void saveUserText(String text) {
+        SimpleRequestEntity entity = new SimpleRequestEntity();
+        entity.content = text;
+        apiService.saveUserText(entity)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe();
     }
 }

@@ -26,6 +26,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -52,10 +53,10 @@ public class CreateForwardPresenter implements CreateForwardContract.Presenter {
                 apiService.rtDynamic((ForwardSendEntity) entity)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new NetSimpleResultSubscriber() {
+                        .subscribe(new NetResultSubscriber<Float>() {
                             @Override
-                            public void onSuccess() {
-                                if(view != null) view.onCreateForwardSuccess();
+                            public void onSuccess(Float integer) {
+                                if(view != null) view.onCreateForwardSuccess(integer);
                             }
 
                             @Override
@@ -76,10 +77,10 @@ public class CreateForwardPresenter implements CreateForwardContract.Presenter {
                         apiService.rtDynamic((ForwardSendEntity) entity)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new NetSimpleResultSubscriber() {
+                                .subscribe(new NetResultSubscriber<Float>() {
                                     @Override
-                                    public void onSuccess() {
-                                        if(view != null) view.onCreateForwardSuccess();
+                                    public void onSuccess(Float integer) {
+                                        if(view != null) view.onCreateForwardSuccess(integer);
                                     }
 
                                     @Override

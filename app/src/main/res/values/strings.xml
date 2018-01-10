@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">kira</string>
     <string name="label_copyright">© 2015 moemoe.la All Rights Reserved</string>
-    <string name="app_version">5.3.0_20171204</string>
-    <string name="app_version_code">5230</string>
+    <string name="app_version">5.4.6_20180104</string>
+    <string name="app_version_code">5460</string>
 
     <string name="label_scheme">neta</string>
     <string name="label_host">com.moemoe.lalala</string>
@@ -205,6 +205,7 @@
     <string name="label_about">关于</string>
     <string name="label_clear">清空</string>
     <string name="label_square">广场</string>
+    <string name="label_luntan">论坛</string>
     <string name="label_find">发现</string>
     <string name="label_club">社团</string>
     <string name="label_class">班级</string>
@@ -244,6 +245,7 @@
     <string name="label_my_doc">发帖</string>
     <string name="label_my_coin">节操</string>
     <string name="label_follow">关注</string>
+    <string name="label_dynamic">动态</string>
     <string name="label_followed">已关注</string>
     <string name="label_home_page">主页</string>
     <string name="label_prop">道具</string>
@@ -305,6 +307,7 @@
     <string name="label_order_address_2">地址</string>
     <string name="label_total_floor" formatted="false">共有%d楼</string>
     <string name="label_total_coin" formatted="false">共有%d枚</string>
+    <string name="label_total_count" formatted="false">每人限购%d</string>
     <string name="label_user_reject">拉黑</string>
     <string name="label_user_cancel_reject">取消拉黑</string>
     <string name="label_user_reject_list">拉黑列表</string>
@@ -319,6 +322,12 @@
     <string name="label_qpay">QQ钱包</string>
     <string name="label_from">来自</string>
     <string name="label_create_map_notice">注意：建议尺寸为180*220像素，透明背景的全身形象，由于顶部系统会自动添加文字及底色圆角矩形，所以形象略微放置于下方。另外建议人物形象下方有投影。提交后，官方工作人员将会进行审核，通过后将会生效。</string>
+    <string name="label_hongbao">红包</string>
+    <string name="label_hongbao_introduce">说明：转发者将会领取动态中的红包，先到先得。</string>
+    <string name="labgel_save_hongbao">塞进红包</string>
+    <string name="label_get_coin" formatted="false">%.2f 节操</string>
+    <string name="label_hongbao_total_coin" formatted="false">%d节操</string>
+    <string name="label_hongbao_total" formatted="false">%d个红包</string>
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>

@@ -1,22 +1,12 @@
 package com.moemoe.lalala.presenter;
 
-import android.text.TextUtils;
-
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
-import com.moemoe.lalala.model.entity.ForwardSendEntity;
-import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.MapAddressEntity;
-import com.moemoe.lalala.model.entity.ShareArticleSendEntity;
-import com.moemoe.lalala.model.entity.ShareFolderSendEntity;
 import com.moemoe.lalala.model.entity.UploadResultEntity;
 import com.moemoe.lalala.model.entity.UserMapSendEntity;
 import com.moemoe.lalala.utils.Utils;
-import com.moemoe.lalala.view.activity.CreateForwardActivity;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 

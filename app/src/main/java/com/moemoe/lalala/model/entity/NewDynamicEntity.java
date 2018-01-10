@@ -37,6 +37,9 @@ public class NewDynamicEntity implements Parcelable{
     private boolean follow;
     private boolean thumb;
     private ArrayList<SimpleUserEntity> thumbUsers;
+    private int coins;
+    private int surplus;
+    private int users;
 
     @Override
     public int describeContents() {
@@ -69,6 +72,9 @@ public class NewDynamicEntity implements Parcelable{
             entity.likes = bundle.getInt("likes");
             entity.reward = bundle.getInt("reward");
             entity.thumbs = bundle.getInt("thumbs");
+            entity.coins = bundle.getInt("coins");
+            entity.surplus = bundle.getInt("surplus");
+            entity.users = bundle.getInt("users");
             return entity;
         }
 
@@ -101,7 +107,34 @@ public class NewDynamicEntity implements Parcelable{
         bundle.putInt("likes",likes);
         bundle.putInt("reward",reward);
         bundle.putInt("thumbs",thumbs);
+        bundle.putInt("coins",coins);
+        bundle.putInt("surplus",surplus);
+        bundle.putInt("users",users);
         parcel.writeBundle(bundle);
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
+
+    public int getSurplus() {
+        return surplus;
+    }
+
+    public void setSurplus(int surplus) {
+        this.surplus = surplus;
+    }
+
+    public int getUsers() {
+        return users;
+    }
+
+    public void setUsers(int users) {
+        this.users = users;
     }
 
     public ArrayList<SimpleUserEntity> getThumbUsers() {

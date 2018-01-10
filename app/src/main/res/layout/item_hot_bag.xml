@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingStart="@dimen/x24"
+    android:paddingEnd="@dimen/x24">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y96"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/main_red"
+            android:textSize="@dimen/x24"
+            android:textStyle="bold"
+            android:text="热门书包"
+            android:drawableStart="@drawable/ic_feed_bag_hot"
+            android:drawablePadding="@dimen/x8"/>
+
+        <TextView
+            android:id="@+id/tv_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="换一组"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/main_cyan"
+            android:gravity="center_vertical"
+            android:drawableStart="@drawable/ic_bag_switch"
+            android:drawablePadding="@dimen/x8"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/ll_feed_bag_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y96"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/blue_4999e8"
+            android:textSize="@dimen/x24"
+            android:textStyle="bold"
+            android:text="最新上传"
+            android:drawableStart="@drawable/ic_feed_bag_new"
+            android:drawablePadding="@dimen/x8"/>
+
+        <TextView
+            android:id="@+id/tv_my_bag"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="我的书包"
+            android:textSize="@dimen/x24"
+            android:textColor="@color/main_cyan"
+            android:gravity="center_vertical"
+            android:drawableEnd="@drawable/ic_bag_more"
+            android:drawablePadding="@dimen/x8"
+            android:visibility="gone"/>
+    </LinearLayout>
+</LinearLayout>

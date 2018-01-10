@@ -234,6 +234,8 @@ public class DialogUtils {
         if (PreferenceUtils.isLogin()) {
             res = true;
         } else {
+            AlertDialogUtil alertDialogUtil1 = AlertDialogUtil.getInstance();
+            alertDialogUtil1.dismissDialog();
             final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
             alertDialogUtil.createPromptNormalDialog(context,context.getString(R.string.a_dlg_msg_need_login_first));
             alertDialogUtil.setButtonText(context.getString(R.string.a_dlg_go_2_login),context.getString(R.string.label_cancel),0);
@@ -260,7 +262,7 @@ public class DialogUtils {
 //                        public void onClick(DialogInterface dialog, int which) {
 //                            // 前往登录界面
 //                            Intent i = new Intent(context, LoginActivity.class);
-//                            context.startActivity(i);
+//                            context.startActivityForResult(i);
 //                        }
 //                    }).setNegativeButton(R.string.label_cancel, null);
 //            try {

@@ -68,8 +68,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/x30"
                         android:layout_marginStart="@dimen/x12"
-                        android:textColor="@color/txt_green_red"
-                        />
+                        android:textColor="@color/txt_green_red" />
 
                 </LinearLayout>
 
@@ -108,6 +107,18 @@
                         android:textSize="@dimen/x30"
                         android:text="@string/label_copy_dust"/>
                 </LinearLayout>
+                
+                <TextView
+                    android:id="@+id/tv_buy_num"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y90"
+                    android:background="@color/white"
+                    android:layout_marginTop="@dimen/y24"
+                    android:paddingLeft="@dimen/x36"
+                    android:paddingRight="@dimen/x36"
+                    android:textColor="@color/black_1e1e1e"
+                    android:textSize="@dimen/x30"
+                    android:gravity="center_vertical" />
 
                 <LinearLayout
                     android:id="@+id/ll_order_address"
@@ -239,7 +250,7 @@
                     android:textColor="@color/white"
                     android:gravity="center"
                     android:text="@string/label_order_cancel"
-                    android:background="@drawable/shape_rect_border_gray_background_4"/>
+                    android:background="@drawable/shape_gray_background_4"/>
 
                 <TextView
                     android:id="@+id/tv_done_order"
@@ -250,7 +261,7 @@
                     android:gravity="center"
                     android:layout_marginStart="@dimen/x50"
                     android:text="@string/label_order_pay"
-                    android:background="@drawable/shape_rect_border_main_background_4"/>
+                    android:background="@drawable/shape_main_background_4"/>
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>

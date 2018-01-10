@@ -102,9 +102,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_splash);
         ButterKnife.bind(SplashActivity.this);
-       // int[] splash = new int[]{R.drawable.splash1,R.drawable.splash2,R.drawable.splash3};
         splashImg.setImageResource(R.drawable.splash);
-        //delaySplash();
     }
 
     @Override
@@ -131,28 +129,18 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         finish();
     }
 
-    private void go2Login(){
-        saveLaunch();
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(LoginActivity.EXTRA_KEY_FIRST_RUN, true);
-        Intent i = new Intent(this,LoginActivity.class);
-        i.putExtra(LoginActivity.EXTRA_KEY_SETTING, true);
-        i.putExtras(bundle);
+    private void goToMengXin(){
+        Intent intent = getIntent();
+        if(intent != null){
+            mSchema = intent.getStringExtra("schema");
+        }
+        Intent i = new Intent(this,MengXinActivity.class);
+        if(!TextUtils.isEmpty(mSchema)){
+            i.putExtra("schema",mSchema);
+        }
         startActivity(i);
         finish();
     }
-
-    private void saveLaunch(){
-        PreferenceUtils.setAppFirstLaunch(this,false);
-        PreferenceUtils.setVersion2FirstLaunch(this,false);
-        PreferenceUtils.setVersionCode(this,getString(R.string.app_version_code));
-    }
-
-//    private void goToGuide(){
-//        Intent intent = new Intent(this, GuideActivity.class);
-//        startActivity(intent);
-//        finish();
-//    }
 
     private void init(){
         DaggerSimpleComponent.builder()
@@ -229,11 +217,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                 @Override
                 public void onNoDoubleClick(View v) {
                     if(PreferenceUtils.isAppFirstLaunch(SplashActivity.this)){
-                        if(PreferenceUtils.isLogin()){
-                            goToMain();
-                        }else {
-                            go2Login();
-                        }
+                        goToMengXin();
                     }else {
                         goToMain();
                     }
@@ -241,63 +225,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
             });
         }
         mHandler.post(timeRun);
-//        if(PreferenceUtils.isAppFirstLaunch(this)){
-//            Observable.timer(mMaxTime, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<Long>() {
-//                        @Override
-//                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
-//                            mTvSkip.setText("点击跳过  " + aLong);
-//                        }
-//
-//                        @Override
-//                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            if(PreferenceUtils.isLogin()){
-//                                goToMain();
-//                            }else {
-//                                go2Login();
-//                            }
-//                        }
-//                    });
-//        }else {
-//            mTvSkip.setOnClickListener(new NoDoubleClickListener() {
-//                @Override
-//                public void onNoDoubleClick(View v) {
-//                    goToMain();
-//                }
-//            });
-//            Observable.timer(mMaxTime, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<Long>() {
-//                        @Override
-//                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
-//                            mTvSkip.setText("点击跳过  " + aLong);
-//                        }
-//
-//                        @Override
-//                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            goToMain();
-//                        }
-//                    });
-//        }
     }
 
     private Handler mHandler = new Handler();
@@ -310,11 +237,7 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
                 mTvSkip.setText("点击跳过  " + mCurTime);
                 mHandler.removeCallbacks(this);
                 if(PreferenceUtils.isAppFirstLaunch(SplashActivity.this)){
-                    if(PreferenceUtils.isLogin()){
-                        goToMain();
-                    }else {
-                        go2Login();
-                    }
+                    goToMengXin();
                 }else {
                     goToMain();
                 }
@@ -333,22 +256,6 @@ public class SplashActivity extends AppCompatActivity implements EasyPermissions
         }else {
             init();
         }
-    }
-
-//    private void delaySplash(){
-//        try {
-//            AssetManager assetManager = this.getAssets();
-//            InputStream in = assetManager.open("splash" + (new Random().nextInt(3) + 1) + ".jpg");
-//            splashImg.setImageDrawable(InputStream2Drawable(in));
-//            in.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    public Drawable InputStream2Drawable(InputStream is){
-        Drawable drawable = BitmapDrawable.createFromStream(is,"splashImg");
-        return drawable;
     }
 
     @Override

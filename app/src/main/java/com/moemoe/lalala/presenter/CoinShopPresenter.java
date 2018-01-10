@@ -16,6 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -74,6 +75,7 @@ public class CoinShopPresenter implements CoinShopContract.Presenter {
                         orderEntity.setOrderType(shopEntity.getOrderType());
                         orderEntity.setRmb(shopEntity.getRmb());
                         orderEntity.setCoin(shopEntity.getCoin());
+                        orderEntity.setBuyNum(1);
                         if(view!=null) view.onCreateOrderSuccess(orderEntity);
                     }
 
@@ -85,7 +87,7 @@ public class CoinShopPresenter implements CoinShopContract.Presenter {
     }
 
     @Override
-    public void createOrder(final CoinShopEntity id, int num) {
+    public void createOrder(final CoinShopEntity id, final int num) {
         apiService.createOrderNum(num,id.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -102,8 +104,9 @@ public class CoinShopPresenter implements CoinShopContract.Presenter {
                         orderEntity.setProductName(id.getProductName());
                         orderEntity.setDesc(id.getDesc());
                         orderEntity.setOrderType(id.getOrderType());
-                        orderEntity.setRmb(id.getRmb());
-                        orderEntity.setCoin(id.getCoin());
+                        orderEntity.setRmb(id.getRmb() * num);
+                        orderEntity.setCoin(id.getCoin() * num);
+                        orderEntity.setBuyNum(num);
                         if(view!=null) view.onCreateOrderSuccess(orderEntity);
                     }
 
@@ -123,6 +126,24 @@ public class CoinShopPresenter implements CoinShopContract.Presenter {
                     @Override
                     public void onSuccess(ArrayList<JsonObject> jsonObjects) {
                         if(view!=null)view.onCreateOrderListSuccess(jsonObjects);
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+                        if(view!=null)view.onFailure(code, msg);
+                    }
+                });
+    }
+
+    @Override
+    public void loadShopDetail(String id) {
+        apiService.loadShopDetail(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new NetResultSubscriber<CoinShopEntity>() {
+                    @Override
+                    public void onSuccess(CoinShopEntity entity) {
+                        if(view!=null)view.onLoadShopDetailSuccess(entity);
                     }
 
                     @Override

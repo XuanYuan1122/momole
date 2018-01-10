@@ -116,6 +116,7 @@ public class KiraConversationListFragment extends ConversationListFragment imple
         item3.setUIConversationTime(Long.MAX_VALUE - 3);
         mAdapter.add(item3);
         mAdapter.notifyDataSetChanged();
+        mPresenter.getServerTime("");
     }
 
     private void subscribeSearchChangedEvent() {

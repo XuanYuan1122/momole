@@ -149,7 +149,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/x24"
         android:layout_marginBottom="@dimen/y16"
-        android:background="@drawable/shape_rect_border_white_background_y12">
+        android:background="@drawable/shape_white_background_y12">
 
         <TextView
             android:id="@+id/tv_music_name"

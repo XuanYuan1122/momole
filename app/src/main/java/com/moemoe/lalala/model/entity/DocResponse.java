@@ -16,6 +16,15 @@ public class DocResponse {
 	private int comments;// 评论数
 	private int likes;// 喜欢数
 	private String cover;
+	private String departmentName;
+
+	public String getDepartmentName() {
+		return departmentName;
+	}
+
+	public void setDepartmentName(String departmentName) {
+		this.departmentName = departmentName;
+	}
 
 	public String getId() {
 		return id;

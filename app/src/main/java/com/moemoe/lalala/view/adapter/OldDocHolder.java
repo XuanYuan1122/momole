@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -26,6 +27,7 @@ import com.moemoe.lalala.model.entity.ShareArticleEntity;
 import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.utils.BitmapUtils;
 import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
@@ -64,7 +66,12 @@ public class OldDocHolder extends ClickableViewHolder {
 
     public void createItem(final DocResponse entity){
         //from
-        setVisible(R.id.rl_from_top, false);
+        if(!TextUtils.isEmpty(entity.getDepartmentName())){
+            setVisible(R.id.rl_from_top, true);
+            setText(R.id.tv_from_name,entity.getDepartmentName());
+        }else {
+            setVisible(R.id.rl_from_top, false);
+        }
         //user top
         if(entity.getCreateUser().isVip()){
             setVisible(R.id.iv_vip,true);
@@ -179,7 +186,7 @@ public class OldDocHolder extends ClickableViewHolder {
         $(R.id.fl_comment_root).setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                //DynamicActivity.startActivity(context,entity,true);
+                //DynamicActivity.startActivityForResult(context,entity,true);
             }
         });
         $(R.id.fl_tag_root).setOnClickListener(new NoDoubleClickListener() {

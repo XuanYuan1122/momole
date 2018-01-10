@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
+    <include layout="@layout/neta_bar"/>
+
+    <LinearLayout
+        android:id="@+id/ll_top_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x24"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:paddingBottom="@dimen/y28">
+
+        <LinearLayout
+            android:id="@+id/rl_search_root"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x16"
+            android:layout_marginTop="@dimen/y28"
+            android:orientation="horizontal"
+            android:background="@drawable/shape_e8e8e8_14">
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="@dimen/x36"
+                android:layout_height="@dimen/y38"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_search_icon" />
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/y56"
+                android:background="@null"
+                android:imeOptions="actionSearch"
+                android:textColor="@color/black_1e1e1e"
+                android:singleLine="true"
+                android:layout_marginStart="@dimen/x24"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/x16"
+                android:hint="输入标签（不可大于5字）"
+                android:textSize="@dimen/x28"
+                android:textColorHint="@color/gray_929292"
+                android:textCursorDrawable="@null"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/iv_clear"
+                android:layout_width="@dimen/y36"
+                android:layout_height="@dimen/y36"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_search_cancel" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/label_1_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y36"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_label_add_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/y56"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/x30"
+                    android:paddingStart="@dimen/x20"
+                    android:paddingEnd="@dimen/x20"
+                    android:layout_marginTop="@dimen/y18"
+                    android:layout_marginEnd="@dimen/y18"
+                    android:gravity="center"/>
+
+                <ImageView
+                    android:id="@+id/iv_1_close"
+                    android:layout_width="@dimen/y36"
+                    android:layout_height="@dimen/y36"
+                    android:layout_gravity="end"
+                    android:src="@drawable/btn_sanguo_cancel"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/label_2_root"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y36"
+                android:layout_marginStart="@dimen/x18"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_label_add_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/y56"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/x30"
+                    android:paddingStart="@dimen/x20"
+                    android:paddingEnd="@dimen/x20"
+                    android:layout_marginTop="@dimen/y18"
+                    android:layout_marginEnd="@dimen/y18"
+                    android:gravity="center"/>
+
+                <ImageView
+                    android:id="@+id/iv_2_close"
+                    android:layout_width="@dimen/y36"
+                    android:layout_height="@dimen/y36"
+                    android:layout_gravity="end"
+                    android:src="@drawable/btn_sanguo_cancel"/>
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_recommend_notice"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y88"
+        android:textColor="@color/gray_d7d7d7"
+        android:textSize="@dimen/x30"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/x24"
+        android:background="@color/white"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/tv_add_user"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y88"
+        android:textColor="@color/main_cyan"
+        android:textSize="@dimen/x30"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/x24"
+        android:drawableStart="@drawable/ic_bag_tag_blue"
+        android:paddingStart="@dimen/x24"
+        android:drawablePadding="@dimen/x20"
+        android:background="@color/white"
+        android:text="添加自定义标签"
+        android:visibility="gone"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:background="@color/gray_e8e8e8"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

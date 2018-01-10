@@ -11,15 +11,19 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFeedComponent;
 import com.moemoe.lalala.di.modules.FeedModule;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.Comment24Entity;
+import com.moemoe.lalala.model.entity.DepartmentEntity;
 import com.moemoe.lalala.model.entity.DiscoverEntity;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
@@ -29,10 +33,14 @@ import com.moemoe.lalala.presenter.FeedContract;
 import com.moemoe.lalala.presenter.FeedPresenter;
 import com.moemoe.lalala.utils.BannerImageLoader;
 import com.moemoe.lalala.utils.IntentUtils;
+import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.ViewUtils;
+import com.moemoe.lalala.view.activity.CreateDynamicActivity;
 import com.moemoe.lalala.view.activity.DynamicActivity;
+import com.moemoe.lalala.view.adapter.DiscoverHolder;
 import com.moemoe.lalala.view.adapter.FeedAdapter;
+import com.moemoe.lalala.view.adapter.FeedHolder;
 import com.moemoe.lalala.view.adapter.XianChongListAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
@@ -48,6 +56,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
+ *
  * Created by yi on 2017/9/4.
  */
 
@@ -55,6 +64,8 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
 
     @BindView(R.id.list)
     PullAndLoadView mListDocs;
+    @BindView(R.id.iv_to_wen)
+    ImageView mIvCreateDynamic;
 
     @Inject
     FeedPresenter mPresenter;
@@ -62,8 +73,12 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
     private Banner banner;
     private View bannerView;
     private View xianChongView;
+    private View hotView;
     private FeedAdapter mAdapter;
+    private long minIdx;
+    private long maxIdx;
     private boolean isLoading = false;
+    private String type;
 
     public static NewFollowMainFragment newInstance(String type){
         NewFollowMainFragment fragment = new NewFollowMainFragment();
@@ -94,7 +109,7 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        final String type = getArguments().getString("type");
+        type = getArguments().getString("type");
         final String userId = getArguments().getString("id");
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListDocs.setLoadMoreEnabled(true);
@@ -126,6 +141,7 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
             @Override
             public void onRefresh() {
                 isLoading = true;
+                mPresenter.loadDiscoverList(type,minIdx,maxIdx,true);
                 mPresenter.loadList(0,type,userId);
             }
 
@@ -142,7 +158,20 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
         if("ground".equals(type)){
             mPresenter.requestBannerData("CLASSROOM");
             mPresenter.loadXianChongList();
+            mIvCreateDynamic.setVisibility(View.VISIBLE);
+            mIvCreateDynamic.setImageResource(R.drawable.btn_feed_create_dynamic);
+            mIvCreateDynamic.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i4 = new Intent(getContext(),CreateDynamicActivity.class);
+                    i4.putExtra("default_tag","广场");
+                    startActivity(i4);
+                }
+            });
         }
+        minIdx = PreferenceUtils.getDiscoverMinIdx(getContext(),type);
+        maxIdx = PreferenceUtils.getDiscoverMaxIdx(getContext(),type);
+        mPresenter.loadDiscoverList(type,minIdx,maxIdx,true);
         mPresenter.loadList(0,type,userId);
     }
 
@@ -208,7 +237,21 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
         if(entities.size() > 0){
             if(xianChongView == null){
                 xianChongView  = LayoutInflater.from(getContext()).inflate(R.layout.item_class_featured, null);
-                mAdapter.addHeaderView(xianChongView);
+
+                int count = mAdapter.getHeaderViewCount();
+                if(count == 0){
+                    mAdapter.addHeaderView(xianChongView);
+                }else if(count == 1){
+                    View view = mAdapter.getmHeaderLayout().getChildAt(0);
+                    if(view == bannerView){
+                        mAdapter.addHeaderView(xianChongView);
+                    }else {
+                        mAdapter.addHeaderView(xianChongView,0);
+                    }
+                }else if(count == 2){
+                    mAdapter.addHeaderView(xianChongView,1);
+                }
+
             }
             RecyclerView rvList = xianChongView.findViewById(R.id.rv_class_featured);
             rvList.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)getResources().getDimension(R.dimen.y180)));
@@ -258,33 +301,128 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
 
     @Override
     public void onLikeDynamicSuccess(boolean isLike, int position) {
-        mAdapter.getList().get(position).setThumb(isLike);
-        if(isLike){
-            SimpleUserEntity userEntity = new SimpleUserEntity();
-            userEntity.setUserName(PreferenceUtils.getAuthorInfo().getUserName());
-            userEntity.setUserId(PreferenceUtils.getUUid());
-            userEntity.setUserIcon(PreferenceUtils.getAuthorInfo().getHeadPath());
-            mAdapter.getList().get(position).getThumbUsers().add(0,userEntity);
-            mAdapter.getList().get(position).setThumbs(mAdapter.getList().get(position).getThumbs() + 1);
-        }else {
-            for(SimpleUserEntity userEntity : mAdapter.getList().get(position).getThumbUsers()){
-                if(userEntity.getUserId().equals(PreferenceUtils.getUUid())){
-                    mAdapter.getList().get(position).getThumbUsers().remove(userEntity);
-                    break;
+        if(position == -1){
+            if(mCurDiscover != null){
+                if("dynamic".equals(mCurDiscover.getType())){
+                    NewDynamicEntity entity = new Gson().fromJson(mCurDiscover.getObj(),NewDynamicEntity.class);
+                    entity.setThumb(isLike);
+                    if(isLike){
+                        SimpleUserEntity userEntity = new SimpleUserEntity();
+                        userEntity.setUserName(PreferenceUtils.getAuthorInfo().getUserName());
+                        userEntity.setUserId(PreferenceUtils.getUUid());
+                        userEntity.setUserIcon(PreferenceUtils.getAuthorInfo().getHeadPath());
+                        entity.getThumbUsers().add(0,userEntity);
+                        entity.setThumbs(entity.getThumbs() + 1);
+                    }else {
+                        for(SimpleUserEntity userEntity : entity.getThumbUsers()){
+                            if(userEntity.getUserId().equals(PreferenceUtils.getUUid())){
+                                entity.getThumbUsers().remove(userEntity);
+                                break;
+                            }
+                        }
+                        entity.setThumbs(entity.getThumbs() - 1);
+                    }
+                    Gson gson = new Gson();
+                    JsonObject newObj = gson.toJsonTree(entity).getAsJsonObject();
+                    mCurDiscover.setObj(newObj);
+                    holder.createItem(entity,-1,mCurDiscover.getFrom());
                 }
             }
-            mAdapter.getList().get(position).setThumbs(mAdapter.getList().get(position).getThumbs() - 1);
-        }
-        if(mAdapter.getHeaderLayoutCount() != 0){
-            mAdapter.notifyItemChanged(position + 1);
         }else {
-            mAdapter.notifyItemChanged(position);
+            mAdapter.getList().get(position).setThumb(isLike);
+            if(isLike){
+                SimpleUserEntity userEntity = new SimpleUserEntity();
+                userEntity.setUserName(PreferenceUtils.getAuthorInfo().getUserName());
+                userEntity.setUserId(PreferenceUtils.getUUid());
+                userEntity.setUserIcon(PreferenceUtils.getAuthorInfo().getHeadPath());
+                mAdapter.getList().get(position).getThumbUsers().add(0,userEntity);
+                mAdapter.getList().get(position).setThumbs(mAdapter.getList().get(position).getThumbs() + 1);
+            }else {
+                for(SimpleUserEntity userEntity : mAdapter.getList().get(position).getThumbUsers()){
+                    if(userEntity.getUserId().equals(PreferenceUtils.getUUid())){
+                        mAdapter.getList().get(position).getThumbUsers().remove(userEntity);
+                        break;
+                    }
+                }
+                mAdapter.getList().get(position).setThumbs(mAdapter.getList().get(position).getThumbs() - 1);
+            }
+            if(mAdapter.getHeaderLayoutCount() != 0){
+                mAdapter.notifyItemChanged(position + 1);
+            }else {
+                mAdapter.notifyItemChanged(position);
+            }
         }
     }
 
+    private DiscoverEntity mCurDiscover;
+    private DiscoverHolder holder;
+
     @Override
     public void onLoadDiscoverListSuccess(ArrayList<DiscoverEntity> entities, boolean isPull) {
+        if(entities.size() > 0){
+            changeIdx(entities);
+            if(hotView == null){
+                hotView  = LayoutInflater.from(getContext()).inflate(R.layout.item_new_feed_list, null);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.topMargin = (int) getResources().getDimension(R.dimen.y24);
+                hotView.setLayoutParams(lp);
+                mAdapter.addHeaderView(hotView);
+            }
+            holder = new DiscoverHolder(hotView);
+            mCurDiscover = entities.get(0);
+            if("dynamic".equals(mCurDiscover.getType())){
+                final NewDynamicEntity entity = new Gson().fromJson(mCurDiscover.getObj(),NewDynamicEntity.class);
+                holder.createItem(entity,-1,mCurDiscover.getFrom());
+                hotView.setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+                        DynamicActivity.startActivity(getContext(),entity);
+                    }
+                });
+            }else {
+                if(hotView != null){
+                    mAdapter.removeHeaderView(hotView);
+                    hotView = null;
+                }
+            }
+        }else {
+            if(hotView != null){
+                mAdapter.removeHeaderView(hotView);
+                hotView = null;
+            }
+        }
+    }
 
+    private void changeIdx(ArrayList<DiscoverEntity> entities){
+        if(entities.size() > 0){
+            long min = entities.get(0).getTimestamp();
+            long max = entities.get(0).getTimestamp();
+            for(DiscoverEntity entity : entities){
+                if(entity.getTimestamp() == 0){
+                    min = 0;
+                    max = 0;
+                    break;
+                }else if(entity.getTimestamp() > max){
+                    max = entity.getTimestamp();
+                }else if(entity.getTimestamp() < min){
+                    min = entity.getTimestamp();
+                }
+            }
+            if(min == 0 && max == 0){
+                minIdx = maxIdx = 0;
+            }else {
+                if(min < minIdx || minIdx == 0){
+                    minIdx = min;
+                }
+                if(max > maxIdx){
+                    maxIdx = max;
+                }
+            }
+            if("random".equals(type)){
+                PreferenceUtils.setDiscoverMinIdx(getContext(),type,minIdx);
+                PreferenceUtils.setDiscoverMaxIdx(getContext(),type,maxIdx);
+            }
+        }
     }
 
     @Override

@@ -41,7 +41,7 @@
                     android:layout_height="@dimen/y172"
                     android:layout_marginStart="@dimen/x24"
                     android:layout_marginTop="@dimen/y174"
-                    android:background="@drawable/shape_rect_border_white_background_10">
+                    android:background="@drawable/shape_white_background_10">
 
                     <ImageView
                         android:id="@+id/iv_bag"

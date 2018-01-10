@@ -250,7 +250,7 @@ public class PhoneMainV2Activity extends BaseAppCompatActivity implements PhoneM
         mTvMenu.setTextSize(TypedValue.COMPLEX_UNIT_PX,getResources().getDimension(R.dimen.x20));
         mTvMenu.setGravity(Gravity.CENTER);
         mTvMenu.setText(menu);
-        mTvMenu.setBackgroundResource(R.drawable.shape_rect_border_main_background_y22);
+        mTvMenu.setBackgroundResource(R.drawable.shape_main_background_y22);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.x144),(int)getResources().getDimension(R.dimen.y44));
         lp.rightMargin = (int) getResources().getDimension(R.dimen.x20);
         mTvMenu.setLayoutParams(lp);

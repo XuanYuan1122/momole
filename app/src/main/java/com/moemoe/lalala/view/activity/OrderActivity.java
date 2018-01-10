@@ -43,6 +43,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
+ *
  * Created by yi on 2017/7/14.
  */
 
@@ -59,6 +60,8 @@ public class OrderActivity extends BaseAppCompatActivity implements OrderContrac
     TextView mTitle;
     @BindView(R.id.et_order_mark)
     EditText mEtMark;
+    @BindView(R.id.tv_buy_num)
+    TextView mTvBuyNum;
 
     @Inject
     OrderPresenter mPresenter;
@@ -106,6 +109,7 @@ public class OrderActivity extends BaseAppCompatActivity implements OrderContrac
                 $(R.id.ll_order_state).setVisibility(View.INVISIBLE);
             }
         }
+        mTvBuyNum.setText("数量:" + order.getBuyNum());
         Glide.with(this)
                 .load(StringUtils.getUrl(this, order.getIcon(), (int)getResources().getDimension(R.dimen.y220),(int)getResources().getDimension(R.dimen.y220),false,true))
                 .override((int)getResources().getDimension(R.dimen.y220),(int)getResources().getDimension(R.dimen.y220))
@@ -220,7 +224,6 @@ public class OrderActivity extends BaseAppCompatActivity implements OrderContrac
             }
         });
     }
-
 
     @Override
     protected void onDestroy() {

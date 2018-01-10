@@ -14,31 +14,29 @@ import java.util.ArrayList;
  */
 
 public class CoinShopEntity implements Parcelable{
-    @SerializedName("coin")
     private int coin;
-    @SerializedName("desc")
     private String desc;
-    @SerializedName("freeze")
     private int freeze;
-    @SerializedName("icon")
     private String icon;
-    @SerializedName("id")
     private String id;
-    @SerializedName("images")
     private ArrayList<Image> images;
-    @SerializedName("orderType")
     private String orderType;
-    @SerializedName("productName")
     private String productName;
-    @SerializedName("rmb")
     private int rmb;
-    @SerializedName("stock")
     private int stock;
-    @SerializedName("stockDesc")
     private String stockDesc;
+    private int buyLimit;
 
     public CoinShopEntity() {
         images = new ArrayList<>();
+    }
+
+    public int getBuyLimit() {
+        return buyLimit;
+    }
+
+    public void setBuyLimit(int buyLimit) {
+        this.buyLimit = buyLimit;
     }
 
     public int getCoin() {

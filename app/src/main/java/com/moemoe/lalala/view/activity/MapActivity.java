@@ -34,7 +34,6 @@ import com.moemoe.lalala.event.EventDoneEvent;
 import com.moemoe.lalala.event.MateChangeEvent;
 import com.moemoe.lalala.event.SystemMessageEvent;
 import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
-import com.moemoe.lalala.kira.game.MapGameActivity;
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
 import com.moemoe.lalala.model.entity.AppUpdateEntity;
 import com.moemoe.lalala.model.entity.AuthorInfo;
@@ -61,6 +60,7 @@ import com.moemoe.lalala.utils.FileUtil;
 import com.moemoe.lalala.utils.GreenDaoManager;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.JuQingUtil;
+import com.moemoe.lalala.utils.MapToolTipUtils;
 import com.moemoe.lalala.utils.MapUtil;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -173,7 +173,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private BottomMenuFragment menuFragment;
     private Disposable initDisposable;
     private Disposable resolvDisposable;
-   // private OrientationEventListener mOrientationListener;
     private TencentLocationManager locationManager;
 
     @Override
@@ -196,6 +195,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 .inject(this);
         FileDownloader.getImpl().bindService();
         mContainer = new MapMarkContainer();
+        MapToolTipUtils.getInstance().init(this,5,8,mapWidget,mMap);
         initMap("map_asa");
         final Conversation.ConversationType[] conversationTypes = {
                 Conversation.ConversationType.PRIVATE,
@@ -218,40 +218,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mTvTime.setText(mTime);
         subscribeSearchChangedEvent();
         ViewUtils.setRoleButton(mIvRole, mTvText);
-//        mOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
-//
-//            @Override
-//            public void onOrientationChanged(int orientation) {
-//                if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
-//                       return;  //手机平放时，检测不到有效的角度
-//                }
-//                //只检测是否有四个角度的改变
-////                if (orientation > 350 || orientation < 10) { //0度
-////                    return;
-////                } else
-//                if (orientation > 80 && orientation < 100) { //90度
-//                    Intent i = new Intent(MapActivity.this,Live2dActivity.class);
-//                    startActivity(i);
-//                    mOrientationListener.disable();
-//                }
-////                else if (orientation > 170 && orientation < 190) { //180度
-////                    return;
-////                }
-//                else if (orientation > 260 && orientation < 280) { //270度
-//                    Intent i = new Intent(MapActivity.this,Live2dActivity.class);
-//                    startActivity(i);
-//                    mOrientationListener.disable();
-//                }
-////                else {
-////                    return;
-////                }
-//            }
-//        };
-//        if(mOrientationListener.canDetectOrientation()) {
-//            mOrientationListener.enable();
-//        } else {
-//            mOrientationListener.disable();
-//        }
         TencentLocationRequest request = TencentLocationRequest.create();
         request.setInterval(60 * 1000 * 60 * 2);//1小时获取一次定位
         request.setRequestLevel(TencentLocationRequest.REQUEST_LEVEL_GEO);
@@ -268,7 +234,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mPresenter.loadMapAllUser();
         mPresenter.loadMapBirthdayUser();
         mPresenter.loadMapTopUser();
-        //mPresenter.loadMapNearUser(AppSetting.LAT,AppSetting.LON);
         mPresenter.addMapMark(this,mContainer,mapWidget,"nearUser");
         if(PreferenceUtils.isLogin() && !AppSetting.isLoadDone){
             mPresenter.findMyDoneJuQing();
@@ -281,7 +246,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     private void initMap(String map){
         mapWidget = new MapWidget(this,map,12);
         mapWidget.centerMap();
-        float scale = (float) DensityUtil.getScreenHeight(this) / mapWidget.getOriginalMapHeight();
         OfflineMapConfig config = mapWidget.getConfig();
         mapWidget.scrollMapTo(0,0);
         config.setPinchZoomEnabled(true);
@@ -297,12 +261,15 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mPresenter.addMapMark(this,mContainer,mapWidget,"birthdayUser");
         mPresenter.addMapMark(this,mContainer,mapWidget,"followUser");
         mPresenter.addMapMark(this,mContainer,mapWidget,"nearUser");
+        MapToolTipUtils.getInstance().updateMap(mapWidget);
+        MapToolTipUtils.getInstance().updateList(mContainer.getContainer());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         hideBtn();
+        MapToolTipUtils.getInstance().stop();
     }
 
     private void clearMap(){
@@ -404,8 +371,12 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
     protected void onResume() {
         super.onResume();
         showBtn();
+        MapToolTipUtils.getInstance().start();
         if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") || PreferenceUtils.getMessageDot(this,"normal")){//|| showDot){
-            int num = PreferenceUtils.getNetaMsgDotNum(this) + PreferenceUtils.getSysMsgDotNum(this) + PreferenceUtils.getAtUserMsgDotNum(this) + PreferenceUtils.getNormalMsgDotNum(this);
+            int num = PreferenceUtils.getNetaMsgDotNum(this)
+                    + PreferenceUtils.getSysMsgDotNum(this)
+                    + PreferenceUtils.getAtUserMsgDotNum(this)
+                    + PreferenceUtils.getNormalMsgDotNum(this);
             if(num > 999) num = 999;
             mTvSysMsg.setText(num + "条通知");
             mTvSysMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(this,R.drawable.ic_inform_reddot),null,null,null);
@@ -856,8 +827,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         if(!TextUtils.isEmpty(mSchema)){
             IntentUtils.toActivityFromUri(this, Uri.parse(mSchema),null);
         }else {
-            Intent i2 = new Intent(MapActivity.this,PhoneMainV2Activity.class);
-            startActivity(i2);
+//            Intent i2 = new Intent(MapActivity.this,PhoneMainV2Activity.class);
+//            startActivityForResult(i2);
+            Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
+            startActivity(i3);
         }
     }
 
@@ -1316,11 +1289,11 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 break;
 //            case R.id.iv_live2d_shop:
 //                Intent i8 = new Intent(MapActivity.this,Live2dShopActivity.class);
-//                startActivity(i8);
+//                startActivityForResult(i8);
 //                break;
 //            case R.id.iv_camera:
 //                Intent i9= new Intent(MapActivity.this,CameraPreview2Activity.class);
-//                startActivity(i9);
+//                startActivityForResult(i9);
 //                break;
         }
     }
@@ -1447,6 +1420,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             isGisterReciver = false;
         }
         RxBus.getInstance().unSubscribe(this);
+        MapToolTipUtils.getInstance().release();
         FileDownloader.getImpl().pauseAll();
         FileDownloader.getImpl().unBindService();
         AppSetting.isRunning = false;

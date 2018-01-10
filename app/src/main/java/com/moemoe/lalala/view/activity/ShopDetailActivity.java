@@ -2,6 +2,7 @@ package com.moemoe.lalala.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +17,7 @@ import com.moemoe.lalala.model.entity.CoinShopEntity;
 import com.moemoe.lalala.model.entity.OrderEntity;
 import com.moemoe.lalala.presenter.CoinShopContract;
 import com.moemoe.lalala.presenter.CoinShopPresenter;
+import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.GlideImageLoader;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -30,6 +32,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
+ * 商品详情页
  * Created by yi on 2017/7/18.
  */
 
@@ -60,8 +63,18 @@ public class ShopDetailActivity extends BaseAppCompatActivity implements CoinSho
                 .inject(this);
         mShopEntity = getIntent().getParcelableExtra("shop_detail");
         if(mShopEntity == null) {
-            finish();
+            String id = getIntent().getStringExtra(UUID);
+            if(!TextUtils.isEmpty(id)){
+                mPresenter.loadShopDetail(id);
+            }else {
+                finish();
+            }
+        }else {
+            init();
         }
+    }
+
+    private void init(){
         mTitle.setText(mShopEntity.getProductName());
         Banner topRoot = $(R.id.banner_top);
         topRoot.setLayoutParams(new LinearLayout.LayoutParams(DensityUtil.getScreenWidth(this), DensityUtil.getScreenWidth(this)));
@@ -100,7 +113,38 @@ public class ShopDetailActivity extends BaseAppCompatActivity implements CoinSho
             tvBuy.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    mPresenter.createOrder(mShopEntity);
+                    if(mShopEntity.getBuyLimit() == 1){
+                        mPresenter.createOrder(mShopEntity);
+                    }else {
+                        final AlertDialogUtil dialogUtil = AlertDialogUtil.getInstance();
+                        dialogUtil.createEditDialog(ShopDetailActivity.this, mShopEntity.getBuyLimit(),2);
+                        dialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+                            @Override
+                            public void CancelOnClick() {
+                                dialogUtil.dismissDialog();
+                            }
+
+                            @Override
+                            public void ConfirmOnClick() {
+                                String content = dialogUtil.getEditTextContent();
+                                try {
+                                    if(!TextUtils.isEmpty(content) && Integer.valueOf(content) > 0){
+                                        if(Integer.valueOf(content) > mShopEntity.getBuyLimit()){
+                                            showToast("超过购买限制");
+                                        }else {
+                                            mPresenter.createOrder(mShopEntity,Integer.valueOf(content));
+                                            dialogUtil.dismissDialog();
+                                        }
+                                    }else {
+                                        showToast(R.string.msg_input_err_coin);
+                                    }
+                                }catch (Exception e){
+                                    showToast(R.string.msg_input_err_coin);
+                                }
+                            }
+                        });
+                        dialogUtil.showDialog();
+                    }
                 }
             });
         }
@@ -151,6 +195,12 @@ public class ShopDetailActivity extends BaseAppCompatActivity implements CoinSho
     @Override
     public void onCreateOrderListSuccess(ArrayList<JsonObject> jsonObjects) {
 
+    }
+
+    @Override
+    public void onLoadShopDetailSuccess(CoinShopEntity entity) {
+        mShopEntity = entity;
+        init();
     }
 
     @Override

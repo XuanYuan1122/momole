@@ -470,6 +470,11 @@ public class NetaRichEditor extends ScrollView {
         }
     }
 
+    public void setTags(ArrayList<DocTagEntity> tags){
+        mTags.addAll(tags);
+        docLabelView.notifyAdapter();
+    }
+
     /**
      * 处理软键盘backSpace回退事件
      *
@@ -685,8 +690,8 @@ public class NetaRichEditor extends ScrollView {
 
     public void addImageViewAtIndex(final int index, String imagePath,int w,int h,long size){
         final RelativeLayout imageLayout = createImageLayout();
-        DataImageView imageView = (DataImageView) imageLayout.findViewById(R.id.edit_imageView);
-        final LongImageView longImageView = (LongImageView) imageLayout.findViewById(R.id.edit_longImageView);
+        DataImageView imageView = imageLayout.findViewById(R.id.edit_imageView);
+        final LongImageView longImageView = imageLayout.findViewById(R.id.edit_longImageView);
         int width;
         int height;
         if(w == 0 && h == 0){
@@ -753,27 +758,6 @@ public class NetaRichEditor extends ScrollView {
 
                                 }
                             }).start();
-//                    downloadSub.download(ApiService.URL_QINIU + image.getPath(),temp,null)
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    BitmapUtils.galleryAddPic(getContext(), longImage.getAbsolutePath());
-//                                    longImageView.setImage(longImage.getAbsolutePath());
-//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
-//                                }
-//
-//                                @Override
-//                                public void onLoading(DownloadStatus res) {
-//
-//                                }
-//
-//                                @Override
-//                                public void onFail(Throwable e) {
-//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU +  image.getPath(),false).subscribe();
-//                                }
-//                            });
                 }
             }else {
                 longImageView.setImage(imagePath);

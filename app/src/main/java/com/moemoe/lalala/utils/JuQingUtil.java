@@ -50,6 +50,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ * 剧情管理工具
  * Created by yi on 2017/9/27.
  */
 
@@ -310,7 +311,7 @@ public class JuQingUtil {
         SpecificTimeTrigger entity = new Gson().fromJson(item,SpecificTimeTrigger.class);
         String start = StringUtils.addZero(entity.getStartHour()) + ":" + StringUtils.addZero(entity.getStartMinute()) + ":" + StringUtils.addZero(entity.getStartSecond());
         String end = StringUtils.addZero(entity.getEndHour()) + ":" + StringUtils.addZero(entity.getEndMinute()) + ":" + StringUtils.addZero(entity.getEndSecond());
-        if(StringUtils.matchCurrentTime(calendar,start,end) && StringUtils.matchYear(calendar,Integer.valueOf(entity.getStartYear()),Integer.valueOf(entity.getEndYear()))){
+        if(StringUtils.matchCurrentTime(calendar,start,end) && StringUtils.matchDate(calendar,entity.getStartYear(),entity.getEndYear())){
             res = true;
         }
         return res;

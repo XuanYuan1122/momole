@@ -2,6 +2,7 @@ package com.moemoe.lalala.presenter;
 
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -11,6 +12,7 @@ public interface CreateForwardContract {
     }
 
     interface View extends BaseView{
+        void onCreateForwardSuccess(float i);
         void onCreateForwardSuccess();
     }
 }

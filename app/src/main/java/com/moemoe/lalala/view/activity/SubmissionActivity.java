@@ -1,27 +1,19 @@
 package com.moemoe.lalala.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerSubmissionComponent;
-import com.moemoe.lalala.di.modules.AddAddressModule;
 import com.moemoe.lalala.di.modules.SubmissionModule;
-import com.moemoe.lalala.model.entity.AddressEntity;
 import com.moemoe.lalala.model.entity.SendSubmissionEntity;
 import com.moemoe.lalala.model.entity.SubmissionDepartmentEntity;
-import com.moemoe.lalala.presenter.AddressContract;
-import com.moemoe.lalala.presenter.AddressPresenter;
 import com.moemoe.lalala.presenter.SubmissionContract;
 import com.moemoe.lalala.presenter.SubmissionPresenter;
-import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.ViewUtils;

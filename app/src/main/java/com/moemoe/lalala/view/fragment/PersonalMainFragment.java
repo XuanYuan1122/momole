@@ -16,6 +16,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,6 +49,7 @@ import com.moemoe.lalala.view.activity.BagOpenActivity;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.CommentsListActivity;
 import com.moemoe.lalala.view.activity.CreateMapImageActivity;
+import com.moemoe.lalala.view.activity.MotifyTaiciActivity;
 import com.moemoe.lalala.view.activity.NewBagActivity;
 import com.moemoe.lalala.view.activity.NewFileCommonActivity;
 import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
@@ -70,7 +72,10 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_MOTIFY_TAICI;
+
 /**
+ *
  * Created by yi on 2016/12/15.
  */
 
@@ -126,6 +131,10 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
     View mEdit;
     @BindView(R.id.iv_role)
     ImageView mIvRole;
+    @BindView(R.id.tv_taici)
+    TextView mTvTaici;
+    @BindView(R.id.tv_motify_taici)
+    View mMotifyTaici;
 
     private TextView tvHuiZhang1;
     private TextView tvHuiZhang2;
@@ -140,6 +149,13 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
     private String uuid;
     private boolean isOpenBag;
     private boolean isCreate;
+    private int[] mBackGround = { R.drawable.shape_rect_label_cyan,
+            R.drawable.shape_rect_label_yellow,
+            R.drawable.shape_rect_label_orange,
+            R.drawable.shape_rect_label_pink,
+            R.drawable.shape_rect_border_green_y8,
+            R.drawable.shape_rect_label_purple,
+            R.drawable.shape_rect_label_tab_blue};
 
     @Inject
     PersonMainPresenter mPresenter;
@@ -321,6 +337,13 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
                         .error(R.drawable.bg_default_square)
                         .into(huiZhangImgs[i]);
             }
+        }else if(requestCode == REQ_MOTIFY_TAICI && resultCode == Activity.RESULT_OK){
+            if(data != null){
+                String taici = data.getStringExtra("taici");
+                mPresenter.saveUserText(taici);
+                entity.setText(taici);
+                mTvTaici.setText(entity.getText());
+            }
         }
     }
 
@@ -333,6 +356,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
     public void onLoadInfoSuccess(final PersonalMainEntity o) {
         entity = o;
         if(!uuid.equals(PreferenceUtils.getUUid())){
+            mMotifyTaici.setVisibility(View.INVISIBLE);
             if(TextUtils.isEmpty(entity.getSignature().trim())){
                 mTvSign.setText("这位同学啥也没写");
             }else {
@@ -375,6 +399,14 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
             });
             //mTvEditRole.setVisibility(View.GONE);
         }else {
+            mMotifyTaici.setVisibility(View.VISIBLE);
+            mMotifyTaici.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i = new Intent(getContext(), MotifyTaiciActivity.class);
+                    getActivity().startActivityForResult(i,REQ_MOTIFY_TAICI);
+                }
+            });
             mFlRoleRoot.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
@@ -413,6 +445,7 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
             }
             mTvSign.setText(entity.getSignature());
         }
+        mTvTaici.setText(entity.getText());
         mIvFavoriteMap.setSelected(entity.isLike());
         mTvMapLikeNum.setText(entity.getPicLikes() + " 喜欢");
         mTvHistorySocre.setText("(历史总分: " + entity.getPicAllLikes() + ")");
@@ -617,23 +650,45 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
             mFolderAddRoot.setVisibility(View.VISIBLE);
             for (int n = 0;n < entity.getFolderList().size();n++){
                 final ShowFolderEntity item = entity.getFolderList().get(n);
-                View v = LayoutInflater.from(getContext()).inflate(R.layout.item_bag_cover, null);
+                View v = LayoutInflater.from(getContext()).inflate(R.layout.item_hot_bag_new, null);
+
                 ImageView iv = v.findViewById(R.id.iv_cover);
                 TextView mark = v.findViewById(R.id.tv_mark);
-                TextView title = v.findViewById(R.id.tv_title);
-                TextView tag = v.findViewById(R.id.tv_tag);
+                TextView bagCoin = v.findViewById(R.id.tv_bag_coin);
+                TextView bagNum = v.findViewById(R.id.tv_bag_num);
+                TextView title = v.findViewById(R.id.tv_bag_title);
+                TextView tag1 = v.findViewById(R.id.tv_tag_1);
+                TextView tag2 = v.findViewById(R.id.tv_tag_2);
                 title.setText(item.getFolderName());
-                String tagStr = "";
-                for(int i = 0;i < item.getTexts().size();i++){
-                    String tagTmp = item.getTexts().get(i);
-                    if(i == 0){
-                        tagStr = tagTmp;
-                    }else {
-                        tagStr += " · " + tagTmp;
-                    }
+                if(item.getCoin() == 0){
+                    bagCoin.setText("免费");
+                }else {
+                    bagCoin.setText(item.getCoin() + "节操");
                 }
-                tag.setText(tagStr);
-
+                if(item.getItems() > 0){
+                    bagNum.setText(item.getItems() + "项");
+                }else {
+                    bagNum.setText("");
+                }
+                if(item.getTexts().size() == 2){
+                    tag1.setVisibility(View.VISIBLE);
+                    tag2.setVisibility(View.VISIBLE);
+                    int index = StringUtils.getHashOfString(item.getTexts().get(0), mBackGround.length);
+                    tag1.setBackgroundResource(mBackGround[index]);
+                    tag1.setText(item.getTexts().get(0));
+                    int index2 = StringUtils.getHashOfString(item.getTexts().get(1), mBackGround.length);
+                    tag2.setBackgroundResource(mBackGround[index2]);
+                    tag2.setText(item.getTexts().get(1));
+                }else if(item.getTexts().size() == 1){
+                    tag1.setVisibility(View.VISIBLE);
+                    tag2.setVisibility(View.GONE);
+                    int index = StringUtils.getHashOfString(item.getTexts().get(0), mBackGround.length);
+                    tag1.setBackgroundResource(mBackGround[index]);
+                    tag1.setText(item.getTexts().get(0));
+                }else {
+                    tag1.setVisibility(View.GONE);
+                    tag2.setVisibility(View.GONE);
+                }
                 if(item.getType().equals("ZH")){
                     mark.setText("综合");
                     mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
@@ -651,15 +706,15 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
                     mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
                 }
                 int width = (DensityUtil.getScreenWidth(getContext()) - (int)getResources().getDimension(R.dimen.x84)) / 3;
-                int height = (int)getResources().getDimension(R.dimen.y280);
+                int height = (int)getResources().getDimension(R.dimen.y290);
 
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
                 RecyclerView.LayoutParams lp2;
                 if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
+                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18), ViewGroup.LayoutParams.WRAP_CONTENT);
                     v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
                 }else {
-                    lp2 = new RecyclerView.LayoutParams(width,height);
+                    lp2 = new RecyclerView.LayoutParams(width,ViewGroup.LayoutParams.WRAP_CONTENT);
                     v.setPadding(0,0,0,0);
                 }
                 v.setLayoutParams(lp2);
@@ -705,4 +760,6 @@ public class PersonalMainFragment extends BaseFragment implements PersonMainCont
         mTvHistorySocre.setText("(历史总分: " + entity.getPicAllLikes() + ")");
         mIvFavoriteMap.setSelected(entity.isLike());
     }
+
+
 }

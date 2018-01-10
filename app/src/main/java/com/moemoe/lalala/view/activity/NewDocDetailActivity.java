@@ -8,23 +8,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.moemoe.lalala.BuildConfig;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDetailComponent;
 import com.moemoe.lalala.di.modules.DetailModule;
@@ -50,7 +46,6 @@ import com.moemoe.lalala.presenter.DocDetailPresenter;
 import com.moemoe.lalala.utils.AlertDialogUtil;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.BitmapUtils;
-import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
@@ -59,19 +54,15 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
-import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.DocRecyclerViewAdapter;
 import com.moemoe.lalala.view.adapter.OnItemClickListener;
-import com.moemoe.lalala.view.adapter.SelectImgAdapter;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
-import com.moemoe.lalala.view.widget.recycler.RecyclerViewPositionHelper;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -85,12 +76,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
-import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * 文章
+ * 文章详情
  * Created by yi on 2016/12/2.
  */
 
@@ -842,34 +832,34 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         entity.setTags(mDoc.getTags());
         entity.setBgCover(mDoc.getCover());
         entity.setHidType(mDoc.isCoinComment());
-        if(mDoc.getCoinDetails() != null){
-            for(DocDetailEntity.Detail detail : mDoc.getDetails()){
-                RichEntity richEntity = new RichEntity();
-                if(detail.getType().equals("DOC_TEXT")){
-                    richEntity.setInputStr((String) detail.getTrueData());
-                }else if(detail.getType().equals("DOC_IMAGE")){
-                    Image image = (Image) detail.getTrueData();
-                    richEntity.setImage(image);
-                }else if(detail.getType().equals("DOC_MUSIC")){
-                    DocDetailEntity.DocMusic music = (DocDetailEntity.DocMusic) detail.getTrueData();
-                    entity.setMusicPath(music.getUrl());
-                    entity.setMusicTitle(music.getName());
-                    entity.setTime(music.getTimestamp());
-                    entity.setCover(music.getCover());
-                }
-                entity.getList().add(richEntity);
+        for(DocDetailEntity.Detail detail : mDoc.getDetails()){
+            RichEntity richEntity = new RichEntity();
+            if(detail.getType().equals("DOC_TEXT")){
+                richEntity.setInputStr((String) detail.getTrueData());
+            }else if(detail.getType().equals("DOC_IMAGE")){
+                Image image = (Image) detail.getTrueData();
+                richEntity.setImage(image);
+            }else if(detail.getType().equals("DOC_MUSIC")){
+                DocDetailEntity.DocMusic music = (DocDetailEntity.DocMusic) detail.getTrueData();
+                entity.setMusicPath(music.getUrl());
+                entity.setMusicTitle(music.getName());
+                entity.setTime(music.getTimestamp());
+                entity.setCover(music.getCover());
             }
+            entity.getList().add(richEntity);
         }
-        if(mDoc.getDetails() != null){
-            for(DocDetailEntity.Detail detail : mDoc.getCoinDetails()){
-                RichEntity richEntity = new RichEntity();
-                if(detail.getType().equals("DOC_TEXT")){
-                    richEntity.setInputStr((String) detail.getTrueData());
-                }else if(detail.getType().equals("DOC_IMAGE")){
-                    Image image = (Image) detail.getTrueData();
-                    richEntity.setImage(image);
+        if(mDoc.getCoinDetails() != null) {
+            if (mDoc.getDetails() != null) {
+                for (DocDetailEntity.Detail detail : mDoc.getCoinDetails()) {
+                    RichEntity richEntity = new RichEntity();
+                    if (detail.getType().equals("DOC_TEXT")) {
+                        richEntity.setInputStr((String) detail.getTrueData());
+                    } else if (detail.getType().equals("DOC_IMAGE")) {
+                        Image image = (Image) detail.getTrueData();
+                        richEntity.setImage(image);
+                    }
+                    entity.getHideList().add(richEntity);
                 }
-                entity.getHideList().add(richEntity);
             }
         }
         return entity;
@@ -961,7 +951,7 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
 //            mTvComment.setOnClickListener(new NoDoubleClickListener() {
 //                @Override
 //                public void onNoDoubleClick(View v) {
-//                    CommentListActivity.startActivity(NewDocDetailActivity.this,mDocId,mDoc.getUserId());
+//                    CommentListActivity.startActivityForResult(NewDocDetailActivity.this,mDocId,mDoc.getUserId());
 //                }
 //            });
 //        }else {

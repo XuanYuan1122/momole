@@ -9,7 +9,7 @@
     android:paddingStart="@dimen/x20"
     android:paddingEnd="@dimen/x20"
     android:paddingBottom="@dimen/y24"
-    android:background="@drawable/shape_gray_f6f6f6_5">
+    android:background="@drawable/shape_gray_f6f6f6_background_5">
 
     <TextView
         android:id="@+id/tv_content"

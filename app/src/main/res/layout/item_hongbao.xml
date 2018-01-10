@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y110"
+    android:background="@color/white">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:background="@color/gray_e8e8e8"
+        android:layout_alignParentBottom="true"/>
+
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="@dimen/y90"
+        android:layout_height="@dimen/y90"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/x24"/>
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/iv_avatar"
+        android:layout_marginTop="@dimen/y20"
+        android:textColor="@color/black_1e1e1e"
+        android:textStyle="bold"
+        android:textSize="@dimen/x30"
+        android:layout_marginStart="@dimen/x30"/>
+
+    <TextView
+        android:id="@+id/tv_get_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tv_user_name"
+        android:layout_below="@+id/tv_user_name"
+        android:layout_marginTop="@dimen/y6"
+        android:textSize="@dimen/x24"
+        android:textColor="@color/gray_929292"/>
+
+    <TextView
+        android:id="@+id/tv_get_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black_1e1e1e"
+        android:textSize="@dimen/x30"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginTop="@dimen/y20"
+        android:text="@string/label_get_coin"/>
+</RelativeLayout>

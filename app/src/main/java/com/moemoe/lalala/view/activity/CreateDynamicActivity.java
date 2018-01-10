@@ -15,13 +15,13 @@ import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerCreateDynamicComponent;
 import com.moemoe.lalala.di.modules.CreateDynamicModule;
-import com.moemoe.lalala.di.modules.CreateForwardModule;
 import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.DynamicSendEntity;
 import com.moemoe.lalala.model.entity.tag.BaseTag;
@@ -36,7 +36,6 @@ import com.moemoe.lalala.utils.FileItemDecoration;
 import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
-import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
@@ -55,6 +54,7 @@ import butterknife.OnClick;
 
 import static com.moemoe.lalala.utils.Constant.ICON_NUM_LIMIT;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_ALT_USER;
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_CREATE_HONGBAO;
 
 /**
  * 发布动态
@@ -81,6 +81,10 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
     RecyclerView mRvImg;
     @BindView(R.id.dv_doc_label_root)
     DocLabelView docLabelView;
+    @BindView(R.id.iv_add_hongbao)
+    ImageView mIvAddHongbao;
+//    @BindView(R.id.iv_add_hongbao)
+//    View mHongBao;
 
     @Inject
     CreateDynamicPresenter mPresenter;
@@ -90,6 +94,8 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
     private ArrayList<DocTagEntity> mTags;
     private boolean tagFlag;
     private String mTagNameDef;
+    private int mCoin;
+    private int mHongBaoNum;
 
     @Override
     protected int getLayoutId() {
@@ -105,6 +111,7 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
+       // mHongBao.setVisibility(View.VISIBLE);
         mEtContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -273,7 +280,7 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
         mTvMenuRight.setTextSize(TypedValue.COMPLEX_UNIT_PX,(int) getResources().getDimension(R.dimen.x30));
         mTvMenuRight.setWidth((int) getResources().getDimension(R.dimen.x88));
         mTvMenuRight.setHeight((int) getResources().getDimension(R.dimen.y48));
-        mTvMenuRight.setBackgroundResource(R.drawable.shape_rect_border_main_background_2);
+        mTvMenuRight.setBackgroundResource(R.drawable.shape_main_background_2);
     }
 
     @Override
@@ -292,7 +299,17 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
             if(data != null){
                 String userId = data.getStringExtra("user_id");
                 String userName = data.getStringExtra("user_name");
-               insertTextInCurSelection("@" + userName,userId);
+                insertTextInCurSelection("@" + userName,userId);
+            }
+        }else if(requestCode == REQ_CREATE_HONGBAO && resultCode == RESULT_OK){
+            if(data != null){
+                mCoin = data.getIntExtra("coin",0);
+                mHongBaoNum = data.getIntExtra("num",0);
+                if(mCoin > 0 && mHongBaoNum > 0){
+                    mIvAddHongbao.setSelected(true);
+                }else {
+                    mIvAddHongbao.setSelected(false);
+                }
             }
         }else {
             DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
@@ -327,7 +344,7 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
         mEtContent.setSelection(mEtContent.getText().length());
     }
 
-    @OnClick({R.id.iv_add_img,R.id.iv_alt_user,R.id.tv_menu})
+    @OnClick({R.id.iv_add_img,R.id.iv_alt_user,R.id.tv_menu,R.id.iv_add_hongbao})
     public void onClick(View v){
         switch (v.getId()){
             case R.id.iv_add_img:
@@ -340,6 +357,10 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
                 break;
             case R.id.tv_menu:
                 createDynamic();
+                break;
+            case R.id.iv_add_hongbao:
+                Intent i4 = new Intent(CreateDynamicActivity.this,CreateHongbaoActivity.class);
+                startActivityForResult(i4,REQ_CREATE_HONGBAO);
                 break;
         }
     }
@@ -389,6 +410,8 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
         }
         entity.tags = tags;
         entity.images = new ArrayList<>();
+        entity.coins = mCoin;
+        entity.users = mHongBaoNum;
         ArrayList<String> path = new ArrayList<>();
         for(Object tmp : mPaths){
             path.add((String) tmp);
