@@ -114,11 +114,6 @@ public class NewFileXiaoShuo2Activity extends BaseAppCompatActivity{
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
-//        downloadSub = RxDownload.getInstance(this)
-//                .maxThread(3)
-//                .maxRetryCount(3)
-//                .defaultSavePath(StorageUtils.getNovRootPath())
-//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
 
         mUserId = getIntent().getStringExtra(UUID);
         mManHualist = getIntent().getParcelableArrayListExtra("folders");

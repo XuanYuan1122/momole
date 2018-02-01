@@ -254,23 +254,6 @@ public class DialogUtils {
                 }
             });
             alertDialogUtil.showDialog();
-//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//            builder.setTitle(R.string.a_dlg_title).setMessage(R.string.a_dlg_msg_need_login_first)
-//                    .setPositiveButton(R.string.a_dlg_go_2_login, new DialogInterface.OnClickListener() {
-//
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            // 前往登录界面
-//                            Intent i = new Intent(context, LoginActivity.class);
-//                            context.startActivityForResult(i);
-//                        }
-//                    }).setNegativeButton(R.string.label_cancel, null);
-//            try {
-//                builder.create().show();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-
             res = false;
         }
         return res;

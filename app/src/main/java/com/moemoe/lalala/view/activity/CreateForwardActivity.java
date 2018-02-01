@@ -24,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -56,6 +57,7 @@ import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.adapter.SelectItemAdapter;
@@ -266,93 +268,157 @@ public class CreateForwardActivity extends BaseAppCompatActivity implements Crea
 
     }
 
-    private void createArticle(final ShareArticleEntity entity){
-        View article = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
-        TextView title = article.findViewById(R.id.tv_title);
-        TextView articleContent = article.findViewById(R.id.tv_content);
-        ImageView cover = article.findViewById(R.id.iv_cover);
-        TextView mark = article.findViewById(R.id.tv_mark);
-        article.findViewById(R.id.tv_folder_name).setVisibility(View.GONE);
-        article.findViewById(R.id.tv_tag).setVisibility(View.GONE);
-        int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
-        int h = (int) getResources().getDimension(R.dimen.y400);
+    private void createArticle(final ShareArticleEntity folderEntity){
+        View article = LayoutInflater.from(this).inflate(R.layout.item_feed_type_5_v3,null);
+        ImageView ivCover = article.findViewById(R.id.iv_cover);
+        ImageView ivAvatar = article.findViewById(R.id.iv_user_avatar);
+        TextView tvMark = article.findViewById(R.id.tv_mark);
+        TextView tvUserName = article.findViewById(R.id.tv_user_name);
+        TextView tvTag1 = article.findViewById(R.id.tv_tag_1);
+        TextView tvTag2 = article.findViewById(R.id.tv_tag_2);
+        TextView tvReadNum = article.findViewById(R.id.tv_read_num);
+        TextView tvTitle = article.findViewById(R.id.tv_title);
+
+        int w = DensityUtil.getScreenWidth(this) - getResources().getDimensionPixelSize(R.dimen.x48);
+        int h = getResources().getDimensionPixelSize(R.dimen.y400);
         Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getCover(),w,h,false,true))
+                .load(StringUtils.getUrl(this,folderEntity.getCover(),w,h,false,true))
                 .error(R.drawable.bg_default_square)
                 .placeholder(R.drawable.bg_default_square)
                 .bitmapTransform(new CropTransformation(this,w,h))
-                .into(cover);
-        mark.setText("文章");
-        title.setText(entity.getTitle());
-        articleContent.setText(TagControl.getInstance().paresToSpann(this,entity.getContent()));
-        ImageView avatar = article.findViewById(R.id.iv_avatar);
-        TextView userName = article.findViewById(R.id.tv_user_name);
-        TextView time = article.findViewById(R.id.tv_time);
-        int size = (int) this.getResources().getDimension(R.dimen.x44);
+                .into(ivCover);
+
+        tvMark.setText("文章");
+        tvTitle.setText(folderEntity.getTitle());
+        int size = (int) getResources().getDimension(R.dimen.y32);
         Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getDocCreateUser().getHeadPath(),size,size,false,true))
+                .load(StringUtils.getUrl(this,folderEntity.getDocCreateUser().getHeadPath(),size,size,false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(this))
-                .into(avatar);
-        userName.setText(entity.getDocCreateUser().getUserName());
-        time.setText(StringUtils.timeFormat(entity.getCreateTime()));
+                .into(ivAvatar);
+
+        ivAvatar.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ViewUtils.toPersonal(CreateForwardActivity.this,folderEntity.getDocCreateUser().getUserId());
+            }
+        });
+
+        tvUserName.setText(folderEntity.getDocCreateUser().getUserName());
+        tvReadNum.setText("阅读" + folderEntity.getReadNum());
+
+        //tag
+        View[] tagsId = {tvTag1,tvTag2};
+        tvTag1.setOnClickListener(null);
+        tvTag2.setOnClickListener(null);
+        if(folderEntity.getTexts().size() > 1){
+            tvTag1.setVisibility(View.VISIBLE);
+            tvTag2.setVisibility(View.VISIBLE);
+        }else if(folderEntity.getTexts().size() > 0){
+            tvTag1.setVisibility(View.VISIBLE);
+            tvTag2.setVisibility(View.INVISIBLE);
+        }else {
+            tvTag1.setVisibility(View.INVISIBLE);
+            tvTag2.setVisibility(View.INVISIBLE);
+        }
+        int tagSize = tagsId.length > folderEntity.getTexts().size() ? folderEntity.getTexts().size() : tagsId.length;
+        for (int i = 0;i < tagSize;i++){
+            TagUtils.setBackGround(folderEntity.getTexts().get(i).getText(),tagsId[i]);
+        }
         mExtraRoot.addView(article);
     }
     
-    private void createFolder(ShareFolderEntity entity){
-        View folder = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
-        folder.findViewById(R.id.tv_title).setVisibility(View.GONE);
-        folder.findViewById(R.id.tv_content).setVisibility(View.GONE);
-        ImageView cover = folder.findViewById(R.id.iv_cover);
-        TextView mark = folder.findViewById(R.id.tv_mark);
-        TextView name = folder.findViewById(R.id.tv_folder_name);
-        TextView tag = folder.findViewById(R.id.tv_tag);
-        int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
-        int h = (int) getResources().getDimension(R.dimen.y400);
+    private void createFolder(final ShareFolderEntity folderEntity){
+        View folder = LayoutInflater.from(this).inflate(R.layout.item_feed_type_2_v3,null);
+        folder.setBackgroundResource(R.drawable.shape_gray_f6f6f6_background_y8);
+        TextView tvMark = folder.findViewById(R.id.tv_mark);
+        ImageView ivCover = folder.findViewById(R.id.iv_cover);
+        TextView tvTitle = folder.findViewById(R.id.tv_title);
+        TextView tvTag1 = folder.findViewById(R.id.tv_tag_1);
+        TextView tvTag2 = folder.findViewById(R.id.tv_tag_2);
+        ImageView ivAvatar = folder.findViewById(R.id.iv_user_avatar);
+        TextView tvUserName = folder.findViewById(R.id.tv_user_name);
+        TextView tvCoin = folder.findViewById(R.id.tv_coin);
+        TextView tvExtra = folder.findViewById(R.id.tv_extra);
+        View coverRoot = folder.findViewById(R.id.fl_cover_root);
+        folder.findViewById(R.id.iv_play).setVisibility(View.GONE);
+
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams)coverRoot.getLayoutParams();
+        lp.topMargin = getResources().getDimensionPixelSize(R.dimen.y16);
+        lp.bottomMargin = getResources().getDimensionPixelSize(R.dimen.y16);
+        lp.leftMargin = getResources().getDimensionPixelSize(R.dimen.x16);
+        coverRoot.requestLayout();
+
+        int w = getResources().getDimensionPixelSize(R.dimen.x222);
+        int h = getResources().getDimensionPixelSize(R.dimen.y190);
         Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getFolderCover(),w,h,false,true))
+                .load(StringUtils.getUrl(this,folderEntity.getFolderCover(),w,h,false,true))
                 .error(R.drawable.bg_default_square)
                 .placeholder(R.drawable.bg_default_square)
                 .bitmapTransform(new CropTransformation(this,w,h))
-                .into(cover);
-        if(entity.getFolderType().equals(FolderType.ZH.toString())){
-            mark.setText("综合");
-            mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
-        }else if(entity.getFolderType().equals(FolderType.TJ.toString())){
-            mark.setText("图集");
-            mark.setBackgroundResource(R.drawable.shape_rect_tuji);
-        }else if(entity.getFolderType().equals(FolderType.MH.toString())){
-            mark.setText("漫画");
-            mark.setBackgroundResource(R.drawable.shape_rect_manhua);
-        }else if(entity.getFolderType().equals(FolderType.XS.toString())){
-            mark.setText("小说");
-            mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
-        }
-        name.setText(entity.getFolderName());
-        String tagStr = "";
-        for(int i = 0;i < entity.getFolderTags().size();i++){
-            String tagTmp = entity.getFolderTags().get(i);
-            if(i == 0){
-                tagStr = tagTmp;
-            }else {
-                tagStr += " · " + tagTmp;
-            }
-        }
-        tag.setText(tagStr);
+                .into(ivCover);
 
-        ImageView avatar = folder.findViewById(R.id.iv_avatar);
-        TextView userName = folder.findViewById(R.id.tv_user_name);
-        TextView time = folder.findViewById(R.id.tv_time);
-        int size = (int) this.getResources().getDimension(R.dimen.x44);
+        tvTitle.setText(folderEntity.getFolderName());
+
+        //tag
+        View[] tagsId = {tvTag1,tvTag2};
+        tvTag1.setOnClickListener(null);
+        tvTag2.setOnClickListener(null);
+        if(folderEntity.getFolderTags().size() > 1){
+            tvTag1.setVisibility(View.VISIBLE);
+            tvTag2.setVisibility(View.VISIBLE);
+        }else if(folderEntity.getFolderTags().size() > 0){
+            tvTag1.setVisibility(View.VISIBLE);
+            tvTag2.setVisibility(View.INVISIBLE);
+        }else {
+            tvTag1.setVisibility(View.INVISIBLE);
+            tvTag2.setVisibility(View.INVISIBLE);
+        }
+        int tagSize = tagsId.length > folderEntity.getFolderTags().size() ? folderEntity.getFolderTags().size() : tagsId.length;
+        for (int i = 0;i < tagSize;i++){
+            TagUtils.setBackGround(folderEntity.getFolderTags().get(i),tagsId[i]);
+        }
+
+        //user
+        int avatarSize = getResources().getDimensionPixelSize(R.dimen.y32);
         Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getCreateUser().getHeadPath(),size,size,false,true))
+                .load(StringUtils.getUrl(this,folderEntity.getCreateUser().getHeadPath(),avatarSize,avatarSize,false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
                 .bitmapTransform(new CropCircleTransformation(this))
-                .into(avatar);
-        userName.setText(entity.getCreateUser().getUserName());
-        time.setText("上一次更新:" + StringUtils.timeFormat(entity.getUpdateTime()));
+                .into(ivAvatar);
+        tvUserName.setText(folderEntity.getCreateUser().getUserName());
+        ivAvatar.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ViewUtils.toPersonal(CreateForwardActivity.this,folderEntity.getCreateUser().getUserId());
+            }
+        });
+        tvUserName.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                ViewUtils.toPersonal(CreateForwardActivity.this,folderEntity.getCreateUser().getUserId());
+            }
+        });
+
+        tvMark.setVisibility(View.VISIBLE);
+        if(folderEntity.getFolderType().equals(FolderType.ZH.toString())){
+            tvMark.setText("综合");
+            tvMark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+        }else if(folderEntity.getFolderType().equals(FolderType.TJ.toString())){
+            tvMark.setText("图集");
+            tvMark.setBackgroundResource(R.drawable.shape_rect_tuji);
+        }else if(folderEntity.getFolderType().equals(FolderType.MH.toString())){
+            tvMark.setText("漫画");
+            tvMark.setBackgroundResource(R.drawable.shape_rect_manhua);
+        }else if(folderEntity.getFolderType().equals(FolderType.XS.toString())){
+            tvMark.setText("小说");
+            tvMark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
+        }
+
+        tvCoin.setText(folderEntity.getCoin() + "节操");
+        tvExtra.setText(folderEntity.getItems() + "项");
         mExtraRoot.addView(folder);
     }
     

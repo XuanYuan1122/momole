@@ -176,28 +176,6 @@ public class FileCommonViewHolder extends ClickableViewHolder {
 
                                         }
                                     }).start();
-//                            downloadSub.download(ApiService.URL_QINIU + entity.getPath(),temp,null)
-//                                    .subscribeOn(Schedulers.io())
-//                                    .observeOn(AndroidSchedulers.mainThread())
-//                                    .subscribe(new NetTResultSubscriber<DownloadStatus>() {
-//                                        @Override
-//                                        public void onSuccess() {
-//                                            BitmapUtils.galleryAddPic(itemView.getContext(), longImage.getAbsolutePath());
-//                                            longCover.setImage(longImage.getAbsolutePath());
-//                                            adapter.notifyItemChanged(position);
-//                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU + ApiService.URL_QINIU +  entity.getPath(),false).subscribe();
-//                                        }
-//
-//                                        @Override
-//                                        public void onLoading(DownloadStatus res) {
-//
-//                                        }
-//
-//                                        @Override
-//                                        public void onFail(Throwable e) {
-//                                            downloadSub.deleteServiceDownload(ApiService.URL_QINIU + ApiService.URL_QINIU +  entity.getPath(),false).subscribe();
-//                                        }
-//                                    });
                         }
                     }else {
                         cover.setVisibility(View.VISIBLE);

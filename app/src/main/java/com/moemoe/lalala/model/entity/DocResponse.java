@@ -17,6 +17,15 @@ public class DocResponse {
 	private int likes;// 喜欢数
 	private String cover;
 	private String departmentName;
+	private ArrayList<UserFollowTagEntity> texts;
+
+	public ArrayList<UserFollowTagEntity> getTexts() {
+		return texts;
+	}
+
+	public void setTexts(ArrayList<UserFollowTagEntity> texts) {
+		this.texts = texts;
+	}
 
 	public String getDepartmentName() {
 		return departmentName;

@@ -23,6 +23,7 @@ import android.widget.TimePicker;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.ShareLive2dEntity;
 import com.moemoe.lalala.view.activity.ShopDetailActivity;
 import com.moemoe.lalala.view.widget.view.KiraRatingBar;
@@ -172,7 +173,17 @@ public class AlertDialogUtil {
         });
         MoeMoeApplication.getInstance().getNetComponent().getApiService().shareKpi("folder")
                 .subscribeOn(Schedulers.io())
-                .subscribe();
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
         oks.show(context);
     }
 

@@ -12,6 +12,9 @@ import java.util.ArrayList;
  */
 
 public class ShowFolderEntity implements Parcelable {
+
+    private String uuid;
+
     private String folderId;// 文件夹ID
 
     private String cover; // 封面
@@ -24,9 +27,11 @@ public class ShowFolderEntity implements Parcelable {
 
     private ArrayList<String> texts;// 标签
 
+    private ArrayList<UserFollowTagEntity> textsV2;
+
     private String userIcon;
 
-    private String type;
+    private String type;//TJ MH XS ZH SP YY MOVIE MUSIC
 
     private int coin;
 
@@ -35,6 +40,52 @@ public class ShowFolderEntity implements Parcelable {
     private String time;
 
     private boolean select;
+
+    private int playNum;
+
+    private int barrageNum;
+
+    private String timestamp;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public ArrayList<UserFollowTagEntity> getTextsV2() {
+        return textsV2;
+    }
+
+    public void setTextsV2(ArrayList<UserFollowTagEntity> textsV2) {
+        this.textsV2 = textsV2;
+    }
+
+    public int getPlayNum() {
+        return playNum;
+    }
+
+    public void setPlayNum(int playNum) {
+        this.playNum = playNum;
+    }
+
+    public int getBarrageNum() {
+        return barrageNum;
+    }
+
+    public void setBarrageNum(int barrageNum) {
+        this.barrageNum = barrageNum;
+    }
 
     public String getUserIcon() {
         return userIcon;
@@ -142,6 +193,7 @@ public class ShowFolderEntity implements Parcelable {
         public ShowFolderEntity createFromParcel(Parcel parcel) {
             ShowFolderEntity info = new ShowFolderEntity();
             Bundle bundle = parcel.readBundle(getClass().getClassLoader());
+            info.uuid = bundle.getString("uuid");
             info.folderId = bundle.getString("folderId");
             info.cover = bundle.getString("cover");
             info.folderName = bundle.getString("folderName");
@@ -149,11 +201,15 @@ public class ShowFolderEntity implements Parcelable {
             info.createUserName = bundle.getString("createUserName");
             info.type = bundle.getString("type");
             info.texts = bundle.getStringArrayList("texts");
+            info.textsV2 = bundle.getParcelableArrayList("textsV2");
             info.select = bundle.getBoolean("select");
             info.coin = bundle.getInt("coin");
             info.items = bundle.getInt("items");
+            info.playNum = bundle.getInt("playNum");
+            info.barrageNum = bundle.getInt("barrageNum");
             info.time = bundle.getString("time");
             info.userIcon = bundle.getString("userIcon");
+            info.timestamp = bundle.getString("timestamp");
             return info;
         }
 
@@ -166,6 +222,7 @@ public class ShowFolderEntity implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         Bundle bundle = new Bundle();
+        bundle.putString("uuid",uuid);
         bundle.putString("folderId",folderId);
         bundle.putString("cover",cover);
         bundle.putString("folderName",folderName);
@@ -173,11 +230,15 @@ public class ShowFolderEntity implements Parcelable {
         bundle.putString("createUserName",createUserName);
         bundle.putString("type",type);
         bundle.putStringArrayList("texts",texts);
+        bundle.putParcelableArrayList("textsV2",textsV2);
         bundle.putBoolean("select",select);
         bundle.putInt("coin",coin);
         bundle.putInt("items",items);
+        bundle.putInt("playNum",playNum);
+        bundle.putInt("barrageNum",barrageNum);
         bundle.putString("time",time);
         bundle.putString("userIcon",userIcon);
+        bundle.putString("timestamp",timestamp);
         parcel.writeBundle(bundle);
     }
 }

@@ -1,8 +1,7 @@
 package com.moemoe.lalala.model.entity;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
+ *
  * Created by yi on 2017/8/23.
  */
 

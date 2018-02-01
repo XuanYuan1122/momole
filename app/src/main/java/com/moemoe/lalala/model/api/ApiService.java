@@ -545,6 +545,12 @@ public interface ApiService {
     @POST("v2/kira/bag/folder/synthesize/{folderId}/upload")
     Observable<ApiResult> uploadZonghe(@Path("folderId")String folderId,@Body ArrayList<UploadResultEntity> entities);
 
+    @POST("v2/kira/bag/save/{folderId}/viedoFile")
+    Observable<ApiResult> uploadShipin(@Path("folderId")String folderId,@Body UploadResultEntity entities);
+
+    @POST("v2/kira/bag/save/{folderId}/musicFile")
+    Observable<ApiResult> uploadYinyue(@Path("folderId")String folderId,@Body ArrayList<UploadResultEntity> entities);
+
     @POST("v2/kira/bag/update/{parentFolderId}/cartoon/{id}/folder")
     Observable<ApiResult> uploadManhua2(@Path("parentFolderId")String parentFolderId,@Path("id")String folderId,@Body ManHuaUploadEntity entities);
 
@@ -670,9 +676,6 @@ public interface ApiService {
 
     @GET("v2/kira/dynamic/getDynamicList/playground")
     Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedGroundList(@Query("time")long timestamp);
-
-//    @GET("v2/kira/dynamic/getMyDynamicList")
-//    Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedMyList(@Query("time")long timestamp);
 
     @GET("v2/kira/dynamic/get/{userId}/dynamic/list")
     Observable<ApiResult<ArrayList<NewDynamicEntity>>> loadFeedMyList(@Path("userId")String userId,@Query("time")long timestamp);
@@ -849,7 +852,7 @@ public interface ApiService {
     Observable<ApiResult> likeUserMapRole(@Path("flag")boolean flag,@Path("artworkId")String artworkId);
 
     @POST("v2/kira/user/remove/artwork")
-    Observable<ApiResult> deleteHistoryMapRole(@Body DeleteRoleSend object);
+    Observable<ApiResult> deleteHistoryMapRole(@Body SimpleListSend object);
 
     @GET("v2/kira/app/get/all")
     Observable<ApiResult<ArrayList<SplashEntity>>> loadSplashList();
@@ -871,6 +874,9 @@ public interface ApiService {
 
     @GET("v2/kira/dynamic/getDynamicList/{type}/followV3")
     Observable<ApiResult<ArrayList<FeedNoticeEntity>>> loadFeedNoticeListV3(@Path("type")String type,@Query("followTime") long followTime,@Query("notifyTime")long notifyTime);
+
+    @GET("v2/kira/dynamic/getDynamicList/followV4")
+    Observable<ApiResult<ArrayList<DiscoverEntity>>> loadFeedNoticeListV4(@Query("time")long time);
 
     @GET("v2/kira/doc/get/department/part")
     Observable<ApiResult<ArrayList<LuntanTabEntity>>> loadLuntanTabList();
@@ -896,8 +902,12 @@ public interface ApiService {
     @POST("v2/kira/game/{userId}/exchange/{num}")
     Observable<ApiResult> useCiYuanBiGetFuHuo(@Path("userId")String id,@Path("num")int num);
 
-    @GET("v2/kira/bag/newest/folder")
-    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadNewFolder(@Query("index")int index,@Query("size")int size);
+//    @GET("v2/kira/bag/newest/folder")
+//    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadNewFolder(@Query("index")int index,@Query("size")int size);
+
+    //ALL:全部 XS:小说 MH:漫画 TJ:图集 ZH:综合 MOVIE:视频 MUSIC:音乐)
+    @GET("v2/kira/bag/newest/v2/{type}/bag")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadNewFolderV2(@Path("type")String type,@Query("index")int index,@Query("size")int size);
 
     @GET("v2/kira/dynamic/getDynamicList/randomV3")
     Observable<ApiResult<ArrayList<DiscoverEntity>>> loadHotDynamicList(@Query("minIdx")long minIdx,@Query("maxIdx")long maxIdx);
@@ -925,4 +935,52 @@ public interface ApiService {
 
     @GET("v2/kira/dynamic/red/{dynamicId}")
     Observable<ApiResult<ArrayList<HongBaoEntity>>> loadHongBaoList(@Path("dynamicId")String id);
+
+    @GET("v2/kira/tag/all/my/focus/list")
+    Observable<ApiResult<ArrayList<UserFollowTagEntity>>> loadUserTags();
+
+    @GET("v2/kira/tag/all/focus/list")
+    Observable<ApiResult<ArrayList<OfficialTag>>> loadOfficialTags();
+
+    @POST("v2/kira/tag/save/mine/focus/tags")
+    Observable<ApiResult> saveUserTags(@Body SimpleListSend send);
+
+    @POST("v2/kira/tag/apply/manager")
+    Observable<ApiResult> applyTagAdmin(@Body CommonRequest send);
+
+    @GET("v2/kira/tag/third/{tagId}/content")
+    Observable<ApiResult<FeedFollowOther1Entity>> loadTagContent(@Path("tagId") String id);
+
+    @GET("v2/kira/tag/third/{tagId}/content/video/list")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadTagMoiveList(@Path("tagId") String id,@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/tag/third/{tagId}/content/folder/list")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadTagFolderList(@Path("tagId") String id,@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/tag/third/{tagId}/content/article/list")
+    Observable<ApiResult<ArrayList<FeedFollowType1Entity>>> loadTagArticleList(@Path("tagId") String id,@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/tag/third/{tagId}/content/music/list")
+    Observable<ApiResult<ArrayList<FeedFollowType1Entity>>> loadTagMusicList(@Path("tagId") String id,@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/tag/third/{tagId}/content/doc/list")
+    Observable<ApiResult<ArrayList<DocResponse>>> loadTagDocList(@Path("tagId") String id,@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/tag/third/{tagId}/manager")
+    Observable<ApiResult<FeedFollowType2Entity>> loadTagManager(@Path("tagId") String id);
+
+    @GET("v2/kira/bag/video/wait/check")
+    Observable<ApiResult<ArrayList<StreamFileEntity>>> loadVideoExamineList(@Query("index")int index,@Query("size")int size);
+
+    @GET("v2/kira/tag/all/list")
+    Observable<ApiResult<ArrayList<FeedFollowType1Entity>>> loadFollowAllList(@Query("index")int index,@Query("size")int size);
+
+    @POST("v2/kira/tag/manager/delete/folder")
+    Observable<ApiResult> delTagFolder(@Body TagFileDelRequest request);
+
+    @POST("v2/kira/tag/manager/delete/{type}/file")
+    Observable<ApiResult> delTagFile(@Path("type")String type,@Body TagFileDelRequest request);
+
+    @GET("v2/kira/bag/search/{type}/bag")
+    Observable<ApiResult<ArrayList<ShowFolderEntity>>> loadFeedBagSearchList(@Path("type")String type,@Query("name")String name,@Query("page")int page);
 }

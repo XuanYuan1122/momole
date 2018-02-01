@@ -95,7 +95,7 @@ public class LuntanFragment extends BaseFragment implements Luntan2Contract.View
         mListDocs.setLoadMoreEnabled(false);
         mListDocs.setLayoutManager(new LinearLayoutManager(getContext()));
         mListDocs.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.bg_f6f6f6));
-        mAdapter= new OldDocAdapter();
+        mAdapter = new OldDocAdapter();
         mListDocs.getRecyclerView().addItemDecoration(new MenuVItemDecoration((int) getResources().getDimension(R.dimen.y24)));
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mCreateDoc.setOnClickListener(new NoDoubleClickListener() {

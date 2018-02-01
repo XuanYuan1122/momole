@@ -33,7 +33,7 @@
                 app:is_auto_play="false"
                 app:title_textsize="@dimen/x24"
                 app:title_textcolor="@color/white"
-                app:title_background="@color/alph_80"
+                app:title_background="@color/alpha_80"
                 app:image_scale_type="fit_xy">
 
             </com.youth.banner.Banner>

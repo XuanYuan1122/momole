@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,12 +19,15 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
 import com.moemoe.lalala.app.AppStatusManager;
+import com.moemoe.lalala.app.MoeMoeApplication;
+import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * base activity
@@ -35,6 +39,56 @@ public abstract class BaseAppCompatActivity extends AppCompatActivity {
     public static final String UUID = "uuid";
     public ProgressBar mProgressBar;
     private Unbinder bind;
+    private int mStayTime;
+
+    private Handler mHandler = new Handler();
+    private Runnable timeRunnabel = new Runnable() {
+        @Override
+        public void run() {
+            mStayTime++;
+            mHandler.postDelayed(this,1000);
+        }
+    };
+
+    protected void startTime(){
+        mHandler.post(timeRunnabel);
+    }
+
+    protected void pauseTime(){
+        mHandler.removeCallbacks(timeRunnabel);
+    }
+
+    protected void clickEvent(String event){
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment(event)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
+    }
+
+    protected void stayEvent(String event){
+        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment(event,mStayTime)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

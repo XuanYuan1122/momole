@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPhoneMateComponent;
 import com.moemoe.lalala.di.modules.PhoneMateModule;
 import com.moemoe.lalala.event.MateChangeEvent;
@@ -33,6 +33,8 @@ import com.moemoe.lalala.view.adapter.MateSelectAdapter;
 import com.moemoe.lalala.view.adapter.MatefukuAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -389,14 +391,14 @@ public class PhoneMateSelectV2Fragment extends BaseFragment implements IPhoneFra
     public void setMateSuccess() {
         ToastUtils.showShortToast(getContext(),"设置同桌成功");
         changeMate();
-        RxBus.getInstance().post(new MateChangeEvent());
+        EventBus.getDefault().post(new MateChangeEvent());
     }
 
     @Override
     public void setFukuSuccess() {
         ToastUtils.showShortToast(getContext(),"设置服装成功");
         changeMate();
-        RxBus.getInstance().post(new MateChangeEvent());
+        EventBus.getDefault().post(new MateChangeEvent());
     }
 
     private void changeMate(){

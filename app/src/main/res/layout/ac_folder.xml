@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <View
         android:id="@+id/top_view"
@@ -12,10 +13,24 @@
 
     <include layout="@layout/neta_bar"/>
 
+    <TextView
+        android:id="@+id/tv_show_sp_examine"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y80"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x30"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/x24"
+        android:layout_marginEnd="@dimen/x24"
+        android:layout_marginTop="@dimen/y24"
+        android:layout_marginBottom="@dimen/y24"
+        android:background="@drawable/shape_green_6fc93a_background_y8"
+        android:text="查看视频审核进度"
+        android:visibility="gone"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,9 +77,7 @@
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:paddingEnd="@dimen/x24"
-                android:paddingStart="@dimen/x24">
+                android:layout_weight="1">
 
             </com.moemoe.lalala.view.widget.recycler.PullAndLoadView>
 

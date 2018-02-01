@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public interface FeedBagContract {
     interface Presenter extends BasePresenter{
         void loadHotBag(int index);
-        void loadFeedBagList(int index);
+        void loadFeedBagList(String type,int index);
     }
 
     interface View extends BaseView{

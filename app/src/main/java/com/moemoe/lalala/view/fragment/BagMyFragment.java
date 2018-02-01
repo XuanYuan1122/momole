@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerBagMyComponent;
 import com.moemoe.lalala.di.modules.BagMyModule;
 import com.moemoe.lalala.model.entity.BagMyShowEntity;
@@ -20,6 +20,7 @@ import com.moemoe.lalala.presenter.BagMyContract;
 import com.moemoe.lalala.presenter.BagMyPresenter;
 import com.moemoe.lalala.utils.FolderVDecoration;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
+import com.moemoe.lalala.view.activity.FileMovieActivity;
 import com.moemoe.lalala.view.activity.NewFileCommonActivity;
 import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
 import com.moemoe.lalala.view.activity.NewFileXiaoshuoActivity;
@@ -38,6 +39,7 @@ import static com.moemoe.lalala.utils.StartActivityConstant.REQUEST_CODE_CREATE_
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_CREATE_FOLDER;
 
 /**
+ *
  * Created by yi on 2016/12/15.
  */
 
@@ -105,7 +107,7 @@ public class BagMyFragment extends BaseFragment implements BagMyContract.View{
         });
         if("collection".equals(type)){
             mTop = LayoutInflater.from(getContext()).inflate(R.layout.item_collection_top, null);
-            RecyclerView rv = (RecyclerView) mTop.findViewById(R.id.rv_list);
+            RecyclerView rv = mTop.findViewById(R.id.rv_list);
             LinearLayoutManager m = new LinearLayoutManager(getContext());
             m.setOrientation(LinearLayoutManager.HORIZONTAL);
             rv.setLayoutManager(m);
@@ -124,6 +126,10 @@ public class BagMyFragment extends BaseFragment implements BagMyContract.View{
                         NewFileManHuaActivity.startActivity(getContext(),FolderType.MH.toString(),entity.getFolderId(),entity.getCreateUser());
                     }else if(entity.getType().equals(FolderType.XS.toString())){
                         NewFileXiaoshuoActivity.startActivity(getContext(),FolderType.XS.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(entity.getType().equals(FolderType.SP.toString())){
+                        FileMovieActivity.startActivity(getContext(),FolderType.SP.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(entity.getType().equals(FolderType.YY.toString())){
+                        FileMovieActivity.startActivity(getContext(),FolderType.YY.toString(),entity.getFolderId(),entity.getCreateUser());
                     }
                 }
 

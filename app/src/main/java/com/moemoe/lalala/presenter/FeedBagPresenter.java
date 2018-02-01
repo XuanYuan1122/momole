@@ -52,8 +52,8 @@ public class FeedBagPresenter implements FeedBagContract.Presenter {
     }
 
     @Override
-    public void loadFeedBagList(final int index) {
-        apiService.loadNewFolder(index,ApiService.LENGHT)
+    public void loadFeedBagList(String type,final int index) {
+        apiService.loadNewFolderV2(type,index,ApiService.LENGHT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new NetResultSubscriber<ArrayList<ShowFolderEntity>>() {

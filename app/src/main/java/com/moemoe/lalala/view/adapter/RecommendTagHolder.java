@@ -16,6 +16,7 @@ import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
 
@@ -28,16 +29,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  * Created by yi on 2017/7/21.
  */
 
-public class RecommendTagHolder extends ClickableViewHolder {
-
-    private int[] colors = { R.color.blue_39d8d8,
-            R.color.yellow_f2cc2c,
-            R.color.orange_ed853e,
-            R.color.pink_fb7ba2,
-            R.color.green_93d856,
-            R.color.purple_cd8add,
-            R.color.blue_4fc3f7
-    };
+public class RecommendTagHolder extends ClickableViewHolder {;
 
     public RecommendTagHolder(View itemView) {
         super(itemView);
@@ -45,7 +37,6 @@ public class RecommendTagHolder extends ClickableViewHolder {
 
     public void createItem(final RecommendTagEntity entity, final int position){
         setText(R.id.tv_tag,entity.getWord());
-        int index = StringUtils.getHashOfString(entity.getWord(), colors.length);
-        ((TextView)$(R.id.tv_tag)).setTextColor(ContextCompat.getColor(context,colors[index]));
+        TagUtils.setTextColor(context,entity.getWord(),$(R.id.tv_tag));
     }
 }

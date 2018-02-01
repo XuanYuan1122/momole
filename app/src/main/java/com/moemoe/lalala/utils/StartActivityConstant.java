@@ -28,4 +28,7 @@ public interface StartActivityConstant {
     int REQ_MOTIFY_TAICI = 10019;//修改台词
     int REQ_CREATE_HONGBAO = 10020;//添加红包
     int REQ_FORWARD_DYNAMIC = 10021;//添加红包
+    int REQ_LOGIN = 10022;//登陆界面
+    int REQ_SELECT_TAG = 10023;//标签选择
+    int REQ_GET_FROM_SELECT_MOVIE = 10024;//选择视频
 }

@@ -75,7 +75,7 @@ public class MengXinActivity extends BaseAppCompatActivity {
 
     @Override
     protected void initListeners() {
-        mIvBg.setOnClickListener(new NoDoubleClickListener(500) {
+        mIvBg.setOnClickListener(new NoDoubleClickListener(200) {
             @Override
             public void onNoDoubleClick(View v) {
                 mCurNum++;

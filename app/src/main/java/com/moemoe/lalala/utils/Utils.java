@@ -44,6 +44,7 @@ import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.MapDbEntity;
 import com.moemoe.lalala.model.entity.NewUploadEntity;
 import com.moemoe.lalala.model.entity.UploadResultEntity;
+import com.moemoe.lalala.model.entity.VideoInfo;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -368,6 +369,9 @@ public class Utils {
             }else if(o instanceof BookInfo){
                 BookInfo entity = (BookInfo) o;
                 entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
+            }else if(o instanceof VideoInfo){
+                VideoInfo entity = (VideoInfo) o;
+                entities.add(new NewUploadEntity(StringUtils.getFileMD5(new File(entity.getPath())),FileUtil.getExtensionName(entity.getPath())));
             }
             range.add(range.size());
         }
@@ -403,6 +407,10 @@ public class Utils {
                                             }else if(o instanceof BookInfo){
                                                 uploadResultEntity.setFilePath(((BookInfo) o).getPath());
                                                 uploadResultEntity.setType("txt");
+                                            } else if(o instanceof VideoInfo){
+                                                uploadResultEntity.setFilePath(((VideoInfo) o).getPath());
+                                                uploadResultEntity.setMusicTime((int) ((VideoInfo) o).getDuration());
+                                                uploadResultEntity.setType("movie");
                                             }
                                         }
                                         return uploadResultEntity;
@@ -443,6 +451,7 @@ public class Utils {
                                                     }else if(uploadResultEntity.getType().equals("music")){
                                                         String attr = "{\"timestamp\":" + uploadResultEntity.getMusicTime() + "}";
                                                         entity.setAttr(attr);
+                                                        entity.setTimestamp(StringUtils.getMinute(uploadResultEntity.getMusicTime()));
                                                     }else if(uploadResultEntity.getType().equals("txt")){
                                                         String attr = "{\"size\":"+ file.length() +"}";
                                                         entity.setAttr(attr);
@@ -455,6 +464,10 @@ public class Utils {
                                                             }
                                                             entity.setContent(content);
                                                         }
+                                                    }else if("movie".equals(uploadResultEntity.getType())){
+                                                        String attr = "{\"timestamp\":" + uploadResultEntity.getMusicTime() + "}";
+                                                        entity.setAttr(attr);
+                                                        entity.setTimestamp(StringUtils.getMinute(uploadResultEntity.getMusicTime()));
                                                     }
                                                     res.onNext(entity);
                                                     res.onComplete();

@@ -20,10 +20,10 @@ public class FolderVDecoration extends RecyclerView.ItemDecoration {
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         if(parent.getChildLayoutPosition(view) == 0){
             outRect.left = 0;
-            outRect.right = (int)view.getContext().getResources().getDimension(R.dimen.x10);
+            outRect.right = view.getContext().getResources().getDimensionPixelSize(R.dimen.x10);
         }else {
-            outRect.left = (int)view.getContext().getResources().getDimension(R.dimen.x8);
-            outRect.right = (int)view.getContext().getResources().getDimension(R.dimen.x8);
+            outRect.left = view.getContext().getResources().getDimensionPixelSize(R.dimen.x8);
+            outRect.right = view.getContext().getResources().getDimensionPixelSize(R.dimen.x8);
         }
     }
 }

@@ -12,6 +12,7 @@ import com.moemoe.lalala.utils.ViewUtils;
 import butterknife.BindView;
 
 /**
+ *
  * Created by yi on 2016/11/28.
  */
 

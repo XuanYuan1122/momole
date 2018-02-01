@@ -133,61 +133,7 @@
                 android:gravity="end" />
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingTop="@dimen/y36"
-            android:paddingBottom="@dimen/y36"
-            android:paddingStart="@dimen/x30"
-            android:paddingEnd="@dimen/x30">
-
-            <TextView
-                android:id="@+id/tv_label_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/x30"
-                android:textColor="@color/black_1e1e1e"
-                android:text="标签"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/tv_label_1"
-                android:layout_alignBottom="@+id/tv_label_1"
-                android:layout_marginStart="@dimen/x16"
-                android:textSize="@dimen/x24"
-                android:textColor="@color/gray_929292"
-                android:text="点击修改，单个标签不超过5个字"/>
-
-            <TextView
-                android:id="@+id/tv_label_add_1"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y56"
-                android:textColor="@color/white"
-                android:textSize="@dimen/x30"
-                android:paddingStart="@dimen/x20"
-                android:paddingEnd="@dimen/x20"
-                android:background="@drawable/ic_bag_tag_add"
-                android:layout_below="@+id/tv_label_1"
-                android:layout_marginTop="@dimen/y36"
-                android:gravity="center" />
-
-            <TextView
-                android:id="@+id/tv_label_add_2"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y56"
-                android:textColor="@color/white"
-                android:textSize="@dimen/x30"
-                android:paddingStart="@dimen/x20"
-                android:paddingEnd="@dimen/x20"
-                android:background="@drawable/ic_bag_tag_add"
-                android:layout_alignTop="@+id/tv_label_add_1"
-                android:layout_toEndOf="@+id/tv_label_add_1"
-                android:layout_marginStart="@dimen/x24"
-                android:gravity="center"
-                android:visibility="gone"/>
-        </RelativeLayout>
+        <include layout="@layout/item_tag_create"/>
     </LinearLayout>
 
     <include

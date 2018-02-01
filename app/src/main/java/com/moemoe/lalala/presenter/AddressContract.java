@@ -6,6 +6,7 @@ import com.moemoe.lalala.model.entity.BadgeEntity;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 

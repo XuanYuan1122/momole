@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/fl_video_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y96"
+            android:layout_marginTop="@dimen/y24"
+            android:background="@color/white"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x24">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@drawable/ic_trends_tag_sort_video"
+                android:drawablePadding="@dimen/x12"
+                android:textSize="@dimen/x24"
+                android:textColor="@color/pink_fb7ba2"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:text="视频"/>
+
+            <TextView
+                android:id="@+id/tv_video_show_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="显示全部"
+                android:textColor="@color/main_cyan"
+                android:textSize="@dimen/x24"
+                android:layout_gravity="end|center_vertical"
+                android:drawableEnd="@drawable/ic_bag_more"
+                android:gravity="center"
+                android:drawablePadding="@dimen/x12"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_video_item_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x24"
+            android:paddingBottom="@dimen/y12"
+            android:background="@color/white">
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_manga_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y96"
+            android:layout_marginTop="@dimen/y24"
+            android:background="@color/white"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x24">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@drawable/ic_trends_tag_sort_pic"
+                android:drawablePadding="@dimen/x12"
+                android:textSize="@dimen/x24"
+                android:textColor="@color/orange_f2cc2c"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:text="图集漫画"/>
+
+            <TextView
+                android:id="@+id/tv_manga_show_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="显示全部"
+                android:textColor="@color/main_cyan"
+                android:textSize="@dimen/x24"
+                android:layout_gravity="end|center_vertical"
+                android:drawableEnd="@drawable/ic_bag_more"
+                android:gravity="center"
+                android:drawablePadding="@dimen/x12"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_manga_item_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x24"
+            android:paddingBottom="@dimen/y12"
+            android:background="@color/white">
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_article_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y96"
+            android:layout_marginTop="@dimen/y24"
+            android:background="@color/white"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x24">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@drawable/ic_trends_tag_sort_doc"
+                android:drawablePadding="@dimen/x12"
+                android:textSize="@dimen/x24"
+                android:textColor="@color/blue_4999e8"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:text="文章"/>
+
+            <TextView
+                android:id="@+id/tv_article_show_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="显示全部"
+                android:textColor="@color/main_cyan"
+                android:textSize="@dimen/x24"
+                android:layout_gravity="end|center_vertical"
+                android:drawableEnd="@drawable/ic_bag_more"
+                android:gravity="center"
+                android:drawablePadding="@dimen/x12"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_article_item_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/y12"
+            android:background="@color/white">
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_music_root"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y96"
+            android:layout_marginTop="@dimen/y24"
+            android:background="@color/white"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x24">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:drawableStart="@drawable/ic_trends_tag_sort_music"
+                android:drawablePadding="@dimen/x12"
+                android:textSize="@dimen/x24"
+                android:textColor="@color/green_6fc93a"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:text="音乐"/>
+
+            <TextView
+                android:id="@+id/tv_music_show_all"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="显示全部"
+                android:textColor="@color/main_cyan"
+                android:textSize="@dimen/x24"
+                android:layout_gravity="end|center_vertical"
+                android:drawableEnd="@drawable/ic_bag_more"
+                android:gravity="center"
+                android:drawablePadding="@dimen/x12"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_music_item_root"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/y12"
+            android:background="@color/white">
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

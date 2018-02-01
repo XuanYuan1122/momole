@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,25 +17,21 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFeedBagComponent;
 import com.moemoe.lalala.di.modules.FeedBagModule;
-import com.moemoe.lalala.di.modules.FeedModule;
-import com.moemoe.lalala.model.entity.Comment24Entity;
-import com.moemoe.lalala.model.entity.DiscoverEntity;
 import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.FeedBagContract;
 import com.moemoe.lalala.presenter.FeedBagPresenter;
 import com.moemoe.lalala.utils.DialogUtils;
-import com.moemoe.lalala.utils.FolderFeedDecoration;
+import com.moemoe.lalala.utils.FeedBagDecoration;
 import com.moemoe.lalala.utils.FolderFeedTopDecoration;
-import com.moemoe.lalala.utils.FolderVDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
-import com.moemoe.lalala.view.activity.FilesUploadActivity;
+import com.moemoe.lalala.view.activity.FeedBagTypeListActivity;
+import com.moemoe.lalala.view.activity.FileMovieActivity;
 import com.moemoe.lalala.view.activity.NewBagActivity;
 import com.moemoe.lalala.view.activity.NewFileCommonActivity;
 import com.moemoe.lalala.view.activity.NewFileManHuaActivity;
 import com.moemoe.lalala.view.activity.NewFileXiaoshuoActivity;
-import com.moemoe.lalala.view.activity.NewFolderActivity;
 import com.moemoe.lalala.view.activity.NewFolderEditActivity;
 import com.moemoe.lalala.view.adapter.BagHotAdapter;
 import com.moemoe.lalala.view.adapter.FeedBagAdapter;
@@ -100,7 +98,7 @@ public class FeedBagFragment extends BaseFragment implements FeedBagContract.Vie
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mListDocs.setLoadMoreEnabled(true);
         mListDocs.setLayoutManager(new GridLayoutManager(getContext(),2));
-        mListDocs.getRecyclerView().addItemDecoration(new FolderFeedDecoration());
+        mListDocs.getRecyclerView().addItemDecoration(new FeedBagDecoration(getResources().getDimensionPixelSize(R.dimen.x24),2));
         mAdapter = new FeedBagAdapter();
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setBackgroundColor(Color.WHITE);
@@ -116,6 +114,14 @@ public class FeedBagFragment extends BaseFragment implements FeedBagContract.Vie
                     NewFileManHuaActivity.startActivity(getContext(),FolderType.MH.toString(),entity.getFolderId(),entity.getCreateUser());
                 }else if(entity.getType().equals(FolderType.XS.toString())){
                     NewFileXiaoshuoActivity.startActivity(getContext(),FolderType.XS.toString(),entity.getFolderId(),entity.getCreateUser());
+                }else if(entity.getType().equals(FolderType.YY.toString())){
+                    FileMovieActivity.startActivity(getContext(),FolderType.YY.toString(),entity.getFolderId(),entity.getCreateUser());
+                }else if(entity.getType().equals(FolderType.SP.toString())){
+                    FileMovieActivity.startActivity(getContext(),FolderType.SP.toString(),entity.getFolderId(),entity.getCreateUser());
+                }else if("MOVIE".equals(entity.getType())){
+                    //TODO 视频详情页
+                }else if("MUSIC".equals(entity.getType())){
+
                 }
             }
 
@@ -128,7 +134,7 @@ public class FeedBagFragment extends BaseFragment implements FeedBagContract.Vie
             @Override
             public void onLoadMore() {
                 isLoading = true;
-                mPresenter.loadFeedBagList(mAdapter.getList().size());
+                mPresenter.loadFeedBagList("ALL",mAdapter.getList().size());
             }
 
             @Override
@@ -147,7 +153,54 @@ public class FeedBagFragment extends BaseFragment implements FeedBagContract.Vie
                 return false;
             }
         });
+        isLoading = true;
         mPresenter.loadHotBag(mHotIndex);
+
+        View topRoot = LayoutInflater.from(getContext()).inflate(R.layout.item_feed_bag_top, null);
+        topRoot.findViewById(R.id.ll_top_root).setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                //TODO 搜索
+            }
+        });
+        topRoot.findViewById(R.id.ll_zh_root).setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                FeedBagTypeListActivity.startActivity(getContext(),FolderType.ZH.toString());
+            }
+        });
+        topRoot.findViewById(R.id.ll_tj_root).setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                FeedBagTypeListActivity.startActivity(getContext(),FolderType.TJ.toString());
+            }
+        });
+        topRoot.findViewById(R.id.ll_mh_root).setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                FeedBagTypeListActivity.startActivity(getContext(),FolderType.MH.toString());
+            }
+        });
+        topRoot.findViewById(R.id.ll_xs_root).setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                FeedBagTypeListActivity.startActivity(getContext(),FolderType.XS.toString());
+            }
+        });
+        topRoot.findViewById(R.id.ll_sp_root).setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                FeedBagTypeListActivity.startActivity(getContext(),FolderType.SP.toString());
+            }
+        });
+        topRoot.findViewById(R.id.ll_yy_root).setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                FeedBagTypeListActivity.startActivity(getContext(),FolderType.YY.toString());
+            }
+        });
+
+        mAdapter.addHeaderView(topRoot);
     }
 
     private void initMenu(){
@@ -160,6 +213,8 @@ public class FeedBagFragment extends BaseFragment implements FeedBagContract.Vie
         item = new MenuItem(3,"图集");
         items.add(item);
         item = new MenuItem(4,"小说");
+        items.add(item);
+        item = new MenuItem(5,"视频");
         items.add(item);
 
         fragment.setShowTop(false);
@@ -177,6 +232,8 @@ public class FeedBagFragment extends BaseFragment implements FeedBagContract.Vie
                     mFolderType = FolderType.TJ.toString();
                 }else if(itemId == 4) {
                     mFolderType = FolderType.XS.toString();
+                }else if(itemId == 5) {
+                    mFolderType = FolderType.SP.toString();
                 }
                 NewFolderEditActivity.startActivity(getContext(),"create",mFolderType,null);
             }
@@ -206,7 +263,7 @@ public class FeedBagFragment extends BaseFragment implements FeedBagContract.Vie
             mHotIndex += 3;
             if(folderView == null){
                 folderView = LayoutInflater.from(getContext()).inflate(R.layout.item_hot_bag, null);
-                mAdapter.addHeaderView(folderView,0);
+                mAdapter.addHeaderView(folderView);
             }
             TextView refresh = folderView.findViewById(R.id.tv_refresh);
             refresh.setOnClickListener(new NoDoubleClickListener() {
@@ -263,7 +320,7 @@ public class FeedBagFragment extends BaseFragment implements FeedBagContract.Vie
                 folderView = null;
             }
         }
-        mPresenter.loadFeedBagList(0);
+        mPresenter.loadFeedBagList("ALL",0);
     }
 
     @Override

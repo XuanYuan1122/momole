@@ -94,6 +94,7 @@
     <string name="label_doc_only_9_photos">共可选择9张图片</string>
     <string name="label_create_doc_tag">添加标签可以加经验哦</string>
     <string name="label_select_music">选择音乐</string>
+    <string name="label_select_movie">选择视频</string>
     <string name="label_select_book">选择文本</string>
     <string name="label_select_img">选择封面</string>
     <string name="label_add_hide">添加隐藏区域</string>
@@ -328,6 +329,10 @@
     <string name="label_get_coin" formatted="false">%.2f 节操</string>
     <string name="label_hongbao_total_coin" formatted="false">%d节操</string>
     <string name="label_hongbao_total" formatted="false">%d个红包</string>
+    <string name="label_feed_history_refresh">上一次看到这里，点击刷新</string>
+    <string name="label_update_num" formatted="false">最近更新了%d条新内容</string>
+    <string name="label_apply_admin_1">· 管理员能够对于该标签下所有内容进行管理。\n· 如果书包内容不符合该标签，管理员可以进行剔除出该标签。\n· 如果文章（包括讨论区帖子）违规（色情、敏感、谩骂、广告、灌水）可以进行手动删除，多次违规者会被系统关小黑屋。\n· 对于优质内容可以加精，加精内容会推荐到关注该标签的用户的关注首页中</string>
+    <string name="label_apply_admin_2">· 管理员申请后，等待经官方审核通过后，即可生效。\n· 由于管理员名额有限，所以成为管理员后若长期闲置，官方将会进行权限回收，希望大家理解。\n· 若有不清楚的地方可向Kira官方人员咨询。</string>
 
     <string name="msg_clear_cache_succ_with_size">清理成功</string>
     <string name="msg_trash_get">Tips: 【前辈的传承】已复制到你的粘贴板...... 눈_눈</string>

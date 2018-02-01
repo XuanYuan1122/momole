@@ -90,7 +90,7 @@ public class DraggableLayout extends ViewGroup {
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mStatusHeight = CommonUtils.getStatusHeight(getContext());
         listViews = new ArrayList<>();
-        mViewPadding = (int)context.getResources().getDimension(R.dimen.x6);
+        mViewPadding = context.getResources().getDimensionPixelSize(R.dimen.x6);
     }
 
     public interface DragItemClickListener {

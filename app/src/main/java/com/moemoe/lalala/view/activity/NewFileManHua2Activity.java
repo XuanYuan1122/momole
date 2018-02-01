@@ -127,7 +127,6 @@ public class NewFileManHua2Activity extends BaseAppCompatActivity implements New
         mIsSelect = false;
         mSelectMap = new HashMap<>();
         mIvAddFolder.setVisibility(View.GONE);
-        mListDocs.setPadding(0,0,0,0);
         mListDocs.getSwipeRefreshLayout().setColorSchemeResources(R.color.main_light_cyan, R.color.main_cyan);
         mAdapter = new FileCommonAdapter("",this);
         mAdapter.setGrid(false);

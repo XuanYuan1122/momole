@@ -1,7 +1,6 @@
 package com.moemoe.lalala.view.fragment;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
 
@@ -10,10 +9,8 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerPhoneTicketComponent;
 import com.moemoe.lalala.di.modules.PhoneTicketModule;
-import com.moemoe.lalala.event.MateBackPressEvent;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.presenter.PhoneTicketContract;
 import com.moemoe.lalala.presenter.PhoneTicketPresenter;

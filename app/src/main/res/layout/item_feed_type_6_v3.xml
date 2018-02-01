@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y190"
+    android:background="@drawable/shape_yellow_background_y12">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/y8"
+        android:src="@drawable/shape_rect_border_white_no_background_y12"/>
+    
+    <ImageView
+        android:layout_width="@dimen/x180"
+        android:layout_height="@dimen/y190"
+        android:src="@drawable/ic_feed_list_celebrate_len"/>
+    
+    <ImageView
+        android:layout_width="@dimen/x180"
+        android:layout_height="@dimen/y190"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_feed_list_celebrate_mei"/>
+    
+    <LinearLayout
+        android:id="@+id/ll_user_root"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/y26"
+        android:gravity="center_vertical">
+        
+        <FrameLayout
+            android:layout_width="@dimen/y48"
+            android:layout_height="@dimen/y48"
+            android:background="@drawable/shape_rect_border_white_no_background_y24">
+
+            <ImageView
+                android:id="@+id/iv_user_avatar"
+                android:layout_width="@dimen/y44"
+                android:layout_height="@dimen/y44"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x30"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x30"
+        android:textStyle="bold"
+        android:layout_above="@+id/tv_content_desc"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/tv_content_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/y40"
+        android:paddingStart="@dimen/x20"
+        android:paddingEnd="@dimen/x20"
+        android:textSize="@dimen/x20"
+        android:textColor="@color/yellow_f2cc2c"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/y26"
+        android:background="@drawable/shape_white_background_y20"/>
+</RelativeLayout>

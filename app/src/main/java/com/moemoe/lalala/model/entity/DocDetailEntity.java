@@ -74,7 +74,10 @@ public class DocDetailEntity {
     private Integer nowNum;
     @SerializedName("rtNum")
     private int rtNum;
-
+    @SerializedName("texts")
+    private ArrayList<UserFollowTagEntity> texts;
+    @SerializedName("canDelete")
+    private boolean canDelete;
 
     public class Detail<T>{
         @SerializedName("type")
@@ -257,6 +260,22 @@ public class DocDetailEntity {
                 this.color = color;
             }
         }
+    }
+
+    public ArrayList<UserFollowTagEntity> getTexts() {
+        return texts;
+    }
+
+    public void setTexts(ArrayList<UserFollowTagEntity> texts) {
+        this.texts = texts;
+    }
+
+    public boolean isCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
     }
 
     public int getRtNum() {

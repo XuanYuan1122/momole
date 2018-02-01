@@ -138,11 +138,6 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
             mTvSaveToGallery.setVisibility(View.VISIBLE);
             mTvRaw.setVisibility(View.VISIBLE);
         }
-//        downloadSub = RxDownload.getInstance(this)
-//                    .maxThread(1)
-//                    .maxRetryCount(3)
-//                    .defaultSavePath(StorageUtils.getGalleryDirPath())
-//                    .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     /**
@@ -314,28 +309,6 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
 
                                 }
                             }).start();
-
-//                    downloadSub.download(ApiService.URL_QINIU + fb.getPath(),temp,null)
-//                            .subscribeOn(Schedulers.io())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribe(new NetTResultSubscriber<DownloadStatus>() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    BitmapUtils.galleryAddPic(ImageBigSelectActivity.this, longImage.getAbsolutePath());
-//                                    imageView.setImage(longImage.getAbsolutePath());
-//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),false).subscribe();
-//                                }
-//
-//                                @Override
-//                                public void onLoading(DownloadStatus res) {
-//
-//                                }
-//
-//                                @Override
-//                                public void onFail(Throwable e) {
-//                                    downloadSub.deleteServiceDownload(ApiService.URL_QINIU + fb.getPath(),true).subscribe();
-//                                }
-//                            });
                 }
                 container.addView(viewTemp);
                 view = viewTemp;
@@ -475,15 +448,6 @@ public class ImageBigSelectActivity extends BaseAppCompatActivity {
         final Image image = mImages.get(mViewPager.getCurrentItem());
         final String temp = StringUtils.createImageFile(FileUtil.isGif(ApiService.URL_QINIU + image.getPath()));
         final File longImage = new File(StorageUtils.getGalleryDirPath(), temp);
-//        DownloadBean downloadBean = new DownloadBean
-//                .Builder(ApiService.URL_QINIU + image.getPath())
-//                .setSaveName(temp)
-//                .setSavePath(StorageUtils.getGalleryDirPath())
-//                .setExtra1(image.getPath())
-//                .setExtra2(longImage.getName())
-//                .setExtra3("image")
-//                .setExtra4(longImage.getAbsolutePath())
-//                .build();
 
         if(!FileUtil.isExists(longImage.getAbsolutePath())){
            // FileUtil.deleteFile(longImage.getAbsolutePath());

@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerJuQIngChatComponent;
 import com.moemoe.lalala.di.modules.JuQingChatModule;
 import com.moemoe.lalala.event.EventDoneEvent;
@@ -39,6 +39,8 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.TextAppearOneControl;
 import com.moemoe.lalala.view.widget.netamenu.CenterMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -1028,7 +1030,7 @@ public class MapEventNewActivity extends BaseAppCompatActivity implements JuQIng
         }else {
             JuQingUtil.saveJuQingNormal(new JuQingNormalEvent(mId));
         }
-        RxBus.getInstance().post(new EventDoneEvent("map",""));
+        EventBus.getDefault().post(new EventDoneEvent("map",""));
         finish();
     }
 }

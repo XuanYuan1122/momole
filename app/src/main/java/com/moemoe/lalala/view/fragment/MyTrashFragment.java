@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerTrashListComponent;
 import com.moemoe.lalala.di.modules.TrashListModule;
 import com.moemoe.lalala.model.entity.TrashEntity;

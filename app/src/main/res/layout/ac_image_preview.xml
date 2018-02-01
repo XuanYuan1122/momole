@@ -163,7 +163,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:background="@color/alph_80"
+        android:background="@color/alpha_80"
         android:visibility="gone">
 
         <FrameLayout

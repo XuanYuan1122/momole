@@ -19,6 +19,8 @@ public class ShareFolderEntity implements Parcelable {
     private String updateTime; // 更新时间
     private ArrayList<String> folderTags; // 标签
     private UserTopEntity createUser;// 创建人
+    private int coin;
+    private int items;
 
     @Override
     public int describeContents() {
@@ -38,6 +40,8 @@ public class ShareFolderEntity implements Parcelable {
             entity.folderCover = bundle.getString("folderCover");
             entity.updateTime = bundle.getString("updateTime");
             entity.folderTags = bundle.getStringArrayList("folderTags");
+            entity.coin = bundle.getInt("coin");
+            entity.items = bundle.getInt("items");
             return entity;
         }
 
@@ -57,7 +61,25 @@ public class ShareFolderEntity implements Parcelable {
         bundle.putString("folderCover", folderCover);
         bundle.putString("updateTime", updateTime);
         bundle.putStringArrayList("folderTags", folderTags);
+        bundle.putInt("coin", coin);
+        bundle.putInt("items", items);
         parcel.writeBundle(bundle);
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
+
+    public int getItems() {
+        return items;
+    }
+
+    public void setItems(int items) {
+        this.items = items;
     }
 
     public String getFolderId() {

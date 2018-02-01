@@ -7,6 +7,8 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+
 /**
  * 分享文章
  * Created by yi on 2017/9/20.
@@ -19,6 +21,8 @@ public class ShareArticleEntity implements Parcelable {
     private String content;// 内容
     private String cover;// 封面
     private String createTime;// 发布时间
+    private ArrayList<UserFollowTagEntity> texts;
+    private int readNum;
 
     @Override
     public int describeContents() {
@@ -37,6 +41,8 @@ public class ShareArticleEntity implements Parcelable {
             entity.content = bundle.getString("content");
             entity.cover = bundle.getString("cover");
             entity.createTime = bundle.getString("createTime");
+            entity.texts = bundle.getParcelableArrayList("texts");
+            entity.readNum = bundle.getInt("readNum");
             return entity;
         }
 
@@ -55,7 +61,25 @@ public class ShareArticleEntity implements Parcelable {
         bundle.putString("content", content);
         bundle.putString("cover", cover);
         bundle.putString("createTime", createTime);
+        bundle.putParcelableArrayList("texts", texts);
+        bundle.putInt("readNum", readNum);
         parcel.writeBundle(bundle);
+    }
+
+    public int getReadNum() {
+        return readNum;
+    }
+
+    public void setReadNum(int readNum) {
+        this.readNum = readNum;
+    }
+
+    public ArrayList<UserFollowTagEntity> getTexts() {
+        return texts;
+    }
+
+    public void setTexts(ArrayList<UserFollowTagEntity> texts) {
+        this.texts = texts;
     }
 
     public String getDocId() {

@@ -19,12 +19,13 @@ import org.json.JSONObject;
 
 
 /**
+ *
  * Created by yi on 2017/10/11.
  */
 
 public class MapGameActivity extends AppCompatActivity {
 
-    ImageView mIvBack;
+   // ImageView mIvBack;
     RelativeLayout mRoot;
 
     private UnityPlayer mUnityPlayer;
@@ -38,67 +39,70 @@ public class MapGameActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ac_map_event_unity);
-        mIvBack = (ImageView)findViewById(R.id.iv_back);
-        mRoot = (RelativeLayout)findViewById(R.id.rl_root);
+      //  mIvBack = findViewById(R.id.iv_back);
+        mRoot = findViewById(R.id.rl_root);
         initViews(savedInstanceState);
     }
 
-    static {
-        System.loadLibrary("kira");
-    }
+//    static {
+//        System.loadLibrary("kira");
+//    }
 
-    public native int initNDK1();
+//    public native int initNDK1();
 
-    public void EventInit(){
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("targetId",id);
-            jsonObject.put("X-APP-PLATFORM", channel);
-            jsonObject.put("X-APP-VERSION", version);
-            jsonObject.put("X-ACCESS-TOKEN", token);
-            jsonObject.put("X-APP-TYPE", android.os.Build.MODEL);
-            jsonObject.put("userId",userId);
-            String str = jsonObject.toString();
-            System.out.println("json:"+str);
-            UnityPlayer.UnitySendMessage("MainSenc", "OpenGame", jsonObject.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void showLog(String log){
-        System.out.println("unityLog:" + log);
-    }
-
-    public void EventError(){
-        finish();
-    }
+//    public void EventInit(){
+//        try {
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("targetId",id);
+//            jsonObject.put("X-APP-PLATFORM", channel);
+//            jsonObject.put("X-APP-VERSION", version);
+//            jsonObject.put("X-ACCESS-TOKEN", token);
+//            jsonObject.put("X-APP-TYPE", android.os.Build.MODEL);
+//            jsonObject.put("userId",userId);
+//            String str = jsonObject.toString();
+//            UnityPlayer.UnitySendMessage("MainSenc", "OpenGame", jsonObject.toString());
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void showLog(String log){
+//        System.out.println("unityLog:" + log);
+//    }
+//
+//    public void EventError(){
+//        finish();
+//    }
 
     protected void initViews(Bundle savedInstanceState) {
-        ViewUtils.setStatusBarLight(getWindow(), findViewById(R.id.top_view));
-        id = getIntent().getStringExtra("id");
-        token = getIntent().getStringExtra("token");
-        version = getIntent().getStringExtra("version");
-        userId = getIntent().getStringExtra("userId");
-        channel = getIntent().getStringExtra("channel");
-        if(TextUtils.isEmpty(id)){
-            finish();
-            return;
-        }
-        if(1 != initNDK1()){
-            Log.e("NDKUtil","初始化失败");
-        }else {
-            Log.e("NDKUtil","初始化成功");
-        }
+       // ViewUtils.setStatusBarLight(getWindow(), findViewById(R.id.top_view));
+//        id = getIntent().getStringExtra("id");
+//        token = getIntent().getStringExtra("token");
+//        version = getIntent().getStringExtra("version");
+//        userId = getIntent().getStringExtra("userId");
+//        channel = getIntent().getStringExtra("channel");
+//        if(TextUtils.isEmpty(id)){
+//            finish();
+//            return;
+//        }
+//        if(1 != initNDK1()){
+//            Log.e("NDKUtil","初始化失败");
+//        }else {
+//            Log.e("NDKUtil","初始化成功");
+//        }
+        Bundle bundle = getIntent().getBundleExtra("res");
+        String res = bundle.getString("res");
         mUnityPlayer = new UnityPlayer(this);
         mRoot.addView(mUnityPlayer,0);
         mUnityPlayer.requestFocus();
-        mIvBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        //mIvBack.setVisibility(View.GONE);
+        //mIvBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
+        UnityPlayer.UnitySendMessage("VersionChecker", "OnGetUserInfo", res);
     }
 
     @Override

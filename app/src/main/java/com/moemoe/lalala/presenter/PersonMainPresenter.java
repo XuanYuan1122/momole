@@ -70,9 +70,7 @@ public class PersonMainPresenter implements PersonMainContract.Presenter {
 
     @Override
     public void saveUserText(String text) {
-        SimpleRequestEntity entity = new SimpleRequestEntity();
-        entity.content = text;
-        apiService.saveUserText(entity)
+        apiService.saveUserText( new SimpleRequestEntity(text))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe();

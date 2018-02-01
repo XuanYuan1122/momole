@@ -54,7 +54,7 @@ public class Comment24Holder extends ClickableViewHolder {
         userContent.setText(TagControl.getInstance().paresToSpann(context,": "+entity.getCommentText()));
         userContent.setMovementMethod(LinkMovementMethod.getInstance());
         userFavorite.setText(entity.getLikes() + "");
-        int size = (int) context.getResources().getDimension(R.dimen.x100);
+        int size = context.getResources().getDimensionPixelSize(R.dimen.x100);
         Glide.with(context)
                 .load(StringUtils.getUrl(context,entity.getDynamicIcon(),size,size,false,true))
                 .error(R.drawable.bg_default_square)

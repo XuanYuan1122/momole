@@ -3,6 +3,7 @@ package com.moemoe.lalala.model.entity;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2017/8/18.
  */
 

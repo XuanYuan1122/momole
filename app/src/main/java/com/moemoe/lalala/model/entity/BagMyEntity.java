@@ -3,6 +3,7 @@ package com.moemoe.lalala.model.entity;
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2017/8/16.
  */
 
@@ -26,7 +27,18 @@ public class BagMyEntity {
 
     private int articleNum; // 文章项
 
+    private ArrayList<ShowFolderEntity> articleList;
+
     private ArrayList<ShowFolderEntity> followList;
+
+    private int musicNum;
+
+    private ArrayList<ShowFolderEntity> musicList;
+
+    private int videoNum;
+
+    private ArrayList<ShowFolderEntity> videoList;
+
 
     public BagMyEntity(){
         synthesizeList = new ArrayList<>();
@@ -34,6 +46,9 @@ public class BagMyEntity {
         cartoonList = new ArrayList<>();
         fictionList = new ArrayList<>();
         followList = new ArrayList<>();
+        articleList = new ArrayList<>();
+        musicList = new ArrayList<>();
+        videoList = new ArrayList<>();
     }
 
     public int getSynthesizeNum() {
@@ -114,5 +129,45 @@ public class BagMyEntity {
 
     public void setFollowList(ArrayList<ShowFolderEntity> followList) {
         this.followList = followList;
+    }
+
+    public ArrayList<ShowFolderEntity> getArticleList() {
+        return articleList;
+    }
+
+    public void setArticleList(ArrayList<ShowFolderEntity> articleList) {
+        this.articleList = articleList;
+    }
+
+    public int getMusicNum() {
+        return musicNum;
+    }
+
+    public void setMusicNum(int musicNum) {
+        this.musicNum = musicNum;
+    }
+
+    public ArrayList<ShowFolderEntity> getMusicList() {
+        return musicList;
+    }
+
+    public void setMusicList(ArrayList<ShowFolderEntity> musicList) {
+        this.musicList = musicList;
+    }
+
+    public int getVideoNum() {
+        return videoNum;
+    }
+
+    public void setVideoNum(int videoNum) {
+        this.videoNum = videoNum;
+    }
+
+    public ArrayList<ShowFolderEntity> getVideoList() {
+        return videoList;
+    }
+
+    public void setVideoList(ArrayList<ShowFolderEntity> videoList) {
+        this.videoList = videoList;
     }
 }

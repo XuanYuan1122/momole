@@ -1,19 +1,11 @@
 package com.moemoe.lalala.presenter;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetResultSubscriber;
 import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
-import com.moemoe.lalala.model.entity.AppUpdateEntity;
-import com.moemoe.lalala.model.entity.DeleteRoleSend;
+import com.moemoe.lalala.model.entity.SimpleListSend;
 import com.moemoe.lalala.model.entity.MapHistoryEntity;
 import com.moemoe.lalala.model.entity.MapUserImageEntity;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -79,7 +71,7 @@ public class SelectMapImagePresenter implements SelectMapImageContract.Presenter
 
     @Override
     public void deleteHistoryMapRole(ArrayList<String> ids) {
-        DeleteRoleSend send = new DeleteRoleSend(ids);
+        SimpleListSend send = new SimpleListSend(ids);
 
         apiService.deleteHistoryMapRole(send)
                 .subscribeOn(Schedulers.io())

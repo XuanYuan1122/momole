@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/x200"
+    android:layout_height="@dimen/y120">
+
+    <TextView
+        android:id="@+id/tv_tag"
+        android:layout_width="@dimen/x200"
+        android:layout_height="@dimen/y120"
+        android:textSize="@dimen/x30"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/black_1e1e1e"
+        android:background="@color/bg_f6f6f6"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:layout_gravity="bottom"
+        android:background="@color/gray_e8e8e8"/>
+
+    <View
+        android:id="@+id/view_end_step"
+        android:layout_width="@dimen/size_1_px"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@color/gray_e8e8e8"/>
+</FrameLayout>

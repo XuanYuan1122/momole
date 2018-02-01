@@ -23,14 +23,14 @@ public class FolderFeedDecoration extends RecyclerView.ItemDecoration {
             if(parent.getChildLayoutPosition(view) == 1 || parent.getChildLayoutPosition(view) == 2){
                 outRect.top = 0;
             }else {
-                outRect.top = (int)view.getContext().getResources().getDimension(R.dimen.y48);
+                outRect.top = view.getContext().getResources().getDimensionPixelSize(R.dimen.y48);
             }
             if(parent.getChildLayoutPosition(view) % 2 != 0){
-                outRect.left = (int)view.getContext().getResources().getDimension(R.dimen.x24);
-                outRect.right = (int)view.getContext().getResources().getDimension(R.dimen.x11);
+                outRect.left = view.getContext().getResources().getDimensionPixelSize(R.dimen.x24);
+                outRect.right =view.getContext().getResources().getDimensionPixelSize(R.dimen.x11);
             }else {
-                outRect.left = (int)view.getContext().getResources().getDimension(R.dimen.x11);
-                outRect.right = (int)view.getContext().getResources().getDimension(R.dimen.x24);
+                outRect.left =view.getContext().getResources().getDimensionPixelSize(R.dimen.x11);
+                outRect.right = view.getContext().getResources().getDimensionPixelSize(R.dimen.x24);
             }
         }
     }

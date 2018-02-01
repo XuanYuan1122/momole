@@ -14,7 +14,8 @@
         tl:tl_textSelectColor="@color/main_cyan"
         tl:tl_tab_width="@dimen/x124"
         tl:tl_textUnselectColor="@color/main_cyan_70"
-        tl:tl_indicator_color="@color/main_cyan"/>
+        tl:tl_indicator_color="@color/main_cyan"
+        tl:tl_indicator_width_equal_title="true"/>
 
     <View
         android:layout_width="match_parent"

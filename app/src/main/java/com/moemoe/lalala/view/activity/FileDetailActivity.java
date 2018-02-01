@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -31,7 +30,6 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerFileComponent;
 import com.moemoe.lalala.di.modules.FileModule;
 import com.moemoe.lalala.model.api.ApiService;
-import com.moemoe.lalala.model.api.NetTResultSubscriber;
 import com.moemoe.lalala.model.entity.CommonFileEntity;
 import com.moemoe.lalala.model.entity.DownloadEntity;
 import com.moemoe.lalala.model.entity.FolderType;
@@ -69,12 +67,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by yi on 2016/11/30.
@@ -143,7 +135,7 @@ public class FileDetailActivity extends BaseAppCompatActivity implements FilesCo
         mTvRaw.setVisibility(View.GONE);
         mTvCount.setVisibility(View.GONE);
         mBarRoot.setVisibility(View.VISIBLE);
-        mBarRoot.setBackgroundColor(ContextCompat.getColor(this,R.color.alph_80));
+        mBarRoot.setBackgroundColor(ContextCompat.getColor(this,R.color.alpha_80));
         mBottomBarRoot.setVisibility(View.VISIBLE);
         mItems = getIntent().getParcelableArrayListExtra("list");
         mFolderId = getIntent().getStringExtra("folderId");

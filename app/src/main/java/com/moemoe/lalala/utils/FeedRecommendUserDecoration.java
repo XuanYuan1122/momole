@@ -19,12 +19,12 @@ public class FeedRecommendUserDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.top = outRect.bottom = (int) view.getResources().getDimension(R.dimen.y24);
+        outRect.top = outRect.bottom =  view.getResources().getDimensionPixelSize(R.dimen.y24);
         outRect.right = 0;
         if(parent.getChildLayoutPosition(view) != 0){
-            outRect.left = (int) view.getResources().getDimension(R.dimen.x16);
+            outRect.left = view.getResources().getDimensionPixelSize(R.dimen.x16);
         }else {
-            outRect.left = (int) view.getResources().getDimension(R.dimen.x24);
+            outRect.left = view.getResources().getDimensionPixelSize(R.dimen.x24);
         }
     }
 }

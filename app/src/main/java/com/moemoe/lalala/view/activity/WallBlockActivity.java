@@ -18,7 +18,7 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerWallComponent;
 import com.moemoe.lalala.di.modules.WallModule;
 import com.moemoe.lalala.event.SystemMessageEvent;
@@ -39,6 +39,10 @@ import com.moemoe.lalala.view.fragment.FeedNoticeFragment;
 import com.moemoe.lalala.view.fragment.LuntanAllFragment;
 import com.moemoe.lalala.view.fragment.NewFollowMainFragment;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,35 +76,14 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     View mTvSendComment;
     @BindView(R.id.rl_role_root)
     RelativeLayout mRoleRoot;
-//    @BindView(R.id.iv_role)
-//    ImageView mIvRole;
-//    @BindView(R.id.iv_create_dynamic)
-//    ImageView mIvCreatDynamic;
-//    @BindView(R.id.tv_show_text)
-//    TextView mTvText;
-//    @BindView(R.id.rl_role_root)
-//    RelativeLayout mRoleRoot;
 
     private NewFollowMainFragment classMainFragment;
     private TabFragmentPagerAdapter mAdapter;
-    //private GestureDetector gestureDetector;
 
     @Inject
     WallPresenter mPresenter;
-   // private NewDiscoverMainFragment followFragment;
     private LuntanAllFragment luntanAllFragment;
     private FeedNoticeFragment noticeFragment;
-
-    private int mStayTime;
-
-    private Handler mHandler = new Handler();
-    private Runnable timeRunnabel = new Runnable() {
-        @Override
-        public void run() {
-            mStayTime++;
-            mHandler.postDelayed(this,1000);
-        }
-    };
 
     @Override
     protected int getLayoutId() {
@@ -120,9 +103,7 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment("dongtai")
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        clickEvent("dongtai");
         mRoleRoot.setVisibility(View.GONE);
         classMainFragment = NewFollowMainFragment.newInstance("ground");
         List<BaseFragment> fragmentList = new ArrayList<>();
@@ -153,13 +134,13 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         mDataPager.setCurrentItem(2);
         mPageIndicator.setTabData(mTabEntities);
         mPageIndicator.setCurrentTab(2);
-       // gestureDetector = new GestureDetector(this,onGestureListener);
-       // subscribeSearchChangedEvent();
-       // ViewUtils.setRoleButton(mIvRole,mTvText);
-        if(PreferenceUtils.getMessageDot(this,"neta") || PreferenceUtils.getMessageDot(this,"system") || PreferenceUtils.getMessageDot(this,"at_user") || PreferenceUtils.getMessageDot(this,"normal")){
+        if(PreferenceUtils.getMessageDot(this,"neta")
+                || PreferenceUtils.getMessageDot(this,"system")
+                || PreferenceUtils.getMessageDot(this,"at_user")
+                || PreferenceUtils.getMessageDot(this,"normal")){
             mPageIndicator.showDot(0);
         }
-        subscribeEvent();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -167,35 +148,8 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
 
     }
 
-    private static final int FLING_MIN_DISTANCE = 50;
-    private static final int FLING_MIN_VELOCITY = 0;
-    private boolean isHide;
-
-//    GestureDetector.OnGestureListener onGestureListener = new GestureDetector.SimpleOnGestureListener(){
-//        @Override
-//        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-//                               float velocityY){
-//            if (e1.getY()-e2.getY() > FLING_MIN_DISTANCE
-//                    && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
-//                if(!isHide){
-//                   // hideRole();
-//                    isHide = true;
-//                }
-//            } else if (e2.getY()-e1.getY() > FLING_MIN_DISTANCE
-//                    && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
-//                if(isHide){
-//                  //  showRole();
-//                    isHide = false;
-//                }
-//
-//            }
-//            return false;
-//        }
-//    };
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-       // gestureDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 
@@ -212,31 +166,16 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
         }
     }
 
-    private void subscribeEvent() {
-        Disposable sysSubscription = RxBus.getInstance()
-                .toObservable(SystemMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SystemMessageEvent>() {
-                    @Override
-                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
-                        if(PreferenceUtils.getMessageDot(WallBlockActivity.this,"neta")
-                                || PreferenceUtils.getMessageDot(WallBlockActivity.this,"system")
-                                || PreferenceUtils.getMessageDot(WallBlockActivity.this,"at_user")
-                                || PreferenceUtils.getMessageDot(WallBlockActivity.this,"normal")){
-                            mPageIndicator.showDot(0);
-                        }else {
-                            mPageIndicator.hideMsg(0);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().addSubscription(this, sysSubscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void systemMsgEvent(SystemMessageEvent event){
+        if(PreferenceUtils.getMessageDot(WallBlockActivity.this,"neta")
+                || PreferenceUtils.getMessageDot(WallBlockActivity.this,"system")
+                || PreferenceUtils.getMessageDot(WallBlockActivity.this,"at_user")
+                || PreferenceUtils.getMessageDot(WallBlockActivity.this,"normal")){
+            mPageIndicator.showDot(0);
+        }else {
+            mPageIndicator.hideMsg(0);
+        }
     }
 
     @Override
@@ -265,14 +204,6 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
 
             @Override
             public void onPageSelected(int position) {
-//                if(position == 1){
-//                    if(mIvRole.isSelected()){
-//                        clickRole();
-//                    }
-//                    mIvRole.setVisibility(View.GONE);
-//                }else {
-//                    mIvRole.setVisibility(View.VISIBLE);
-//                }
                 mPageIndicator.setCurrentTab(position);
             }
 
@@ -323,70 +254,8 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
                 }
             }
         });
-//        mIvRole.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                clickRole();
-//            }
-//        });
-//        mIvCreatDynamic.setOnClickListener(new NoDoubleClickListener() {
-//            @Override
-//            public void onNoDoubleClick(View v) {
-//                if(DialogUtils.checkLoginAndShowDlg(WallBlockActivity.this)){
-//                    clickRole();
-//                    Intent i4 = new Intent(WallBlockActivity.this,CreateDynamicActivity.class);
-//                    i4.putExtra("default_tag","广场");
-//                    startActivityForResult(i4);
-//                }
-//            }
-//        });
     }
 
-//    public void hideRole(){
-//        ObjectAnimator roleAnimator = ObjectAnimator.ofFloat(mRoleRoot,"translationY",0,mRoleRoot.getHeight()).setDuration(300);
-//        roleAnimator.setInterpolator(new OvershootInterpolator());
-//        roleAnimator.start();
-//    }
-//
-//    public void showRole(){
-//        ObjectAnimator roleAnimator = ObjectAnimator.ofFloat(mRoleRoot,"translationY",mRoleRoot.getHeight(),0).setDuration(300);
-//        roleAnimator.setInterpolator(new OvershootInterpolator());
-//        roleAnimator.start();
-//    }
-
-//    private void clickRole(){
-//        mIvRole.setSelected(!mIvRole.isSelected());
-//        if(mIvRole.isSelected()){
-//            mIvCreatDynamic.setVisibility(View.VISIBLE);
-//            //mIvCreateWen.setVisibility(View.VISIBLE);
-//            mTvText.setVisibility(View.VISIBLE);
-//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//            mRoleRoot.setLayoutParams(lp);
-//            mRoleRoot.setBackgroundColor(ContextCompat.getColor(WallBlockActivity.this,R.color.alph_60));
-//            mRoleRoot.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    clickRole();
-//                }
-//            });
-//            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//            lp1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//            lp1.addRule(RelativeLayout.ALIGN_PARENT_END);
-//            mIvRole.setLayoutParams(lp1);
-//        }else {
-//            mIvCreatDynamic.setVisibility(View.GONE);
-//            //mIvCreateWen.setVisibility(View.GONE);
-//            mTvText.setVisibility(View.GONE);
-//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//            lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//            lp.addRule(RelativeLayout.ALIGN_PARENT_END);
-//            mRoleRoot.setLayoutParams(lp);
-//            mRoleRoot.setBackgroundColor(ContextCompat.getColor(WallBlockActivity.this,R.color.transparent));
-//            mRoleRoot.setOnClickListener(null);
-//            RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//            mIvRole.setLayoutParams(lp1);
-//        }
-//    }
 
     private String tagDocId = "";
 
@@ -396,15 +265,6 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
             mPresenter.createLabel(bean);
         }
         tagDocId = "";
-    }
-
-    public void createTagPre(String docId){
-        tagDocId = docId;
-        mKlCommentBoard.setVisibility(View.VISIBLE);
-        mEdtCommentInput.setText("");
-        mEdtCommentInput.setHint("输入标签");
-        mEdtCommentInput.requestFocus();
-        SoftKeyboardUtils.showSoftKeyboard(this, mEdtCommentInput);
     }
 
     @Override
@@ -421,34 +281,13 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     @Override
     protected void onPause() {
         super.onPause();
-        mHandler.removeCallbacks(timeRunnabel);
+        pauseTime();
     }
-
-//    private void subscribeSearchChangedEvent() {
-//        Disposable subscription1 = RxBus.getInstance()
-//                .toObservable(MateChangeEvent.class)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .distinctUntilChanged()
-//                .subscribe(new Consumer<MateChangeEvent>() {
-//                    @Override
-//                    public void accept(MateChangeEvent backSchoolEvent) throws Exception {
-//                        ViewUtils.setRoleButton(mIvRole,mTvText);
-//                    }
-//                }, new Consumer<Throwable>() {
-//                    @Override
-//                    public void accept(Throwable throwable) throws Exception {
-//
-//                    }
-//                });
-//        RxBus.getInstance().addSubscription(this, subscription1);
-//    }
 
     @Override
     protected void onResume() {
         super.onResume();
-       // ViewUtils.setRoleButton(mIvRole,mTvText);
-        mHandler.post(timeRunnabel);
+        startTime();
     }
 
     @Override
@@ -460,20 +299,13 @@ public class WallBlockActivity extends BaseAppCompatActivity implements WallCont
     protected void onDestroy() {
         if (mPresenter != null) mPresenter.release();
         if(mAdapter != null) mAdapter.release();
-        RxBus.getInstance().unSubscribe(this);
-        mHandler.removeCallbacks(timeRunnabel);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment("dongtai",mStayTime)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        EventBus.getDefault().unregister(this);
+        stayEvent("dongtai");
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-//        if(mIvRole.isSelected()){
-//            clickRole();
-//            return;
-//        }
         finish();
         overridePendingTransition(0,R.anim.main_list_out);
     }

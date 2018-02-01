@@ -168,14 +168,6 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                         IntentUtils.toActivityFromUri(NewFolderWenZhangActivity.this, uri,view);
                     }
                 }else {
-//                    if(entity.isSelect()){
-//                        mSelectMap.remove(position);
-//                        entity.setSelect(false);
-//                    }else {
-//                        mSelectMap.put(position,entity);
-//                        entity.setSelect(true);
-//                    }
-//                    mAdapter.notifyItemChanged(position);
                     Intent i = new Intent();
                     i.putExtra("docId",entity.getId());
                     setResult(RESULT_OK,i);
@@ -223,13 +215,9 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
                     mIvBack.setVisibility(View.GONE);
                     mIvMenu.setVisibility(View.GONE);
                     mTvMenuLeft.setVisibility(View.VISIBLE);
-                    ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
+                    ViewUtils.setLeftMargins(mTvMenuLeft,getResources().getDimensionPixelSize(R.dimen.x36));
                     mTvMenuLeft.setText(getString(R.string.label_give_up));
                     mTvMenuLeft.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.black_1e1e1e));
-//                    mTvMenuRight.setVisibility(View.VISIBLE);
-//                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFolderWenZhangActivity.this,18));
-//                    mTvMenuRight.setText(getString(R.string.label_done));
-//                    mTvMenuRight.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.main_cyan));
                 }else {
                     mIvBack.setVisibility(View.VISIBLE);
                     mIvMenu.setVisibility(View.VISIBLE);
@@ -244,8 +232,6 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
     private void initPopupMenus() {
         bottomMenuFragment = new BottomMenuFragment();
         ArrayList<MenuItem> items = new ArrayList<>();
-//        MenuItem item = new MenuItem(1, "选择");
-//        items.add(item);
         MenuItem item = new MenuItem(2, "投稿箱");
         items.add(item);
         bottomMenuFragment.setMenuItems(items);
@@ -254,21 +240,6 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         bottomMenuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
             @Override
             public void OnMenuItemClick(int itemId) {
-//                if (itemId == 1) {
-//                    mIvBack.setVisibility(View.GONE);
-//                    mIvMenu.setVisibility(View.GONE);
-//                    mTvMenuLeft.setVisibility(View.VISIBLE);
-//                    ViewUtils.setLeftMargins(mTvMenuLeft, DensityUtil.dip2px(NewFolderWenZhangActivity.this,18));
-//                    mTvMenuLeft.setText(getString(R.string.label_give_up));
-//                    mTvMenuLeft.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.black_1e1e1e));
-//                    mTvMenuRight.setVisibility(View.VISIBLE);
-//                    ViewUtils.setRightMargins(mTvMenuRight, DensityUtil.dip2px(NewFolderWenZhangActivity.this,18));
-//                    mTvMenuRight.setText(getString(R.string.label_delete));
-//                    mTvMenuRight.setTextColor(ContextCompat.getColor(NewFolderWenZhangActivity.this,R.color.main_cyan));
-//                    mIsSelect = !mIsSelect;
-//                    mAdapter.setSelect(mIsSelect);
-//                    mAdapter.notifyDataSetChanged();
-//                }
                 if(itemId == 2){
                     Intent i = new Intent(NewFolderWenZhangActivity.this,SubmissionHistoryActivity.class);
                     startActivity(i);
@@ -296,36 +267,9 @@ public class NewFolderWenZhangActivity extends BaseAppCompatActivity implements 
         mTvMenuLeft.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-//                mIvBack.setVisibility(View.VISIBLE);
-//                mIvMenu.setVisibility(View.VISIBLE);
-//                mTvMenuLeft.setVisibility(View.GONE);
-//                mTvMenuRight.setVisibility(View.GONE);
-//                mIsSelect = !mIsSelect;
-//                for(WenZhangFolderEntity entity : mAdapter.getList()){
-//                    entity.setSelect(false);
-//                }
-//                mSelectMap.clear();
-//                mAdapter.setSelect(mIsSelect);
-//                mAdapter.notifyDataSetChanged();
                 finish();
             }
         });
-//        mTvMenuRight.setOnClickListener(new NoDoubleClickListener() {
-//            @Override
-//            public void onNoDoubleClick(View v) {
-////                if(mSelectMap.size() > 0){
-////                    createDialog();
-////                    ArrayList<String> ids = new ArrayList<>();
-////                    for(WenZhangFolderEntity id : mSelectMap.values()){
-////                        ids.add(id.getId());
-////                    }
-////                    mPresenter.deleteFolders(ids,mFolderType);
-////                }
-//                if(mSelectMap.size() == 0){
-//
-//                }
-//            }
-//        });
     }
 
     @Override

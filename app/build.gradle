@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 // Apply plugin
 apply plugin: 'org.greenrobot.greendao'
 
-def javaVersion = JavaVersion.VERSION_1_7
+//def javaVersion = JavaVersion.VERSION_1_7
 android {
     compileSdkVersion COMPILESDKVERSION as int
     buildToolsVersion BUILDTOOLSVERSION as String
@@ -12,12 +12,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility javaVersion
-        targetCompatibility javaVersion
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     //recommend
     dexOptions {
-        javaMaxHeapSize "8g"
+        javaMaxHeapSize "4g"
         jumboMode = true
     }
 
@@ -70,8 +70,9 @@ android {
     }
     buildTypes {
         release {
-           // buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
-            buildConfigField("String", "BASE_URL", "\"http://2333.moemoe.la/\"")
+            buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
+           // buildConfigField("String", "BASE_URL", "\"http://2333.moemoe.la/\"")
+           // buildConfigField("String","BASE_URL","\"http://123.58.136.98:12333/\"")
             buildConfigField("String", "NOT_FOUND_PAGE", "\"http://s.moemoe.la/404.html\"")
             //混淆
             minifyEnabled true
@@ -94,7 +95,7 @@ android {
         }
         debug{
             buildConfigField("String","BASE_URL","\"http://192.168.1.194:12333/\"")
-           // buildConfigField("String","BASE_URL","\"http://123.58.136.98:12333/\"")
+            //buildConfigField("String","BASE_URL","\"http://123.58.136.98:12333/\"")
            // buildConfigField("String","BASE_URL","\"http://2333.moemoe.la/\"")
             buildConfigField("String", "NOT_FOUND_PAGE", "\"http://s.moemoe.la/404.html\"")
             //混淆
@@ -145,7 +146,7 @@ android {
 //        mk_baidu {}
 //        mk_wandoujia {}
 //        mk_xiaomi {}
-//        mk_yinyongbao {}
+//        mk_yinyongbao {dimension "default"}
 //        mk_meizu {}
 //        mk_oppo {}
 //        mk_lenovo {}
@@ -210,6 +211,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -264,7 +266,6 @@ dependencies {
     compile 'jp.wasabeef:glide-transformations:2.0.1'
 
     //三方
-
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.qiniu:qiniu-android-sdk:7.2.1'
 
@@ -302,24 +303,21 @@ dependencies {
     //download
     compile 'com.liulishuo.filedownloader:library:1.6.8'
 
-    // compile 'zlc.season:rxdownload2:2.0.4'
-
-    // compile 'zlc.season:rxdownload3:1.0.8'
-
     //compile 'com.getui:ext:2.0.3'
     compile 'com.facebook.rebound:rebound:0.3.8'
 
     //jsoup
     compile 'org.jsoup:jsoup:1.10.3'
+    compile 'org.greenrobot:eventbus:3.1.1'
 
     //bannar
     compile 'com.youth.banner:banner:1.4.9'
-    testCompile 'junit:junit:4.12'
     compile files('libs/nineoldandroids-library-2.4.0.jar')
 
     //    compile files('libs/libphonenumber-6.2.jar')
     compile files('libs/live2d_android.jar')
     compile files('libs/libphonenumber-8.0.1.jar')
+    compile 'com.makeramen:roundedimageview:2.3.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
@@ -340,6 +338,7 @@ dependencies {
     compile files('libs/ShareSDK-Wechat-Moments-3.1.1.jar')
 
     //implementation project(':kiragame')
+    api project(':gsyVideoPlayer')
 }
 
 static def buildTime() {

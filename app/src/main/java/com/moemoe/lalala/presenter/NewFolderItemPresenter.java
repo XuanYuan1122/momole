@@ -14,6 +14,7 @@ import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ManHua2Entity;
 import com.moemoe.lalala.model.entity.NewFolderEntity;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
+import com.moemoe.lalala.model.entity.StreamFileEntity;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -90,12 +92,14 @@ public class NewFolderItemPresenter implements NewFolderItemContract.Presenter {
                         @Override
                         public void onSuccess(JsonArray res) {
                             if(view != null) {
+                                Gson gson = new Gson();
                                 if(finalType.equals(FolderType.XS.toString())){
-                                    Gson gson = new Gson();
                                     ArrayList<FileXiaoShuoEntity> list = gson.fromJson(res,new TypeToken<ArrayList<FileXiaoShuoEntity>>(){}.getType());
                                     if(view!=null)view.onLoadFileListSuccess(list, index == 0);
+                                }else if(finalType.equals(FolderType.SP.toString()) || finalType.equals(FolderType.YY.toString())){
+                                    ArrayList<StreamFileEntity> list = gson.fromJson(res,new TypeToken<ArrayList<StreamFileEntity>>(){}.getType());
+                                    if(view!=null)view.onLoadFileListSuccess(list, index == 0);
                                 }else {
-                                    Gson gson = new Gson();
                                     ArrayList<CommonFileEntity> list = gson.fromJson(res,new TypeToken<ArrayList<CommonFileEntity>>(){}.getType());
                                     if(view!=null)view.onLoadFileListSuccess(list, index == 0);
                                 }

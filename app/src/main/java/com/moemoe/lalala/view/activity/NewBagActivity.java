@@ -3,7 +3,6 @@ package com.moemoe.lalala.view.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
@@ -44,7 +43,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.ColorFilterTransformation;
 import jp.wasabeef.glide.transformations.CropSquareTransformation;
@@ -98,10 +96,7 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
     protected void onDestroy() {
         if(mPresenter != null) mPresenter.release();
         if(mAdapter != null) mAdapter.release();
-        mHandler.removeCallbacks(timeRunnabel);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment("shubao",mStayTime)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        stayEvent("shubao");
         super.onDestroy();
     }
 
@@ -114,9 +109,7 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(),null);
         mUserId = getIntent().getStringExtra(UUID);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment("shubao")
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        clickEvent("shubao");
         if(TextUtils.isEmpty(mUserId)){
             finish();
             return;
@@ -124,23 +117,21 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
         mTitleView.setCollapsedTitleTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         mTitleView.setExpandedTitleColor(ContextCompat.getColor(this,R.color.black_1e1e1e));
         mTvSpaceNum.setText("");
-        String[] mTitles = {"我的", "动态", "收藏"};
+        String[] mTitles = {"我的", "收藏"};
         mTabLayout.setTabData(mTitles);
 
         List<String> titles = new ArrayList<>();
         titles.add(mTitles[0]);
         titles.add(mTitles[1]);
-        titles.add(mTitles[2]);
+
         ArrayList<BaseFragment> fragmentList = new ArrayList<>();
         mMyFragment = BagMyFragment.newInstance("my",mUserId);
-        DynamicFragment fragment1 = DynamicFragment.newInstance();
         BagMyFragment fragment2 = BagMyFragment.newInstance("collection",mUserId);
         if(!mUserId.equals(PreferenceUtils.getUUid())){
             mTabLayout.setVisibility(View.GONE);
             fragmentList.add(mMyFragment);
         }else {
             fragmentList.add(mMyFragment);
-            fragmentList.add(fragment1);
             fragmentList.add(fragment2);
         }
         mAdapter = new TabFragmentPagerAdapter(getSupportFragmentManager(),fragmentList,titles);
@@ -223,29 +214,18 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
         });
     }
 
-    private int mStayTime;
-
-    private Handler mHandler = new Handler();
-    private Runnable timeRunnabel = new Runnable() {
-        @Override
-        public void run() {
-            mStayTime++;
-            mHandler.postDelayed(this,1000);
-        }
-    };
-
     @Override
     protected void onResume() {
         super.onResume();
         mAppBarLayout.addOnOffsetChangedListener(this);
-        mHandler.post(timeRunnabel);
+        startTime();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mAppBarLayout.removeOnOffsetChangedListener(this);
-        mHandler.removeCallbacks(timeRunnabel);
+        pauseTime();
     }
 
     @Override
@@ -344,7 +324,7 @@ public class NewBagActivity extends BaseAppCompatActivity implements NewBagContr
                 .override(DensityUtil.getScreenWidth(this),(int)getResources().getDimension(R.dimen.y240))
                 .placeholder(R.drawable.bg_default_square)
                 .error(R.drawable.bg_default_square)
-                .bitmapTransform(new BlurTransformation(this,10,4),new ColorFilterTransformation(this,R.color.alph_20))
+                .bitmapTransform(new BlurTransformation(this,10,4),new ColorFilterTransformation(this,R.color.alpha_20))
                 .into(mIvBg);
         Glide.with(this)
                 .load(StringUtils.getUrl(this,entity.getBg(),(int)getResources().getDimension(R.dimen.y160),(int)getResources().getDimension(R.dimen.y160),false,true))

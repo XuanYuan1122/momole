@@ -52,17 +52,6 @@ public class LuntanActivity extends BaseAppCompatActivity implements LuntanContr
     LuntanPresenter mPresenter;
 
     private TabFragmentPagerAdapter mAdapter;
-    private int mStayTime;
-
-    private Handler mHandler = new Handler();
-    private Runnable timeRunnabel = new Runnable() {
-        @Override
-        public void run() {
-            mStayTime++;
-            mHandler.postDelayed(this,1000);
-        }
-    };
-
 
     @Override
     protected int getLayoutId() {
@@ -72,9 +61,7 @@ public class LuntanActivity extends BaseAppCompatActivity implements LuntanContr
     @Override
     protected void initViews(Bundle savedInstanceState) {
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment("luntan")
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        clickEvent("luntan");
         mTitle.setText("论坛");
         mTitle.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
         DaggerLuntanComponent.builder()
@@ -109,10 +96,7 @@ public class LuntanActivity extends BaseAppCompatActivity implements LuntanContr
     protected void onDestroy() {
         if(mPresenter != null)mPresenter.release();
         if(mAdapter != null) mAdapter.release();
-        mHandler.removeCallbacks(timeRunnabel);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment("luntan",mStayTime)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        stayEvent("luntan");
         super.onDestroy();
 
     }
@@ -120,13 +104,13 @@ public class LuntanActivity extends BaseAppCompatActivity implements LuntanContr
     @Override
     protected void onPause() {
         super.onPause();
-        mHandler.removeCallbacks(timeRunnabel);
+        pauseTime();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mHandler.post(timeRunnabel);
+        startTime();
     }
 
     @Override

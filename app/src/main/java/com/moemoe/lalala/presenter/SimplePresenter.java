@@ -33,6 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.HttpUrl;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -223,14 +224,11 @@ public class SimplePresenter implements SimpleContract.Presenter {
                         @Override
                         public void onSuccess(Boolean aBoolean) {
                             AppSetting.TXBB = aBoolean;
-                            if(!aBoolean){
-                                RetrofitUrlManager.getInstance().setGlobalDomain("http://pgbb.moemoe.la/");
-                            }else {
-                                HttpUrl httpUrl = RetrofitUrlManager.getInstance().getGlobalDomain();
-                                if(httpUrl != null){
-                                    RetrofitUrlManager.getInstance().removeGlobalDomain();
-                                }
-                            }
+//                            if(!aBoolean){
+//                                RetrofitUrlManager.getInstance().setGlobalDomain("http://pgbb.moemoe.la/");
+//                            }else {
+//                                RetrofitUrlManager.getInstance().setGlobalDomain("http://2333.moemoe.la/");
+//                            }
                         }
 
                         @Override

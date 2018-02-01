@@ -76,9 +76,9 @@ public class CardSlidePanel extends ViewGroup {
         super(context, attrs, defStyle);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.card);
 
-        itemMarginTop = (int) a.getDimension(R.styleable.card_itemMarginTop, itemMarginTop);
-        bottomMarginTop = (int) a.getDimension(R.styleable.card_bottomMarginTop, bottomMarginTop);
-        yOffsetStep = (int) a.getDimension(R.styleable.card_yOffsetStep, yOffsetStep);
+        itemMarginTop = a.getDimensionPixelSize(R.styleable.card_itemMarginTop, itemMarginTop);
+        bottomMarginTop = a.getDimensionPixelSize(R.styleable.card_bottomMarginTop, bottomMarginTop);
+        yOffsetStep = a.getDimensionPixelSize(R.styleable.card_yOffsetStep, yOffsetStep);
         // 滑动相关类
         mDragHelper = ViewDragHelper
                 .create(this, 10f, new DragHelperCallback());

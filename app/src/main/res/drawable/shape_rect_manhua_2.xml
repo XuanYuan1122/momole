@@ -6,6 +6,6 @@
         android:topRightRadius="@dimen/size_4"
         android:bottomLeftRadius="@dimen/size_4"/>
 
-    <solid android:color="@color/alph_60" />
+    <solid android:color="@color/alpha_60" />
 
 </shape>

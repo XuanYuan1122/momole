@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_card_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/x24"
-    android:layout_marginEnd="@dimen/x24"
-    app:cardBackgroundColor="@color/white"
-    app:cardElevation="5dp">
+    android:paddingStart="@dimen/x24"
+    android:paddingEnd="@dimen/x24"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_card_root"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    </LinearLayout>
-</android.support.v7.widget.CardView>
+</LinearLayout>
 

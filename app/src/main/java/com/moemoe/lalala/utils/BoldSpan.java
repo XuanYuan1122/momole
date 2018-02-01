@@ -6,6 +6,7 @@ import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 
 /**
+ *
  * Created by Haru on 2016/4/27 0027.
  */
 public class BoldSpan extends ForegroundColorSpan {

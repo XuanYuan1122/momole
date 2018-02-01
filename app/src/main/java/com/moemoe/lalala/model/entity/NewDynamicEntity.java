@@ -21,7 +21,7 @@ public class NewDynamicEntity implements Parcelable{
     private String createTime;// 创建时间
     private long timestamp;
     private String text; // 外层的文字
-    private String type;// 类型 动态类型 DYNAMIC(动态),FOLDER(分享文件夹),ARTICLE(分享文章),RETWEET(转发),DELETE(被删除)
+    private String type;// 类型  DYNAMIC(动态),FOLDER(分享文件夹),ARTICLE(分享文章),RETWEET(转发),MUSIC(音乐),MOVIE(视频),DELETE(删除) PRODUCT MESSAGE
     private JsonObject detail;// 详情
     private String from;
     private String fromSchema;

@@ -20,12 +20,13 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
-import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.SystemMessageEvent;
 import com.moemoe.lalala.model.entity.ReceiverInfo;
 import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.activity.SplashActivity;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 推送接收广播
@@ -70,7 +71,7 @@ public class PushReceiver extends BroadcastReceiver {
             if("normal".equals(info.messageType)){
                 PreferenceUtils.setNormalMsgDotNum(context,PreferenceUtils.getNormalMsgDotNum(context) + 1);
             }
-            RxBus.getInstance().post(new SystemMessageEvent(info.messageType));
+            EventBus.getDefault().post(new SystemMessageEvent(info.messageType));
         }
         Bitmap btm = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.ic_launcher);

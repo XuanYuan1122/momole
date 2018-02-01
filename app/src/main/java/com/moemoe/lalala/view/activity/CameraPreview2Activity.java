@@ -18,7 +18,7 @@
 //import com.flyco.tablayout.listener.OnTabSelectListener;
 //import com.moemoe.lalala.R;
 //import com.moemoe.lalala.app.MoeMoeApplication;
-//import com.moemoe.lalala.app.RxBus;
+//
 //import com.moemoe.lalala.di.components.DaggerCameraComponent;
 //import com.moemoe.lalala.di.modules.CameraModule;
 //import com.moemoe.lalala.event.StickChangeEvent;

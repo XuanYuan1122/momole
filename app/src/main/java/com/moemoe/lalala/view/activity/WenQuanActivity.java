@@ -80,9 +80,7 @@ public class WenQuanActivity extends BaseAppCompatActivity implements OldDocCont
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         Intent i = getIntent();
         mRoomId = "";
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment("wenquan")
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        clickEvent("wenquan");
         if(i != null){
             String roomId = i.getStringExtra(UUID);
             if(!TextUtils.isEmpty(roomId)){
@@ -200,35 +198,21 @@ public class WenQuanActivity extends BaseAppCompatActivity implements OldDocCont
     @Override
     protected void onDestroy() {
         if(mPresenter != null)mPresenter.release();
-        mHandler.removeCallbacks(timeRunnabel);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment("wenquan",mStayTime)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        stayEvent("wenquan");
         super.onDestroy();
 
     }
 
-    private int mStayTime;
-
-    private Handler mHandler = new Handler();
-    private Runnable timeRunnabel = new Runnable() {
-        @Override
-        public void run() {
-            mStayTime++;
-            mHandler.postDelayed(this,1000);
-        }
-    };
-
     @Override
     protected void onPause() {
         super.onPause();
-        mHandler.removeCallbacks(timeRunnabel);
+        pauseTime();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mHandler.post(timeRunnabel);
+        startTime();
     }
 
     @Override

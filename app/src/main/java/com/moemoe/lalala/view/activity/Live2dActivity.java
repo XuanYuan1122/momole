@@ -27,6 +27,7 @@ import com.moemoe.lalala.galgame.Live2DView;
 import com.moemoe.lalala.galgame.SoundManager;
 import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
 import com.moemoe.lalala.model.entity.DeskMateEntity;
 import com.moemoe.lalala.model.entity.Live2dMusicEntity;
@@ -113,9 +114,7 @@ public class Live2dActivity extends BaseAppCompatActivity implements Live2dContr
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment("peiban")
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        clickEvent("peiban");
         SoundManager.init(this);
         FileManager.init(this);
         mPresenter.loadMusicList();
@@ -178,27 +177,16 @@ public class Live2dActivity extends BaseAppCompatActivity implements Live2dContr
         mSoundLoadAnim.start();
     }
 
-    private int mStayTime;
-
-    private Handler mHandler = new Handler();
-    private Runnable timeRunnabel = new Runnable() {
-        @Override
-        public void run() {
-            mStayTime++;
-            mHandler.postDelayed(this,1000);
-        }
-    };
-
     @Override
     protected void onPause() {
         super.onPause();
-        mHandler.removeCallbacks(timeRunnabel);
+        pauseTime();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mHandler.post(timeRunnabel);
+        startTime();
     }
 
     @Override
@@ -209,10 +197,7 @@ public class Live2dActivity extends BaseAppCompatActivity implements Live2dContr
             mPlayer.setPlayList(null);
             mPlayer.unregisterCallback(this);
         }
-        mHandler.removeCallbacks(timeRunnabel);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment("peiban",mStayTime)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        stayEvent("peiban");
         super.onDestroy();
         SoundManager.release();
         FileManager.release();
@@ -436,7 +421,17 @@ public class Live2dActivity extends BaseAppCompatActivity implements Live2dContr
         });
         MoeMoeApplication.getInstance().getNetComponent().getApiService().shareKpi("role")
                 .subscribeOn(Schedulers.io())
-                .subscribe();
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
         oks.show(this);
     }
 

@@ -99,7 +99,7 @@ public class SelectMapImageActivity extends BaseAppCompatActivity implements Sel
         mListDocs.getRecyclerView().setAdapter(mAdapter);
         mListDocs.setLayoutManager(new GridLayoutManager(this,3));
         mListDocs.getRecyclerView().addItemDecoration(new MapSelectItemDecoration());
-        mListDocs.setPadding((int)getResources().getDimension(R.dimen.x50),0,(int)getResources().getDimension(R.dimen.x50),0);
+        mListDocs.setPadding(getResources().getDimensionPixelSize(R.dimen.x50),0,getResources().getDimensionPixelSize(R.dimen.x50),0);
         if(mType == IS_OFFICIAL){
             mPresenter.loadMapSelectList();
             mListDocs.setLoadMoreEnabled(false);
@@ -218,7 +218,7 @@ public class SelectMapImageActivity extends BaseAppCompatActivity implements Sel
                 }
             });
         }else if(mType == IS_HISTORY_DELETE){
-            ViewUtils.setLeftMargins(mTvLeftMenu, (int)getResources().getDimension(R.dimen.x36));
+            ViewUtils.setLeftMargins(mTvLeftMenu,getResources().getDimensionPixelSize(R.dimen.x36));
             mTvLeftMenu.setText("放弃");
             mTvLeftMenu.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
             mTvLeftMenu.setOnClickListener(new NoDoubleClickListener() {

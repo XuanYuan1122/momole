@@ -23,6 +23,7 @@ public class RichDocListEntity implements Parcelable{
     private ArrayList<RichEntity> list;
     private ArrayList<RichEntity> hideList;
     private ArrayList<DocTagEntity> tags;
+    private ArrayList<String> texts;
     private String title;
     private String docId;
     private String musicPath;
@@ -37,6 +38,7 @@ public class RichDocListEntity implements Parcelable{
         list = new ArrayList<>();
         hideList = new ArrayList<>();
         tags = new ArrayList<>();
+        texts = new ArrayList<>();
     }
 
     @Override
@@ -52,6 +54,7 @@ public class RichDocListEntity implements Parcelable{
             info.list = bundle.getParcelableArrayList("list");
             info.hideList = bundle.getParcelableArrayList("hideList");
             info.tags = bundle.getParcelableArrayList("tags");
+            info.texts = bundle.getStringArrayList("texts");
             info.title = bundle.getString("title");
             info.docId = bundle.getString("docId");
             info.musicPath = bundle.getString("musicPath");
@@ -76,6 +79,7 @@ public class RichDocListEntity implements Parcelable{
         bundle.putParcelableArrayList("list",list);
         bundle.putParcelableArrayList("hideList",hideList);
         bundle.putParcelableArrayList("tags",tags);
+        bundle.putStringArrayList("texts",texts);
         bundle.putString("title",title);
         bundle.putString("docId",docId);
         bundle.putString("musicPath",musicPath);
@@ -152,6 +156,12 @@ public class RichDocListEntity implements Parcelable{
                 tagEntity.setName(tagO.getString("name"));
                 entity.getTags().add(tagEntity);
             }
+
+            JSONArray textArray = o.getJSONArray("texts");
+            for(int i = 0;i < textArray.length();i++){
+                JSONObject tagO = tagArry.getJSONObject(i);
+                entity.getTexts().add(tagO.getString("text"));
+            }
             return entity;
         }catch (Exception e){
             e.printStackTrace();
@@ -218,11 +228,26 @@ public class RichDocListEntity implements Parcelable{
                 tagArry.put(tagO);
             }
             o.put("tags",tagArry);
+
+            JSONArray textsArray = new JSONArray();
+            for(String tag : entity.getTexts()){
+                JSONObject tagO = new JSONObject();
+                tagO.put("text",tag);
+            }
+            o.put("texts",textsArray);
             return o.toString();
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ArrayList<String> getTexts() {
+        return texts;
+    }
+
+    public void setTexts(ArrayList<String> texts) {
+        this.texts = texts;
     }
 
     public ArrayList<RichEntity> getList() {

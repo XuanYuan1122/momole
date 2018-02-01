@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerJuQIngChatComponent;
 import com.moemoe.lalala.di.modules.JuQingChatModule;
 import com.moemoe.lalala.event.EventDoneEvent;
@@ -24,6 +24,8 @@ import com.moemoe.lalala.view.activity.PhoneMainV2Activity;
 import com.moemoe.lalala.view.adapter.ChatAdapter;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -244,7 +246,7 @@ public class JuQingChatV2Fragment extends BaseFragment implements IPhoneFragment
             dotNum -= 1;
         }
         PreferenceUtils.setJuQingDotNum(getContext(),dotNum);
-        RxBus.getInstance().post(new EventDoneEvent("mobile",role));
+        EventBus.getDefault().post(new EventDoneEvent("mobile",role));
     }
 
     @Override

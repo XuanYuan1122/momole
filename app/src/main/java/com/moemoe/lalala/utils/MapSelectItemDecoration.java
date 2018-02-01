@@ -18,6 +18,6 @@ public class MapSelectItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.top = (int) view.getResources().getDimension(R.dimen.y24);
+        outRect.top = view.getResources().getDimensionPixelSize(R.dimen.y24);
     }
 }

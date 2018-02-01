@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerFeedNoticeComponent;
 import com.moemoe.lalala.di.modules.FeedNoticeModule;
 import com.moemoe.lalala.event.FollowUserEvent;
@@ -39,6 +39,10 @@ import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -132,14 +136,8 @@ public class FeedNoticeFragment extends BaseFragment implements FeedNoticeContra
         });
         mPresenter.loadRecommendUserList();
         mPresenter.loadFeedNoticeList(mCurType,followTime,notifyTime);
-        if(PreferenceUtils.getMessageDot(getContext(),"neta")
-                || PreferenceUtils.getMessageDot(getContext(),"system")
-                || PreferenceUtils.getMessageDot(getContext(),"at_user")
-                || PreferenceUtils.getMessageDot(getContext(),"normal")){
-            int num = PreferenceUtils.getNetaMsgDotNum(getContext())
-                    + PreferenceUtils.getSysMsgDotNum(getContext())
-                    + PreferenceUtils.getAtUserMsgDotNum(getContext())
-                    + PreferenceUtils.getNormalMsgDotNum(getContext());
+        int num = PreferenceUtils.hasMsg(getContext());
+        if(num > 0){
             if(num > 999) num = 999;
             String content = "显示全部(" +  num + "条新通知)";
             String colorText = "(" + num + "条新通知)";
@@ -148,7 +146,7 @@ public class FeedNoticeFragment extends BaseFragment implements FeedNoticeContra
             style.setSpan(span, content.indexOf(colorText), content.indexOf(colorText) + colorText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             mTvMenu.setText(style);
         }
-        subscribeEvent();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -159,7 +157,7 @@ public class FeedNoticeFragment extends BaseFragment implements FeedNoticeContra
 
     public void release(){
         if(mPresenter != null) mPresenter.release();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
         super.release();
     }
 
@@ -358,7 +356,7 @@ public class FeedNoticeFragment extends BaseFragment implements FeedNoticeContra
                     PreferenceUtils.setMessageDot(getContext(),"system",false);
                     PreferenceUtils.setMessageDot(getContext(),"at_user",false);
                     PreferenceUtils.setMessageDot(getContext(),"normal",false);
-                    RxBus.getInstance().post(new SystemMessageEvent(""));
+                    EventBus.getDefault().post(new SystemMessageEvent(""));
                 }
                 followTime = notifyTime = 0;
                 mPresenter.loadFeedNoticeList(mCurType,followTime,notifyTime);
@@ -366,59 +364,32 @@ public class FeedNoticeFragment extends BaseFragment implements FeedNoticeContra
         });
     }
 
-    private void subscribeEvent() {
-        Disposable sysSubscription = RxBus.getInstance()
-                .toObservable(SystemMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SystemMessageEvent>() {
-                    @Override
-                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
-                        if("ALL".equals(mCurType)){
-                            if(PreferenceUtils.getMessageDot(getContext(),"neta")
-                                    || PreferenceUtils.getMessageDot(getContext(),"system")
-                                    || PreferenceUtils.getMessageDot(getContext(),"at_user")
-                                    || PreferenceUtils.getMessageDot(getContext(),"normal")){
-                                int num = PreferenceUtils.getNetaMsgDotNum(getContext())
-                                        + PreferenceUtils.getSysMsgDotNum(getContext())
-                                        + PreferenceUtils.getAtUserMsgDotNum(getContext())
-                                        + PreferenceUtils.getNormalMsgDotNum(getContext());
-                                if(num > 999) num = 999;
-                                String content = "显示全部(" +  num + "条新通知)";
-                                String colorText = "(" + num + "条新通知)";
-                                ForegroundColorSpan span = new ForegroundColorSpan(ContextCompat.getColor(getContext(),R.color.main_red));
-                                SpannableStringBuilder style = new SpannableStringBuilder(content);
-                                style.setSpan(span, content.indexOf(colorText), content.indexOf(colorText) + colorText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                                mTvMenu.setText(style);
-                            }else {
-                                mTvMenu.setText("显示全部");
-                            }
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void systemMsgEvent(SystemMessageEvent event){
+        if("ALL".equals(mCurType)){
+            if(PreferenceUtils.getMessageDot(getContext(),"neta")
+                    || PreferenceUtils.getMessageDot(getContext(),"system")
+                    || PreferenceUtils.getMessageDot(getContext(),"at_user")
+                    || PreferenceUtils.getMessageDot(getContext(),"normal")){
+                int num = PreferenceUtils.getNetaMsgDotNum(getContext())
+                        + PreferenceUtils.getSysMsgDotNum(getContext())
+                        + PreferenceUtils.getAtUserMsgDotNum(getContext())
+                        + PreferenceUtils.getNormalMsgDotNum(getContext());
+                if(num > 999) num = 999;
+                String content = "显示全部(" +  num + "条新通知)";
+                String colorText = "(" + num + "条新通知)";
+                ForegroundColorSpan span = new ForegroundColorSpan(ContextCompat.getColor(getContext(),R.color.main_red));
+                SpannableStringBuilder style = new SpannableStringBuilder(content);
+                style.setSpan(span, content.indexOf(colorText), content.indexOf(colorText) + colorText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                mTvMenu.setText(style);
+            }else {
+                mTvMenu.setText("显示全部");
+            }
+        }
+    }
 
-                    }
-                });
-        Disposable followSubscription = RxBus.getInstance()
-                .toObservable(FollowUserEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<FollowUserEvent>() {
-                    @Override
-                    public void accept(FollowUserEvent event) throws Exception {
-                        mPresenter.followUser(event.getUserId(),event.isFollow(),event.getPosition());
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().addSubscription(this, sysSubscription);
-        RxBus.getInstance().addSubscription(this, followSubscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void followUserEvent(FollowUserEvent event){
+        mPresenter.followUser(event.getUserId(),event.isFollow(),event.getPosition());
     }
 }

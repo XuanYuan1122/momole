@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.igexin.sdk.PushManager;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerLoginComponent;
 import com.moemoe.lalala.di.modules.LoginModule;
 import com.moemoe.lalala.event.MateChangeEvent;
@@ -37,6 +36,8 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,11 +47,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.wechat.friends.Wechat;
 
 /**
+ *
  * Created by yi on 2016/12/1.
  */
 
@@ -324,7 +325,7 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
             Intent i = new Intent(LoginActivity.this, MapActivity.class);
             startActivity(i);
         }
-        RxBus.getInstance().post(new MateChangeEvent());
+        EventBus.getDefault().post(new MateChangeEvent());
         finish();
     }
 
@@ -338,7 +339,7 @@ public class LoginActivity extends BaseAppCompatActivity implements LoginContrac
             startActivity(i);
         }
         setResult(RESPONSE_LOGIN_SUCCESS);
-        RxBus.getInstance().post(new MateChangeEvent());
+        EventBus.getDefault().post(new MateChangeEvent());
         finish();
     }
 

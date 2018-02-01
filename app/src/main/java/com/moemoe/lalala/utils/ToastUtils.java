@@ -52,12 +52,12 @@ public class ToastUtils {
         if(toast != null) toast.cancel();
         toast = new Toast(context);
         TextView tv = new TextView(context);
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, (int) context.getResources().getDimension(R.dimen.y60));
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, context.getResources().getDimensionPixelSize(R.dimen.y60));
         tv.setLayoutParams(lp);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,context.getResources().getDimension(R.dimen.x30));
         tv.setTextColor(Color.WHITE);
         tv.setText(msg);
-        tv.setPadding((int)context.getResources().getDimension(R.dimen.x32),0,(int)context.getResources().getDimension(R.dimen.x32),0);
+        tv.setPadding(context.getResources().getDimensionPixelSize(R.dimen.x32),0,context.getResources().getDimensionPixelSize(R.dimen.x32),0);
         tv.setGravity(Gravity.CENTER);
         tv.setBackgroundResource(R.drawable.shape_yellow_background_y30);
         toast.setView(tv);

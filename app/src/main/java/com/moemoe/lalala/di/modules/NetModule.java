@@ -8,7 +8,9 @@ import com.moemoe.lalala.BuildConfig;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.PreferenceUtils;
+import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.retrofit.RetrofitUrlManager;
 
 import java.io.File;
@@ -67,8 +69,8 @@ public class NetModule {
 
     @Provides
     @Singleton
-    public OkHttpClient provideOkHttpClient(Context context){
-        File cache =  MoeMoeApplication.getInstance().getCacheDir();
+    public OkHttpClient provideOkHttpClient(final Context context){
+        final File cache =  MoeMoeApplication.getInstance().getCacheDir();
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
@@ -93,5 +95,6 @@ public class NetModule {
             builder.cache(responseCache);
         }
         return RetrofitUrlManager.getInstance().with(builder).build();
+        //return builder.build();
     }
 }

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/top_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/status_bar_height"
+        android:background="@color/white"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x24"
+        android:paddingBottom="@dimen/y28"
+        android:paddingTop="@dimen/y28"
+        android:orientation="horizontal"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/rl_search_root"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="28dp"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x16"
+            android:orientation="horizontal"
+            android:background="@drawable/shape_e8e8e8_14">
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="@dimen/x36"
+                android:layout_height="@dimen/y38"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_search_icon" />
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/y56"
+                android:background="@null"
+                android:imeOptions="actionSearch"
+                android:textColor="@color/black_1e1e1e"
+                android:singleLine="true"
+                android:layout_marginStart="@dimen/x24"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/x16"
+                android:hint="搜索"
+                android:textSize="@dimen/x28"
+                android:textColorHint="@color/white"
+                android:textCursorDrawable="@null"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/iv_clear"
+                android:layout_width="@dimen/y36"
+                android:layout_height="@dimen/y36"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_search_cancel" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/main_cyan"
+            android:gravity="center"
+            android:paddingStart="@dimen/x24"
+            android:textSize="@dimen/x30"
+            android:text="取消"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/ll_hot_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/white"
+        app:showDividers="middle"
+        app:divider="@color/gray_e8e8e8">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y88"
+            android:textColor="@color/gray_d7d7d7"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/x24"
+            android:paddingEnd="@dimen/x24"
+            android:textSize="@dimen/x30"
+            android:text="热门标签"/>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/y24"
+            android:visibility="gone"/>
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/ll_bag_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:showDividers="middle"
+        app:divider="@color/gray_e8e8e8">
+
+        <com.moemoe.lalala.view.widget.view.KiraTabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y80"
+            android:background="@color/white"
+            android:layout_gravity="center_horizontal"
+            app:tl_indicator_color="@color/main_cyan"
+            app:tl_indicator_height="@dimen/y6"
+            app:tl_indicator_width="@dimen/x70"
+            app:tl_text_size="@dimen/x30"
+            app:tl_textSelectColor="@color/main_cyan"
+            app:tl_textUnSelectColor="@color/main_cyan_50"
+            app:tl_tab_width="@dimen/x190"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v7.widget.LinearLayoutCompat>
+
+
+</LinearLayout>

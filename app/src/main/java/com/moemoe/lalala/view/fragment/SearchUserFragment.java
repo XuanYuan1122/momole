@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.event.AtUserEvent;
@@ -21,6 +21,10 @@ import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -90,7 +94,7 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
                             startActivity(i);
                         }
                     }else {
-                        RxBus.getInstance().post(new AtUserEvent(entity.getUserId(),entity.getUserName()));
+                        EventBus.getDefault().post(new AtUserEvent(entity.getUserId(),entity.getUserName()));
                     }
                 }
             }
@@ -124,7 +128,7 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
                 return false;
             }
         });
-        subscribeSearchChangedEvent();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -150,32 +154,16 @@ public class SearchUserFragment extends BaseFragment  implements PersonalListCon
         mListDocs.setComplete();
     }
 
-    private void subscribeSearchChangedEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(SearchChangedEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SearchChangedEvent>() {
-                    @Override
-                    public void accept(SearchChangedEvent searchChangedEvent) throws Exception {
-                        mKeyWord = searchChangedEvent.getKeyWord();
-                        mCurPage = 1;
-                        mPresenter.doRequest(mKeyWord,mCurPage,9);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().unSubscribe(this);
-        RxBus.getInstance().addSubscription(this, subscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void searchChangedEvent(SearchChangedEvent event){
+        mKeyWord = event.getKeyWord();
+        mCurPage = 1;
+        mPresenter.doRequest(mKeyWord,mCurPage,9);
     }
 
     public void release(){
         if(mPresenter != null) mPresenter.release();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
         super.release();
     }
 }

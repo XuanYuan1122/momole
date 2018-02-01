@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
+ *
  * Created by yi on 2016/12/1.
  */
 
@@ -40,6 +41,10 @@ public abstract class BaseFragment extends Fragment {
     protected abstract int getLayoutId();
     protected abstract void initViews(Bundle savedInstanceState);
 
+    @SuppressWarnings("unchecked")
+    public <V extends View> V $(@IdRes int id){
+        return (V)rootView.findViewById(id);
+    }
 
     @Override
     public void onDestroyView() {
@@ -71,31 +76,4 @@ public abstract class BaseFragment extends Fragment {
         super.onPause();
     }
 
-//    public boolean onBackPressed(){
-//        return true;
-//    }
-//
-//    public void setTitle(String title){
-//
-//    }
-//
-//    public String getTitle(){
-//        return "";
-//    }
-//
-//    public void setMenu(@DrawableRes int res){
-//
-//    }
-//
-//    public void toFragment(Fragment fragment){
-//
-//    }
-//
-//    public int getMenu(){
-//        return 0;
-//    }
-//
-//    public void onMenuClick(){
-//
-//    }
 }

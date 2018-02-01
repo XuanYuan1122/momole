@@ -104,8 +104,8 @@ public class ConversationListAdapterNew extends ConversationListAdapter {
                 holder.content.setText(contentAndTime[0]);
             }else {
                 //cover
-                int size = (int) mContext.getResources().getDimension(R.dimen.y90);
-                int cor = (int) mContext.getResources().getDimension(R.dimen.y8);
+                int size = mContext.getResources().getDimensionPixelSize(R.dimen.y90);
+                int cor = mContext.getResources().getDimensionPixelSize(R.dimen.y8);
 
                 Glide.with(mContext)
                         .load(data.getIconUrl() != null ? data.getIconUrl().toString() : "")

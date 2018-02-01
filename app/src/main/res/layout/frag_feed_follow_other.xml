@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y300">
+
+        <ImageView
+            android:id="@+id/iv_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
+
+        <FrameLayout
+            android:id="@+id/fl_cover_root"
+            android:layout_width="@dimen/y136"
+            android:layout_height="@dimen/y136"
+            android:layout_marginTop="@dimen/y48"
+            android:layout_marginStart="@dimen/x36"
+            android:background="@drawable/shape_rect_border_white_no_background_y16">
+
+            <ImageView
+                android:id="@+id/iv_cover"
+                android:layout_width="@dimen/y128"
+                android:layout_height="@dimen/y128"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/fl_cover_root"
+            android:layout_toEndOf="@+id/fl_cover_root"
+            android:layout_marginStart="@dimen/x24"
+            android:layout_marginTop="@dimen/y8"
+            android:textSize="@dimen/x56"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/tv_title"
+            android:layout_alignTop="@+id/tv_title"
+            android:src="@drawable/ic_trends_tag_nametag"/>
+
+        <LinearLayout
+            android:id="@+id/ll_admin_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/tv_title"
+            android:layout_marginEnd="@dimen/x24">
+
+            <FrameLayout
+                android:id="@+id/fl_admin_avatar_root"
+                android:layout_width="@dimen/y48"
+                android:layout_height="@dimen/y48"
+                android:background="@drawable/shape_rect_border_white_no_background_y24">
+
+                <ImageView
+                    android:id="@+id/iv_admin_avatar"
+                    android:layout_width="@dimen/y44"
+                    android:layout_height="@dimen/y44"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginStart="@dimen/x8"
+                android:textSize="@dimen/x24" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tv_title"
+            android:layout_below="@+id/tv_title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x24"
+            android:maxLines="2"
+            android:layout_marginEnd="@dimen/x36"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y80"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white_40">
+
+            <TextView
+                android:id="@+id/tv_content_num"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|bottom"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x28"
+                android:drawableBottom="@drawable/ic_trends_tag_switch"
+                android:drawablePadding="@dimen/y4"/>
+
+            <View
+                android:layout_width="@dimen/x1"
+                android:layout_height="@dimen/y60"
+                android:layout_gravity="center_vertical"
+                android:background="@color/white"/>
+
+            <TextView
+                android:id="@+id/tv_discuss_num"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x28" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+</LinearLayout>

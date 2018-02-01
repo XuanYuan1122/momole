@@ -1,6 +1,5 @@
 package com.moemoe.lalala.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,26 +10,25 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.di.components.DaggerBadgeComponent;
 import com.moemoe.lalala.di.components.DaggerFileUploadComponent;
-import com.moemoe.lalala.di.modules.BadgeModule;
 import com.moemoe.lalala.di.modules.FileUploadModule;
 import com.moemoe.lalala.model.entity.BookInfo;
 import com.moemoe.lalala.model.entity.FolderType;
-import com.moemoe.lalala.model.entity.Image;
 import com.moemoe.lalala.model.entity.ManHua2Entity;
+import com.moemoe.lalala.model.entity.VideoInfo;
 import com.moemoe.lalala.model.entity.ZipInfo;
 import com.moemoe.lalala.presenter.FileUploadContract;
 import com.moemoe.lalala.presenter.FileUploadPresenter;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
-import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
@@ -40,6 +38,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.SelectItemAdapter;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
@@ -53,13 +52,14 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import jp.wasabeef.glide.transformations.CropTransformation;
-import retrofit2.http.Body;
 
 import static com.moemoe.lalala.utils.Constant.LIMIT_NICK_NAME;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_FILE_UPLOAD;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_GET_FROM_SELECT_BOOK;
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_GET_FROM_SELECT_MOVIE;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_GET_FROM_SELECT_MUSIC;
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_GET_FROM_SELECT_ZIP;
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_RECOMMEND_TAG;
 
 /**
  *
@@ -81,18 +81,28 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
     View mBgRoot;
     @BindView(R.id.ll_name_root)
     View mNameRoot;
+    @BindView(R.id.ll_desc_root)
+    View mDescRoot;
+    @BindView(R.id.layout_tag_root)
+    View mTagRoot;
     @BindView(R.id.rv_img)
     RecyclerView mRvImg;
     @BindView(R.id.iv_cover)
     ImageView mIvBg;
     @BindView(R.id.tv_name)
     TextView mTvName;
+    @BindView(R.id.tv_desc_name)
+    TextView mDescName;
+    @BindView(R.id.tv_coin)
+    TextView mTvCoin;
     @BindView(R.id.edt_comment_input)
     EditText mEdtCommentInput;
     @BindView(R.id.ll_comment_pannel)
     KeyboardListenerLayout mKlCommentBoard;
     @BindView(R.id.iv_comment_send)
     View mTvSendComment;
+    @BindView(R.id.ll_coin_root)
+    View mCoinRoot;
     @BindView(R.id.rl_zip_root)
     View mZipRoot;
     @BindView(R.id.tv_zip_name)
@@ -101,6 +111,11 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
     ImageView mIvDelZip;
     @BindView(R.id.tv_num)
     TextView mTvNum;
+    @BindView(R.id.tv_label_add_1)
+    TextView mTvTag1;
+    @BindView(R.id.tv_label_add_2)
+    TextView mTvTag2;
+
     @Inject
     FileUploadPresenter mPresenter;
 
@@ -115,6 +130,8 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
     private ArrayList<Object> mItemPaths = new ArrayList<>();
     private boolean mHasModified = false;
     private ZipInfo mZipInfo;
+    private int inputType; //1 name 2 desc 3 coin
+    private ArrayList<String> mTags;
 
     @Override
     protected int getLayoutId() {
@@ -153,6 +170,7 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                 .inject(this);
         ViewUtils.setStatusBarLight(getWindow(), $(R.id.top_view));
         AndroidBug5497Workaround.assistActivity(this);
+        mTags = new ArrayList<>();
         mFolderType = getIntent().getStringExtra("folderType");
         mFolderId = getIntent().getStringExtra("folderId");
         mParentId = getIntent().getStringExtra("parentId");
@@ -174,10 +192,31 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                         .bitmapTransform(new CropTransformation(FilesUploadActivity.this,(int)getResources().getDimension(R.dimen.y112),(int)getResources().getDimension(R.dimen.y112)))
                         .into(mIvBg);
             }
-        }else if(mFolderType.equals(FolderType.XS.toString())){
+        }else if(mFolderType.equals(FolderType.XS.toString()) || mFolderType.equals(FolderType.SP.toString())){
             mBgRoot.setVisibility(View.VISIBLE);
             mNameRoot.setVisibility(View.VISIBLE);
             mSelectAdapter.setSelectSize(1);
+            if(mFolderType.equals(FolderType.SP.toString())){
+                mDescRoot.setVisibility(View.VISIBLE);
+                mTagRoot.setVisibility(View.VISIBLE);
+                mCoinRoot.setVisibility(View.VISIBLE);
+                mTvCoin.setText("0");
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTagRoot.getLayoutParams();
+                lp.topMargin = getResources().getDimensionPixelSize(R.dimen.y24);
+                mTagRoot.requestLayout();
+                mTvNum.setText("上传视频将会进行审核，审核通过后他人才能看见");
+            }
+        }
+
+        if(mFolderType.equals(FolderType.YY.toString())){
+            mBgRoot.setVisibility(View.VISIBLE);
+            mTagRoot.setVisibility(View.VISIBLE);
+            mCoinRoot.setVisibility(View.VISIBLE);
+            mTvCoin.setText("0");
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTagRoot.getLayoutParams();
+            lp.topMargin = getResources().getDimensionPixelSize(R.dimen.y24);
+            mTagRoot.requestLayout();
+            mTvNum.setText("同时上传多个音乐时，将使用同样的封面");
         }
 
         LinearLayoutManager selectRvL = new LinearLayoutManager(this);
@@ -205,9 +244,35 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
         mNameRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
+                inputType = 1;
                 mKlCommentBoard.setVisibility(View.VISIBLE);
+                mEdtCommentInput.setInputType(EditorInfo.TYPE_NULL);
                 mEdtCommentInput.setText("");
                 mEdtCommentInput.setHint("名称");
+                mEdtCommentInput.requestFocus();
+                SoftKeyboardUtils.showSoftKeyboard(FilesUploadActivity.this, mEdtCommentInput);
+            }
+        });
+        mDescRoot.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                inputType = 2;
+                mKlCommentBoard.setVisibility(View.VISIBLE);
+                mEdtCommentInput.setInputType(EditorInfo.TYPE_NULL);
+                mEdtCommentInput.setText("");
+                mEdtCommentInput.setHint("描述");
+                mEdtCommentInput.requestFocus();
+                SoftKeyboardUtils.showSoftKeyboard(FilesUploadActivity.this, mEdtCommentInput);
+            }
+        });
+        mCoinRoot.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                inputType = 3;
+                mKlCommentBoard.setVisibility(View.VISIBLE);
+                mEdtCommentInput.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
+                mEdtCommentInput.setText("");
+                mEdtCommentInput.setHint("节操");
                 mEdtCommentInput.requestFocus();
                 SoftKeyboardUtils.showSoftKeyboard(FilesUploadActivity.this, mEdtCommentInput);
             }
@@ -258,14 +323,29 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
             @Override
             public void onClick(View v) {
                 String content = mEdtCommentInput.getText().toString();
-                if (!TextUtils.isEmpty(content)) {
                     SoftKeyboardUtils.dismissSoftKeyboard(FilesUploadActivity.this);
-                    if(content.length() > LIMIT_NICK_NAME){
-                        mTvName.setSelected(true);
-                    }else {
-                        mTvName.setSelected(false);
+                if (!TextUtils.isEmpty(content)) {
+                    if(inputType == 1){
+                        if(content.length() > LIMIT_NICK_NAME){
+                            mTvName.setSelected(true);
+                        }else {
+                            mTvName.setSelected(false);
+                        }
+                        mTvName.setText(content);
+                    }else if(inputType == 2){
+                        if(content.length() > 150){
+                            mDescName.setSelected(true);
+                        }else {
+                            mDescName.setSelected(false);
+                        }
+                        mDescName.setText(content);
+                    }else if(inputType == 3){
+                        if(TextUtils.isDigitsOnly(content)){
+                            mTvCoin.setText(content);
+                        }else {
+                            showToast("输入节操不合法");
+                        }
                     }
-                    mTvName.setText(content);
                     mHasModified = true;
                 }else {
                     showToast(R.string.msg_doc_comment_not_empty);
@@ -300,6 +380,24 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                 done();
             }
         });
+        mTvTag1.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                Intent i = new Intent(FilesUploadActivity.this,RecommendTagActivity.class);
+                i.putStringArrayListExtra("tags",mTags);
+                i.putExtra("folderType",mFolderType);
+                startActivityForResult(i,REQ_RECOMMEND_TAG);
+            }
+        });
+        mTvTag2.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                Intent i2 = new Intent(FilesUploadActivity.this,RecommendTagActivity.class);
+                i2.putStringArrayListExtra("tags",mTags);
+                i2.putExtra("folderType",mFolderType);
+                startActivityForResult(i2,REQ_RECOMMEND_TAG);
+            }
+        });
         initPopupMenus();
     }
 
@@ -308,7 +406,7 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
             showToast(R.string.msg_connection);
             return;
         }
-        if(mFolderType.equals(FolderType.MH.toString()) || mFolderType.equals(FolderType.XS.toString()) || mFolderType.equals(FolderType.MHD.toString()) ){
+        if(mFolderType.equals(FolderType.MH.toString()) || mFolderType.equals(FolderType.XS.toString()) || mFolderType.equals(FolderType.MHD.toString()) || mFolderType.equals(FolderType.SP.toString())){
             String name = mTvName.getText().toString();
             if (TextUtils.isEmpty(name)) {
                 showToast(R.string.msg_name_cannot_null);
@@ -316,6 +414,28 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
             }
             if(TextUtils.isEmpty(mBgPath)){
                 showToast("封面不能为空");
+                return;
+            }
+        }
+        if(mFolderType.equals(FolderType.YY.toString())){
+            if(TextUtils.isEmpty(mBgPath)){
+                showToast("封面不能为空");
+                return;
+            }
+            if(mTags.size() == 0){
+                showToast("标签不能为空");
+                return;
+            }
+        }
+
+        if(mFolderType.equals(FolderType.SP.toString())){
+            String desc = mDescName.getText().toString();
+            if (TextUtils.isEmpty(desc)) {
+                showToast("简介不能为空");
+                return;
+            }
+            if(mTags.size() == 0){
+                showToast("标签不能为空");
                 return;
             }
         }
@@ -371,7 +491,11 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
             items.add(item);
         }
         item = new MenuItem(3, "音乐");
-        if(mFolderType.equals(FolderType.ZH.toString())){
+        if(mFolderType.equals(FolderType.ZH.toString()) || mFolderType.equals(FolderType.YY.toString())){
+            items.add(item);
+        }
+        item = new MenuItem(4, "视频");
+        if(mFolderType.equals(FolderType.SP.toString())){
             items.add(item);
         }
         bottomMenuFragment.setMenuItems(items);
@@ -380,13 +504,7 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
         bottomMenuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
             @Override
             public void OnMenuItemClick(int itemId) {
-                if (itemId == 1) {
-                    chooseItem(0);
-                }else if(itemId == 2){
-                    chooseItem(1);
-                }else if(itemId == 3){
-                    chooseItem(2);
-                }
+                chooseItem(itemId - 1);
             }
         });
     }
@@ -416,6 +534,9 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
             }else if(type == 2){
                 Intent intent = new Intent(FilesUploadActivity.this, SelectMusicActivity.class);
                 startActivityForResult(intent,REQ_GET_FROM_SELECT_MUSIC);
+            }else if(type == 3){
+                Intent intent = new Intent(FilesUploadActivity.this, SelectMovieActivity.class);
+                startActivityForResult(intent,REQ_GET_FROM_SELECT_MOVIE);
             }
         } else {
             showToast(R.string.msg_select_9_item);
@@ -444,7 +565,9 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                     mItemPaths.add(mMusicInfo);
                 }
                 mSelectAdapter.setData(mItemPaths);
-                mTvNum.setText("已选" + mItemPaths.size() + "项");
+                if(!mFolderType.equals(FolderType.YY.toString())){
+                    mTvNum.setText("已选" + mItemPaths.size() + "项");
+                }
             }
         }else if(requestCode == REQ_GET_FROM_SELECT_BOOK && resultCode == RESULT_OK){
             if(data != null){
@@ -455,7 +578,20 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                 mSelectAdapter.setData(mItemPaths);
                 mTvNum.setText("已选" + mItemPaths.size() + "项");
             }
-        }else {
+        }else if(requestCode == REQ_GET_FROM_SELECT_MOVIE && resultCode == RESULT_OK){
+            if(data != null){
+                VideoInfo entity = data.getParcelableExtra(SelectMovieActivity.EXTRA_SELECT_MOVIE);
+                if(!checkInfo(entity.getPath())){
+                    mItemPaths.add(entity);
+                }
+                mSelectAdapter.setData(mItemPaths);
+            }
+        } else if(requestCode == REQ_RECOMMEND_TAG && resultCode == RESULT_OK){
+            if(data != null){
+                mTags = data.getStringArrayListExtra("tags");
+                showTags();
+            }
+        } else {
             DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
 
                 @Override
@@ -477,6 +613,26 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
                     }
                 }
             });
+        }
+    }
+
+    private void showTags(){
+        if(mTags.size() == 2){
+            mTvTag1.setVisibility(View.VISIBLE);
+            mTvTag1.setText(mTags.get(0));
+            TagUtils.setBackGround(mTags.get(0),mTvTag1);
+            mTvTag2.setVisibility(View.VISIBLE);
+            mTvTag2.setText(mTags.get(1));
+            TagUtils.setBackGround(mTags.get(1),mTvTag2);
+        }else if(mTags.size() == 1){
+            mTvTag1.setVisibility(View.VISIBLE);
+            mTvTag1.setText(mTags.get(0));
+            TagUtils.setBackGround(mTags.get(0),mTvTag1);
+            mTvTag2.setVisibility(View.GONE);
+        }else {
+            mTvTag1.setVisibility(View.VISIBLE);
+            mTvTag1.setText("");
+            mTvTag1.setBackgroundResource(R.drawable.ic_bag_tag_add);
         }
     }
 
@@ -557,7 +713,12 @@ public class FilesUploadActivity extends BaseAppCompatActivity implements FileUp
     @Override
     public void onCheckSize(boolean isOk) {
         if(isOk){
-            mPresenter.uploadFiles(mFolderType,mFolderId,mParentId,mTvName.getText().toString(),mItemPaths,mBgPath,mBgPath.equals(mBgTmp)?-1:0);
+            String coinS = mTvCoin.getText().toString();
+            int coin = 0;
+            if(!TextUtils.isEmpty(coinS)){
+                coin = Integer.valueOf(coinS);
+            }
+            mPresenter.uploadFiles(mFolderType,mFolderId,mParentId,mTvName.getText().toString(),mItemPaths,mBgPath,mBgPath.equals(mBgTmp)?-1:0,coin,mDescName.getText().toString(),mTags);
         }else {
             showToast("空间不足");
             finalizeDialog();

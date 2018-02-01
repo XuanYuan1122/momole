@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fl_history_root"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y80"
+    android:background="@color/gray_e8e8e8"
+    android:visibility="gone">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/main_cyan"
+        android:text="@string/label_feed_history_refresh"
+        android:drawableEnd="@drawable/ic_bag_switch"
+        android:drawablePadding="@dimen/x10"
+        android:textSize="@dimen/x24"/>
+</FrameLayout>

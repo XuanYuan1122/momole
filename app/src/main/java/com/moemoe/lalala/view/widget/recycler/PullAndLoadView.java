@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import com.moemoe.lalala.R;
 
 /**
+ *
  * Created by Haru on 2016/4/23 0023.
  */
 public class PullAndLoadView extends FrameLayout {

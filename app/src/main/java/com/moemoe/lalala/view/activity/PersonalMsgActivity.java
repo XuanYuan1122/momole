@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.event.SystemMessageEvent;
@@ -27,6 +27,10 @@ import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -161,7 +165,7 @@ public class PersonalMsgActivity extends BaseAppCompatActivity  implements Perso
                 return false;
             }
         });
-        subscribeEvent();
+        EventBus.getDefault().register(this);
         mPresenter.doRequest(id,0,4);
     }
 
@@ -197,35 +201,19 @@ public class PersonalMsgActivity extends BaseAppCompatActivity  implements Perso
     @Override
     protected void onDestroy() {
         if(mPresenter != null) mPresenter.release();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
-    private void subscribeEvent() {
-        Disposable sysSubscription = RxBus.getInstance()
-                .toObservable(SystemMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SystemMessageEvent>() {
-                    @Override
-                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
-                        if(systemMessageEvent.getType().equals("neta")){
-                            mAdapter.notifyItemChanged(2);
-                        }else if(systemMessageEvent.getType().equals("system")){
-                            mAdapter.notifyItemChanged(0);
-                        }else if(systemMessageEvent.getType().equals("at_user")){
-                            mAdapter.notifyItemChanged(1);
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().unSubscribe(this);
-        RxBus.getInstance().addSubscription(this, sysSubscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void systemMsgEvent(SystemMessageEvent event){
+        if(event.getType().equals("neta")){
+            mAdapter.notifyItemChanged(2);
+        }else if(event.getType().equals("system")){
+            mAdapter.notifyItemChanged(0);
+        }else if(event.getType().equals("at_user")){
+            mAdapter.notifyItemChanged(1);
+        }
     }
 
     @Override

@@ -85,11 +85,49 @@ public class PreferenceUtils {
 
     public static String getUUid(){ return  sAuthorInfo == null ? "" : TextUtils.isEmpty(sAuthorInfo.getUserId()) ? "" : sAuthorInfo.getUserId(); }
 
+    public static int hasMsg(Context context){
+        int num = 0;
+        if(PreferenceUtils.getMessageDot(context,"neta")
+                || PreferenceUtils.getMessageDot(context,"system")
+                || PreferenceUtils.getMessageDot(context,"at_user")
+                || PreferenceUtils.getMessageDot(context,"normal")){
+            num = PreferenceUtils.getNetaMsgDotNum(context)
+                    + PreferenceUtils.getSysMsgDotNum(context)
+                    + PreferenceUtils.getAtUserMsgDotNum(context)
+                    + PreferenceUtils.getNormalMsgDotNum(context);
+        }
+        return num;
+    }
+
+    public static void clearMsg(Context context){
+        PreferenceUtils.setNetaMsgDotNum(context,0);
+        PreferenceUtils.setSysMsgDotNum(context,0);
+        PreferenceUtils.setAtUserMsgDotNum(context,0);
+        PreferenceUtils.setNormalMsgDotNum(context,0);
+        PreferenceUtils.setMessageDot(context,"neta",false);
+        PreferenceUtils.setMessageDot(context,"system",false);
+        PreferenceUtils.setMessageDot(context,"at_user",false);
+        PreferenceUtils.setMessageDot(context,"normal",false);
+    }
+
     public static boolean isLogin(){
         if(sAuthorInfo == null){
             return false;
         }
         return !TextUtils.isEmpty(sAuthorInfo.getUserId()) && !TextUtils.isEmpty(sAuthorInfo.getToken());
+    }
+
+    public static void setFeedLastItem(Context context,String type,String id){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putString("feed_last_" + type, id);
+        ed.commit();
+    }
+
+    public static String getFeedLastItem(Context context,String type){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getString("feed_last_" + type,"");
     }
 
     public static void setsLastLauncherTime(Context context,long time){
@@ -331,6 +369,19 @@ public class PreferenceUtils {
         return sp.getInt("last_trash_time_" + type,0);
     }
 
+    public static int getLastFeedPosition(Context context,String type){
+        SharedPreferences sp = context.getSharedPreferences(
+                FILE_NAME,Activity.MODE_PRIVATE);
+        return sp.getInt("last_feed_position_" + type,-1);
+    }
+
+    public static void setLastFeedPosition(Context context,String type,int position){
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME,Activity.MODE_PRIVATE);
+        SharedPreferences.Editor ed = sp.edit();
+        ed.putInt("last_feed_position_" + type, position);
+        ed.commit();
+    }
+
     public static void setLastEventTime(Context context, long time){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME,Activity.MODE_PRIVATE);
         SharedPreferences.Editor ed = sp.edit();
@@ -497,7 +548,7 @@ public class PreferenceUtils {
     public static int getReadFontSize(Context context,String bookId){
         SharedPreferences sp = context.getSharedPreferences(
                 FILE_NAME, Activity.MODE_PRIVATE);
-        return sp.getInt("bookId", (int)context.getResources().getDimension(R.dimen.x30));
+        return sp.getInt("bookId",context.getResources().getDimensionPixelSize(R.dimen.x30));
     }
 
     public static void saveFontSize(Context context,String bookId,int fontSizePx){

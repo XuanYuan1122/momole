@@ -26,7 +26,7 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.AppStatusConstant;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerMapComponent;
 import com.moemoe.lalala.di.modules.MapModule;
 import com.moemoe.lalala.event.BackSchoolEvent;
@@ -53,7 +53,6 @@ import com.moemoe.lalala.presenter.MapContract;
 import com.moemoe.lalala.presenter.MapPresenter;
 import com.moemoe.lalala.service.DaemonService;
 import com.moemoe.lalala.utils.AlertDialogUtil;
-import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.DialogUtils;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FileUtil;
@@ -83,6 +82,10 @@ import com.tencent.map.geolocation.TencentLocation;
 import com.tencent.map.geolocation.TencentLocationListener;
 import com.tencent.map.geolocation.TencentLocationManager;
 import com.tencent.map.geolocation.TencentLocationRequest;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -216,7 +219,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         mPresenter.loadMapPics();
         String mTime = dateFormat.format(new Date());
         mTvTime.setText(mTime);
-        subscribeSearchChangedEvent();
+        EventBus.getDefault().register(this);
         ViewUtils.setRoleButton(mIvRole, mTvText);
         TencentLocationRequest request = TencentLocationRequest.create();
         request.setInterval(60 * 1000 * 60 * 2);//1小时获取一次定位
@@ -662,33 +665,6 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                             IntentUtils.toActivityFromUri(MapActivity.this, uri, v);
                         }
                     }
-//                    else {
-//                        TextView textView = (TextView) LayoutInflater.from(MapActivity.this).inflate(R.layout.tooltip_textview, null);
-//                        int viewHeight = mapWidget.getMapHeight();
-//                        int type;
-//                        if(entity.getY() < viewHeight / 2){
-//                            type = Tooltip.BOTTOM;
-//                        }else {
-//                            type = Tooltip.TOP;
-//                        }
-//                        int x = xToScreenCoords(entity.getX());
-//                        int y = yToScreenCoords(entity.getY());
-//                        if(TextUtils.isEmpty(entity.getContent())){
-//                            Random random = new Random();
-//                            int i = random.nextInt(entity.getContents().size());
-//                            ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContents().get(i),type,mapX,mapY,entity.getW(),entity.getH(),true,
-//                                    TooltipAnimation.SCALE_AND_FADE,
-//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-//                                    ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
-//                        }else {
-//                            ToolTipUtils.showTooltip(MapActivity.this, mMap, textView, v, entity.getContent(),type, mapX,mapY,entity.getW(),entity.getH(),true,
-//                                    TooltipAnimation.SCALE_AND_FADE,
-//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-//                                    ViewGroup.LayoutParams.WRAP_CONTENT,
-//                                    ContextCompat.getColor(MapActivity.this, R.color.main_cyan));
-//                        }
-//                    }
                 }
             }
         });
@@ -717,99 +693,48 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         });
     }
 
-    private void subscribeSearchChangedEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(BackSchoolEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<BackSchoolEvent>() {
-                    @Override
-                    public void accept(BackSchoolEvent backSchoolEvent) throws Exception {
-                        mPresenter.saveEvent(new NetaEvent(backSchoolEvent.getPass() + "", "BS"));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void backSchoolEvent(BackSchoolEvent event){
+        mPresenter.saveEvent(new NetaEvent(event.getPass() + "", "BS"));
+    }
 
-                    }
-                });
-        Disposable subscription1 = RxBus.getInstance()
-                .toObservable(MateChangeEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<MateChangeEvent>() {
-                    @Override
-                    public void accept(MateChangeEvent backSchoolEvent) throws Exception {
-                        ViewUtils.setRoleButton(mIvRole,mTvText);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void mateChangeEvent(MateChangeEvent event){
+        ViewUtils.setRoleButton(mIvRole,mTvText);
+    }
 
-                    }
-                });
-        Disposable subscription3 = RxBus.getInstance()
-                .toObservable(EventDoneEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<EventDoneEvent>() {
-                    @Override
-                    public void accept(EventDoneEvent eventDoneEvent) throws Exception {
-                        if(eventDoneEvent.getType().equals("mobile")){
-                            int dotNum = PreferenceUtils.getJuQIngDotNum(MapActivity.this);
-                            dotNum += PreferenceUtils.getRCDotNum(MapActivity.this) + PreferenceUtils.getGroupDotNum(MapActivity.this);
-                            if(dotNum > 0){
-                                if(dotNum > 999) dotNum = 999;
-                                mTvMsg.setText(dotNum + "条新聊天");
-                                mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(MapActivity.this,R.drawable.ic_inform_reddot),null,null,null);
-                                mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
-                            }else {
-                                mTvMsg.setText("无新聊天");
-                                mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
-                                mTvMsg.setCompoundDrawablePadding(0);
-                            }
-                        }else if(eventDoneEvent.getType().equals("map")){
-                            Layer layer = mapWidget.getLayerById(1);
-                            layer.setVisible(false);
-                            mapWidget.invalidate();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void eventDoneEvent(EventDoneEvent eventDoneEvent){
+        if(eventDoneEvent.getType().equals("mobile")){
+            int dotNum = PreferenceUtils.getJuQIngDotNum(MapActivity.this);
+            dotNum += PreferenceUtils.getRCDotNum(MapActivity.this) + PreferenceUtils.getGroupDotNum(MapActivity.this);
+            if(dotNum > 0){
+                if(dotNum > 999) dotNum = 999;
+                mTvMsg.setText(dotNum + "条新聊天");
+                mTvMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(MapActivity.this,R.drawable.ic_inform_reddot),null,null,null);
+                mTvMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+            }else {
+                mTvMsg.setText("无新聊天");
+                mTvMsg.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+                mTvMsg.setCompoundDrawablePadding(0);
+            }
+        }else if(eventDoneEvent.getType().equals("map")){
+            Layer layer = mapWidget.getLayerById(1);
+            layer.setVisible(false);
+            mapWidget.invalidate();
+        }
+    }
 
-                    }
-                });
-        Disposable sysSubscription = RxBus.getInstance()
-                .toObservable(SystemMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SystemMessageEvent>() {
-                    @Override
-                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
-                        if(PreferenceUtils.getMessageDot(MapActivity.this,"neta") || PreferenceUtils.getMessageDot(MapActivity.this,"system") || PreferenceUtils.getMessageDot(MapActivity.this,"at_user")|| PreferenceUtils.getMessageDot(MapActivity.this,"normal")){
-                            mTvSysMsg.setVisibility(View.VISIBLE);
-                            int num = PreferenceUtils.getNetaMsgDotNum(MapActivity.this) + PreferenceUtils.getSysMsgDotNum(MapActivity.this) + PreferenceUtils.getAtUserMsgDotNum(MapActivity.this) + PreferenceUtils.getNormalMsgDotNum(MapActivity.this);
-                            if(num > 999) num = 999;
-                            mTvSysMsg.setText(num + "条通知");
-                            mTvSysMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(MapActivity.this,R.drawable.ic_inform_reddot),null,null,null);
-                            mTvSysMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().addSubscription(this, subscription);
-        RxBus.getInstance().addSubscription(this, subscription1);
-        RxBus.getInstance().addSubscription(this, subscription3);
-        RxBus.getInstance().addSubscription(this, sysSubscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void systemMsgEvent(SystemMessageEvent event){
+        int num = PreferenceUtils.hasMsg(this);
+        if(num > 0){
+            mTvSysMsg.setVisibility(View.VISIBLE);
+            if(num > 999) num = 999;
+            mTvSysMsg.setText(num + "条通知");
+            mTvSysMsg.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(MapActivity.this,R.drawable.ic_inform_reddot),null,null,null);
+            mTvSysMsg.setCompoundDrawablePadding((int) getResources().getDimension(R.dimen.x4));
+        }
     }
 
     @Override
@@ -827,9 +752,8 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
         if(!TextUtils.isEmpty(mSchema)){
             IntentUtils.toActivityFromUri(this, Uri.parse(mSchema),null);
         }else {
-//            Intent i2 = new Intent(MapActivity.this,PhoneMainV2Activity.class);
-//            startActivityForResult(i2);
-            Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
+           // Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
+            Intent i3 = new Intent(MapActivity.this,FeedV3Activity.class);
             startActivity(i3);
         }
     }
@@ -1284,13 +1208,10 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
                 }
                 break;
             case R.id.rl_luntan_root:
-                Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
+               // Intent i3 = new Intent(MapActivity.this,WallBlockActivity.class);
+                Intent i3 = new Intent(MapActivity.this,FeedV3Activity.class);
                 startActivity(i3);
                 break;
-//            case R.id.iv_live2d_shop:
-//                Intent i8 = new Intent(MapActivity.this,Live2dShopActivity.class);
-//                startActivityForResult(i8);
-//                break;
 //            case R.id.iv_camera:
 //                Intent i9= new Intent(MapActivity.this,CameraPreview2Activity.class);
 //                startActivityForResult(i9);
@@ -1305,7 +1226,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             mTvText.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mRoleRoot.setLayoutParams(lp);
-            mRoleRoot.setBackgroundColor(ContextCompat.getColor(MapActivity.this,R.color.alph_60));
+            mRoleRoot.setBackgroundColor(ContextCompat.getColor(MapActivity.this,R.color.alpha_60));
             mRoleRoot.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
@@ -1419,7 +1340,7 @@ public class MapActivity extends BaseAppCompatActivity implements MapContract.Vi
             unregisterReceiver(mReceiver);
             isGisterReciver = false;
         }
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
         MapToolTipUtils.getInstance().release();
         FileDownloader.getImpl().pauseAll();
         FileDownloader.getImpl().unBindService();

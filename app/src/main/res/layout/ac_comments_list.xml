@@ -32,7 +32,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/x28"
             android:gravity="center"
-            android:background="@color/alph_80"
+            android:background="@color/alpha_80"
             android:text="你已屏蔽了该用户"
             android:visibility="gone"/>
 

@@ -102,7 +102,7 @@ public class BottomMenuFragment extends DialogFragment{
         layoutManager.setOrientation(menuType == TYPE_HORIZONTAL ? TYPE_HORIZONTAL : TYPE_VERTICAL);
         rv.setLayoutManager(layoutManager);
         if(menuType == TYPE_HORIZONTAL){
-            rv.addItemDecoration(new MenuHItemDecoration((int)getResources().getDimension(R.dimen.y36),(int)getResources().getDimension(R.dimen.x24)));
+            rv.addItemDecoration(new MenuHItemDecoration(getResources().getDimensionPixelSize(R.dimen.y36),getResources().getDimensionPixelSize(R.dimen.x24)));
         }
         menuItemAdapter = new MenuItemAdapter(getContext(),menuType, this.menuItems);
         menuItemAdapter.setOnItemClickListener(new OnItemClickListener() {

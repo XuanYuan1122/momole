@@ -47,6 +47,7 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.FileXiaoShuoAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
@@ -65,10 +66,11 @@ import butterknife.BindView;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-//import zlc.season.rxdownload2.RxDownload;
-//import zlc.season.rxdownload2.entity.DownloadStatus;
 
 import static com.moemoe.lalala.utils.StartActivityConstant.REQ_FILE_UPLOAD;
+
+//import zlc.season.rxdownload2.RxDownload;
+//import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * 通常文件列表
@@ -288,13 +290,22 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
             @Override
             public void onLoadMore() {
                 isLoading = true;
-                mPresenter.loadFileList(mUserId,mFolderType,mFolderId,mAdapter.getItemCount());
+                if(mFolderInfo == null){
+                    mPresenter.loadFolderInfo(mUserId,mFolderType,mFolderId);
+                }else {
+                    mPresenter.loadFileList(mUserId,mFolderType,mFolderId,mAdapter.getItemCount());
+                }
             }
 
             @Override
             public void onRefresh() {
                 isLoading = true;
-                mPresenter.loadFileList(mUserId,mFolderType,mFolderId,0);
+                if(mFolderInfo == null){
+                    mPresenter.loadFolderInfo(mUserId,mFolderType,mFolderId);
+                }else {
+                    mPresenter.loadFileList(mUserId,mFolderType,mFolderId,0);
+                }
+
             }
 
             @Override
@@ -313,7 +324,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
     }
 
     private void sendBtnIn(){
-        ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvAdd,"translationY",mIvAdd.getHeight()+ (int)getResources().getDimension(R.dimen.y32),0).setDuration(300);
+        ObjectAnimator sendPostIn = ObjectAnimator.ofFloat(mIvAdd,"translationY",mIvAdd.getHeight()+ getResources().getDimensionPixelSize(R.dimen.y32),0).setDuration(300);
         sendPostIn.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(sendPostIn);
@@ -321,7 +332,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
     }
 
     private void sendBtnOut(){
-        ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvAdd,"translationY",0,mIvAdd.getHeight()+(int)getResources().getDimension(R.dimen.y32)).setDuration(300);
+        ObjectAnimator sendPostOut = ObjectAnimator.ofFloat(mIvAdd,"translationY",0,mIvAdd.getHeight()+getResources().getDimensionPixelSize(R.dimen.y32)).setDuration(300);
         sendPostOut.setInterpolator(new OvershootInterpolator());
         AnimatorSet set = new AnimatorSet();
         set.play(sendPostOut);
@@ -352,7 +363,7 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
                     mIvBack.setVisibility(View.GONE);
                     mIvMenu.setVisibility(View.GONE);
                     mTvMenuLeft.setText(getString(R.string.label_give_up));
-                    ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
+                    ViewUtils.setLeftMargins(mTvMenuLeft, getResources().getDimensionPixelSize(R.dimen.x36));
                     ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
                     mTvMenuRight.setVisibility(View.VISIBLE);
                     mTvMenuRight.setText(getString(R.string.label_delete));
@@ -599,212 +610,15 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
 
     private void createBottomView(final NewFolderEntity entity){
         mBottomView = LayoutInflater.from(this).inflate(R.layout.item_folder_recommend, null);
-        ImageView ivUser = mBottomView.findViewById(R.id.iv_avatar);
-        TextView tvUser = mBottomView.findViewById(R.id.tv_user_name);
-        final TextView tvFollow = mBottomView.findViewById(R.id.tv_follow);
-        LinearLayout folderRoot = mBottomView.findViewById(R.id.ll_folder_root);
-        LinearLayout recommendTopRoot = mBottomView.findViewById(R.id.ll_recommend_top_root);
-        LinearLayout recommendRoot = mBottomView.findViewById(R.id.ll_recommend_root);
         TextView tvRefresh = mBottomView.findViewById(R.id.tv_refresh);
-        mBottomView.findViewById(R.id.ll_user_root).setVisibility(View.GONE);
 
-        Glide.with(this)
-                .load(StringUtils.getUrl(this,entity.getUserIcon().getPath(),(int)getResources().getDimension(R.dimen.y80),(int)getResources().getDimension(R.dimen.y80),false,true))
-                .error(R.drawable.bg_default_circle)
-                .placeholder(R.drawable.bg_default_circle)
-                .bitmapTransform(new CropCircleTransformation(this))
-                .into(ivUser);
-        ivUser.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                ViewUtils.toPersonal(NewFileXiaoshuoActivity.this,entity.getCreateUserId());
-            }
-        });
-        tvUser.setText(entity.getCreateUserName());
-        tvFollow.setSelected(entity.isFollow());
-        tvFollow.setText(entity.isFollow() ? "已关注" : "关注");
-        tvFollow.setOnClickListener(new NoDoubleClickListener() {
-            @Override
-            public void onNoDoubleClick(View v) {
-                mPresenter.followUser(entity.getCreateUserId(),tvFollow.isSelected());
-            }
-        });
         tvRefresh.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
                 mPresenter.refreshRecommend(mFolderName,mCurPage,mFolderId);
             }
         });
-        if(entity.getTopList().size() > 0){
-            folderRoot.setVisibility(View.VISIBLE);
-            for (int n = 0;n < entity.getTopList().size();n++){
-                final ShowFolderEntity item = entity.getTopList().get(n);
-                View v = LayoutInflater.from(this).inflate(R.layout.item_bag_cover, null);
-                ImageView iv = v.findViewById(R.id.iv_cover);
-                TextView mark = v.findViewById(R.id.tv_mark);
-                TextView title = v.findViewById(R.id.tv_title);
-                TextView tag = v.findViewById(R.id.tv_tag);
-                title.setText(item.getFolderName());
-                String tagStr1 = "";
-                for(int i = 0;i < item.getTexts().size();i++){
-                    String tagTmp = item.getTexts().get(i);
-                    if(i == 0){
-                        tagStr1 = tagTmp;
-                    }else {
-                        tagStr1 += " · " + tagTmp;
-                    }
-                }
-                tag.setText(tagStr1);
-                if(item.getType().equals(FolderType.ZH.toString())){
-                    mark.setText("综合");
-                    mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
-                }else if(item.getType().equals(FolderType.TJ.toString())){
-                    mark.setText("图集");
-                    mark.setBackgroundResource(R.drawable.shape_rect_tuji);
-                }else if(item.getType().equals(FolderType.MH.toString())){
-                    mark.setText("漫画");
-                    mark.setBackgroundResource(R.drawable.shape_rect_manhua);
-                }else if(item.getType().equals(FolderType.XS.toString())){
-                    mark.setText("小说");
-                    mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
-                }
-                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
-                int height = (int)getResources().getDimension(R.dimen.y280);
-
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
-                RecyclerView.LayoutParams lp2;
-                if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
-                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
-                }else {
-                    lp2 = new RecyclerView.LayoutParams(width,height);
-                    v.setPadding(0,0,0,0);
-                }
-                v.setLayoutParams(lp2);
-                iv.setLayoutParams(lp);
-                Glide.with(this)
-                        .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
-                        .placeholder(R.drawable.bg_default_square)
-                        .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
-                        .into(iv);
-                iv.setOnClickListener(new NoDoubleClickListener() {
-                    @Override
-                    public void onNoDoubleClick(View v) {
-                        if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
-                        }
-                    }
-                });
-                folderRoot.addView(v);
-            }
-        }else {
-            folderRoot.setVisibility(View.GONE);
-        }
-
-        if(entity.getRecommendList().size() > 0){
-            recommendTopRoot.setVisibility(View.VISIBLE);
-            recommendRoot.setVisibility(View.VISIBLE);
-            for (int n = 0;n < entity.getRecommendList().size();n++){
-                final ShowFolderEntity item = entity.getRecommendList().get(n);
-                View v = LayoutInflater.from(this).inflate(R.layout.item_hot_bag_new, null);
-
-                ImageView iv = v.findViewById(R.id.iv_cover);
-                TextView mark = v.findViewById(R.id.tv_mark);
-                TextView bagCoin = v.findViewById(R.id.tv_bag_coin);
-                TextView bagNum = v.findViewById(R.id.tv_bag_num);
-                TextView title = v.findViewById(R.id.tv_bag_title);
-                TextView tag1 = v.findViewById(R.id.tv_tag_1);
-                TextView tag2 = v.findViewById(R.id.tv_tag_2);
-                title.setText(item.getFolderName());
-                if(item.getCoin() == 0){
-                    bagCoin.setText("免费");
-                }else {
-                    bagCoin.setText(item.getCoin() + "节操");
-                }
-                if(item.getItems() > 0){
-                    bagNum.setText(item.getItems() + "项");
-                }else {
-                    bagNum.setText("");
-                }
-                if(item.getTexts().size() == 2){
-                    tag1.setVisibility(View.VISIBLE);
-                    tag2.setVisibility(View.VISIBLE);
-                    int index = StringUtils.getHashOfString(item.getTexts().get(0), mBackGround.length);
-                    tag1.setBackgroundResource(mBackGround[index]);
-                    tag1.setText(item.getTexts().get(0));
-                    int index2 = StringUtils.getHashOfString(item.getTexts().get(1), mBackGround.length);
-                    tag2.setBackgroundResource(mBackGround[index2]);
-                    tag2.setText(item.getTexts().get(1));
-                }else if(item.getTexts().size() == 1){
-                    tag1.setVisibility(View.VISIBLE);
-                    tag2.setVisibility(View.GONE);
-                    int index = StringUtils.getHashOfString(item.getTexts().get(0), mBackGround.length);
-                    tag1.setBackgroundResource(mBackGround[index]);
-                    tag1.setText(item.getTexts().get(0));
-                }else {
-                    tag1.setVisibility(View.GONE);
-                    tag2.setVisibility(View.GONE);
-                }
-                if(item.getType().equals(FolderType.ZH.toString())){
-                    mark.setText("综合");
-                    mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
-                }else if(item.getType().equals(FolderType.TJ.toString())){
-                    mark.setText("图集");
-                    mark.setBackgroundResource(R.drawable.shape_rect_tuji);
-                }else if(item.getType().equals(FolderType.MH.toString())){
-                    mark.setText("漫画");
-                    mark.setBackgroundResource(R.drawable.shape_rect_manhua);
-                }else if(item.getType().equals(FolderType.XS.toString())){
-                    mark.setText("小说");
-                    mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
-                }
-                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
-                int height = (int)getResources().getDimension(R.dimen.y290);
-
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
-                RecyclerView.LayoutParams lp2;
-                if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),ViewGroup.LayoutParams.WRAP_CONTENT);
-                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
-                }else {
-                    lp2 = new RecyclerView.LayoutParams(width,ViewGroup.LayoutParams.WRAP_CONTENT);
-                    v.setPadding(0,0,0,0);
-                }
-                v.setLayoutParams(lp2);
-                iv.setLayoutParams(lp);
-                Glide.with(this)
-                        .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
-                        .placeholder(R.drawable.bg_default_square)
-                        .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
-                        .into(iv);
-                iv.setOnClickListener(new NoDoubleClickListener() {
-                    @Override
-                    public void onNoDoubleClick(View v) {
-                        if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
-                        }
-                    }
-                });
-                recommendRoot.addView(v);
-            }
-        }else {
-            recommendTopRoot.setVisibility(View.GONE);
-            recommendRoot.setVisibility(View.GONE);
-        }
+        addBottomList(entity.getRecommendList());
     }
 
     @Override
@@ -911,74 +725,160 @@ public class NewFileXiaoshuoActivity extends BaseAppCompatActivity implements Ne
     @Override
     public void onReFreshSuccess(ArrayList<ShowFolderEntity> entities) {
         mCurPage++;
-        LinearLayout recommendRoot = (LinearLayout) mBottomView.findViewById(R.id.ll_recommend_root);
+        addBottomList(entities);
+    }
+
+    private void addBottomList(ArrayList<ShowFolderEntity> entities){
+        LinearLayout recommendRoot = mBottomView.findViewById(R.id.ll_recommend_root);
+        recommendRoot.removeAllViews();
         if(entities.size() > 0){
             recommendRoot.setVisibility(View.VISIBLE);
             for (int n = 0;n < entities.size();n++){
                 final ShowFolderEntity item = entities.get(n);
-                View v = LayoutInflater.from(this).inflate(R.layout.item_bag_cover, null);
-                ImageView iv = (ImageView) v.findViewById(R.id.iv_cover);
-                TextView mark = (TextView) v.findViewById(R.id.tv_mark);
-                TextView title = (TextView) v.findViewById(R.id.tv_title);
-                TextView tag = (TextView) v.findViewById(R.id.tv_tag);
-                title.setText(item.getFolderName());
-                String tagStr1 = "";
-                for(int i = 0;i < item.getTexts().size();i++){
-                    String tagTmp = item.getTexts().get(i);
-                    if(i == 0){
-                        tagStr1 = tagTmp;
-                    }else {
-                        tagStr1 += " · " + tagTmp;
-                    }
-                }
-                tag.setText(tagStr1);
-                if(item.getType().equals(FolderType.ZH.toString())){
-                    mark.setText("综合");
-                    mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
-                }else if(item.getType().equals(FolderType.TJ.toString())){
-                    mark.setText("图集");
-                    mark.setBackgroundResource(R.drawable.shape_rect_tuji);
-                }else if(item.getType().equals(FolderType.MH.toString())){
-                    mark.setText("漫画");
-                    mark.setBackgroundResource(R.drawable.shape_rect_manhua);
-                }else if(item.getType().equals(FolderType.XS.toString())){
-                    mark.setText("小说");
-                    mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
-                }
-                int width = (DensityUtil.getScreenWidth(this) - (int)getResources().getDimension(R.dimen.x84)) / 3;
-                int height = (int)getResources().getDimension(R.dimen.y280);
+                View v = LayoutInflater.from(this).inflate(R.layout.item_feed_type_2_v3, null);
 
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width,height);
-                RecyclerView.LayoutParams lp2;
-                if(n == 1 || n == 2){
-                    lp2 = new RecyclerView.LayoutParams(width + (int)getResources().getDimension(R.dimen.x18),height);
-                    v.setPadding((int)getResources().getDimension(R.dimen.x18),0,0,0);
-                }else {
-                    lp2 = new RecyclerView.LayoutParams(width,height);
-                    v.setPadding(0,0,0,0);
-                }
-                v.setLayoutParams(lp2);
-                iv.setLayoutParams(lp);
+                ImageView ivCover = v.findViewById(R.id.iv_cover);
+                TextView tvMark = v.findViewById(R.id.tv_mark);
+                TextView tvCoin = v.findViewById(R.id.tv_coin);
+                TextView tvExtra = v.findViewById(R.id.tv_extra);
+                ImageView ivPlay = v.findViewById(R.id.iv_play);
+                TextView tvTitle = v.findViewById(R.id.tv_title);
+                ImageView ivAvatar = v.findViewById(R.id.iv_user_avatar);
+                TextView tvUserName = v.findViewById(R.id.tv_user_name);
+                TextView tvExtraContent = v.findViewById(R.id.tv_extra_content);
+                TextView tvTag1 = v.findViewById(R.id.tv_tag_1);
+                TextView tvTag2 = v.findViewById(R.id.tv_tag_2);
+                TextView tvPlayNum = v.findViewById(R.id.tv_play_num);
+                TextView tvDanmuNum = v.findViewById(R.id.tv_danmu_num);
+
+                int w = getResources().getDimensionPixelSize(R.dimen.x222);
+                int h = getResources().getDimensionPixelSize(R.dimen.y190);
                 Glide.with(this)
-                        .load(StringUtils.getUrl(this,item.getCover(),width,height, false, true))
-                        .placeholder(R.drawable.bg_default_square)
+                        .load(StringUtils.getUrl(this,item.getCover(),w,h,false,true))
                         .error(R.drawable.bg_default_square)
-                        .bitmapTransform(new CropTransformation(this,width,height),new RoundedCornersTransformation(this,(int)getResources().getDimension(R.dimen.y8),0))
-                        .into(iv);
-                iv.setOnClickListener(new NoDoubleClickListener() {
+                        .placeholder(R.drawable.bg_default_square)
+                        .bitmapTransform(new CropTransformation(this,w,h))
+                        .into(ivCover);
+
+                tvExtra.setText(item.getItems() + "项");
+                tvExtraContent.setText(StringUtils.timeFormat(item.getTime()));
+
+                if(item.getType().equals(FolderType.ZH.toString())){
+                    tvMark.setVisibility(View.VISIBLE);
+                    ivPlay.setVisibility(View.GONE);
+                    tvMark.setText("综合");
+                    tvMark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+                }else if(item.getType().equals(FolderType.TJ.toString())){
+                    tvMark.setVisibility(View.VISIBLE);
+                    ivPlay.setVisibility(View.GONE);
+                    tvMark.setText("图集");
+                    tvMark.setBackgroundResource(R.drawable.shape_rect_tuji);
+                }else if(item.getType().equals(FolderType.MH.toString())){
+                    tvMark.setVisibility(View.VISIBLE);
+                    ivPlay.setVisibility(View.GONE);
+                    tvMark.setText("漫画");
+                    tvMark.setBackgroundResource(R.drawable.shape_rect_manhua);
+                }else if(item.getType().equals(FolderType.XS.toString())){
+                    tvMark.setVisibility(View.VISIBLE);
+                    ivPlay.setVisibility(View.GONE);
+                    tvMark.setText("小说");
+                    tvMark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
+                }else if(item.getType().equals(FolderType.WZ.toString())){
+                    tvMark.setVisibility(View.VISIBLE);
+                    ivPlay.setVisibility(View.GONE);
+                    tvMark.setText("文章");
+                    tvMark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+                }else if(item.getType().equals(FolderType.SP.toString())){
+                    tvMark.setVisibility(View.VISIBLE);
+                    ivPlay.setVisibility(View.GONE);
+                    tvMark.setText("视频集");
+                    tvMark.setBackgroundResource(R.drawable.shape_rect_shipin);
+                }else if(item.getType().equals(FolderType.YY.toString())){
+                    tvMark.setVisibility(View.VISIBLE);
+                    ivPlay.setVisibility(View.GONE);
+                    tvMark.setText("音乐");
+                    tvMark.setBackgroundResource(R.drawable.shape_rect_yinyue);
+                }else if("MOVIE".equals(item.getType())){
+                    tvMark.setVisibility(View.GONE);
+                    ivPlay.setVisibility(View.VISIBLE);
+                    ivPlay.setImageResource(R.drawable.ic_baglist_video_play);
+                    tvExtra.setText(item.getTimestamp());
+                    ivPlay.setVisibility(View.VISIBLE);
+                    tvPlayNum.setText(String.valueOf(item.getPlayNum()));
+                    tvPlayNum.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(NewFileXiaoshuoActivity.this,R.drawable.ic_baglist_video_playtimes_gray),null,null,null);
+                    tvDanmuNum.setVisibility(View.VISIBLE);
+                    tvDanmuNum.setText(String.valueOf(item.getBarrageNum()));
+                }else if("MUSIC".equals(item.getType())){
+                    tvMark.setVisibility(View.GONE);
+                    ivPlay.setImageResource(R.drawable.ic_baglist_music_play);
+                    tvExtra.setText(item.getTimestamp());
+                    tvDanmuNum.setVisibility(View.GONE);
+                    tvPlayNum.setText(String.valueOf(item.getPlayNum()));
+                    tvPlayNum.setCompoundDrawablesWithIntrinsicBounds(ContextCompat.getDrawable(NewFileXiaoshuoActivity.this,R.drawable.ic_baglist_music_times),null,null,null);
+                }
+
+                tvTitle.setText(item.getFolderName());
+
+                //tag
+                View[] tagsId = {tvTag1,tvTag2};
+                tvTag1.setOnClickListener(null);
+                tvTag2.setOnClickListener(null);
+                if(item.getTextsV2().size() > 1){
+                    tvTag1.setVisibility(View.VISIBLE);
+                    tvTag2.setVisibility(View.VISIBLE);
+                }else if(item.getTextsV2().size() > 0){
+                    tvTag1.setVisibility(View.VISIBLE);
+                    tvTag2.setVisibility(View.INVISIBLE);
+                }else {
+                    tvTag1.setVisibility(View.INVISIBLE);
+                    tvTag2.setVisibility(View.INVISIBLE);
+                }
+                int size = tagsId.length > item.getTextsV2().size() ? item.getTextsV2().size() : tagsId.length;
+                for (int i = 0;i < size;i++){
+                    TagUtils.setBackGround(item.getTextsV2().get(i).getText(),tagsId[i]);
+                    tagsId[i].setOnClickListener(new NoDoubleClickListener() {
+                        @Override
+                        public void onNoDoubleClick(View v) {
+                            //TODO 跳转标签页
+                        }
+                    });
+                }
+
+                //user
+                int avatarSize = getResources().getDimensionPixelSize(R.dimen.y32);
+                Glide.with(this)
+                        .load(StringUtils.getUrl(this,item.getUserIcon(),avatarSize,avatarSize,false,true))
+                        .error(R.drawable.bg_default_circle)
+                        .placeholder(R.drawable.bg_default_circle)
+                        .bitmapTransform(new CropCircleTransformation(this))
+                        .into(ivAvatar);
+                tvUserName.setText(item.getCreateUserName());
+                ivAvatar.setOnClickListener(new NoDoubleClickListener() {
                     @Override
                     public void onNoDoubleClick(View v) {
-                        if(item.getType().equals(FolderType.ZH.toString())){
-                            NewFileCommonActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.ZH.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.TJ.toString())){
-                            NewFileCommonActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.TJ.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.MH.toString())){
-                            NewFileManHuaActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.MH.toString(),item.getFolderId(),item.getCreateUser());
-                        }else if(item.getType().equals(FolderType.XS.toString())){
-                            NewFileXiaoshuoActivity.startActivity(NewFileXiaoshuoActivity.this,FolderType.XS.toString(),item.getFolderId(),item.getCreateUser());
-                        }
+                        ViewUtils.toPersonal(NewFileXiaoshuoActivity.this,item.getCreateUser());
                     }
                 });
+                tvUserName.setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+                        ViewUtils.toPersonal(NewFileXiaoshuoActivity.this,item.getCreateUser());
+                    }
+                });
+
+                if(item.getCoin() > 0){
+                    tvCoin.setText(item.getCoin() + "节操");
+                }else {
+                    tvCoin.setText("免费");
+                }
+
+                v.setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+
+                    }
+                });
+
                 recommendRoot.addView(v);
             }
         }else {

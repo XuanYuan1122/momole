@@ -19,6 +19,8 @@ public class UserTopEntity implements Parcelable {
         private BadgeEntity badge;
         private boolean vip;
         private boolean isCheck;
+        private String signature;
+
 
     @Override
     public int describeContents() {
@@ -40,6 +42,7 @@ public class UserTopEntity implements Parcelable {
             entity.vip = bundle.getBoolean("vip");
             entity.isCheck = bundle.getBoolean("isCheck");
             entity.badge = bundle.getParcelable("badge");
+            entity.signature = bundle.getString("signature");
             return entity;
         }
 
@@ -61,7 +64,16 @@ public class UserTopEntity implements Parcelable {
         bundle.putBoolean("vip",vip);
         bundle.putBoolean("isCheck",isCheck);
         bundle.putParcelable("badge",badge);
+        bundle.putString("signature",signature);
         parcel.writeBundle(bundle);
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public boolean isCheck() {

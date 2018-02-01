@@ -41,10 +41,14 @@ import com.moemoe.lalala.model.entity.DocTagEntity;
 import com.moemoe.lalala.model.entity.DynamicContentEntity;
 import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.Image;
+import com.moemoe.lalala.model.entity.MessageDynamicEntity;
 import com.moemoe.lalala.model.entity.NewDynamicEntity;
+import com.moemoe.lalala.model.entity.ProductDyEntity;
 import com.moemoe.lalala.model.entity.RetweetEntity;
 import com.moemoe.lalala.model.entity.ShareArticleEntity;
 import com.moemoe.lalala.model.entity.ShareFolderEntity;
+import com.moemoe.lalala.model.entity.ShareMovieEntity;
+import com.moemoe.lalala.model.entity.ShareMusicEntity;
 import com.moemoe.lalala.model.entity.TabEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.presenter.DynamicContract;
@@ -60,6 +64,7 @@ import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ToastUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
@@ -72,6 +77,7 @@ import com.moemoe.lalala.view.widget.recycler.PullCallback;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -345,9 +351,6 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         TextView time = v.findViewById(R.id.tv_time);
         TextView text = v.findViewById(R.id.tv_content);
         LinearLayout root = v.findViewById(R.id.ll_img_root);
-        RelativeLayout root1 = v.findViewById(R.id.rl_card_root);
-        LinearLayout cardRoot = v.findViewById(R.id.ll_card_root);
-
 
         //user top
         if(mDynamic.getCreateUser().isVip()){
@@ -384,7 +387,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         shapeDrawable2.getPaint().setStyle(Paint.Style.FILL);
         shapeDrawable2.getPaint().setColor(StringUtils.readColorStr(mDynamic.getCreateUser().getLevelColor(), ContextCompat.getColor(this, R.color.main_cyan)));
         level.setBackgroundDrawable(shapeDrawable2);
-        
+
         View[] huizhang = {huiRoot};
         TextView[] huizhangT = {huiTv};
         if(mDynamic.getCreateUser().getBadge() != null){
@@ -404,13 +407,10 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         root.setVisibility(View.GONE);
         root.removeAllViews();
         root.setOnClickListener(null);
-        root1.setVisibility(View.GONE);
-        cardRoot.removeAllViews();
-        root1.setOnClickListener(null);
         boolean showHongbao = false;
         if("DELETE".equals(mDynamic.getType())){//已被删除
             root.setVisibility(View.VISIBLE);
-            root.setBackgroundColor(Color.WHITE);
+            root.setBackgroundColor(Color.TRANSPARENT);
             TextView tv = new TextView(this);
             tv.setText("该内容已被删除");
             tv.setTextColor(ContextCompat.getColor(this,R.color.white));
@@ -423,7 +423,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             root.addView(tv);
         }else if("DYNAMIC".equals(mDynamic.getType())){
             root.setVisibility(View.VISIBLE);
-            root.setBackgroundColor(Color.WHITE);
+            root.setBackgroundColor(Color.TRANSPARENT);
             DynamicContentEntity dynamicContentEntity = new Gson().fromJson(mDynamic.getDetail(),DynamicContentEntity.class);
             if(dynamicContentEntity.getImages() != null && dynamicContentEntity.getImages().size() > 0){
                 setImg(dynamicContentEntity.getImages(),root);
@@ -431,69 +431,100 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 root.setVisibility(View.GONE);
             }
         }else if("FOLDER".equals(mDynamic.getType())){
-            root1.setVisibility(View.VISIBLE);
+            root.setVisibility(View.VISIBLE);
+            root.setBackgroundColor(Color.TRANSPARENT);
             final ShareFolderEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),ShareFolderEntity.class);
-            View folder = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
-            folder.findViewById(R.id.tv_title).setVisibility(View.GONE);
-            folder.findViewById(R.id.tv_content).setVisibility(View.GONE);
-            ImageView cover = folder.findViewById(R.id.iv_cover);
-            TextView mark = folder.findViewById(R.id.tv_mark);
-            TextView name = folder.findViewById(R.id.tv_folder_name);
-            TextView tag = folder.findViewById(R.id.tv_tag);
-            int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
-            int h = (int) getResources().getDimension(R.dimen.y400);
+            View folder = LayoutInflater.from(this).inflate(R.layout.item_feed_type_2_v3,null);
+            folder.setBackgroundResource(R.drawable.shape_gray_f6f6f6_background_y8);
+            TextView tvMark = folder.findViewById(R.id.tv_mark);
+            ImageView ivCover = folder.findViewById(R.id.iv_cover);
+            TextView tvTitle = folder.findViewById(R.id.tv_title);
+            TextView tvTag1 = folder.findViewById(R.id.tv_tag_1);
+            TextView tvTag2 = folder.findViewById(R.id.tv_tag_2);
+            ImageView ivAvatar = folder.findViewById(R.id.iv_user_avatar);
+            TextView tvUserName = folder.findViewById(R.id.tv_user_name);
+            TextView tvCoin = folder.findViewById(R.id.tv_coin);
+            TextView tvExtra = folder.findViewById(R.id.tv_extra);
+            View coverRoot = folder.findViewById(R.id.fl_cover_root);
+            folder.findViewById(R.id.iv_play).setVisibility(View.GONE);
+
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) coverRoot.getLayoutParams();
+            lp.topMargin = getResources().getDimensionPixelSize(R.dimen.y16);
+            lp.bottomMargin = getResources().getDimensionPixelSize(R.dimen.y16);
+            lp.leftMargin = getResources().getDimensionPixelSize(R.dimen.x16);
+            coverRoot.requestLayout();
+
+            int w = getResources().getDimensionPixelSize(R.dimen.x222);
+            int h = getResources().getDimensionPixelSize(R.dimen.y190);
             Glide.with(this)
                     .load(StringUtils.getUrl(this,folderEntity.getFolderCover(),w,h,false,true))
                     .error(R.drawable.bg_default_square)
                     .placeholder(R.drawable.bg_default_square)
                     .bitmapTransform(new CropTransformation(this,w,h))
-                    .into(cover);
-            if(folderEntity.getFolderType().equals(FolderType.ZH.toString())){
-                mark.setText("综合");
-                mark.setBackgroundResource(R.drawable.shape_rect_zonghe);
-            }else if(folderEntity.getFolderType().equals(FolderType.TJ.toString())){
-                mark.setText("图集");
-                mark.setBackgroundResource(R.drawable.shape_rect_tuji);
-            }else if(folderEntity.getFolderType().equals(FolderType.MH.toString())){
-                mark.setText("漫画");
-                mark.setBackgroundResource(R.drawable.shape_rect_manhua);
-            }else if(folderEntity.getFolderType().equals(FolderType.XS.toString())){
-                mark.setText("小说");
-                mark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
-            }
-            name.setText(folderEntity.getFolderName());
-            String tagStr = "";
-            for(int i = 0;i < folderEntity.getFolderTags().size();i++){
-                String tagTmp = folderEntity.getFolderTags().get(i);
-                if(i == 0){
-                    tagStr = tagTmp;
-                }else {
-                    tagStr += " · " + tagTmp;
-                }
-            }
-            tag.setText(tagStr);
+                    .into(ivCover);
 
-            ImageView avatar = folder.findViewById(R.id.iv_avatar);
-            TextView userName1 = folder.findViewById(R.id.tv_user_name);
-            TextView time1 = folder.findViewById(R.id.tv_time);
-            size = (int) this.getResources().getDimension(R.dimen.x44);
+            tvTitle.setText(folderEntity.getFolderName());
+
+            //tag
+            View[] tagsId = {tvTag1,tvTag2};
+            tvTag1.setOnClickListener(null);
+            tvTag2.setOnClickListener(null);
+            if(folderEntity.getFolderTags().size() > 1){
+                tvTag1.setVisibility(View.VISIBLE);
+                tvTag2.setVisibility(View.VISIBLE);
+            }else if(folderEntity.getFolderTags().size() > 0){
+                tvTag1.setVisibility(View.VISIBLE);
+                tvTag2.setVisibility(View.INVISIBLE);
+            }else {
+                tvTag1.setVisibility(View.INVISIBLE);
+                tvTag2.setVisibility(View.INVISIBLE);
+            }
+            int tagSize = tagsId.length > folderEntity.getFolderTags().size() ? folderEntity.getFolderTags().size() : tagsId.length;
+            for (int i = 0;i < tagSize;i++){
+                TagUtils.setBackGround(folderEntity.getFolderTags().get(i),tagsId[i]);
+            }
+
+            //user
+            int avatarSize = getResources().getDimensionPixelSize(R.dimen.y32);
             Glide.with(this)
-                    .load(StringUtils.getUrl(this,folderEntity.getCreateUser().getHeadPath(),size,size,false,true))
+                    .load(StringUtils.getUrl(this,folderEntity.getCreateUser().getHeadPath(),avatarSize,avatarSize,false,true))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .bitmapTransform(new CropCircleTransformation(this))
-                    .into(avatar);
-            avatar.setOnClickListener(new NoDoubleClickListener() {
+                    .into(ivAvatar);
+            tvUserName.setText(folderEntity.getCreateUser().getUserName());
+            ivAvatar.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
                     ViewUtils.toPersonal(DynamicActivity.this,folderEntity.getCreateUser().getUserId());
                 }
             });
-            userName1.setText(folderEntity.getCreateUser().getUserName());
-            time1.setText("上一次更新:" + StringUtils.timeFormat(folderEntity.getUpdateTime()));
-            cardRoot.addView(folder);
+            tvUserName.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ViewUtils.toPersonal(DynamicActivity.this,folderEntity.getCreateUser().getUserId());
+                }
+            });
 
-            root1.setOnClickListener(new NoDoubleClickListener() {
+            tvMark.setVisibility(View.VISIBLE);
+            if(folderEntity.getFolderType().equals(FolderType.ZH.toString())){
+                tvMark.setText("综合");
+                tvMark.setBackgroundResource(R.drawable.shape_rect_zonghe);
+            }else if(folderEntity.getFolderType().equals(FolderType.TJ.toString())){
+                tvMark.setText("图集");
+                tvMark.setBackgroundResource(R.drawable.shape_rect_tuji);
+            }else if(folderEntity.getFolderType().equals(FolderType.MH.toString())){
+                tvMark.setText("漫画");
+                tvMark.setBackgroundResource(R.drawable.shape_rect_manhua);
+            }else if(folderEntity.getFolderType().equals(FolderType.XS.toString())){
+                tvMark.setText("小说");
+                tvMark.setBackgroundResource(R.drawable.shape_rect_xiaoshuo);
+            }
+
+            tvCoin.setText(folderEntity.getCoin() + "节操");
+            tvExtra.setText(folderEntity.getItems() + "项");
+            root.addView(folder);
+            root.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
                     if(folderEntity.getFolderType().equals(FolderType.ZH.toString())){
@@ -508,46 +539,68 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 }
             });
         }else if("ARTICLE".equals(mDynamic.getType())){
-            root1.setVisibility(View.VISIBLE);
+            root.setVisibility(View.VISIBLE);
+            root.setBackgroundColor(Color.TRANSPARENT);
             final ShareArticleEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),ShareArticleEntity.class);
-            View article = LayoutInflater.from(this).inflate(R.layout.item_new_wenzhang_zhuan,null);
-            TextView title = article.findViewById(R.id.tv_title);
-            TextView articleContent = article.findViewById(R.id.tv_content);
-            ImageView cover = article.findViewById(R.id.iv_cover);
-            TextView mark = article.findViewById(R.id.tv_mark);
-            article.findViewById(R.id.tv_folder_name).setVisibility(View.GONE);
-            article.findViewById(R.id.tv_tag).setVisibility(View.GONE);
-            int w = (int) (DensityUtil.getScreenWidth(this) - getResources().getDimension(R.dimen.x48));
-            int h = (int) getResources().getDimension(R.dimen.y400);
+            View article = LayoutInflater.from(this).inflate(R.layout.item_feed_type_5_v3,null);
+            ImageView ivCover = article.findViewById(R.id.iv_cover);
+            ImageView ivAvatar = article.findViewById(R.id.iv_user_avatar);
+            TextView tvMark = article.findViewById(R.id.tv_mark);
+            TextView tvUserName = article.findViewById(R.id.tv_user_name);
+            TextView tvTag1 = article.findViewById(R.id.tv_tag_1);
+            TextView tvTag2 = article.findViewById(R.id.tv_tag_2);
+            TextView tvReadNum = article.findViewById(R.id.tv_read_num);
+            TextView tvTitle = article.findViewById(R.id.tv_title);
+
+            int w = DensityUtil.getScreenWidth(this) - getResources().getDimensionPixelSize(R.dimen.x48);
+            int h = getResources().getDimensionPixelSize(R.dimen.y400);
             Glide.with(this)
                     .load(StringUtils.getUrl(this,folderEntity.getCover(),w,h,false,true))
                     .error(R.drawable.bg_default_square)
                     .placeholder(R.drawable.bg_default_square)
                     .bitmapTransform(new CropTransformation(this,w,h))
-                    .into(cover);
-            mark.setText("文章");
-            title.setText(folderEntity.getTitle());
-            articleContent.setText(folderEntity.getContent());
-            ImageView avatar = article.findViewById(R.id.iv_avatar);
-            TextView userName1 = article.findViewById(R.id.tv_user_name);
-            TextView time1 = article.findViewById(R.id.tv_time);
-            size = (int) getResources().getDimension(R.dimen.x44);
+                    .into(ivCover);
+
+            tvMark.setText("文章");
+            tvTitle.setText(folderEntity.getTitle());
+            size = getResources().getDimensionPixelSize(R.dimen.y32);
             Glide.with(this)
                     .load(StringUtils.getUrl(this,folderEntity.getDocCreateUser().getHeadPath(),size,size,false,true))
                     .error(R.drawable.bg_default_circle)
                     .placeholder(R.drawable.bg_default_circle)
                     .bitmapTransform(new CropCircleTransformation(this))
-                    .into(avatar);
-            avatar.setOnClickListener(new NoDoubleClickListener() {
+                    .into(ivAvatar);
+
+            ivAvatar.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
                     ViewUtils.toPersonal(DynamicActivity.this,folderEntity.getDocCreateUser().getUserId());
                 }
             });
-            userName1.setText(folderEntity.getDocCreateUser().getUserName());
-            time1.setText(StringUtils.timeFormat(folderEntity.getCreateTime()));
-            cardRoot.addView(article);
-            root1.setOnClickListener(new NoDoubleClickListener() {
+
+            tvUserName.setText(folderEntity.getDocCreateUser().getUserName());
+            tvReadNum.setText("阅读" + folderEntity.getReadNum());
+
+            //tag
+            View[] tagsId = {tvTag1,tvTag2};
+            tvTag1.setOnClickListener(null);
+            tvTag2.setOnClickListener(null);
+            if(folderEntity.getTexts().size() > 1){
+                tvTag1.setVisibility(View.VISIBLE);
+                tvTag2.setVisibility(View.VISIBLE);
+            }else if(folderEntity.getTexts().size() > 0){
+                tvTag1.setVisibility(View.VISIBLE);
+                tvTag2.setVisibility(View.INVISIBLE);
+            }else {
+                tvTag1.setVisibility(View.INVISIBLE);
+                tvTag2.setVisibility(View.INVISIBLE);
+            }
+            int tagSize = tagsId.length > folderEntity.getTexts().size() ? folderEntity.getTexts().size() : tagsId.length;
+            for (int i = 0;i < tagSize;i++){
+                TagUtils.setBackGround(folderEntity.getTexts().get(i).getText(),tagsId[i]);
+            }
+            root.addView(article);
+            root.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
                     if (!TextUtils.isEmpty(folderEntity.getDocId())) {
@@ -559,6 +612,7 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
             });
         }else if("RETWEET".equals(mDynamic.getType())){
             root.setVisibility(View.VISIBLE);
+            root.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
             final RetweetEntity retweetEntity = new Gson().fromJson(mDynamic.getDetail(),RetweetEntity.class);
             if(!TextUtils.isEmpty(retweetEntity.getContent())){
                 TextView tv = new TextView(this);
@@ -599,7 +653,250 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
                 showHongbao = true;
             }
             showHongBao(v,true,retweetEntity.getCoins(),retweetEntity.getSurplus(),retweetEntity.getOldDynamicId(),retweetEntity.getCreateUserHead(),retweetEntity.getUsers());
+        }else if("MUSIC".equals(mDynamic.getType())){
+            root.setVisibility(View.VISIBLE);
+            root.setBackgroundColor(Color.TRANSPARENT);
+            final ShareMusicEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),ShareMusicEntity.class);
+            View folder = LayoutInflater.from(this).inflate(R.layout.item_feed_type_2_v3,null);
+            folder.setBackgroundResource(R.drawable.shape_gray_f6f6f6_background_y8);
+            folder.findViewById(R.id.tv_mark).setVisibility(View.GONE);
+            ImageView ivCover = folder.findViewById(R.id.iv_cover);
+            TextView tvTitle = folder.findViewById(R.id.tv_title);
+            TextView tvTag1 = folder.findViewById(R.id.tv_tag_1);
+            TextView tvTag2 = folder.findViewById(R.id.tv_tag_2);
+            ImageView ivAvatar = folder.findViewById(R.id.iv_user_avatar);
+            TextView tvUserName = folder.findViewById(R.id.tv_user_name);
+            TextView tvCoin = folder.findViewById(R.id.tv_coin);
+            TextView tvExtra = folder.findViewById(R.id.tv_extra);
+            ImageView ivPlay = folder.findViewById(R.id.iv_play);
+
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) $(R.id.fl_cover_root).getLayoutParams();
+            lp.topMargin = getResources().getDimensionPixelSize(R.dimen.y16);
+            lp.bottomMargin = getResources().getDimensionPixelSize(R.dimen.y16);
+            lp.leftMargin = getResources().getDimensionPixelSize(R.dimen.x16);
+            $(R.id.fl_cover_root).requestLayout();
+
+            int w = getResources().getDimensionPixelSize(R.dimen.x222);
+            int h = getResources().getDimensionPixelSize(R.dimen.y190);
+            Glide.with(this)
+                    .load(StringUtils.getUrl(this,folderEntity.getFileCover(),w,h,false,true))
+                    .error(R.drawable.bg_default_square)
+                    .placeholder(R.drawable.bg_default_square)
+                    .bitmapTransform(new CropTransformation(this,w,h))
+                    .into(ivCover);
+
+            tvTitle.setText(folderEntity.getFileName());
+
+            //tag
+            View[] tagsId = {tvTag1,tvTag2};
+            tvTag1.setOnClickListener(null);
+            tvTag2.setOnClickListener(null);
+            if(folderEntity.getFileTags().size() > 1){
+                tvTag1.setVisibility(View.VISIBLE);
+                tvTag2.setVisibility(View.VISIBLE);
+            }else if(folderEntity.getFileTags().size() > 0){
+                tvTag1.setVisibility(View.VISIBLE);
+                tvTag2.setVisibility(View.INVISIBLE);
+            }else {
+                tvTag1.setVisibility(View.INVISIBLE);
+                tvTag2.setVisibility(View.INVISIBLE);
+            }
+            int tagSize = tagsId.length > folderEntity.getFileTags().size() ? folderEntity.getFileTags().size() : tagsId.length;
+            for (int i = 0;i < tagSize;i++){
+                TagUtils.setBackGround(folderEntity.getFileTags().get(i).getText(),tagsId[i]);
+            }
+
+            //user
+            int avatarSize = getResources().getDimensionPixelSize(R.dimen.y32);
+            Glide.with(this)
+                    .load(StringUtils.getUrl(this,folderEntity.getCreateUser().getHeadPath(),avatarSize,avatarSize,false,true))
+                    .error(R.drawable.bg_default_circle)
+                    .placeholder(R.drawable.bg_default_circle)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivAvatar);
+            tvUserName.setText(folderEntity.getCreateUser().getUserName());
+            ivAvatar.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ViewUtils.toPersonal(DynamicActivity.this,folderEntity.getCreateUser().getUserId());
+                }
+            });
+            tvUserName.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ViewUtils.toPersonal(DynamicActivity.this,folderEntity.getCreateUser().getUserId());
+                }
+            });
+
+            tvCoin.setText(folderEntity.getCoin() + "节操");
+            tvExtra.setText(folderEntity.getTimestamp());
+
+            ivPlay.setVisibility(View.VISIBLE);
+            ivPlay.setImageResource(R.drawable.ic_baglist_music_play);
+
+            root.addView(folder);
+
+            root.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    //TODO 跳转音乐详情
+                }
+            });
+        }else if("MOVIE".equals(mDynamic.getType())){
+            root.setVisibility(View.VISIBLE);
+            root.setBackgroundColor(Color.TRANSPARENT);
+            final ShareMovieEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),ShareMovieEntity.class);
+            View folder = LayoutInflater.from(this).inflate(R.layout.item_feed_type_2_v3,null);
+            folder.setBackgroundResource(R.drawable.shape_gray_f6f6f6_background_y8);
+            folder.findViewById(R.id.tv_mark).setVisibility(View.GONE);
+            ImageView ivCover = folder.findViewById(R.id.iv_cover);
+            TextView tvTitle = folder.findViewById(R.id.tv_title);
+            TextView tvTag1 = folder.findViewById(R.id.tv_tag_1);
+            TextView tvTag2 = folder.findViewById(R.id.tv_tag_2);
+            ImageView ivAvatar = folder.findViewById(R.id.iv_user_avatar);
+            TextView tvUserName = folder.findViewById(R.id.tv_user_name);
+            TextView tvCoin = folder.findViewById(R.id.tv_coin);
+            TextView tvExtra = folder.findViewById(R.id.tv_extra);
+            ImageView ivPlay = folder.findViewById(R.id.iv_play);
+
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) $(R.id.fl_cover_root).getLayoutParams();
+            lp.topMargin = getResources().getDimensionPixelSize(R.dimen.y16);
+            lp.bottomMargin = getResources().getDimensionPixelSize(R.dimen.y16);
+            lp.leftMargin = getResources().getDimensionPixelSize(R.dimen.x16);
+            $(R.id.fl_cover_root).requestLayout();
+
+            int w = getResources().getDimensionPixelSize(R.dimen.x222);
+            int h = getResources().getDimensionPixelSize(R.dimen.y190);
+            Glide.with(this)
+                    .load(StringUtils.getUrl(this,folderEntity.getFileCover(),w,h,false,true))
+                    .error(R.drawable.bg_default_square)
+                    .placeholder(R.drawable.bg_default_square)
+                    .bitmapTransform(new CropTransformation(this,w,h))
+                    .into(ivCover);
+
+            tvTitle.setText(folderEntity.getFileName());
+
+            //tag
+            View[] tagsId = {tvTag1,tvTag2};
+            tvTag1.setOnClickListener(null);
+            tvTag2.setOnClickListener(null);
+            if(folderEntity.getFileTags().size() > 1){
+                tvTag1.setVisibility(View.VISIBLE);
+                tvTag2.setVisibility(View.VISIBLE);
+            }else if(folderEntity.getFileTags().size() > 0){
+                tvTag1.setVisibility(View.VISIBLE);
+                tvTag2.setVisibility(View.INVISIBLE);
+            }else {
+                tvTag1.setVisibility(View.INVISIBLE);
+                tvTag2.setVisibility(View.INVISIBLE);
+            }
+            int tagSize = tagsId.length > folderEntity.getFileTags().size() ? folderEntity.getFileTags().size() : tagsId.length;
+            for (int i = 0;i < tagSize;i++){
+                TagUtils.setBackGround(folderEntity.getFileTags().get(i).getText(),tagsId[i]);
+            }
+
+            //user
+            int avatarSize = getResources().getDimensionPixelSize(R.dimen.y32);
+            Glide.with(this)
+                    .load(StringUtils.getUrl(this,folderEntity.getCreateUser().getHeadPath(),avatarSize,avatarSize,false,true))
+                    .error(R.drawable.bg_default_circle)
+                    .placeholder(R.drawable.bg_default_circle)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivAvatar);
+            tvUserName.setText(folderEntity.getCreateUser().getUserName());
+            ivAvatar.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ViewUtils.toPersonal(DynamicActivity.this,folderEntity.getCreateUser().getUserId());
+                }
+            });
+            tvUserName.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ViewUtils.toPersonal(DynamicActivity.this,folderEntity.getCreateUser().getUserId());
+                }
+            });
+
+            tvCoin.setText(folderEntity.getCoin() + "节操");
+            tvExtra.setText(folderEntity.getTimestamp());
+
+            ivPlay.setVisibility(View.VISIBLE);
+            ivPlay.setImageResource(R.drawable.ic_baglist_video_play);
+
+            root.addView(folder);
+
+            root.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    //TODO 跳转视频详情
+                }
+            });
+        }else if("PRODUCT".equals(mDynamic.getType())){
+            root.setVisibility(View.VISIBLE);
+            root.setBackgroundColor(Color.TRANSPARENT);
+            final MessageDynamicEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),MessageDynamicEntity.class);
+            View folder = LayoutInflater.from(this).inflate(R.layout.item_feed_type_6_v3,null);
+            ImageView ivAvatar = folder.findViewById(R.id.iv_user_avatar);
+            TextView tvUserName = folder.findViewById(R.id.tv_user_name);
+            TextView tvContent = folder.findViewById(R.id.tv_content);
+            TextView tvDesc = folder.findViewById(R.id.tv_content_desc);
+
+            size = getResources().getDimensionPixelSize(R.dimen.y44);
+            Glide.with(this)
+                    .load(StringUtils.getUrl(this,folderEntity.getHeadPath(),size,size,false,true))
+                    .error(R.drawable.bg_default_circle)
+                    .placeholder(R.drawable.bg_default_circle)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivAvatar);
+            tvUserName.setText(folderEntity.getUserName());
+            folder.findViewById(R.id.ll_user_root).setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    ViewUtils.toPersonal(DynamicActivity.this,folderEntity.getUserId());
+                }
+            });
+            tvContent.setText(folderEntity.getShowMsg());
+            tvDesc.setText(folderEntity.getDate());
+            root.addView(folder);
+
+        }else if("MESSAGE".equals(mDynamic.getType())){
+            root.setVisibility(View.VISIBLE);
+            root.setBackgroundColor(Color.TRANSPARENT);
+            final ProductDyEntity folderEntity = new Gson().fromJson(mDynamic.getDetail(),ProductDyEntity.class);
+            View folder = LayoutInflater.from(this).inflate(R.layout.item_feed_type_7_v3,null);
+            ImageView ivCover = folder.findViewById(R.id.iv_cover);
+            TextView tvTitle = folder.findViewById(R.id.tv_title);
+            TextView tvContent = folder.findViewById(R.id.tv_content);
+            TextView tv_coin = folder.findViewById(R.id.tv_coin);
+
+            size = getResources().getDimensionPixelSize(R.dimen.y140);
+            Glide.with(this)
+                    .load(StringUtils.getUrl(this,folderEntity.getIcon(),size,size,false,true))
+                    .error(R.drawable.bg_default_circle)
+                    .placeholder(R.drawable.bg_default_circle)
+                    .bitmapTransform(new CropCircleTransformation(this))
+                    .into(ivCover);
+            tvTitle.setText(folderEntity.getProductName());
+            tvContent.setText(folderEntity.getDescribe());
+            String str = "";
+            if(folderEntity.getCoin() > 0){
+                str = folderEntity.getCoin() + "节操";
+            }
+            if(folderEntity.getRmb() > 0){
+                str += String.format(Locale.getDefault(),"%.2f元",(float)folderEntity.getRmb() / 100);
+            }
+            tv_coin.setText(str);
+            root.addView(folder);
+            root.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    Intent i = new Intent(DynamicActivity.this,ShopDetailActivity.class);
+                    i.putExtra("uuid",folderEntity.getProductId());
+                    startActivity(i);
+                }
+            });
         }
+
         //coins
         if(!showHongbao){
             showHongBao(v,false,mDynamic.getCoins(),mDynamic.getSurplus(),mDynamic.getId(),mDynamic.getCreateUser().getHeadPath(),mDynamic.getUsers());
@@ -616,25 +913,6 @@ public class DynamicActivity extends BaseAppCompatActivity implements DynamicCon
         View fRoot = v.findViewById(R.id.fl_forward_root);
         View cRoot = v.findViewById(R.id.fl_comment_root);
         View tRoot = v.findViewById(R.id.fl_tag_root);
-        if(mDynamic.isTag()){
-            tRoot.setVisibility(View.VISIBLE);
-            root.setBackgroundColor(Color.TRANSPARENT);
-            root1.setBackgroundColor(Color.TRANSPARENT);
-          //  docLabel.setBackgroundColor(Color.TRANSPARENT);
-            if("ARTICLE".equals(mDynamic.getType()) || "FOLDER".equals(mDynamic.getType())){
-                int py = (int) getResources().getDimension(R.dimen.y24);
-                root1.setPadding(0,0,0,py);
-            }
-        }else {
-            tRoot.setVisibility(View.INVISIBLE);
-            root.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
-            root1.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
-           // docLabel.setBackgroundColor(ContextCompat.getColor(this,R.color.cyan_eefdff));
-            if("ARTICLE".equals(mDynamic.getType()) || "FOLDER".equals(mDynamic.getType())){
-                int py = (int) getResources().getDimension(R.dimen.y24);
-                root1.setPadding(0,py,0,py);
-            }
-        }
         fRoot.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {

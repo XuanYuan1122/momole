@@ -359,32 +359,32 @@ public class NewFollowMainFragment extends BaseFragment implements FeedContract.
 
     @Override
     public void onLoadDiscoverListSuccess(ArrayList<DiscoverEntity> entities, boolean isPull) {
-        if(entities.size() > 0){
-            changeIdx(entities);
-            if(hotView == null){
-                hotView  = LayoutInflater.from(getContext()).inflate(R.layout.item_new_feed_list, null);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp.topMargin = (int) getResources().getDimension(R.dimen.y24);
-                hotView.setLayoutParams(lp);
-                mAdapter.addHeaderView(hotView);
-            }
-            holder = new DiscoverHolder(hotView);
-            mCurDiscover = entities.get(0);
-            if("dynamic".equals(mCurDiscover.getType())){
-                final NewDynamicEntity entity = new Gson().fromJson(mCurDiscover.getObj(),NewDynamicEntity.class);
-                holder.createItem(entity,-1,mCurDiscover.getFrom());
-                hotView.setOnClickListener(new NoDoubleClickListener() {
-                    @Override
-                    public void onNoDoubleClick(View v) {
-                        DynamicActivity.startActivity(getContext(),entity);
-                    }
-                });
-            }else {
-                if(hotView != null){
-                    mAdapter.removeHeaderView(hotView);
-                    hotView = null;
-                }
-            }
+        if(entities != null && entities.size() > 0){
+//            changeIdx(entities);
+//            if(hotView == null){
+//                hotView  = LayoutInflater.from(getContext()).inflate(R.layout.item_new_feed_list, null);
+//                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                lp.topMargin = (int) getResources().getDimension(R.dimen.y24);
+//                hotView.setLayoutParams(lp);
+//                mAdapter.addHeaderView(hotView);
+//            }
+//            holder = new DiscoverHolder(hotView);
+//            mCurDiscover = entities.get(0);
+//            if("dynamic".equals(mCurDiscover.getType())){
+//                final NewDynamicEntity entity = new Gson().fromJson(mCurDiscover.getObj(),NewDynamicEntity.class);
+//                holder.createItem(entity,-1,mCurDiscover.getFrom());
+//                hotView.setOnClickListener(new NoDoubleClickListener() {
+//                    @Override
+//                    public void onNoDoubleClick(View v) {
+//                        DynamicActivity.startActivity(getContext(),entity);
+//                    }
+//                });
+//            }else {
+//                if(hotView != null){
+//                    mAdapter.removeHeaderView(hotView);
+//                    hotView = null;
+//                }
+//            }
         }else {
             if(hotView != null){
                 mAdapter.removeHeaderView(hotView);

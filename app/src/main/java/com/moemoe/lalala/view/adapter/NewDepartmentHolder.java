@@ -31,6 +31,7 @@ import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
@@ -61,71 +62,63 @@ public class NewDepartmentHolder extends ClickableViewHolder {
     }
 
     public void createItem(final DepartmentEntity.DepartmentDoc docBean){
-        View article = LayoutInflater.from(context).inflate(R.layout.item_new_wenzhang_zhuan,null);
-        TextView title = article.findViewById(R.id.tv_title);
-        TextView articleContent = article.findViewById(R.id.tv_content);
-        ImageView cover = article.findViewById(R.id.iv_cover);
-        TextView mark = article.findViewById(R.id.tv_mark);
-        TextView readNum = article.findViewById(R.id.tv_read_num);
-        View scoreRoot = article.findViewById(R.id.fl_score_root);
-        TextView tvScore = article.findViewById(R.id.tv_score);
+        View article = LayoutInflater.from(itemView.getContext()).inflate(R.layout.item_feed_type_5_v3,null);
+        ImageView ivCover = article.findViewById(R.id.iv_cover);
+        ImageView ivAvatar = article.findViewById(R.id.iv_user_avatar);
+        TextView tvMark = article.findViewById(R.id.tv_mark);
+        TextView tvUserName = article.findViewById(R.id.tv_user_name);
+        TextView tvReadNum = article.findViewById(R.id.tv_read_num);
+        TextView tvTag1 = article.findViewById(R.id.tv_tag_1);
+        TextView tvTag2 = article.findViewById(R.id.tv_tag_2);
+        TextView tvTitle = article.findViewById(R.id.tv_title);
 
-        article.findViewById(R.id.tv_folder_name).setVisibility(View.GONE);
-        article.findViewById(R.id.tv_tag).setVisibility(View.GONE);
-
-
-        if(docBean.getCoin() != 0 || docBean.getScore() != 0){
-            scoreRoot.setVisibility(View.VISIBLE);
-            String tmpStr = "";
-            if(docBean.getCoin() != 0){
-                tmpStr = docBean.getCoin() + "节操+";
-            }
-            tmpStr = tmpStr + docBean.getScore() + "学分";
-            tvScore.setText(tmpStr);
-        }else {
-            scoreRoot.setVisibility(View.GONE);
-        }
-        int w = (int) (DensityUtil.getScreenWidth(context) - context.getResources().getDimension(R.dimen.x48));
-        int h = (int) context.getResources().getDimension(R.dimen.y400);
-        Glide.with(context)
-                .load(StringUtils.getUrl(context,docBean.getIcon().getPath(),w,h,false,true))
+        int w = DensityUtil.getScreenWidth(context) - getResources().getDimensionPixelSize(R.dimen.x48);
+        int h = getResources().getDimensionPixelSize(R.dimen.y400);
+        Glide.with(itemView.getContext())
+                .load(StringUtils.getUrl(itemView.getContext(),docBean.getIcon().getPath(),w,h,false,true))
                 .error(R.drawable.bg_default_square)
                 .placeholder(R.drawable.bg_default_square)
-                .bitmapTransform(new CropTransformation(context,w,h))
-                .into(cover);
-        mark.setText("文章");
-        if(!TextUtils.isEmpty(docBean.getTitle())){
-            title.setVisibility(View.VISIBLE);
-            title.setText(docBean.getTitle());
-        }else {
-            title.setVisibility(View.GONE);
-        }
-        if(!TextUtils.isEmpty(docBean.getContent())){
-            articleContent.setVisibility(View.VISIBLE);
-            articleContent.setText(TagControl.getInstance().paresToSpann(context,docBean.getContent()));
-        }else {
-            articleContent.setVisibility(View.GONE);
-        }
-        ImageView avatar = article.findViewById(R.id.iv_avatar);
-        TextView userName = article.findViewById(R.id.tv_user_name);
-        TextView time = article.findViewById(R.id.tv_time);
-        int size = (int) context.getResources().getDimension(R.dimen.x44);
-        Glide.with(context)
-                .load(StringUtils.getUrl(context,docBean.getHeadIcon(),size,size,false,true))
+                .bitmapTransform(new CropTransformation(itemView.getContext(),w,h))
+                .into(ivCover);
+
+        tvMark.setText("文章");
+        tvTitle.setText(docBean.getTitle());
+        int size = (int) itemView.getContext().getResources().getDimension(R.dimen.y32);
+        Glide.with(itemView.getContext())
+                .load(StringUtils.getUrl(itemView.getContext(),docBean.getHeadIcon(),size,size,false,true))
                 .error(R.drawable.bg_default_circle)
                 .placeholder(R.drawable.bg_default_circle)
-                .bitmapTransform(new CropCircleTransformation(context))
-                .into(avatar);
-        avatar.setOnClickListener(new NoDoubleClickListener() {
+                .bitmapTransform(new CropCircleTransformation(itemView.getContext()))
+                .into(ivAvatar);
+
+        ivAvatar.setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                ViewUtils.toPersonal(context,docBean.getUserId());
+                ViewUtils.toPersonal(itemView.getContext(),docBean.getUserId());
             }
         });
-        readNum.setVisibility(View.VISIBLE);
-        readNum.setText("阅读 " + docBean.getReadNum());
-        userName.setText(docBean.getUsername());
-        time.setText(StringUtils.timeFormat(docBean.getUpdateTime()));
+
+        tvUserName.setText(docBean.getUsername());
+        tvReadNum.setText("阅读" + docBean.getReadNum());
+
+        //tag
+        View[] tagsId = {tvTag1,tvTag2};
+        tvTag1.setOnClickListener(null);
+        tvTag2.setOnClickListener(null);
+        if(docBean.getTexts().size() > 1){
+            tvTag1.setVisibility(View.VISIBLE);
+            tvTag2.setVisibility(View.VISIBLE);
+        }else if(docBean.getTexts().size() > 0){
+            tvTag1.setVisibility(View.VISIBLE);
+            tvTag2.setVisibility(View.INVISIBLE);
+        }else {
+            tvTag1.setVisibility(View.INVISIBLE);
+            tvTag2.setVisibility(View.INVISIBLE);
+        }
+        int tagSize = tagsId.length > docBean.getTexts().size() ? docBean.getTexts().size() : tagsId.length;
+        for (int i = 0;i < tagSize;i++){
+            TagUtils.setBackGround(docBean.getTexts().get(i).getText(),tagsId[i]);
+        }
         ((LinearLayout)$(R.id.ll_card_root)).removeAllViews();
         ((LinearLayout)$(R.id.ll_card_root)).addView(article);
     }

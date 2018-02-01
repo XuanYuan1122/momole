@@ -60,6 +60,7 @@ public class TagControl {
         attrs.put("user_id","");
         tag.setAttrs(attrs);
         tags.add(tag);
+
         tag = new BaseTag();
         tag.setTag("kira_img");
         tag.setSpan(new ImageUrlSpan(context,tag));
@@ -67,6 +68,14 @@ public class TagControl {
         attrs.put("path","");
         attrs.put("w","");
         attrs.put("h","");
+        tag.setAttrs(attrs);
+        tags.add(tag);
+
+        tag = new BaseTag();
+        tag.setTag("kira_font");
+        //TODO 添加新的span
+        attrs = new HashMap<>();
+        attrs.put("color","");
         tag.setAttrs(attrs);
         tags.add(tag);
     }

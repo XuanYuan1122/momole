@@ -140,8 +140,12 @@
             android:name=".view.activity.WallBlockActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/MainColorTranslucentTheme">
-        </activity>
+            android:theme="@style/MainColorTranslucentTheme"/>
+        <activity
+            android:name=".view.activity.FeedV3Activity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"/>
         <activity
         android:name=".view.activity.MotifyTaiciActivity"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
@@ -173,7 +177,49 @@
             android:theme="@style/MainColorTranslucentTheme">
         </activity>
         <activity
+            android:name=".view.activity.VideoExamineActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
             android:name=".view.activity.SubmissionActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.FeedTagSelectActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.AdminListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.ApplyAdminActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.FeedShowAllActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.FeedBagTypeListActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
+            android:name=".view.activity.FeedNoticeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme">
@@ -255,6 +301,12 @@
             android:theme="@style/MainColorTranslucentTheme">
         </activity>
         <activity
+            android:name=".view.activity.FileMovieActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme">
+        </activity>
+        <activity
             android:name=".view.activity.NewFolderEditActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
@@ -263,6 +315,13 @@
         </activity>
         <activity
             android:name=".view.activity.RecommendTagActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+        <activity
+            android:name=".view.activity.FeedBagSearchActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"
@@ -738,6 +797,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"/>
         <activity android:name=".view.activity.SelectMusicActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainColorTranslucentTheme"/>
+        <activity android:name=".view.activity.SelectMovieActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:screenOrientation="portrait"
             android:theme="@style/MainColorTranslucentTheme"/>

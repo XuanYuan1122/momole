@@ -14,6 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -50,12 +51,16 @@ public class BagMyPresenter implements BagMyContract.Presenter {
                                 BagMyShowEntity show1 = new BagMyShowEntity(R.drawable.shape_rect_tuji,"图集",entity.getImageNum(),entity.getImageList());
                                 BagMyShowEntity show2 = new BagMyShowEntity(R.drawable.shape_rect_manhua,"漫画",entity.getCartoonNum(),entity.getCartoonList());
                                 BagMyShowEntity show3 = new BagMyShowEntity(R.drawable.shape_rect_xiaoshuo,"小说",entity.getFictionNum(),entity.getFictionList());
-                                BagMyShowEntity show4 = new BagMyShowEntity(R.drawable.shape_rect_zonghe,"文章",entity.getArticleNum(),null);
+                                BagMyShowEntity show4 = new BagMyShowEntity(R.drawable.shape_rect_xiaoshuo,"视频",entity.getVideoNum(),entity.getVideoList());
+                                BagMyShowEntity show5 = new BagMyShowEntity(R.drawable.shape_rect_xiaoshuo,"音乐",entity.getMusicNum(),entity.getMusicList());
+                                BagMyShowEntity show6 = new BagMyShowEntity(R.drawable.shape_rect_zonghe,"文章",entity.getArticleNum(),entity.getArticleList());
                                 entities.add(show0);
                                 entities.add(show1);
                                 entities.add(show2);
                                 entities.add(show3);
                                 entities.add(show4);
+                                entities.add(show5);
+                                entities.add(show6);
                                 view.onLoadSuccess(entities);
                             }
                         }
@@ -80,13 +85,17 @@ public class BagMyPresenter implements BagMyContract.Presenter {
                                 BagMyShowEntity show2 = new BagMyShowEntity(R.drawable.shape_rect_tuji,"图集",entity.getImageNum(),entity.getImageList());
                                 BagMyShowEntity show3 = new BagMyShowEntity(R.drawable.shape_rect_manhua,"漫画",entity.getCartoonNum(),entity.getCartoonList());
                                 BagMyShowEntity show4 = new BagMyShowEntity(R.drawable.shape_rect_xiaoshuo,"小说",entity.getFictionNum(),entity.getFictionList());
-                                BagMyShowEntity show5 = new BagMyShowEntity(R.drawable.shape_rect_zonghe,"文章",entity.getArticleNum(),null);
+                                BagMyShowEntity show5 = new BagMyShowEntity(R.drawable.shape_rect_xiaoshuo,"视频",entity.getVideoNum(),entity.getVideoList());
+                                BagMyShowEntity show6 = new BagMyShowEntity(R.drawable.shape_rect_xiaoshuo,"音乐",entity.getMusicNum(),entity.getMusicList());
+                                BagMyShowEntity show7 = new BagMyShowEntity(R.drawable.shape_rect_zonghe,"文章",entity.getArticleNum(),entity.getArticleList());
                                 entities.add(show0);
                                 entities.add(show1);
                                 entities.add(show2);
                                 entities.add(show3);
                                 entities.add(show4);
                                 entities.add(show5);
+                                entities.add(show6);
+                                entities.add(show7);
                                 view.onLoadSuccess(entities);
                             }
                         }

@@ -14,6 +14,7 @@ import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDepartComponent;
 import com.moemoe.lalala.di.modules.DepartModule;
+import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.BannerEntity;
 import com.moemoe.lalala.model.entity.DepartmentGroupEntity;
 import com.moemoe.lalala.model.entity.FeaturedEntity;
@@ -64,16 +65,6 @@ public class DepartmentV3Activity extends BaseAppCompatActivity implements Depar
 
     private String roomId;
     private int mIsFollow;
-    private int mStayTime;
-
-    private Handler mHandler = new Handler();
-    private Runnable timeRunnabel = new Runnable() {
-        @Override
-        public void run() {
-            mStayTime++;
-            mHandler.postDelayed(this,1000);
-        }
-    };
 
     @Override
     protected int getLayoutId() {
@@ -95,9 +86,7 @@ public class DepartmentV3Activity extends BaseAppCompatActivity implements Depar
         AndroidBug5497Workaround.assistActivity(this);
         roomId = getIntent().getStringExtra(UUID);
         String title = getIntent().getStringExtra(EXTRA_NAME);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().clickDepartment(roomId)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        clickEvent(roomId);
         mRoleRoot.setVisibility(View.GONE);
         List<BaseFragment> fragmentList = new ArrayList<>();
         fragmentList.add(DepartmentFragment.newInstance(roomId,title));
@@ -178,13 +167,13 @@ public class DepartmentV3Activity extends BaseAppCompatActivity implements Depar
     @Override
     protected void onPause() {
         super.onPause();
-        mHandler.removeCallbacks(timeRunnabel);
+        pauseTime();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mHandler.post(timeRunnabel);
+        startTime();
     }
 
     @Override
@@ -196,10 +185,7 @@ public class DepartmentV3Activity extends BaseAppCompatActivity implements Depar
     protected void onDestroy() {
         if (mPresenter != null) mPresenter.release();
         if(mAdapter != null) mAdapter.release();
-        mHandler.removeCallbacks(timeRunnabel);
-        MoeMoeApplication.getInstance().getNetComponent().getApiService().stayDepartment(roomId,mStayTime)
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+        stayEvent(roomId);
         super.onDestroy();
     }
 

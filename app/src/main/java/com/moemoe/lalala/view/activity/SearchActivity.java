@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.event.AtUserEvent;
 import com.moemoe.lalala.event.SearchChangedEvent;
 import com.moemoe.lalala.utils.DensityUtil;
@@ -33,6 +33,10 @@ import com.moemoe.lalala.view.fragment.SearchDocFragment;
 import com.moemoe.lalala.view.fragment.SearchUserByKiraFragment;
 import com.moemoe.lalala.view.fragment.SearchUserFragment;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +47,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2017/3/1.
  */
 
@@ -134,7 +139,7 @@ public class SearchActivity extends BaseAppCompatActivity {
         mTab.setupWithViewPager(mVpSearch);
         mVpSearch.setCurrentItem(1);
         mVpSearch.setOffscreenPageLimit(2);
-        subscribeChangedEvent();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -151,7 +156,7 @@ public class SearchActivity extends BaseAppCompatActivity {
                     String curKey = mEtSearch.getText().toString();
                     if(TextUtils.isEmpty(mKeyWord) || (!TextUtils.isEmpty(curKey) && !mKeyWord.equals(mEtSearch.getText().toString()))){
                         mKeyWord = mEtSearch.getText().toString();
-                        RxBus.getInstance().post(new SearchChangedEvent(mEtSearch.getText().toString()));
+                        EventBus.getDefault().post(new SearchChangedEvent(mEtSearch.getText().toString()));
                     }
                     if(mTab.getVisibility() == View.GONE && showType == SHOW_ALL){
                         mTab.setVisibility(View.VISIBLE);
@@ -264,36 +269,19 @@ public class SearchActivity extends BaseAppCompatActivity {
         }
     }
 
-    private void subscribeChangedEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(AtUserEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<AtUserEvent>() {
-                    @Override
-                    public void accept(AtUserEvent atUserEvent) throws Exception {
-                        Intent i = new Intent();
-                        i.putExtra("user_id",atUserEvent.getUserId());
-                        i.putExtra("user_name",atUserEvent.getUserName());
-                        setResult(RESULT_OK,i);
-                        finish();
-                    }
-                }, new Consumer<Throwable>() {
-
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().unSubscribe(this);
-        RxBus.getInstance().addSubscription(this, subscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void atUserEvent(AtUserEvent event){
+        Intent i = new Intent();
+        i.putExtra("user_id",event.getUserId());
+        i.putExtra("user_name",event.getUserName());
+        setResult(RESULT_OK,i);
+        finish();
     }
 
     @Override
     protected void onDestroy() {
         if(mAdapter != null)mAdapter.release();
         super.onDestroy();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
     }
 }

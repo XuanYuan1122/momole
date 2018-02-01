@@ -26,6 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
+ *
  * Created by yi on 2016/11/30.
  */
 
@@ -161,8 +162,8 @@ public class SelectBookActivity extends BaseAppCompatActivity {
             if(convertView == null){
                 convertView = LayoutInflater.from(SelectBookActivity.this).inflate(R.layout.item_select_music,null);
                 viewHolder = new ViewHolder();
-                viewHolder.cover = (ImageView) convertView.findViewById(R.id.iv_select_music);
-                viewHolder.title = (TextView) convertView.findViewById(R.id.tv_select_music);
+                viewHolder.cover = convertView.findViewById(R.id.iv_select_music);
+                viewHolder.title = convertView.findViewById(R.id.tv_select_music);
                 convertView.setTag(viewHolder);
             }else {
                 viewHolder = (ViewHolder) convertView.getTag();

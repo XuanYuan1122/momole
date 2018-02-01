@@ -10,7 +10,7 @@ import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPhoneLuYinComponent;
 import com.moemoe.lalala.di.modules.PhoneLuYinModule;
 import com.moemoe.lalala.event.PhonePlayMusicEvent;
@@ -29,6 +29,10 @@ import com.moemoe.lalala.view.adapter.PhoneLuYinListAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -139,7 +143,7 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
             }
         });
         mPresenter.loadLuYinList(type,mate,0);
-        subscribeBackOrChangeEvent();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -148,60 +152,44 @@ public class PhoneLuyinListFragment extends BaseFragment implements PhoneLuyinCo
         mListDocs.setComplete();
     }
 
-    private void subscribeBackOrChangeEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(PhonePlayMusicEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<PhonePlayMusicEvent>() {
-                    @Override
-                    public void accept(PhonePlayMusicEvent phonePlayMusicEvent) throws Exception {
-                        if(type.equals(phonePlayMusicEvent.getType())){
-                            if(phonePlayMusicEvent.isPlay()){
-                                int position = mAdapter.getPlayingPosition();
-                                mAdapter.setPlayingPosition(phonePlayMusicEvent.getPosition());
-                                if(position >= 0){
-                                    mAdapter.notifyItemChanged(position);
-                                }
-                                //检查文件是否存在
-                                if(FileUtil.isExists(StorageUtils.getMusicRootPath() + phonePlayMusicEvent.getPath().substring(phonePlayMusicEvent.getPath().lastIndexOf("/") + 1))){
-                                    //存在提示更新播放
-                                    mAdapter.notifyItemChanged(phonePlayMusicEvent.getPosition());
-                                }else {
-                                    //不存在 下载  下载成功更新  下载失败提示失败 不更新播放
-                                    LuYinEntity entity = mAdapter.getItem(phonePlayMusicEvent.getPosition());
-                                    downloadMusic(entity,true);
-                                }
-                            }else {
-                                mAdapter.setPlayingPosition(-1);
-                                mAdapter.notifyItemChanged(phonePlayMusicEvent.getPosition());
-                            }
-                        }else {
-                            int position = mAdapter.getPlayingPosition();
-                            if(position >= 0){
-                                mAdapter.setPlayingPosition(-1);
-                                mAdapter.notifyItemChanged(position);
-                            }
-                        }
-                        if("error".equals(phonePlayMusicEvent.getType())){
-                            FileUtil.deleteFile(phonePlayMusicEvent.getPath());
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().addSubscription(this, subscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void phonePlayMusicEvent(PhonePlayMusicEvent event){
+        if(type.equals(event.getType())){
+            if(event.isPlay()){
+                int position = mAdapter.getPlayingPosition();
+                mAdapter.setPlayingPosition(event.getPosition());
+                if(position >= 0){
+                    mAdapter.notifyItemChanged(position);
+                }
+                //检查文件是否存在
+                if(FileUtil.isExists(StorageUtils.getMusicRootPath() + event.getPath().substring(event.getPath().lastIndexOf("/") + 1))){
+                    //存在提示更新播放
+                    mAdapter.notifyItemChanged(event.getPosition());
+                }else {
+                    //不存在 下载  下载成功更新  下载失败提示失败 不更新播放
+                    LuYinEntity entity = mAdapter.getItem(event.getPosition());
+                    downloadMusic(entity,true);
+                }
+            }else {
+                mAdapter.setPlayingPosition(-1);
+                mAdapter.notifyItemChanged(event.getPosition());
+            }
+        }else {
+            int position = mAdapter.getPlayingPosition();
+            if(position >= 0){
+                mAdapter.setPlayingPosition(-1);
+                mAdapter.notifyItemChanged(position);
+            }
+        }
+        if("error".equals(event.getType())){
+            FileUtil.deleteFile(event.getPath());
+        }
     }
 
     public void release(){
         if(mPresenter != null) mPresenter.release();
         AudioPlayer.getInstance(getContext()).stop();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
         super.release();
     }
 

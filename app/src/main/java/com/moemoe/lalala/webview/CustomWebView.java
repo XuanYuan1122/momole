@@ -10,12 +10,14 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.event.BackSchoolEvent;
 import com.moemoe.lalala.utils.PreferenceUtils;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.WebViewActivity;
 import com.pingplusplus.android.Pingpp;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -106,7 +108,7 @@ public class CustomWebView extends WebView {
             int i = PreferenceUtils.getBackSchoolLevel(mActivity);
             if(pass > i) {
                 PreferenceUtils.setBackSchoolLevel(mActivity,pass);
-                RxBus.getInstance().post(new BackSchoolEvent(pass));
+                EventBus.getDefault().post(new BackSchoolEvent(pass));
             }
             mActivity.finish();
         }

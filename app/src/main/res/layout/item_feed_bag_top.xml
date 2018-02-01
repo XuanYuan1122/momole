@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/ll_top_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y120"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x24"
+        android:background="@color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_e8e8e8_14">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:layout_marginStart="@dimen/x16"
+                    android:text="搜索书包"
+                    android:textSize="@dimen/x28" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y192"
+        android:orientation="horizontal"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/ll_zh_root"
+            android:layout_width="@dimen/x90"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="@dimen/x36"
+            android:layout_marginTop="@dimen/y32">
+
+            <ImageView
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/x90"
+                android:src="@drawable/btn_trends_baglist_classify_multiple"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y20"
+                android:textColor="@color/black_1e1e1e"
+                android:textSize="@dimen/x24"
+                android:text="综合"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_tj_root"
+            android:layout_width="@dimen/x90"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="@dimen/x28"
+            android:layout_marginTop="@dimen/y32">
+
+            <ImageView
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/x90"
+                android:src="@drawable/btn_trends_baglist_classify_pic"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y20"
+                android:textColor="@color/black_1e1e1e"
+                android:textSize="@dimen/x24"
+                android:text="图集"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_mh_root"
+            android:layout_width="@dimen/x90"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="@dimen/x28"
+            android:layout_marginTop="@dimen/y32">
+
+            <ImageView
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/x90"
+                android:src="@drawable/btn_trends_baglist_classify_comics"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y20"
+                android:textColor="@color/black_1e1e1e"
+                android:textSize="@dimen/x24"
+                android:text="漫画"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_xs_root"
+            android:layout_width="@dimen/x90"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="@dimen/x28"
+            android:layout_marginTop="@dimen/y32">
+
+            <ImageView
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/x90"
+                android:src="@drawable/btn_trends_baglist_classify_novel"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y20"
+                android:textColor="@color/black_1e1e1e"
+                android:textSize="@dimen/x24"
+                android:text="小说"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_sp_root"
+            android:layout_width="@dimen/x90"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="@dimen/x28"
+            android:layout_marginTop="@dimen/y32">
+
+            <ImageView
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/x90"
+                android:src="@drawable/btn_trends_baglist_classify_video"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y20"
+                android:textColor="@color/black_1e1e1e"
+                android:textSize="@dimen/x24"
+                android:text="视频"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_yy_root"
+            android:layout_width="@dimen/x90"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="@dimen/x28"
+            android:layout_marginTop="@dimen/y32">
+
+            <ImageView
+                android:layout_width="@dimen/x90"
+                android:layout_height="@dimen/x90"
+                android:src="@drawable/btn_trends_baglist_classify_music"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y20"
+                android:textColor="@color/black_1e1e1e"
+                android:textSize="@dimen/x24"
+                android:text="音乐"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

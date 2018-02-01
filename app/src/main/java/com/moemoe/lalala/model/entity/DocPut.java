@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ *
  * Created by Haru on 2016/7/11 0011.
  */
 public class DocPut {
@@ -19,6 +20,7 @@ public class DocPut {
     public Set<String> userIds;
     public String cover;
     public String departmentId;
+    public ArrayList<String> texts;
 
     public DocPut(){
         tags = new ArrayList<>();

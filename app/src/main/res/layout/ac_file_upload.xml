@@ -36,9 +36,9 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_img"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/y220"
-                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
                 android:visibility="gone"/>
 
 
@@ -77,83 +77,152 @@
             </RelativeLayout>
         </RelativeLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_images"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_upload_zip"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y112"
-                android:layout_marginTop="@dimen/y24"
-                android:background="@color/white"
-                android:textSize="@dimen/x30"
-                android:textColor="@color/main_cyan"
-                android:gravity="center"
-                android:visibility="gone"
-                android:text="上传压缩包(仅支持图片)"/>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_images">
 
             <LinearLayout
-                android:id="@+id/ll_bg_root"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y140"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/x24"
-                android:visibility="gone"
-                android:background="@drawable/bg_normal_white_btn">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/x30"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/x30"
-                    android:text="@string/label_cover"/>
-
-                <ImageView
-                    android:id="@+id/iv_cover"
-                    android:layout_width="@dimen/y112"
+                    android:id="@+id/tv_upload_zip"
+                    android:layout_width="match_parent"
                     android:layout_height="@dimen/y112"
-                    android:layout_gravity="center_vertical"
-                    android:scaleType="centerCrop"
-                    android:layout_marginEnd="@dimen/x30"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:id="@+id/ll_name_root"
-                android:layout_height="@dimen/y140"
-                android:orientation="horizontal"
-                android:background="@drawable/bg_normal_white_btn"
-                android:visibility="gone"
-                android:layout_marginTop="@dimen/y20">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/y24"
+                    android:background="@color/white"
                     android:textSize="@dimen/x30"
-                    android:textColor="@color/black"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/x30"
-                    android:text="名称" />
+                    android:textColor="@color/main_cyan"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:text="上传压缩包(仅支持图片)"/>
 
-                <TextView
-                    android:id="@+id/tv_name"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/x30"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textSize="@dimen/x30"
-                    android:gravity="end" />
+                <LinearLayout
+                    android:id="@+id/ll_bg_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y140"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/x24"
+                    android:visibility="gone"
+                    android:background="@drawable/bg_normal_white_btn">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/x30"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/x30"
+                        android:text="@string/label_cover"/>
+
+                    <ImageView
+                        android:id="@+id/iv_cover"
+                        android:layout_width="@dimen/y112"
+                        android:layout_height="@dimen/y112"
+                        android:layout_gravity="center_vertical"
+                        android:scaleType="centerCrop"
+                        android:layout_marginEnd="@dimen/x30"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/ll_name_root"
+                    android:layout_height="@dimen/y140"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_normal_white_btn"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/x30"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/x30"
+                        android:text="名称" />
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/x30"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/x30"
+                        android:gravity="end" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/ll_desc_root"
+                    android:layout_height="@dimen/y140"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_normal_white_btn"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/x30"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/x30"
+                        android:text="描述" />
+
+                    <TextView
+                        android:id="@+id/tv_desc_name"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/x30"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/x30"
+                        android:gravity="end" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/ll_coin_root"
+                    android:layout_height="@dimen/y140"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_normal_white_btn"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/x30"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/x30"
+                        android:text="节操" />
+
+                    <TextView
+                        android:id="@+id/tv_coin"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/x30"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/pink_fb7ba2"
+                        android:textSize="@dimen/x30"
+                        android:gravity="end" />
+                </LinearLayout>
+                <include
+                    android:id="@+id/layout_tag_root"
+                    layout="@layout/item_tag_create"
+                    android:visibility="gone"/>
             </LinearLayout>
-        </LinearLayout>
+        </ScrollView>
 
         <include
             android:id="@+id/ll_comment_pannel"

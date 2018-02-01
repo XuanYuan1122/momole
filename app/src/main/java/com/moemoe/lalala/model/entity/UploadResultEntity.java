@@ -1,19 +1,24 @@
 package com.moemoe.lalala.model.entity;
 
-import com.google.gson.annotations.SerializedName;
+import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2017/1/18.
  */
 
 public class UploadResultEntity {
     private String attr;
+    private int coin;
     private String md5;
     private String path;
     private boolean save;
     private long size;
     private String type;
     private String uploadToken;
+    private String summary;
+    private ArrayList<String> texts;
+    private String timestamp;
 
     private String fileName;
     private transient String filePath;
@@ -23,6 +28,38 @@ public class UploadResultEntity {
     private int coverSize;
     private int num;
     private String title;
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public ArrayList<String> getTexts() {
+        return texts;
+    }
+
+    public void setTexts(ArrayList<String> texts) {
+        this.texts = texts;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public int getCoin() {
+        return coin;
+    }
+
+    public void setCoin(int coin) {
+        this.coin = coin;
+    }
 
     public String getAttr() {
         return attr;

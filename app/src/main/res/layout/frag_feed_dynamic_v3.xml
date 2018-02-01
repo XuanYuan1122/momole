@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.moemoe.lalala.view.widget.view.KiraTabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y80"
+        android:background="@color/white"
+        app:tl_indicator_color="@color/main_cyan"
+        app:tl_indicator_height="@dimen/y6"
+        app:tl_indicator_width_equal_title="true"
+        app:tl_text_size="@dimen/x30"
+        app:tl_textSelectColor="@color/main_cyan"
+        app:tl_textUnSelectColor="@color/main_cyan_50"
+        app:tl_divider_color="@color/gray_e8e8e8"
+        app:tl_divider_padding="@dimen/y20"
+        app:tl_divider_width="@dimen/x1"
+        app:tl_tab_space_equal="true"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

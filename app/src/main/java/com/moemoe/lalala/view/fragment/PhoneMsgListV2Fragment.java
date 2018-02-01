@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPhoneMsgListComponent;
 import com.moemoe.lalala.di.modules.PhoneMsgListModule;
 import com.moemoe.lalala.event.GroupMsgChangeEvent;
@@ -23,6 +23,8 @@ import com.moemoe.lalala.view.adapter.PhoneMsgListAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 
@@ -150,7 +152,7 @@ public class PhoneMsgListV2Fragment extends BaseFragment implements IPhoneFragme
             }
         }
         PreferenceUtils.setGroupDotNum(getContext(),PreferenceUtils.getGroupDotNum(getContext()) + i);
-        RxBus.getInstance().post(new GroupMsgChangeEvent());
+        EventBus.getDefault().post(new GroupMsgChangeEvent());
     }
 
     @Override
@@ -159,7 +161,7 @@ public class PhoneMsgListV2Fragment extends BaseFragment implements IPhoneFragme
         mAdapter.setShowPosition(-1);
         mAdapter.notifyItemChanged(position);
         PreferenceUtils.setGroupDotNum(getContext(),PreferenceUtils.getGroupDotNum(getContext()) - 1);
-        RxBus.getInstance().post(new GroupMsgChangeEvent());
+        EventBus.getDefault().post(new GroupMsgChangeEvent());
         ToastUtils.showShortToast(getContext(),"操作成功");
     }
 

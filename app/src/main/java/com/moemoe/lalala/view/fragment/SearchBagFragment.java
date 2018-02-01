@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.event.DirBuyEvent;
@@ -27,6 +27,10 @@ import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -38,6 +42,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/12/15.
  */
 
@@ -53,7 +58,6 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
     private boolean isLoading = false;
     private String mKeyWord;
     private int mCurPage = 1;
-  //  private boolean notFirst;
 
     @Override
     protected int getLayoutId() {
@@ -69,9 +73,6 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
 
     @Override
     protected void initViews(Bundle savedInstanceState) {
-       // if(savedInstanceState != null || notFirst){
-       //     return;
-      //  }
         DaggerPersonalListComponent.builder()
                 .personalListModule(new PersonalListModule(this))
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
@@ -130,8 +131,7 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
                 return false;
             }
         });
-        subscribeSearchChangedEvent();
-     //   notFirst = true;
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -157,49 +157,19 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
         mListDocs.setComplete();
     }
 
-    private void subscribeSearchChangedEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(SearchChangedEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SearchChangedEvent>() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void searchChangedEvent(SearchChangedEvent event){
+        mKeyWord = event.getKeyWord();
+        mCurPage = 1;
+        mPresenter.doRequest(mKeyWord,mCurPage,8);
+    }
 
-                    @Override
-                    public void accept(SearchChangedEvent searchChangedEvent) throws Exception {
-                        mKeyWord = searchChangedEvent.getKeyWord();
-                        mCurPage = 1;
-                        mPresenter.doRequest(mKeyWord,mCurPage,8);
-                    }
-                }, new Consumer<Throwable>() {
-
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        Disposable buySubscription = RxBus.getInstance()
-                .toObservable(DirBuyEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<DirBuyEvent>() {
-                    @Override
-                    public void accept(DirBuyEvent dirBuyEvent) throws Exception {
-                        if(dirBuyEvent.getPosition() != -1){
-                            Object o = mAdapter.getItem(dirBuyEvent.getPosition());
-                            ((BagDirEntity)o).setBuy(dirBuyEvent.isBuy());
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().unSubscribe(this);
-        RxBus.getInstance().addSubscription(this, subscription);
-        RxBus.getInstance().addSubscription(this, buySubscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void dirBuyEvent(DirBuyEvent event){
+        if(event.getPosition() != -1){
+            Object o = mAdapter.getItem(event.getPosition());
+            ((BagDirEntity)o).setBuy(event.isBuy());
+        }
     }
 
     @Override
@@ -209,7 +179,7 @@ public class SearchBagFragment extends BaseFragment  implements PersonalListCont
 
     public void release(){
         if(mPresenter != null) mPresenter.release();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
         super.release();
     }
 }

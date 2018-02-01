@@ -1,14 +1,19 @@
 package com.moemoe.lalala.view.widget.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.moemoe.lalala.R;
 
 
 /**
@@ -35,6 +40,12 @@ public class ClickableViewHolder extends RecyclerView.ViewHolder{
         return this;
     }
 
+    public ClickableViewHolder setBackgroundColor(@IdRes int viewId, @ColorRes int colorId){
+        View view = $(viewId);
+        view.setBackgroundColor(ContextCompat.getColor(context, colorId));
+        return this;
+    }
+
     public ClickableViewHolder setText(@IdRes int viewId, @StringRes int strId){
         TextView view = $(viewId);
         view.setText(strId);
@@ -57,5 +68,9 @@ public class ClickableViewHolder extends RecyclerView.ViewHolder{
         View view = $(viewId);
         view.setBackgroundDrawable(drawable);
         return this;
+    }
+
+    public Resources getResources(){
+        return context.getResources();
     }
 }

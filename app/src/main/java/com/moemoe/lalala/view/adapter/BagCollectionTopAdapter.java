@@ -17,11 +17,10 @@ public class BagCollectionTopAdapter extends BaseRecyclerViewAdapter<ShowFolderE
     private boolean isSelect;
 
     public BagCollectionTopAdapter() {
-        super(R.layout.item_bag_cover);
+        super(R.layout.item_feed_type_4_v3);
         isSelect = false;
     }
-
-
+    
     @Override
     protected void convert(BagCollectionTopHolder helper, final ShowFolderEntity item, int position) {
         helper.createItem(item,position,isSelect);

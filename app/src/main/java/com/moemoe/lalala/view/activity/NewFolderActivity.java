@@ -20,7 +20,6 @@ import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.ShowFolderEntity;
 import com.moemoe.lalala.presenter.NewFolderContract;
 import com.moemoe.lalala.presenter.NewFolderPresenter;
-import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.ErrorCodeUtils;
 import com.moemoe.lalala.utils.FolderDecoration;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
@@ -63,6 +62,8 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
     PullAndLoadView mListDocs;
     @BindView(R.id.iv_add_folder)
     ImageView mIvAdd;
+    @BindView(R.id.tv_show_sp_examine)
+    TextView mExamineSp;
     @Inject
     NewFolderPresenter mPresenter;
 
@@ -121,6 +122,17 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
             title = "小说";
         }else if(mFolderType.equals(FolderType.WZ.toString())){
             title = "文章";
+        }else if(mFolderType.equals(FolderType.YY.toString())){
+            title = "音乐集";
+        }else if(mFolderType.equals(FolderType.SP.toString())){
+            title = "视频";
+            mExamineSp.setVisibility(View.VISIBLE);
+            mExamineSp.setOnClickListener(new NoDoubleClickListener() {
+                @Override
+                public void onNoDoubleClick(View v) {
+                    VideoExamineActivity.startActivity(NewFolderActivity.this);
+                }
+            });
         }
         mTitle.setText(title);
         if(mUserId.equals(PreferenceUtils.getUUid())){
@@ -166,6 +178,10 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
                         NewFileManHuaActivity.startActivity(NewFolderActivity.this,FolderType.MH.toString(),entity.getFolderId(),entity.getCreateUser());
                     }else if(mFolderType.equals(FolderType.XS.toString())){
                         NewFileXiaoshuoActivity.startActivity(NewFolderActivity.this,FolderType.XS.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(mFolderType.equals(FolderType.YY.toString())){
+                        FileMovieActivity.startActivity(NewFolderActivity.this,FolderType.YY.toString(),entity.getFolderId(),entity.getCreateUser());
+                    }else if(mFolderType.equals(FolderType.SP.toString())){
+                        FileMovieActivity.startActivity(NewFolderActivity.this,FolderType.SP.toString(),entity.getFolderId(),entity.getCreateUser());
                     }
                 }else {
                     if(entity.isSelect()){
@@ -240,11 +256,11 @@ public class NewFolderActivity extends BaseAppCompatActivity implements NewFolde
                     mIvBack.setVisibility(View.GONE);
                     mIvMenu.setVisibility(View.GONE);
                     mTvMenuLeft.setVisibility(View.VISIBLE);
-                    ViewUtils.setLeftMargins(mTvMenuLeft, (int)getResources().getDimension(R.dimen.x36));
+                    ViewUtils.setLeftMargins(mTvMenuLeft, getResources().getDimensionPixelSize(R.dimen.x36));
                     mTvMenuLeft.setText(getString(R.string.label_give_up));
                     mTvMenuLeft.setTextColor(ContextCompat.getColor(NewFolderActivity.this,R.color.black_1e1e1e));
                     mTvMenuRight.setVisibility(View.VISIBLE);
-                    ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
+                    ViewUtils.setRightMargins(mTvMenuRight, getResources().getDimensionPixelSize(R.dimen.x36));
                     mTvMenuRight.setText(getString(R.string.label_delete));
                     mTvMenuRight.setTextColor(ContextCompat.getColor(NewFolderActivity.this,R.color.main_cyan));
                     mTvTop.setVisibility(View.VISIBLE);

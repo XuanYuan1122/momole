@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.AppSetting;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPhoneMainComponent;
 import com.moemoe.lalala.di.modules.PhoneMainModule;
 import com.moemoe.lalala.dialog.SignDialog;
@@ -51,16 +51,16 @@ import com.moemoe.lalala.view.fragment.PhoneMateSelectV2Fragment;
 import com.moemoe.lalala.view.fragment.PhoneMenuV2Fragment;
 import com.moemoe.lalala.view.fragment.PhoneTicketV2Fragment;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.Stack;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import io.rong.imkit.RongIM;
 import io.rong.imkit.manager.IUnReadMessageObserver;
 import io.rong.imlib.model.Conversation;
@@ -142,7 +142,7 @@ public class PhoneMainV2Activity extends BaseAppCompatActivity implements PhoneM
             mTvMsgDot.setVisibility(View.GONE);
         }
         gestureDetector = new GestureDetector(this,onGestureListener);
-        subscribeSearchChangedEvent();
+        EventBus.getDefault().register(this);
         ViewUtils.setRoleButton(mIvRole,mTvText);
         if(AppSetting.TXBB){
             mHouShanRoot.setVisibility(View.VISIBLE);
@@ -251,8 +251,8 @@ public class PhoneMainV2Activity extends BaseAppCompatActivity implements PhoneM
         mTvMenu.setGravity(Gravity.CENTER);
         mTvMenu.setText(menu);
         mTvMenu.setBackgroundResource(R.drawable.shape_main_background_y22);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams((int)getResources().getDimension(R.dimen.x144),(int)getResources().getDimension(R.dimen.y44));
-        lp.rightMargin = (int) getResources().getDimension(R.dimen.x20);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.x144),getResources().getDimensionPixelSize(R.dimen.y44));
+        lp.rightMargin = getResources().getDimensionPixelSize(R.dimen.x20);
         mTvMenu.setLayoutParams(lp);
     }
 
@@ -402,7 +402,7 @@ public class PhoneMainV2Activity extends BaseAppCompatActivity implements PhoneM
             mTvText.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mRoleRoot.setLayoutParams(lp);
-            mRoleRoot.setBackgroundColor(ContextCompat.getColor(PhoneMainV2Activity.this,R.color.alph_60));
+            mRoleRoot.setBackgroundColor(ContextCompat.getColor(PhoneMainV2Activity.this,R.color.alpha_60));
             mRoleRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -432,46 +432,19 @@ public class PhoneMainV2Activity extends BaseAppCompatActivity implements PhoneM
 
     }
 
-    private void subscribeSearchChangedEvent() {
-        Disposable sysSubscription = RxBus.getInstance()
-                .toObservable(SystemMessageEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SystemMessageEvent>() {
-                    @Override
-                    public void accept(SystemMessageEvent systemMessageEvent) throws Exception {
-                        if(PreferenceUtils.getMessageDot(PhoneMainV2Activity.this,"neta") || PreferenceUtils.getMessageDot(PhoneMainV2Activity.this,"system") || PreferenceUtils.getMessageDot(PhoneMainV2Activity.this,"at_user") || PreferenceUtils.getMessageDot(PhoneMainV2Activity.this,"normal")){
-                            mTvSysMsgDot.setVisibility(View.VISIBLE);
-                            int num = PreferenceUtils.getNetaMsgDotNum(PhoneMainV2Activity.this) + PreferenceUtils.getSysMsgDotNum(PhoneMainV2Activity.this) + PreferenceUtils.getAtUserMsgDotNum(PhoneMainV2Activity.this) + PreferenceUtils.getNormalMsgDotNum(PhoneMainV2Activity.this);
-                            if(num > 999) num = 999;
-                            mTvSysMsgDot.setText(String.valueOf(num));
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void systemMsgEvent(SystemMessageEvent event){
+        int num = PreferenceUtils.hasMsg(this);
+        if(num > 0){
+            mTvSysMsgDot.setVisibility(View.VISIBLE);
+            if(num > 999) num = 999;
+            mTvSysMsgDot.setText(String.valueOf(num));
+        }
+    }
 
-                    }
-                });
-        Disposable subscription1 = RxBus.getInstance()
-                .toObservable(MateChangeEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<MateChangeEvent>() {
-                    @Override
-                    public void accept(MateChangeEvent backSchoolEvent) throws Exception {
-                        ViewUtils.setRoleButton(mIvRole,mTvText);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().addSubscription(this, sysSubscription);
-        RxBus.getInstance().addSubscription(this, subscription1);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void mateChangedEvent(MateChangeEvent event){
+        ViewUtils.setRoleButton(mIvRole,mTvText);
     }
 
     @Override
@@ -582,8 +555,8 @@ public class PhoneMainV2Activity extends BaseAppCompatActivity implements PhoneM
 
     @Override
     protected void onDestroy() {
-        RxBus.getInstance().unSubscribe(this);
         RongIM.getInstance().removeUnReadMessageCountChangedObserver(this);
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 

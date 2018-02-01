@@ -18,6 +18,6 @@ public class DepartmentDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        outRect.bottom = (int) view.getResources().getDimension(R.dimen.y24);
+        outRect.bottom = view.getResources().getDimensionPixelSize(R.dimen.y24);
     }
 }

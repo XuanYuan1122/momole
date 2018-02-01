@@ -3,6 +3,7 @@ package com.moemoe.lalala.view.widget.richtext;
 import android.animation.LayoutTransition;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -31,7 +32,7 @@ import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.api.ApiService;
 import com.moemoe.lalala.model.api.NetTResultSubscriber;
@@ -49,12 +50,18 @@ import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ToastUtils;
+import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
 import com.moemoe.lalala.view.activity.CreateRichDocActivity;
+import com.moemoe.lalala.view.activity.NewFolderEditActivity;
+import com.moemoe.lalala.view.activity.RecommendTagActivity;
 import com.moemoe.lalala.view.widget.longimage.LongImageView;
 import com.moemoe.lalala.view.widget.view.DocLabelView;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,7 +76,10 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import jp.wasabeef.glide.transformations.CropTransformation;
 
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_RECOMMEND_TAG;
+
 /**
+ *
  * Created by yi on 2017/5/11.
  */
 
@@ -90,18 +100,21 @@ public class NetaRichEditor extends ScrollView {
     private LayoutTransition mTransitioner; // 只在图片View添加或remove时，触发transition动画
     private int editNormalPadding = 0; //
     private int disappearingImageIndex = 0;
-    private DocLabelView docLabelView;
+  //  private DocLabelView docLabelView;
     KeyboardListenerLayout mKlCommentBoard;
     private TextWatcher textWatcher;
-    private ArrayList<DocTagEntity> mTags;
+   // private ArrayList<DocTagEntity> mTags;
     private boolean tagFlag;
-    private String mTagNameDef;
+   // private String mTagNameDef;
     private LinearLayout root;
    // private RxDownload downloadSub;
     private EditText mEtTitle;
     private TextView mTvTitleCount;
     private ImageView mCover;
     private TextView mTvAddCover;
+    private TextView mTag1;
+    private TextView mTag2;
+    private ArrayList<String> mTags;
 
     public NetaRichEditor(Context context) {
         this(context,null);
@@ -200,11 +213,6 @@ public class NetaRichEditor extends ScrollView {
             }
         };
 
-//        downloadSub = RxDownload.getInstance(getContext())
-//                .maxThread(1)
-//                .maxRetryCount(3)
-//                .defaultSavePath(StorageUtils.getGalleryDirPath())
-//                .retrofit(MoeMoeApplication.getInstance().getNetComponent().getRetrofit());
     }
 
     public void createFirstEdit(){
@@ -325,29 +333,76 @@ public class NetaRichEditor extends ScrollView {
         mTvAddCover.setVisibility(GONE);
     }
 
+    public ArrayList<String> getTags(){
+        return mTags;
+    }
+
+    public void setTags(ArrayList<String> tags){
+        mTags = tags;
+        if(mTags.size() == 2){
+            mTag1.setVisibility(View.VISIBLE);
+            mTag1.setText(mTags.get(0));
+            TagUtils.setBackGround(mTags.get(0),mTag1);
+
+            mTag2.setVisibility(View.VISIBLE);
+            mTag2.setText(mTags.get(1));
+            TagUtils.setBackGround(mTags.get(1),mTag2);
+        }else if(mTags.size() == 1){
+            mTag1.setVisibility(View.VISIBLE);
+            mTag1.setText(mTags.get(0));
+            TagUtils.setBackGround(mTags.get(0),mTag1);
+            mTag2.setVisibility(View.GONE);
+        }else {
+            mTag1.setVisibility(View.VISIBLE);
+            mTag1.setText("");
+            mTag1.setBackgroundResource(R.drawable.ic_bag_tag_add);
+        }
+    }
+
     public void setLabelAble(){
-        mTags = new ArrayList<>();
+      //  mTags = new ArrayList<>();
         View labelRoot = createLabelView();
-        docLabelView = labelRoot.findViewById(R.id.dv_doc_label_root);
-        docLabelView.setContentAndNumList(true,mTags);
-        docLabelView.setItemClickListener(new DocLabelView.LabelItemClickListener() {
+        mTags = new ArrayList<>();
+//        docLabelView = labelRoot.findViewById(R.id.dv_doc_label_root);
+//        docLabelView.setContentAndNumList(true,mTags);
+//        docLabelView.setItemClickListener(new DocLabelView.LabelItemClickListener() {
+//            @Override
+//            public void itemClick(int position) {
+//                if(!tagFlag){
+//                    if (position < mTags.size()) {
+//                        deleteLabel(position);
+//                    } else {
+//                        SoftKeyboardUtils.dismissSoftKeyboard((Activity) getContext());
+//                        DocTagEntity docTag = new DocTagEntity();
+//                        docTag.setLikes(1);
+//                        docTag.setName("");
+//                        docTag.setLiked(true);
+//                        docTag.setEdit(true);
+//                        mTags.add(docTag);
+//                        docLabelView.notifyAdapter();
+//                        tagFlag = true;
+//                    }
+//                }
+//            }
+//        });
+        mTag1 = labelRoot.findViewById(R.id.tv_label_add_1);
+        mTag2 = labelRoot.findViewById(R.id.tv_label_add_2);
+        mTag1.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void itemClick(int position) {
-                if(!tagFlag){
-                    if (position < mTags.size()) {
-                        deleteLabel(position);
-                    } else {
-                        SoftKeyboardUtils.dismissSoftKeyboard((Activity) getContext());
-                        DocTagEntity docTag = new DocTagEntity();
-                        docTag.setLikes(1);
-                        docTag.setName("");
-                        docTag.setLiked(true);
-                        docTag.setEdit(true);
-                        mTags.add(docTag);
-                        docLabelView.notifyAdapter();
-                        tagFlag = true;
-                    }
-                }
+            public void onNoDoubleClick(View v) {
+                Intent i = new Intent(getContext(),RecommendTagActivity.class);
+                i.putStringArrayListExtra("tags",mTags);
+                i.putExtra("folderType","DOC");
+                ((BaseAppCompatActivity)getContext()).startActivityForResult(i,REQ_RECOMMEND_TAG);
+            }
+        });
+        mTag2.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                Intent i2 = new Intent(getContext(),RecommendTagActivity.class);
+                i2.putStringArrayListExtra("tags",mTags);
+                i2.putExtra("folderType","DOC");
+                ((BaseAppCompatActivity)getContext()).startActivityForResult(i2,REQ_RECOMMEND_TAG);
             }
         });
         View view = new View(getContext());
@@ -366,63 +421,63 @@ public class NetaRichEditor extends ScrollView {
             public void onKeyBoardStateChange(int state) {
                 if (state == KeyboardListenerLayout.KEYBOARD_STATE_HIDE) {
                     tagFlag = false;
-                    if(mTags.size() > 0){
-                        DocTagEntity entity = mTags.get(mTags.size() - 1);
-                        if(!TextUtils.isEmpty(entity.getName())){
-                            if(checkLabel(entity.getName())){
-                                mTags.get(mTags.size() - 1).setEdit(false);
-                            }else {
-                                entity.setName("");
-                                ToastUtils.showShortToast(getContext(),R.string.msg_tag_already_exit);
-                            }
-                        }else {
-                            mTags.remove(entity);
-                        }
-                        docLabelView.notifyAdapter();
-                    }
+//                    if(mTags.size() > 0){
+//                        DocTagEntity entity = mTags.get(mTags.size() - 1);
+//                        if(!TextUtils.isEmpty(entity.getName())){
+//                            if(checkLabel(entity.getName())){
+//                                mTags.get(mTags.size() - 1).setEdit(false);
+//                            }else {
+//                                entity.setName("");
+//                                ToastUtils.showShortToast(getContext(),R.string.msg_tag_already_exit);
+//                            }
+//                        }else {
+//                            mTags.remove(entity);
+//                        }
+//                        docLabelView.notifyAdapter();
+//                    }
                 }
             }
         });
     }
 
-    private void deleteLabel(final int position){
-        if(!TextUtils.isEmpty(mTagNameDef) && mTagNameDef.equals(mTags.get(position).getName())){
-            final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
-            alertDialogUtil.createPromptNormalDialog(getContext(), getContext().getString( R.string.label_content_tag_del));
-            alertDialogUtil.setButtonText(getContext().getString(R.string.label_confirm), getContext().getString(R.string.label_cancel),0);
-            alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
-                @Override
-                public void CancelOnClick() {
-                    alertDialogUtil.dismissDialog();
-                }
+//    private void deleteLabel(final int position){
+//        if(!TextUtils.isEmpty(mTagNameDef) && mTagNameDef.equals(mTags.get(position).getName())){
+//            final AlertDialogUtil alertDialogUtil = AlertDialogUtil.getInstance();
+//            alertDialogUtil.createPromptNormalDialog(getContext(), getContext().getString( R.string.label_content_tag_del));
+//            alertDialogUtil.setButtonText(getContext().getString(R.string.label_confirm), getContext().getString(R.string.label_cancel),0);
+//            alertDialogUtil.setOnClickListener(new AlertDialogUtil.OnClickListener() {
+//                @Override
+//                public void CancelOnClick() {
+//                    alertDialogUtil.dismissDialog();
+//                }
+//
+//                @Override
+//                public void ConfirmOnClick() {
+//                    alertDialogUtil.dismissDialog();
+//                    mTags.remove(position);
+//                    docLabelView.notifyAdapter();
+//                }
+//            });
+//            alertDialogUtil.showDialog();
+//        }else {
+//            mTags.remove(position);
+//            docLabelView.notifyAdapter();
+//        }
+//    }
 
-                @Override
-                public void ConfirmOnClick() {
-                    alertDialogUtil.dismissDialog();
-                    mTags.remove(position);
-                    docLabelView.notifyAdapter();
-                }
-            });
-            alertDialogUtil.showDialog();
-        }else {
-            mTags.remove(position);
-            docLabelView.notifyAdapter();
-        }
-    }
-
-    private boolean checkLabel(String content){
-        ArrayList<DocTagEntity> tmp = new ArrayList<>();
-        tmp.addAll(mTags);
-        if(mTags.size() > 0){
-            tmp.remove(tmp.size() - 1);
-        }
-        for(DocTagEntity tagBean : tmp){
-            if(tagBean.getName().equals(content)){
-                return false;
-            }
-        }
-        return true;
-    }
+//    private boolean checkLabel(String content){
+//        ArrayList<DocTagEntity> tmp = new ArrayList<>();
+//        tmp.addAll(mTags);
+//        if(mTags.size() > 0){
+//            tmp.remove(tmp.size() - 1);
+//        }
+//        for(DocTagEntity tagBean : tmp){
+//            if(tagBean.getName().equals(content)){
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
 
     /**
      * 初始化transition动画
@@ -450,30 +505,30 @@ public class NetaRichEditor extends ScrollView {
         mTransitioner.setDuration(300);
     }
 
-    public DocLabelView getDocLabelView() {
-        return docLabelView;
-    }
+    //public DocLabelView getDocLabelView() {
+    //    return docLabelView;
+   // }
 
     public KeyboardListenerLayout getmKlCommentBoard() {
         return mKlCommentBoard;
     }
 
-    public void setmTagNameDef(String mTagNameDef) {
-        this.mTagNameDef = mTagNameDef;
-        if(!TextUtils.isEmpty(mTagNameDef)){
-            DocTagEntity DocTag = new DocTagEntity();
-            DocTag.setLikes(1);
-            DocTag.setName(mTagNameDef);
-            DocTag.setLiked(true);
-            mTags.add(DocTag);
-            docLabelView.notifyAdapter();
-        }
-    }
-
-    public void setTags(ArrayList<DocTagEntity> tags){
-        mTags.addAll(tags);
-        docLabelView.notifyAdapter();
-    }
+//    public void setmTagNameDef(String mTagNameDef) {
+//        this.mTagNameDef = mTagNameDef;
+//        if(!TextUtils.isEmpty(mTagNameDef)){
+//            DocTagEntity DocTag = new DocTagEntity();
+//            DocTag.setLikes(1);
+//            DocTag.setName(mTagNameDef);
+//            DocTag.setLiked(true);
+//            mTags.add(DocTag);
+//            docLabelView.notifyAdapter();
+//        }
+//    }
+//
+//    public void setTags(ArrayList<DocTagEntity> tags){
+//        mTags.addAll(tags);
+//        docLabelView.notifyAdapter();
+//    }
 
     /**
      * 处理软键盘backSpace回退事件
@@ -533,18 +588,16 @@ public class NetaRichEditor extends ScrollView {
         //删除文件夹里的图片
         List<RichEntity> dataList = buildEditData();
         RichEntity editData = dataList.get(disappearingImageIndex);
-        RxBus.getInstance().post(new RichImgRemoveEvent(editData.getImage().getPath()));
+        EventBus.getDefault().post(new RichImgRemoveEvent(editData.getImage().getPath()));
         allLayout.removeView(view);
     }
 
     private View createLabelView(){
-        View view = inflater.inflate(R.layout.view_add_label,null);
-        return view;
+        return inflater.inflate(R.layout.item_tag_create,null);
     }
 
     private View createTopView(){
-        View view = inflater.inflate(R.layout.item_rich_top,null);
-        return view;
+        return inflater.inflate(R.layout.item_rich_top,null);
     }
 
     /**
@@ -853,8 +906,8 @@ public class NetaRichEditor extends ScrollView {
         return dataList;
     }
 
-    public ArrayList<DocTagEntity> getmTags() {
-        return mTags;
-    }
+   // public ArrayList<DocTagEntity> getmTags() {
+  //      return mTags;
+  //  }
 
 }

@@ -22,7 +22,7 @@ import com.moemoe.lalala.presenter.RecommendTagContract;
 import com.moemoe.lalala.presenter.RecommendTagPresenter;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
-import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.adapter.RecommendTagAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
@@ -68,13 +68,6 @@ public class RecommendTagActivity extends BaseAppCompatActivity implements Recom
     RecommendTagPresenter mPresenter;
 
     private RecommendTagAdapter mAdapter;
-    private int[] mBackGround = { R.drawable.shape_rect_label_cyan,
-            R.drawable.shape_rect_label_yellow,
-            R.drawable.shape_rect_label_orange,
-            R.drawable.shape_rect_label_pink,
-            R.drawable.shape_rect_border_green_y8,
-            R.drawable.shape_rect_label_purple,
-            R.drawable.shape_rect_label_tab_blue};
     private ArrayList<String> mRes;
     private String mFolderType;
 
@@ -106,6 +99,8 @@ public class RecommendTagActivity extends BaseAppCompatActivity implements Recom
             str = "推荐图集标签";
         }else  if(mFolderType.equals(FolderType.XS.toString())){
             str = "推荐小说标签";
+        }else if("DOC".equals(mFolderType)){
+            str = "推荐帖子标签";
         }
         mTvNotic.setText(str);
         mRes = new ArrayList<>();
@@ -211,6 +206,9 @@ public class RecommendTagActivity extends BaseAppCompatActivity implements Recom
         if(mRes.size() >= 2){
             showToast("最多只能添加2个标签");
         }else {
+            if(TextUtils.isEmpty(content)){
+                return;
+            }
             if(mRes.contains(content)){
                 showToast("已经存在该标签");
                 return;
@@ -219,13 +217,11 @@ public class RecommendTagActivity extends BaseAppCompatActivity implements Recom
             if(mTag1Root.getVisibility() == View.GONE){
                 mTag1Root.setVisibility(View.VISIBLE);
                 mTvTag1.setText(content);
-                int index = StringUtils.getHashOfString(content, mBackGround.length);
-                mTvTag1.setBackgroundResource(mBackGround[index]);
+                TagUtils.setBackGround(content,mTvTag1);
             }else {
                 mTag2Root.setVisibility(View.VISIBLE);
                 mTvTag2.setText(content);
-                int index = StringUtils.getHashOfString(content, mBackGround.length);
-                mTvTag2.setBackgroundResource(mBackGround[index]);
+                TagUtils.setBackGround(content,mTvTag2);
             }
         }
     }

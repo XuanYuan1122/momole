@@ -52,7 +52,7 @@
         android:layout_marginBottom="@dimen/y16"
         android:layout_marginEnd="@dimen/x16"
         android:background="@drawable/ic_doc_reward"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/tv_score"

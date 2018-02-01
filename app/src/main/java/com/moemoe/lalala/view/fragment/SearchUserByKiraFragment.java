@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPersonalListComponent;
 import com.moemoe.lalala.di.modules.PersonalListModule;
 import com.moemoe.lalala.event.SearchChangedEvent;
@@ -20,6 +20,10 @@ import com.moemoe.lalala.view.adapter.OnItemClickListener;
 import com.moemoe.lalala.view.adapter.PersonListAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
 import com.moemoe.lalala.view.widget.recycler.PullCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
@@ -114,7 +118,7 @@ public class SearchUserByKiraFragment extends BaseFragment  implements PersonalL
                 return false;
             }
         });
-        subscribeSearchChangedEvent();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -140,32 +144,16 @@ public class SearchUserByKiraFragment extends BaseFragment  implements PersonalL
         mListDocs.setComplete();
     }
 
-    private void subscribeSearchChangedEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(SearchChangedEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<SearchChangedEvent>() {
-                    @Override
-                    public void accept(SearchChangedEvent searchChangedEvent) throws Exception {
-                        mKeyWord = searchChangedEvent.getKeyWord();
-                        mCurPage = 1;
-                        mPresenter.doRequest(mKeyWord,mCurPage,11);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().unSubscribe(this);
-        RxBus.getInstance().addSubscription(this, subscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void searchChangedEvent(SearchChangedEvent event){
+        mKeyWord = event.getKeyWord();
+        mCurPage = 1;
+        mPresenter.doRequest(mKeyWord,mCurPage,11);
     }
 
     public void release(){
         if(mPresenter != null) mPresenter.release();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
         super.release();
     }
 }

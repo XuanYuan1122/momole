@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.event.RichImgRemoveEvent;
 import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.utils.AndroidBug5497Workaround;
@@ -19,6 +19,10 @@ import com.moemoe.lalala.utils.StringUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -111,7 +115,7 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
         ViewUtils.setRightMargins(mTvMenuRight, (int)getResources().getDimension(R.dimen.x36));
         mTvMenuRight.setText(getString(R.string.label_done));
         mTvMenuRight.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-        subscribeChangedEvent();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -175,32 +179,16 @@ public class CreateRichDocHideActivity extends BaseAppCompatActivity {
         }
     }
 
-    private void subscribeChangedEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(RichImgRemoveEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<RichImgRemoveEvent>() {
-                    @Override
-                    public void accept(RichImgRemoveEvent richImgRemoveEvent) throws Exception {
-                        mPathMap.remove(richImgRemoveEvent.getPath());
-                        mImageSize--;
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().unSubscribe(this);
-        RxBus.getInstance().addSubscription(this, subscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void richImgRemove(RichImgRemoveEvent event){
+        mPathMap.remove(event.getPath());
+        mImageSize--;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @OnClick({R.id.iv_add_img,R.id.iv_alt_user,R.id.tv_menu,R.id.tv_change_type})

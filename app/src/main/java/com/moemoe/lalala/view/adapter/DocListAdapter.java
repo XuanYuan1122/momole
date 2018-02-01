@@ -44,6 +44,7 @@ import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 

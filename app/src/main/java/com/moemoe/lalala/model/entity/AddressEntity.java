@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ *
  * Created by yi on 2017/7/14.
  */
 

@@ -25,6 +25,7 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerDetailComponent;
 import com.moemoe.lalala.di.modules.DetailModule;
 import com.moemoe.lalala.model.api.ApiService;
+import com.moemoe.lalala.model.api.NetSimpleResultSubscriber;
 import com.moemoe.lalala.model.entity.BagDirEntity;
 import com.moemoe.lalala.model.entity.CommentSendEntity;
 import com.moemoe.lalala.model.entity.CommentV2Entity;
@@ -40,6 +41,7 @@ import com.moemoe.lalala.model.entity.RichEntity;
 import com.moemoe.lalala.model.entity.ShareArticleEntity;
 import com.moemoe.lalala.model.entity.TagLikeEntity;
 import com.moemoe.lalala.model.entity.TagSendEntity;
+import com.moemoe.lalala.model.entity.UserFollowTagEntity;
 import com.moemoe.lalala.model.entity.UserTopEntity;
 import com.moemoe.lalala.presenter.DocDetailContract;
 import com.moemoe.lalala.presenter.DocDetailPresenter;
@@ -411,7 +413,17 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         });
         MoeMoeApplication.getInstance().getNetComponent().getApiService().shareKpi("doc")
                 .subscribeOn(Schedulers.io())
-                .subscribe();
+                .subscribe(new NetSimpleResultSubscriber() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg) {
+
+                    }
+                });
         oks.show(this);
     }
 
@@ -830,6 +842,11 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         entity.setTitle(mDoc.getTitle());
         entity.setFolderId(mDoc.getFolderInfo() == null ? "" : mDoc.getFolderInfo().getFolderId());
         entity.setTags(mDoc.getTags());
+        ArrayList<String> list = new ArrayList<>();
+        for(UserFollowTagEntity entity1 : mDoc.getTexts()){
+            list.add(entity1.getText());
+        }
+        entity.setTexts(list);
         entity.setBgCover(mDoc.getCover());
         entity.setHidType(mDoc.isCoinComment());
         for(DocDetailEntity.Detail detail : mDoc.getDetails()){
@@ -872,7 +889,6 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
         mDoc = entity;
         mList.setComplete();
         isReplyShow = entity.isCoinComment() && (entity.getCoinDetails() == null || (entity.getCoinDetails() != null && entity.getCoinDetails().size() <= 0));
-//        mList.setLoadMoreEnabled(true);
         mCommentNum = entity.getComments();
         hasLoaded = true;
         mUserName = entity.getUserName();
@@ -942,30 +958,16 @@ public class NewDocDetailActivity extends BaseAppCompatActivity implements DocDe
             mAdapter.addComment(commentV2Entities);
         }
 
-
-//        if(commentV2Entities.size() > 1){
-//            mTvComment.setGravity(Gravity.CENTER);
-//            mTvComment.setPadding(0,0,0,0);
-//            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.main_cyan));
-//            mTvComment.setText("显示全部"+StringUtils.getNumberInLengthLimit(mDoc.getComments(),3)+"条评论");
-//            mTvComment.setOnClickListener(new NoDoubleClickListener() {
-//                @Override
-//                public void onNoDoubleClick(View v) {
-//                    CommentListActivity.startActivityForResult(NewDocDetailActivity.this,mDocId,mDoc.getUserId());
-//                }
-//            });
-//        }else {
-            mTvComment.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
-            mTvComment.setPadding((int) getResources().getDimension(R.dimen.x24),0,0,0);
-            mTvComment.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
-            mTvComment.setText("输入评论...");
-            mTvComment.setOnClickListener(new NoDoubleClickListener() {
-                @Override
-                public void onNoDoubleClick(View v) {
-                    CreateCommentActivity.startActivity(NewDocDetailActivity.this,mDocId,false,"",true);
-                }
-            });
-//        }
+        mTvComment.setGravity(Gravity.START|Gravity.CENTER_VERTICAL);
+        mTvComment.setPadding((int) getResources().getDimension(R.dimen.x24),0,0,0);
+        mTvComment.setTextColor(ContextCompat.getColor(this,R.color.gray_d7d7d7));
+        mTvComment.setText("输入评论...");
+        mTvComment.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            public void onNoDoubleClick(View v) {
+                CreateCommentActivity.startActivity(NewDocDetailActivity.this,mDocId,false,"",true);
+            }
+        });
     }
 
     @Override

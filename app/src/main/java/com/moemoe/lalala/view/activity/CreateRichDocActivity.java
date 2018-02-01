@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.di.components.DaggerCreateRichDocComponent;
 import com.moemoe.lalala.di.modules.CreateRichDocModule;
 import com.moemoe.lalala.event.RichImgRemoveEvent;
@@ -43,6 +42,10 @@ import com.moemoe.lalala.view.widget.netamenu.MenuItem;
 import com.moemoe.lalala.view.widget.richtext.NetaRichEditor;
 import com.moemoe.lalala.view.widget.view.KeyboardListenerLayout;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,8 +63,9 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+import static com.moemoe.lalala.utils.StartActivityConstant.REQ_RECOMMEND_TAG;
 
 /**
  * 富文本帖子创建
@@ -146,7 +150,6 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             finish();
             return;
         }
-        String mTagNameDef = i.getStringExtra(TYPE_TAG_NAME_DEFAULT);
         mFromSchema = i.getStringExtra("from_schema");
         mFromName = i.getStringExtra("from_name");
         mDepartmentId = i.getStringExtra("departmentId");
@@ -174,12 +177,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             if(!TextUtils.isEmpty(res)){
                 mDoc = getLocal();
                 if(mDoc != null){
-                    mRichEt.setTags(mDoc.getTags());
-                }else {
-                    mRichEt.setmTagNameDef(mTagNameDef);
+                    mRichEt.setTags(mDoc.getTexts());
                 }
-            }else {
-                mRichEt.setmTagNameDef(mTagNameDef);
             }
             mRichEt.setmKlCommentBoard(mKlCommentBoard);
         }
@@ -210,24 +209,22 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         initPopupMenus();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        if(mPresenter != null)mPresenter.release();
+        super.onDestroy();
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        subscribeChangedEvent();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if(mPresenter != null)mPresenter.release();
-        super.onDestroy();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -298,7 +295,8 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             doc.setMusicTitle("");
         }
         doc.setFolderId(mFolderId);
-        doc.setTags(mRichEt.getmTags());
+        //doc.setTags(mRichEt.getmTags());
+        doc.setTexts(mRichEt.getTags());
 
         String res = RichDocListEntity.toJsonString(doc);
         if(res != null){
@@ -387,25 +385,9 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         }
     }
 
-    private void subscribeChangedEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(RichImgRemoveEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<RichImgRemoveEvent>() {
-                    @Override
-                    public void accept(RichImgRemoveEvent richImgRemoveEvent) throws Exception {
-                        mImageSize--;
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().unSubscribe(this);
-        RxBus.getInstance().addSubscription(this, subscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void richImageRemove(RichImgRemoveEvent event){
+        mImageSize--;
     }
 
     private void initPopupMenus() {
@@ -454,7 +436,7 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
         }
         if (!mRichEt.hasContent()) {
             showToast(R.string.msg_doc_content_cannot_null);
-        } else if(mRichEt.getmTags() != null && mRichEt.getmTags().size() < 1){
+        } else if(mRichEt.getTags() != null && mRichEt.getTags().size() < 1){
             showToast(R.string.msg_need_one_tag);
         }else {
             createDialog();
@@ -465,10 +447,9 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
             mDocEntity.docTypeSchema = mFromSchema;
             mDocEntity.bagFolderId = mFolderId;
             mDocEntity.title = mRichEt.getTitle();
-            if(mRichEt.getmTags() != null){
-                for (int i = 0;i < mRichEt.getmTags().size();i++){
-                    mDocEntity.tags.add(mRichEt.getmTags().get(i).getName());
-                }
+            mDocEntity.tags = new ArrayList<>();
+            if(mRichEt.getTags() != null){
+                mDocEntity.texts = mRichEt.getTags();
             }
             for (RichEntity entity : mRichEt.buildEditData() ){
                 if(!TextUtils.isEmpty(entity.getInputStr())){
@@ -634,7 +615,11 @@ public class CreateRichDocActivity extends BaseAppCompatActivity implements Crea
                 mIvAddBag.setSelected(false);
                 mFolderId = "";
             }
-        }else {
+        }else if (requestCode == REQ_RECOMMEND_TAG && resultCode == RESULT_OK) {
+            if (data != null) {
+                mRichEt.setTags(data.getStringArrayListExtra("tags"));
+            }
+        } else {
             DialogUtils.handleImgChooseResult(this, requestCode, resultCode, data, new DialogUtils.OnPhotoGetListener() {
 
                 @Override

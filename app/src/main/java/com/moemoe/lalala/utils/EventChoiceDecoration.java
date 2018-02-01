@@ -19,7 +19,7 @@ public class EventChoiceDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         if(parent.getChildLayoutPosition(view) != 0){
-            outRect.top = (int) view.getResources().getDimension(R.dimen.y48);
+            outRect.top = view.getResources().getDimensionPixelSize(R.dimen.y48);
         }else {
             outRect.top = 0;
         }

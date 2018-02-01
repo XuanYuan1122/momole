@@ -33,6 +33,15 @@ public class DepartmentEntity {
         private String headIcon;
         private int coin;
         private int score;
+        private ArrayList<UserFollowTagEntity> texts;
+
+        public ArrayList<UserFollowTagEntity> getTexts() {
+            return texts;
+        }
+
+        public void setTexts(ArrayList<UserFollowTagEntity> texts) {
+            this.texts = texts;
+        }
 
         public int getCoin() {
             return coin;

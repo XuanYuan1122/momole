@@ -70,7 +70,7 @@ public class StickerView extends View {
 
 		mBorderPaint = new Paint(mPaint);
 		mBorderPaint.setColor(Color.parseColor("#B2ffffff"));
-		mBorderPaint.setShadowLayer((int)getResources().getDimension(R.dimen.x4), 0,
+		mBorderPaint.setShadowLayer(getResources().getDimensionPixelSize(R.dimen.x4), 0,
 				0, Color.parseColor("#33000000"));
 
 		mControllerBitmap = BitmapFactory.decodeResource(getResources(),

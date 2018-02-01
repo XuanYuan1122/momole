@@ -151,7 +151,7 @@ public class MapToolTipUtils {
     }
 
     public void stop(){
-        mHandler.removeCallbacks(mShowTip);
+        if(mHandler != null) mHandler.removeCallbacks(mShowTip);
     }
 
     public void release(){

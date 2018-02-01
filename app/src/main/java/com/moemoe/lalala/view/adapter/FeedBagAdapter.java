@@ -13,7 +13,7 @@ public class FeedBagAdapter extends BaseRecyclerViewAdapter<ShowFolderEntity,Fee
 
 
     public FeedBagAdapter() {
-        super(R.layout.item_feed_bag);
+        super(R.layout.item_feed_type_3_v3);
     }
 
 

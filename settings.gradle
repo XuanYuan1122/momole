@@ -1,1 +1,1 @@
-include ':app', ':IMKit', ':IMLib', ':pingpp', ':camerakit', ':kiragame'
+include ':app', ':IMKit', ':IMLib', ':pingpp', ':camerakit', ':kiragame', ':DanmakuFlameMaster', ':gsyVideoPlayer', ':ijkplayer-armv7a'

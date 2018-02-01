@@ -31,6 +31,7 @@ import com.moemoe.lalala.utils.IntentUtils;
 import com.moemoe.lalala.utils.LevelSpan;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.utils.tag.TagControl;
 import com.moemoe.lalala.view.activity.BaseAppCompatActivity;
@@ -136,11 +137,8 @@ public class OldDocHolder extends ClickableViewHolder {
         ((TextView)$(R.id.tv_content)).setMovementMethod(LinkMovementMethod.getInstance());
         //extra
         setVisible(R.id.ll_img_root,false);
-        setVisible(R.id.rl_card_root,false);
         ((LinearLayout)$(R.id.ll_img_root)).removeAllViews();
         $(R.id.ll_img_root).setOnClickListener(null);
-        ((LinearLayout)$(R.id.ll_card_root)).removeAllViews();
-        $(R.id.rl_card_root).setOnClickListener(null);
 
         setVisible(R.id.ll_img_root,true);
         $(R.id.ll_img_root).setBackgroundColor(Color.WHITE);
@@ -195,6 +193,37 @@ public class OldDocHolder extends ClickableViewHolder {
                 //TODO 打标签
             }
         });
+
+        //tag
+        if(entity.getTexts() != null && entity.getTexts().size() > 0){
+            setVisible(R.id.ll_tag_root,true);
+            int[] tagsId = {R.id.tv_tag_1,R.id.tv_tag_2};
+            $(tagsId[0]).setOnClickListener(null);
+            $(tagsId[1]).setOnClickListener(null);
+            if(entity.getTexts().size() > 1){
+                $(tagsId[0]).setVisibility(View.VISIBLE);
+                $(tagsId[1]).setVisibility(View.VISIBLE);
+            }else if(entity.getTexts().size() > 0){
+                $(tagsId[0]).setVisibility(View.VISIBLE);
+                $(tagsId[1]).setVisibility(View.INVISIBLE);
+            }else {
+                $(tagsId[0]).setVisibility(View.INVISIBLE);
+                $(tagsId[1]).setVisibility(View.INVISIBLE);
+            }
+            size = tagsId.length > entity.getTexts().size() ? entity.getTexts().size() : tagsId.length;
+            for (int i = 0;i < size;i++){
+                TagUtils.setBackGround(entity.getTexts().get(i).getText(),$(tagsId[i]));
+                $(tagsId[i]).setOnClickListener(new NoDoubleClickListener() {
+                    @Override
+                    public void onNoDoubleClick(View v) {
+                        //TODO 跳转标签页
+                    }
+                });
+            }
+        }else {
+            setVisible(R.id.ll_tag_root,false);
+        }
+
     }
 
     private void setImg(ArrayList<Image> images){

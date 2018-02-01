@@ -44,6 +44,7 @@ import cn.sharesdk.wechat.friends.Wechat;
 import io.rong.imkit.RongIM;
 
 /**
+ *
  * Created by yi on 2016/12/1.
  */
 

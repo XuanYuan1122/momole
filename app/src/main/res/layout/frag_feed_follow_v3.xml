@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_top_root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y88"
+        android:orientation="horizontal"
+        android:background="@color/white">
+
+        <com.moemoe.lalala.view.widget.view.KiraTabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/y88"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/x10"
+            android:background="@color/white"
+            app:tl_indicator_color="@color/main_cyan"
+            app:tl_indicator_height="@dimen/y6"
+            app:tl_indicator_width_equal_title="true"
+            app:tl_text_size="@dimen/x30"
+            app:tl_textSelectColor="@color/main_cyan"
+            app:tl_textUnSelectColor="@color/main_cyan_50"
+            app:tl_tab_padding="@dimen/x24"
+            app:tl_tab_layout="@layout/item_feed_follow_tab"/>
+
+        <View
+            android:layout_width="@dimen/size_1_px"
+            android:layout_height="@dimen/y56"
+            android:background="@color/gray_e8e8e8"
+            android:layout_gravity="center_vertical"/>
+
+        <ImageView
+            android:id="@+id/iv_show_all_follow_tag"
+            android:layout_width="@dimen/y44"
+            android:layout_height="@dimen/y44"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/x16"
+            android:src="@drawable/btn_trends_tag_showall"/>
+
+        <ImageView
+            android:id="@+id/iv_add_follow_tag"
+            android:layout_width="@dimen/y44"
+            android:layout_height="@dimen/y44"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/x24"
+            android:layout_marginEnd="@dimen/x20"
+            android:src="@drawable/btn_trends_tag_addtag"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_step"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_1_px"
+        android:layout_below="@+id/ll_top_root"
+        android:background="@color/gray_e8e8e8"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/view_step"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_all_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/x24"
+        android:paddingEnd="@dimen/x24"
+        android:paddingTop="@dimen/y18"
+        android:paddingBottom="@dimen/y36"
+        android:background="@color/white"
+        android:layout_below="@+id/view_step"
+        android:visibility="gone"/>
+
+    <View
+        android:id="@+id/view_alpha"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rv_all_tag"
+        android:background="@color/alpha_60"
+        android:visibility="gone"/>
+
+    <ViewStub
+        android:id="@+id/stub_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/item_not_login"/>
+</RelativeLayout>

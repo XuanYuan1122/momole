@@ -19,13 +19,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.event.PhonePlayMusicEvent;
 import com.moemoe.lalala.model.entity.LuYinEntity;
 import com.moemoe.lalala.utils.AudioPlayer;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StorageUtils;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  *
@@ -84,7 +86,7 @@ public class PhoneLuYinListHolder extends ClickableViewHolder{
                     public void onNoDoubleClick(View v) {
                         if(mHandler != null) mHandler.removeCallbacks(mProgressCallback);
                         AudioPlayer.getInstance(context).stop();
-                        RxBus.getInstance().post(new PhonePlayMusicEvent(entity.getSound(),position,false,entity.getTimestamp(),type,entity.getSoundName()));
+                        EventBus.getDefault().post(new PhonePlayMusicEvent(entity.getSound(),position,false,entity.getTimestamp(),type,entity.getSoundName()));
                     }
                 });
             }else {
@@ -97,7 +99,7 @@ public class PhoneLuYinListHolder extends ClickableViewHolder{
                 $(R.id.iv_play).setOnClickListener(new NoDoubleClickListener() {
                     @Override
                     public void onNoDoubleClick(View v) {
-                        RxBus.getInstance().post(new PhonePlayMusicEvent(entity.getSound(),position,true,entity.getTimestamp(),type,entity.getSoundName()));
+                        EventBus.getDefault().post(new PhonePlayMusicEvent(entity.getSound(),position,true,entity.getTimestamp(),type,entity.getSoundName()));
                     }
                 });
             }

@@ -11,13 +11,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.model.entity.BookInfo;
-import com.moemoe.lalala.model.entity.ZipInfo;
-import com.moemoe.lalala.utils.DensityUtil;
+import com.moemoe.lalala.model.entity.VideoInfo;
 import com.moemoe.lalala.utils.MusicLoader;
 
 import java.util.ArrayList;
 
 /**
+ *
  * Created by yi on 2016/9/25.
  */
 
@@ -34,10 +34,6 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
         paths = new ArrayList<>();
         mContext = context;
         selectSize = 9;
-    }
-
-    public int getSelectSize() {
-        return selectSize;
     }
 
     public void setSelectSize(int selectSize) {
@@ -69,7 +65,6 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
         if(position == paths.size()){
             Glide.with(mContext)
                     .load(R.drawable.ic_add_photo)
-                    .asBitmap()
                     .override((int)mContext.getResources().getDimension(R.dimen.y230),(int)mContext.getResources().getDimension(R.dimen.y230))
                     .into(holder.mIvImg);
             holder.mIvDel.setVisibility(View.GONE);
@@ -90,6 +85,13 @@ public class SelectItemAdapter extends RecyclerView.Adapter<SelectItemAdapter.My
                         .override((int)mContext.getResources().getDimension(R.dimen.y230),(int)mContext.getResources().getDimension(R.dimen.y230))
                         .into(holder.mIvImg);
                 holder.mTvTitle.setText(((BookInfo) path).getTitle());
+            }else if(path instanceof VideoInfo){
+                Glide.with(mContext)
+                        .load(R.drawable.ic_video_choice)
+                        .centerCrop()
+                        .override((int)mContext.getResources().getDimension(R.dimen.y230),(int)mContext.getResources().getDimension(R.dimen.y230))
+                        .into(holder.mIvImg);
+                holder.mTvTitle.setText(((VideoInfo) path).getName());
             }else {
                 Glide.with(mContext)
                         .load(path)

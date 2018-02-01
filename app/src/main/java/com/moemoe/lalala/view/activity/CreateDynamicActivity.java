@@ -83,8 +83,6 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
     DocLabelView docLabelView;
     @BindView(R.id.iv_add_hongbao)
     ImageView mIvAddHongbao;
-//    @BindView(R.id.iv_add_hongbao)
-//    View mHongBao;
 
     @Inject
     CreateDynamicPresenter mPresenter;
@@ -111,7 +109,6 @@ public class CreateDynamicActivity extends BaseAppCompatActivity implements Crea
                 .netComponent(MoeMoeApplication.getInstance().getNetComponent())
                 .build()
                 .inject(this);
-       // mHongBao.setVisibility(View.VISIBLE);
         mEtContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

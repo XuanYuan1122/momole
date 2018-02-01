@@ -21,6 +21,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /**
+ *
  * Created by yi on 2016/11/29.
  */
 
@@ -239,7 +240,7 @@ public class FeedPresenter implements FeedContract.Presenter {
                         }
                     });
         }else if("follow".equals(type)){
-            apiService.loadFollowList(minIdx)
+            apiService.loadFeedNoticeListV4(minIdx)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new NetResultSubscriber<ArrayList<DiscoverEntity>>() {

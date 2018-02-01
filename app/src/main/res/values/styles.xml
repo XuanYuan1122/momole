@@ -46,6 +46,10 @@
         <item name="android:background">@drawable/bg_cyan_clickable</item>
     </style>
 
+    <style name="Feed_follow_Tab_text">
+        <item name="android:textSize">@dimen/x30</item>
+    </style>
+
     <style name="EdtLoginInput" parent="VgOneLine.White">
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/dark_gray</item>
@@ -233,7 +237,7 @@
 
     <style name="AppTheme.Dialog" parent="AppTheme.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/alph_30</item>
+        <item name="android:windowBackground">@color/alpha_30</item>
     </style>
 
     <style name="Activity_Dialog" parent="AppTheme.Dialog">

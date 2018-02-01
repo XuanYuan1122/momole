@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.moemoe.lalala.R;
 import com.moemoe.lalala.app.MoeMoeApplication;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.di.components.DaggerPhoneMsgComponent;
 import com.moemoe.lalala.di.modules.PhoneMsgModule;
 import com.moemoe.lalala.event.EventDoneEvent;
@@ -22,6 +22,10 @@ import com.moemoe.lalala.view.activity.PhoneMainV2Activity;
 import com.moemoe.lalala.view.adapter.ConversationListAdapterNew;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,7 +85,7 @@ public class KiraConversationListFragment extends ConversationListFragment imple
                 .build()
                 .inject(this);
         RongIM.setConversationListBehaviorListener(this);
-        subscribeSearchChangedEvent();
+        EventBus.getDefault().register(this);
         super.initFragment(uri);
         UIConversation item = new UIConversation();
         item.setConversationType(Conversation.ConversationType.PRIVATE);
@@ -119,51 +123,24 @@ public class KiraConversationListFragment extends ConversationListFragment imple
         mPresenter.getServerTime("");
     }
 
-    private void subscribeSearchChangedEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(EventDoneEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<EventDoneEvent>() {
-                    @Override
-                    public void accept(EventDoneEvent eventDoneEvent) throws Exception {
-                        if(eventDoneEvent.getType().equals("mobile")){
-                            mAdapter.setShowRed("");
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void eventDoneEvent(EventDoneEvent eventDoneEvent){
+        if(eventDoneEvent.getType().equals("mobile")){
+            mAdapter.setShowRed("");
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
-                    }
-                });
-        Disposable subscription1 = RxBus.getInstance()
-                .toObservable(GroupMsgChangeEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<GroupMsgChangeEvent>() {
-                    @Override
-                    public void accept(GroupMsgChangeEvent eventDoneEvent) throws Exception {
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().addSubscription(this, subscription);
-        RxBus.getInstance().addSubscription(this, subscription1);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void groupMsgEvent(GroupMsgChangeEvent event){
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if(mPresenter != null) mPresenter.release();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

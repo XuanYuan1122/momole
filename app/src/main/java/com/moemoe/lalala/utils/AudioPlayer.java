@@ -6,8 +6,10 @@ import android.media.SoundPool;
 import android.os.Vibrator;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.event.PhonePlayMusicEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
@@ -106,7 +108,7 @@ public class AudioPlayer {
         } catch (IllegalArgumentException | SecurityException
                 | IllegalStateException | IOException e) {
             ToastUtils.showShortToast(mContext,"播放失败,请重试");
-            RxBus.getInstance().post(new PhonePlayMusicEvent(url,-1,false,0,"error",""));
+            EventBus.getDefault().post(new PhonePlayMusicEvent(url,-1,false,0,"error",""));
         }
 
         // 当准备好时
@@ -135,7 +137,7 @@ public class AudioPlayer {
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 ToastUtils.showShortToast(mContext,
                         "播放失败,请重试");
-                RxBus.getInstance().post(new PhonePlayMusicEvent(url,-1,false,0,"error",""));
+                EventBus.getDefault().post(new PhonePlayMusicEvent(url,-1,false,0,"error",""));
                 return false;
             }
 

@@ -20,7 +20,8 @@
         android:paddingEnd="@dimen/x24"
         android:orientation="vertical"
         android:background="@color/white"
-        android:paddingBottom="@dimen/y28">
+        android:paddingBottom="@dimen/y28"
+        android:paddingTop="@dimen/y28">
 
         <LinearLayout
             android:id="@+id/rl_search_root"
@@ -29,7 +30,6 @@
             android:layout_gravity="center_vertical"
             android:paddingStart="@dimen/x24"
             android:paddingEnd="@dimen/x16"
-            android:layout_marginTop="@dimen/y28"
             android:orientation="horizontal"
             android:background="@drawable/shape_e8e8e8_14">
 
@@ -162,7 +162,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"/>
 
-    </android.support.v7.widget.RecyclerView>
 </LinearLayout>

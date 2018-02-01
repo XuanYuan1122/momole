@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.event.AlarmEvent;
 import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
@@ -26,6 +26,8 @@ import com.moemoe.lalala.view.activity.IPhoneFragment;
 import com.moemoe.lalala.view.activity.PhoneMainV2Activity;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -170,7 +172,7 @@ public class PhoneAlarmEditV2Fragment extends BaseFragment implements IPhoneFrag
             mTvDelete.setOnClickListener(new NoDoubleClickListener() {
                 @Override
                 public void onNoDoubleClick(View v) {
-                    RxBus.getInstance().post(new AlarmEvent(mAlarmClock,2));
+                    EventBus.getDefault().post(new AlarmEvent(mAlarmClock,2));
                 }
             });
             mTvName.setText(mAlarmClock.getRoleName());
@@ -546,7 +548,7 @@ public class PhoneAlarmEditV2Fragment extends BaseFragment implements IPhoneFrag
             mAlarmClock.setId(id + 1);
         }
         dao.insertOrReplace(mAlarmClock);
-        RxBus.getInstance().post(new AlarmEvent(mAlarmClock,isUpdate?3:1));
+        EventBus.getDefault().post(new AlarmEvent(mAlarmClock,isUpdate?3:1));
     }
 
     @Override

@@ -278,9 +278,9 @@ public class ViewUtils {
                 tv.setText(badgeEntity.getTitle());
                 tv.setText(badgeEntity.getTitle());
                 tv.setBackgroundResource(R.drawable.bg_badge_cover);
-                int px = (int)context.getResources().getDimension(R.dimen.x8);
+                int px = context.getResources().getDimensionPixelSize(R.dimen.x8);
                 tv.setPadding(px,0,px,0);
-                int radius2 = (int)context.getResources().getDimension(R.dimen.y4);
+                int radius2 = context.getResources().getDimensionPixelSize(R.dimen.y4);
                 float[] outerR2 = new float[] { radius2, radius2, radius2, radius2, radius2, radius2, radius2, radius2};
                 RoundRectShape roundRectShape2 = new RoundRectShape(outerR2, null, null);
                 ShapeDrawable shapeDrawable2 = new ShapeDrawable();

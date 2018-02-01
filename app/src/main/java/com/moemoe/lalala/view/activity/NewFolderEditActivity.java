@@ -21,6 +21,7 @@ import com.moemoe.lalala.app.MoeMoeApplication;
 import com.moemoe.lalala.di.components.DaggerNewFolderEditComponent;
 import com.moemoe.lalala.di.modules.NewFolderEditModule;
 import com.moemoe.lalala.model.entity.FolderRepEntity;
+import com.moemoe.lalala.model.entity.FolderType;
 import com.moemoe.lalala.model.entity.NewFolderEntity;
 import com.moemoe.lalala.presenter.NewFolderEditContract;
 import com.moemoe.lalala.presenter.NewFolderEditPresenter;
@@ -32,6 +33,7 @@ import com.moemoe.lalala.utils.NetworkUtils;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.SoftKeyboardUtils;
 import com.moemoe.lalala.utils.StringUtils;
+import com.moemoe.lalala.utils.TagUtils;
 import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.netamenu.BottomMenuFragment;
 import com.moemoe.lalala.view.widget.netamenu.MenuItem;
@@ -96,13 +98,6 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
     private String mFolderId;
     private int mCoin;
     private ArrayList<String> mTags;
-    private int[] mBackGround = { R.drawable.shape_rect_label_cyan,
-            R.drawable.shape_rect_label_yellow,
-            R.drawable.shape_rect_label_orange,
-            R.drawable.shape_rect_label_pink,
-            R.drawable.shape_rect_border_green_y8,
-            R.drawable.shape_rect_label_purple,
-            R.drawable.shape_rect_label_tab_blue};
 
     @Override
     protected int getLayoutId() {
@@ -116,7 +111,6 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
         i.putExtra("folder",folder);
         context.startActivity(i);
     }
-
 
     @Override
     protected void onDestroy() {
@@ -155,8 +149,8 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
             NewFolderEntity entity = getIntent().getParcelableExtra("folder");
             mTvName.setText(entity.getFolderName());
             Glide.with(NewFolderEditActivity.this)
-                    .load(StringUtils.getUrl(this,entity.getCover(),(int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112),false,true))
-                    .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
+                    .load(StringUtils.getUrl(this,entity.getCover(),getResources().getDimensionPixelSize(R.dimen.y112), getResources().getDimensionPixelSize(R.dimen.y112),false,true))
+                    .override(getResources().getDimensionPixelSize(R.dimen.y112), getResources().getDimensionPixelSize(R.dimen.y112))
                     .placeholder(R.drawable.bg_default_square)
                     .error(R.drawable.bg_default_square)
                     .bitmapTransform(new CropSquareTransformation(NewFolderEditActivity.this))
@@ -171,26 +165,23 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
                 String tag = entity.getTexts().get(i);
                 if(i == 0){
                     mTvTag1.setText(tag);
-                    int index = StringUtils.getHashOfString(tag, mBackGround.length);
-                    mTvTag1.setBackgroundResource(mBackGround[index]);
+                    TagUtils.setBackGround(tag,mTvTag1);
                     mTvTag2.setVisibility(View.VISIBLE);
                 }
                 if(i == 1){
                     mTvTag2.setText(tag);
-                    int index = StringUtils.getHashOfString(tag, mBackGround.length);
-                    mTvTag2.setBackgroundResource(mBackGround[index]);
+                    TagUtils.setBackGround(tag,mTvTag2);
                 }
             }
         }
         mTvSave.setVisibility(View.VISIBLE);
         mTvSave.getPaint().setFakeBoldText(true);
         mTvSave.setEnabled(true);
-        ViewUtils.setRightMargins(mTvSave, (int)getResources().getDimension(R.dimen.x36));
+        ViewUtils.setRightMargins(mTvSave,getResources().getDimensionPixelSize(R.dimen.x36));
         mTvSave.setText(getString(R.string.label_done));
-        initPopupMenus();
     }
 
-    private void initPopupMenus() {
+    private void showSortMenu() {
         bottomMenuFragment = new BottomMenuFragment();
         ArrayList<MenuItem> items = new ArrayList<>();
         MenuItem item = new MenuItem(1, "名称排序");
@@ -213,6 +204,64 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
                 }
             }
         });
+        bottomMenuFragment.show(getSupportFragmentManager(),"FolderEdit");
+    }
+
+    private void showCoinMenu(){
+        bottomMenuFragment = new BottomMenuFragment();
+        ArrayList<MenuItem> items = new ArrayList<>();
+        MenuItem item = new MenuItem(1, "仅文件夹售价");
+        items.add(item);
+        item = new MenuItem(2, "仅文件夹内容单独售价");
+        items.add(item);
+        bottomMenuFragment.setMenuItems(items);
+        bottomMenuFragment.setShowTop(false);
+        bottomMenuFragment.setMenuType(BottomMenuFragment.TYPE_VERTICAL);
+        bottomMenuFragment.setmClickListener(new BottomMenuFragment.MenuItemClickListener() {
+            @Override
+            public void OnMenuItemClick(int itemId) {
+                if (itemId == 1) {
+                    final EditText editText = new EditText(NewFolderEditActivity.this);
+                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(9)});
+                    new AlertDialog.Builder(NewFolderEditActivity.this).setTitle("节操价格")
+                            .setView(editText)
+                            .setPositiveButton(R.string.label_confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    long coin;
+                                    String coinStr = editText.getText().toString();
+                                    if(!TextUtils.isEmpty(coinStr)){
+                                        coin = Long.valueOf(coinStr);
+                                    }else {
+                                        coin = 0;
+                                    }
+                                    if(coin < 0){
+                                        showToast("请输入正确的价格");
+                                        return;
+                                    }
+                                    mTvCoin.setText(coin + "节操");
+                                    mCoin = (int) coin;
+                                    mHasModified = true;
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
+                }
+                if(itemId == 2){
+                    mTvCoin.setText("文件夹免费");
+                    mCoin = -1;
+                    mHasModified = true;
+                }
+            }
+        });
+        bottomMenuFragment.show(getSupportFragmentManager(),"FolderEdit");
     }
 
     @Override
@@ -309,38 +358,42 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
                 }
                 break;
             case R.id.ll_coin_root:
-                final EditText editText = new EditText(this);
-                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(9)});
-                new AlertDialog.Builder(this).setTitle("节操价格")
-                        .setView(editText)
-                        .setPositiveButton(R.string.label_confirm, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                long coin;
-                                String coinStr = editText.getText().toString();
-                                if(!TextUtils.isEmpty(coinStr)){
-                                    coin = Long.valueOf(coinStr);
-                                }else {
-                                    coin = 0;
+                if(mFolderType.equals(FolderType.SP.toString()) || mFolderType.equals(FolderType.YY.toString())){
+                    showCoinMenu();
+                }else {
+                    final EditText editText = new EditText(NewFolderEditActivity.this);
+                    editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(9)});
+                    new AlertDialog.Builder(NewFolderEditActivity.this).setTitle("节操价格")
+                            .setView(editText)
+                            .setPositiveButton(R.string.label_confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    long coin;
+                                    String coinStr = editText.getText().toString();
+                                    if(!TextUtils.isEmpty(coinStr)){
+                                        coin = Long.valueOf(coinStr);
+                                    }else {
+                                        coin = 0;
+                                    }
+                                    if(coin < 0){
+                                        showToast("请输入正确的价格");
+                                        return;
+                                    }
+                                    mTvCoin.setText(coin + "节操");
+                                    mCoin = (int) coin;
+                                    mHasModified = true;
+                                    dialogInterface.dismiss();
                                 }
-                                if(coin < 0){
-                                    showToast("请输入正确的价格");
-                                    return;
+                            })
+                            .setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
                                 }
-                                mTvCoin.setText(coin + "节操");
-                                mCoin = (int) coin;
-                                mHasModified = true;
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .setNegativeButton(R.string.label_cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .show();
+                            })
+                            .show();
+                }
                 break;
             case R.id.tv_label_add_1:
                 Intent i = new Intent(NewFolderEditActivity.this,RecommendTagActivity.class);
@@ -355,7 +408,7 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
                 startActivityForResult(i2,REQ_RECOMMEND_TAG);
                 break;
             case R.id.ll_sort_root:
-                if(bottomMenuFragment != null)bottomMenuFragment.show(getSupportFragmentManager(),"FolderEdit");
+                showSortMenu();
                 break;
         }
     }
@@ -391,18 +444,14 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
         if(mTags.size() == 2){
             mTvTag1.setVisibility(View.VISIBLE);
             mTvTag1.setText(mTags.get(0));
-            int index = StringUtils.getHashOfString(mTags.get(0), mBackGround.length);
-            mTvTag1.setBackgroundResource(mBackGround[index]);
-
+            TagUtils.setBackGround(mTags.get(0),mTvTag1);
             mTvTag2.setVisibility(View.VISIBLE);
             mTvTag2.setText(mTags.get(1));
-            int index2 = StringUtils.getHashOfString(mTags.get(1), mBackGround.length);
-            mTvTag2.setBackgroundResource(mBackGround[index2]);
+            TagUtils.setBackGround(mTags.get(1),mTvTag2);
         }else if(mTags.size() == 1){
             mTvTag1.setVisibility(View.VISIBLE);
             mTvTag1.setText(mTags.get(0));
-            int index = StringUtils.getHashOfString(mTags.get(0), mBackGround.length);
-            mTvTag1.setBackgroundResource(mBackGround[index]);
+            TagUtils.setBackGround(mTags.get(0),mTvTag1);
             mTvTag2.setVisibility(View.GONE);
         }else {
             mTvTag1.setVisibility(View.VISIBLE);
@@ -425,7 +474,7 @@ public class NewFolderEditActivity extends BaseAppCompatActivity implements NewF
                 public void onPhotoGet(ArrayList<String> photoPaths, boolean override) {
                     Glide.with(NewFolderEditActivity.this)
                             .load(photoPaths.get(0))
-                            .override((int)getResources().getDimension(R.dimen.y112), (int)getResources().getDimension(R.dimen.y112))
+                            .override(getResources().getDimensionPixelSize(R.dimen.y112), getResources().getDimensionPixelSize(R.dimen.y112))
                             .placeholder(R.drawable.bg_default_square)
                             .error(R.drawable.bg_default_square)
                             .bitmapTransform(new CropSquareTransformation(NewFolderEditActivity.this))

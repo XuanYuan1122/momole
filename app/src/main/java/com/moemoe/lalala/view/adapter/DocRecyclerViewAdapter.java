@@ -925,7 +925,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             setMusicInfo(musicInfo);
             mMusicHolder.sbMusicTime.setMax(music.getTimestamp());
             Song curMusic = mPlayer.getPlayingSong();
-            mMusicHolder.tvMusicTime.setText(getMinute(0) + "/" + getMinute(music.getTimestamp()));
+            mMusicHolder.tvMusicTime.setText(StringUtils.getMinute(0) + "/" + StringUtils.getMinute(music.getTimestamp()));
             if(curMusic != null){
                 if(curMusic.getPath().equals(musicInfo.getPath())){
                     onSongUpdate(musicInfo);
@@ -1038,7 +1038,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     private void updateProgressTextWithDuration(int duration) {
-        mMusicHolder.tvMusicTime.setText(getMinute(duration) + "/" + getMinute(mPlayer.getPlayingSong().getDuration()));
+        mMusicHolder.tvMusicTime.setText(StringUtils.getMinute(duration) + "/" + StringUtils.getMinute(mPlayer.getPlayingSong().getDuration()));
     }
 
     private int getDuration(int progress) {
@@ -1049,7 +1049,7 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         int targetDuration = getDuration(progress);
         Song playing = mPlayer.getPlayingSong();
         if(playing != null){
-            mMusicHolder.tvMusicTime.setText(getMinute(targetDuration) + "/" + getMinute(playing.getDuration()));
+            mMusicHolder.tvMusicTime.setText(StringUtils.getMinute(targetDuration) + "/" + StringUtils.getMinute(playing.getDuration()));
         }
     }
 
@@ -1557,11 +1557,16 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         item = new MenuItem(2,mContext.getString(R.string.label_jubao));
         items.add(item);
 
-        if(TextUtils.equals(PreferenceUtils.getUUid(), bean.getCreateUser().getUserId()) ){
+//        if(TextUtils.equals(PreferenceUtils.getUUid(), bean.getCreateUser().getUserId()) ){
+//            item = new MenuItem(3,mContext.getString(R.string.label_delete));
+//            items.add(item);
+//        }else if(TextUtils.equals(PreferenceUtils.getUUid(), mDocBean.getUserId())){
+//            item = new MenuItem(4,mContext.getString(R.string.label_delete));
+//            items.add(item);
+//        }
+
+        if(mDocBean.isCanDelete()){
             item = new MenuItem(3,mContext.getString(R.string.label_delete));
-            items.add(item);
-        }else if(TextUtils.equals(PreferenceUtils.getUUid(), mDocBean.getUserId())){
-            item = new MenuItem(4,mContext.getString(R.string.label_delete));
             items.add(item);
         }
 
@@ -1666,25 +1671,6 @@ public class DocRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             }
         }
     };
-
-    /**
-     * 时间毫秒转分钟
-     */
-    private static String getMinute(int time) {
-        int h = time / (1000 * 60 * 60);
-        String minute;
-        int sec = (time % (1000 * 60)) / 1000;
-        int min = time % (1000 * 60 * 60) / (1000 * 60);
-        String hS = h < 10 ? "0" + h : "" + h;
-        String secS = sec < 10 ? "0" + sec : "" + sec;
-        String minS = min < 10 ? "0" + min : "" + min;
-        if (h == 0) {
-            minute = minS + ":" + secS;
-        } else {
-            minute = hS + ":" + minS + ":" + secS;
-        }
-        return minute;
-    }
 
     public void createLabel(final String tagName){
         if (!NetworkUtils.checkNetworkAndShowError(mContext)) {

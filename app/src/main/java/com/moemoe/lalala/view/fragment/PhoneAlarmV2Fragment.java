@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.RxBus;
+
 import com.moemoe.lalala.event.AlarmEvent;
 import com.moemoe.lalala.greendao.gen.AlarmClockEntityDao;
 import com.moemoe.lalala.model.entity.AlarmClockEntity;
@@ -19,6 +19,10 @@ import com.moemoe.lalala.view.activity.PhoneMainV2Activity;
 import com.moemoe.lalala.view.adapter.PhoneAlarmAdapter;
 import com.moemoe.lalala.view.widget.adapter.BaseRecyclerViewAdapter;
 import com.moemoe.lalala.view.widget.recycler.PullAndLoadView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +76,7 @@ public class PhoneAlarmV2Fragment extends BaseFragment implements IPhoneFragment
 
             }
         });
-        subscribeAlarmEvent();
+        EventBus.getDefault().register(this);
         updateList();
     }
 
@@ -120,47 +124,30 @@ public class PhoneAlarmV2Fragment extends BaseFragment implements IPhoneFragment
         mAdapter.notifyDataSetChanged();
     }
 
-    private void subscribeAlarmEvent() {
-        Disposable subscription = RxBus.getInstance()
-                .toObservable(AlarmEvent.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .distinctUntilChanged()
-                .subscribe(new Consumer<AlarmEvent>() {
-                    @Override
-                    public void accept(AlarmEvent alarmEvent) throws Exception {
-                        if(alarmEvent.getType() == 1){
-                            GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().insertOrReplace(alarmEvent.getEntity());
-                            addList(alarmEvent.getEntity());
-                        }else if(alarmEvent.getType() == 2){
-                            GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().delete(alarmEvent.getEntity());
-                            Utils.cancelAlarmClock(getContext(), (int) alarmEvent.getEntity().getId());
-                            NotificationManager notificationManager = (NotificationManager) getContext()
-                                    .getSystemService(Activity.NOTIFICATION_SERVICE);
-                            // 取消下拉列表通知消息
-                            assert notificationManager != null;
-                            notificationManager.cancel((int) alarmEvent.getEntity().getId());
-                            ((PhoneMainV2Activity)getContext()).onBackPressed();
-                            deleteList();
-                        }else {
-                            updateList();
-                        }
-                    }
-
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-
-                    }
-                });
-        RxBus.getInstance().unSubscribe(this);
-        RxBus.getInstance().addSubscription(this, subscription);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void alarmEvent(AlarmEvent event){
+        if(event.getType() == 1){
+            GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().insertOrReplace(event.getEntity());
+            addList(event.getEntity());
+        }else if(event.getType() == 2){
+            GreenDaoManager.getInstance().getSession().getAlarmClockEntityDao().delete(event.getEntity());
+            Utils.cancelAlarmClock(getContext(), (int) event.getEntity().getId());
+            NotificationManager notificationManager = (NotificationManager) getContext()
+                    .getSystemService(Activity.NOTIFICATION_SERVICE);
+            // 取消下拉列表通知消息
+            assert notificationManager != null;
+            notificationManager.cancel((int) event.getEntity().getId());
+            ((PhoneMainV2Activity)getContext()).onBackPressed();
+            deleteList();
+        }else {
+            updateList();
+        }
     }
 
     @Override
     public void release() {
         super.release();
-        RxBus.getInstance().unSubscribe(this);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

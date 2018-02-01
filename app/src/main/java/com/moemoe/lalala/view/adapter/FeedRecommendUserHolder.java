@@ -1,26 +1,19 @@
 package com.moemoe.lalala.view.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.moemoe.lalala.R;
-import com.moemoe.lalala.app.RxBus;
 import com.moemoe.lalala.event.FollowUserEvent;
 import com.moemoe.lalala.model.entity.FeedRecommendUserEntity;
-import com.moemoe.lalala.model.entity.FolderType;
-import com.moemoe.lalala.model.entity.ShowFolderEntity;
-import com.moemoe.lalala.utils.DensityUtil;
 import com.moemoe.lalala.utils.NoDoubleClickListener;
 import com.moemoe.lalala.utils.StringUtils;
-import com.moemoe.lalala.utils.ViewUtils;
 import com.moemoe.lalala.view.widget.adapter.ClickableViewHolder;
 
+import org.greenrobot.eventbus.EventBus;
+
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
@@ -73,7 +66,7 @@ public class FeedRecommendUserHolder extends ClickableViewHolder {
         $(R.id.tv_follow).setOnClickListener(new NoDoubleClickListener() {
             @Override
             public void onNoDoubleClick(View v) {
-                RxBus.getInstance().post(new FollowUserEvent(entity.getUserId(),entity.isFollow(),position));
+                EventBus.getDefault().post(new FollowUserEvent(entity.getUserId(),entity.isFollow(),position));
             }
         });
 
